@@ -13,9 +13,10 @@
 
     // Load Javascript dependencies into header:
     $this->headScript()->appendFile("bulk_actions.js");
+    $this->headScript()->appendFile("check_item_statuses.js");
 
     // Convenience variable:
-    $account = $this->layout()->account;
+    $account = $this->auth()->getManager();
 ?>
 
 <?=$this->flashmessages()?>

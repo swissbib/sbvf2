@@ -15,6 +15,20 @@
     $basicSearch = $options->getSearchAction();
     $advSearch = $options->getAdvancedSearchAction();
 ?>
+<div class="searchHomeContent">
+  <? if ($this->ils()->getOfflineMode() == "ils-offline"): ?>
+    <div class="sysInfo">
+      <h2><?=$this->transEsc('ils_offline_title')?></h2>
+      <p><strong><?=$this->transEsc('ils_offline_status')?></strong></p>
+      <p><?=$this->transEsc('ils_offline_home_message')?></p>
+      <? $supportEmail = $this->escapeHtml($this->systemEmail()); ?>
+      <p><a href="mailto:<?=$supportEmail?>"><?=$supportEmail?></a></p>
+    </div>
+  <? endif; ?>
+  <div class="searchHomeForm">
+    <?=$this->render("search/searchbox.phtml")?>
+  </div>
+</div>
 
 <? $facetList = is_object($this->results) ? $this->results->getFacetList() : array(); if (isset($facetList) && is_array($facetList)): ?>
 <div class="searchHomeBrowse">
@@ -33,6 +47,16 @@
           <? if (++$i == 10): ?>
             </ul>
             <ul class="span-5">
+          <? endif; ?>
+        <? endforeach; ?>
+      <? /* Special case: collections */ ?>
+      <? elseif ($field == 'hierarchy_top_title'): ?>
+        <? $i = 0; foreach ($sortedList as $url => $value): ?>
+          <? if (++$i > 12): ?>
+            <li><a href="<?=$this->url('collections-home')?>"><strong><?=$this->transEsc("More options")?>...</strong></a></li>
+            <? break; ?>
+          <? else: ?>
+            <li><a href="<?=$this->url('collections-bytitle')?>?title=<?=urlencode($value)?>"><?=$this->escapeHtml($value)?></a></li>
           <? endif; ?>
         <? endforeach; ?>
       <? else: ?>

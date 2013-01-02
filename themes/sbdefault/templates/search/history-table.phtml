@@ -10,13 +10,13 @@
     <tr class="<?=$iteration % 2 == 1 ? 'even' : 'odd'?>row">
       <td><?=$this->escapeHtml(date("g:ia, jS M y", $info->getStartTime()))?></td>
       <td>
-        <a href="<?=$this->url($info->getSearchAction()) . $info->getUrl()->getParams()?>"><?
-          $desc = $info->getDisplayQuery();
+        <a href="<?=$this->url($info->getOptions()->getSearchAction()) . $info->getUrlQuery()->getParams()?>"><?
+          $desc = $info->getParams()->getDisplayQuery();
           echo empty($desc) ? $this->transEsc("history_empty_search") : $this->escapeHtml($desc);
         ?></a>
       </td>
       <td>
-        <? $info->activateAllFacets(); foreach ($info->getFilterList() as $field => $filters): ?>
+        <? $info->getParams()->activateAllFacets(); foreach ($info->getParams()->getFilterList() as $field => $filters): ?>
           <? foreach ($filters as $filter): ?>
             <strong><?=$this->transEsc($field)?></strong>: <?=$this->escapeHtml($filter['displayText'])?><br/>
           <? endforeach; ?>

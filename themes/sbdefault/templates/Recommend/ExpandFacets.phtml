@@ -1,7 +1,7 @@
 <?
     $expandFacetSet = $this->recommend->getExpandedSet();
     // Get empty search object to use as basis for parameter generation below:
-    $blankResults = new \VuFind\Search\Solr\Results(new \VuFind\Search\Solr\Params());
+    $blankResults = $this->recommend->getEmptyResults();
 ?>
 <? if ($expandFacetSet): ?>
   <div class="sidegroup">
@@ -9,7 +9,7 @@
     <h4><?=$this->translate($cluster['label']) ?></h4>
     <ul class="bulleted">
   <? foreach ($cluster['list'] as $thisFacet): ?>
-    <li><a href="<?=$this->url('search-results') . $blankResults->getUrl()->addFacet($title, $thisFacet['value'])?>"><?=$this->escapeHtml($thisFacet['displayText'])?></a></li>
+    <li><a href="<?=$this->url('search-results') . $blankResults->getUrlQuery()->addFacet($title, $thisFacet['value'])?>"><?=$this->escapeHtml($thisFacet['displayText'])?></a></li>
   <? endforeach; ?>
     </ul>
  <? endforeach; ?>
