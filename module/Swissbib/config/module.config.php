@@ -37,7 +37,14 @@ $config = array(
                 ),
             )
         )
-    )
+    ),
+    'recorddriver_plugin_manager' => array(
+        'invokables' => array(
+            'solrdefault' => 'Swissbib\RecordDriver\SolrDefault',
+            'solrmarc' => 'Swissbib\RecordDriver\SolrMarc',
+        ),
+    ),
+
 
 
 );

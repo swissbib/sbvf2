@@ -55,8 +55,6 @@ use VuFind\Code\ISBN, VuFind\Config\Reader as ConfigReader,
  */
 class SolrDefault extends VFAbstractBase
 {
-    protected $fields;
-
     /**
      * These Solr fields should be used for snippets if available (listed in order
      * of preference).
@@ -104,16 +102,24 @@ class SolrDefault extends VFAbstractBase
     protected $snippet = false;
 
     /**
-     * Constructor.
+     * Hierarchy driver plugin manager
      *
-     * @param array $data Raw data from the Solr index representing the record;
-     * Solr Record Model objects are normally constructed by Solr Record Driver
-     * objects using data passed in from a Solr Search Results object.
+     * @var \VuFind\Hierarchy\Driver\PluginManager
      */
-    public function __construct($data)
-    {
-        $this->fields = $data;
+    protected $hierarchyDriverManager = null;
 
+    /**
+     * Hierarchy driver for current object
+     *
+     * @var \VuFind\Hierarchy\Driver\AbstractBase
+     */
+    protected $hierarchyDriver = null;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
         // Turn on highlighting/snippets as needed:
         $searchSettings = ConfigReader::getConfig('searches');
         $this->highlight = !isset($searchSettings->General->highlighting)
@@ -194,17 +200,6 @@ class SolrDefault extends VFAbstractBase
     public function getAllRecordLinks()
     {
         return null;
-    }
-
-    /**
-     * Get an associative array of all fields (primarily for use in staff view and
-     * autocomplete; avoid using whenever possible).
-     *
-     * @return array
-     */
-    public function getAllFields()
-    {
-        return $this->fields;
     }
 
     /**
@@ -336,6 +331,36 @@ class SolrDefault extends VFAbstractBase
     {
         return isset($this->fields['dateSpan']) ?
             $this->fields['dateSpan'] : array();
+    }
+
+    /**
+     * Deduplicate author information into associative array with main/corporate/
+     * secondary keys.
+     *
+     * @return array
+     */
+    public function getDeduplicatedAuthors()
+    {
+        $authors = array(
+            'main' => $this->getPrimaryAuthor(),
+            'corporate' => $this->getCorporateAuthor(),
+            'secondary' => $this->getSecondaryAuthors()
+        );
+
+        // The secondary author array may contain a corporate or primary author;
+        // let's be sure we filter out duplicate values.
+        $duplicates = array();
+        if (!empty($authors['main'])) {
+            $duplicates[] = $authors['main'];
+        }
+        if (!empty($authors['corporate'])) {
+            $duplicates[] = $authors['corporate'];
+        }
+        if (!empty($duplicates)) {
+            $authors['secondary'] = array_diff($authors['secondary'], $duplicates);
+        }
+
+        return $authors;
     }
 
     /**
@@ -620,85 +645,85 @@ class SolrDefault extends VFAbstractBase
             $format = 'Book';
         }
         switch($format) {
-        case 'Book':
-            $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:book';
-            $params['rft.genre'] = 'book';
-            $params['rft.btitle'] = $params['rft.title'];
-            $series = $this->getSeries();
-            if (count($series) > 0) {
-                // Handle both possible return formats of getSeries:
-                $params['rft.series'] = is_array($series[0]) ?
-                    $series[0]['name'] : $series[0];
-            }
-            $params['rft.au'] = $this->getPrimaryAuthor();
-            $publishers = $this->getPublishers();
-            if (count($publishers) > 0) {
-                $params['rft.pub'] = $publishers[0];
-            }
-            $params['rft.edition'] = $this->getEdition();
-            $params['rft.isbn'] = $this->getCleanISBN();
-            break;
-        case 'Article':
-            $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:journal';
-            $params['rft.genre'] = 'article';
-            $params['rft.issn'] = $this->getCleanISSN();
-            // an article may have also an ISBN:
-            $params['rft.isbn'] = $this->getCleanISBN();
-            $params['rft.volume'] = $this->getContainerVolume();
-            $params['rft.issue'] = $this->getContainerIssue();
-            $params['rft.spage'] = $this->getContainerStartPage();
-            // unset default title -- we only want jtitle/atitle here:
-            unset($params['rft.title']);
-            $params['rft.jtitle'] = $this->getContainerTitle();
-            $params['rft.atitle'] = $this->getTitle();
-            $params['rft.au'] = $this->getPrimaryAuthor();
+            case 'Book':
+                $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:book';
+                $params['rft.genre'] = 'book';
+                $params['rft.btitle'] = $params['rft.title'];
+                $series = $this->getSeries();
+                if (count($series) > 0) {
+                    // Handle both possible return formats of getSeries:
+                    $params['rft.series'] = is_array($series[0]) ?
+                        $series[0]['name'] : $series[0];
+                }
+                $params['rft.au'] = $this->getPrimaryAuthor();
+                $publishers = $this->getPublishers();
+                if (count($publishers) > 0) {
+                    $params['rft.pub'] = $publishers[0];
+                }
+                $params['rft.edition'] = $this->getEdition();
+                $params['rft.isbn'] = $this->getCleanISBN();
+                break;
+            case 'Article':
+                $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:journal';
+                $params['rft.genre'] = 'article';
+                $params['rft.issn'] = $this->getCleanISSN();
+                // an article may have also an ISBN:
+                $params['rft.isbn'] = $this->getCleanISBN();
+                $params['rft.volume'] = $this->getContainerVolume();
+                $params['rft.issue'] = $this->getContainerIssue();
+                $params['rft.spage'] = $this->getContainerStartPage();
+                // unset default title -- we only want jtitle/atitle here:
+                unset($params['rft.title']);
+                $params['rft.jtitle'] = $this->getContainerTitle();
+                $params['rft.atitle'] = $this->getTitle();
+                $params['rft.au'] = $this->getPrimaryAuthor();
 
-            $params['rft.format'] = $format;
-            $langs = $this->getLanguages();
-            if (count($langs) > 0) {
-                $params['rft.language'] = $langs[0];
-            }
-            break;
-        case 'Journal':
-            /* This is probably the most technically correct way to represent
-             * a journal run as an OpenURL; however, it doesn't work well with
-             * Zotero, so it is currently commented out -- instead, we just add
-             * some extra fields and then drop through to the default case.
-            $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:journal';
-            $params['rft.genre'] = 'journal';
-            $params['rft.jtitle'] = $params['rft.title'];
-            $params['rft.issn'] = $this->getCleanISSN();
-            $params['rft.au'] = $this->getPrimaryAuthor();
-            break;
-             */
-            $params['rft.issn'] = $this->getCleanISSN();
+                $params['rft.format'] = $format;
+                $langs = $this->getLanguages();
+                if (count($langs) > 0) {
+                    $params['rft.language'] = $langs[0];
+                }
+                break;
+            case 'Journal':
+                /* This is probably the most technically correct way to represent
+                 * a journal run as an OpenURL; however, it doesn't work well with
+                 * Zotero, so it is currently commented out -- instead, we just add
+                 * some extra fields and then drop through to the default case.
+                $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:journal';
+                $params['rft.genre'] = 'journal';
+                $params['rft.jtitle'] = $params['rft.title'];
+                $params['rft.issn'] = $this->getCleanISSN();
+                $params['rft.au'] = $this->getPrimaryAuthor();
+                break;
+                 */
+                $params['rft.issn'] = $this->getCleanISSN();
 
-            // Including a date in a title-level Journal OpenURL may be too
-            // limiting -- in some link resolvers, it may cause the exclusion
-            // of databases if they do not cover the exact date provided!
-            unset($params['rft.date']);
+                // Including a date in a title-level Journal OpenURL may be too
+                // limiting -- in some link resolvers, it may cause the exclusion
+                // of databases if they do not cover the exact date provided!
+                unset($params['rft.date']);
 
-            // If we're working with the SFX resolver, we should add a
-            // special parameter to ensure that electronic holdings links
-            // are shown even though no specific date or issue is specified:
-            if (isset($config->OpenURL->resolver)
-                && strtolower($config->OpenURL->resolver) == 'sfx'
-            ) {
-                $params['sfx.ignore_date_threshold'] = 1;
-            }
-        default:
-            $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:dc';
-            $params['rft.creator'] = $this->getPrimaryAuthor();
-            $publishers = $this->getPublishers();
-            if (count($publishers) > 0) {
-                $params['rft.pub'] = $publishers[0];
-            }
-            $params['rft.format'] = $format;
-            $langs = $this->getLanguages();
-            if (count($langs) > 0) {
-                $params['rft.language'] = $langs[0];
-            }
-            break;
+                // If we're working with the SFX resolver, we should add a
+                // special parameter to ensure that electronic holdings links
+                // are shown even though no specific date or issue is specified:
+                if (isset($config->OpenURL->resolver)
+                    && strtolower($config->OpenURL->resolver) == 'sfx'
+                ) {
+                    $params['sfx.ignore_date_threshold'] = 1;
+                }
+            default:
+                $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:dc';
+                $params['rft.creator'] = $this->getPrimaryAuthor();
+                $publishers = $this->getPublishers();
+                if (count($publishers) > 0) {
+                    $params['rft.pub'] = $publishers[0];
+                }
+                $params['rft.format'] = $format;
+                $langs = $this->getLanguages();
+                if (count($langs) > 0) {
+                    $params['rft.language'] = $langs[0];
+                }
+                break;
         }
 
         // Assemble the URL:
@@ -807,8 +832,8 @@ class SolrDefault extends VFAbstractBase
                 str_replace(
                     '  ', ' ',
                     ((isset($places[$i]) ? $places[$i] . ' ' : '') .
-                    (isset($names[$i]) ? $names[$i] . ' ' : '') .
-                    (isset($dates[$i]) ? $dates[$i] : ''))
+                        (isset($names[$i]) ? $names[$i] . ' ' : '') .
+                        (isset($dates[$i]) ? $dates[$i] : ''))
                 )
             );
             $i++;
@@ -859,7 +884,7 @@ class SolrDefault extends VFAbstractBase
      *
      * @return array
      */
-    public function getRealTimeHoldings($account)
+    public function getRealTimeHoldings(\VuFind\Auth\Manager $account)
     {
         // Not supported by the Solr index -- implement in child classes.
         return array();
@@ -996,19 +1021,8 @@ class SolrDefault extends VFAbstractBase
      */
     public function getTitle()
     {
-        //Variante - anstelle von title_long field aus der SOLR Struktur
-        //die unterschiedlichen Kombinationen aus den MARC Feldern
-        $title =  null;
-        if (isset($this->fields['title_long'])) {
-            if (is_array($this->fields['title_long'])) {
-                $title = implode (" / ", $this->fields['title_long']);
-            } else {
-                $title = $this->fields['title_long'];
-            }
-
-        }
-
-        return $title;
+        return isset($this->fields['title']) ?
+            $this->fields['title'] : '';
     }
 
     /**
@@ -1046,8 +1060,16 @@ class SolrDefault extends VFAbstractBase
     }
 
     /**
-     * Return an associative array of URLs associated with this record (key = URL,
-     * value = description).
+     * Return an array of associative URL arrays with one or more of the following
+     * keys:
+     *
+     * <li>
+     *   <ul>desc: URL description text to display (optional)</ul>
+     *   <ul>url: fully-formed URL (required if 'route' is absent)</ul>
+     *   <ul>route: VuFind route to build URL with (required if 'url' is absent)</ul>
+     *   <ul>routeParams: Parameters for route (optional)</ul>
+     *   <ul>queryString: Query params to append after building route (optional)</ul>
+     * </li>
      *
      * @return array
      */
@@ -1056,12 +1078,209 @@ class SolrDefault extends VFAbstractBase
         // If non-empty, map internal URL array to expected return format;
         // otherwise, return empty array:
         if (isset($this->fields['url']) && is_array($this->fields['url'])) {
-            $filter = function($url) {
+            $filter = function ($url) {
                 return array('url' => $url);
             };
             return array_map($filter, $this->fields['url']);
         }
         return array();
+    }
+
+    /**
+     * Get a hierarchy driver appropriate to the current object.  (May be false if
+     * disabled/unavailable).
+     *
+     * @return \VuFind\Hierarchy\Driver\AbstractBase|bool
+     */
+    public function getHierarchyDriver()
+    {
+        if (null === $this->hierarchyDriver
+            && null !== $this->hierarchyDriverManager
+        ) {
+            $type = $this->getHierarchyType();
+            $this->hierarchyDriver = $type
+                ? $this->hierarchyDriverManager->get($type) : false;
+        }
+        return $this->hierarchyDriver;
+    }
+
+    /**
+     * Inject a hierarchy driver plugin manager.
+     *
+     * @param \VuFind\Hierarchy\Driver\PluginManager $pm Hierarchy driver manager
+     *
+     * @return SolrDefault
+     */
+    public function setHierarchyDriverManager(
+        \VuFind\Hierarchy\Driver\PluginManager $pm
+    ) {
+        $this->hierarchyDriverManager = $pm;
+        return $this;
+    }
+
+    /**
+     * Get the hierarchy_top_id(s) associated with this item (empty if none).
+     *
+     * @return array
+     */
+    public function getHierarchyTopID()
+    {
+        return isset($this->fields['hierarchy_top_id'])
+            ? $this->fields['hierarchy_top_id'] : array();
+    }
+
+    /**
+     * Get the absolute parent title(s) associated with this item
+     * (empty if none).
+     *
+     * @return array
+     */
+    public function getHierarchyTopTitle()
+    {
+        return isset($this->fields['hierarchy_top_title'])
+            ? $this->fields['hierarchy_top_title'] : array();
+    }
+
+    /**
+     * Get an associative array (id => title) of collections containing this record.
+     *
+     * @return array
+     */
+    public function getContainingCollections()
+    {
+        // If collections are disabled or this record is not part of a hierarchy, go
+        // no further....
+        $config = ConfigReader::getConfig();
+        if (!isset($config->Collections->collections)
+            || !$config->Collections->collections
+            || !($hierarchyDriver = $this->getHierarchyDriver())
+        ) {
+            return false;
+        }
+
+        // Initialize some variables needed within the switch below:
+        $isCollection = $this->isCollection();
+        $titles = $ids = array();
+
+        // Check config setting for what constitutes a collection, act accordingly:
+        switch ($hierarchyDriver->getCollectionLinkType()) {
+            case 'All':
+                if (isset($this->fields['hierarchy_parent_title'])
+                    && isset($this->fields['hierarchy_parent_id'])
+                ) {
+                    $titles = $this->fields['hierarchy_parent_title'];
+                    $ids = $this->fields['hierarchy_parent_id'];
+                }
+                break;
+            case 'Top':
+                if (isset($this->fields['hierarchy_top_title'])
+                    && isset($this->fields['hierarchy_top_id'])
+                ) {
+                    foreach ($this->fields['hierarchy_top_id'] as $i => $topId) {
+                        // Don't mark an item as its own parent -- filter out parent
+                        // collections whose IDs match that of the current collection.
+                        if (!$isCollection
+                            || $topId !== $this->fields['is_hierarchy_id']
+                        ) {
+                            $ids[] = $topId;
+                            $titles[] = $this->fields['hierarchy_top_title'][$i];
+                        }
+                    }
+                }
+                break;
+        }
+
+        // Map the titles and IDs to a useful format:
+        $c = count($ids);
+        $retVal = array();
+        for ($i = 0; $i < $c; $i++) {
+            $retVal[$ids[$i]] = $titles[$i];
+        }
+        return $retVal;
+    }
+
+    /**
+     * Get the value of whether or not this is a collection level record
+     *
+     * @return bool
+     */
+    public function isCollection()
+    {
+        if (!($hierarchyDriver = $this->getHierarchyDriver())) {
+            // Not a hierarchy type record
+            return false;
+        }
+
+        // Check config setting for what constitutes a collection
+        switch ($hierarchyDriver->getCollectionLinkType()) {
+            case 'All':
+                return (isset($this->fields['is_hierarchy_id']));
+            case 'Top':
+                return isset($this->fields['is_hierarchy_title'])
+                    && isset($this->fields['is_hierarchy_id'])
+                    && in_array(
+                        $this->fields['is_hierarchy_id'],
+                        $this->fields['hierarchy_top_id']
+                    );
+            default:
+                // Default to not be a collection level record
+                return false;
+        }
+    }
+
+    /**
+     * Get the positions of this item within parent collections.  Returns an array
+     * of parent ID => sequence number.
+     *
+     * @return array
+     */
+    public function getHierarchyPositionsInParents()
+    {
+        $retVal = array();
+        if (isset($this->fields['hierarchy_parent_id'])) {
+            foreach ($this->fields['hierarchy_parent_id'] as $key => $val) {
+                $retVal[$val] = $this->fields['hierarchy_sequence'][$key];
+            }
+        }
+        return $retVal;
+    }
+
+    /**
+     * Get a list of hierarchy trees containing this record.
+     *
+     * @param string $hierarchyID The hierarchy to get the tree for
+     *
+     * @return mixed An associative array of hierachy trees on success (id => title),
+     * false if no hierarchies found
+     */
+    public function getHierarchyTrees($hierarchyID = false)
+    {
+        $hierarchyDriver = $this->getHierarchyDriver();
+        if ($hierarchyDriver && $hierarchyDriver->showTree()) {
+            return $hierarchyDriver->getTreeRenderer($this)
+                ->getTreeList($hierarchyID);
+        }
+        return false;
+    }
+
+    /**
+     * Get the Hierarchy Type (false if none)
+     *
+     * @return string|bool
+     */
+    public function getHierarchyType()
+    {
+        if (isset($this->fields['hierarchy_top_id'])) {
+            $hierarchyType = isset($this->fields['hierarchytype'])
+                ? $this->fields['hierarchytype'] : false;
+            if (!$hierarchyType) {
+                $config = ConfigReader::getConfig();
+                $hierarchyType = isset($config->Hierarchy->driver)
+                    ? $config->Hierarchy->driver : false;
+            }
+            return $hierarchyType;
+        }
+        return false;
     }
 
     /**
@@ -1073,6 +1292,9 @@ class SolrDefault extends VFAbstractBase
      */
     public function getUniqueID()
     {
+        if (!isset($this->fields['id'])) {
+            throw new \Exception('ID not set!');
+        }
         return $this->fields['id'];
     }
 
@@ -1092,11 +1314,11 @@ class SolrDefault extends VFAbstractBase
             $dc = 'http://purl.org/dc/elements/1.1/';
             $xml = new \SimpleXMLElement(
                 '<oai_dc:dc '
-                . 'xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" '
-                . 'xmlns:dc="' . $dc . '" '
-                . 'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
-                . 'xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ '
-                . 'http://www.openarchives.org/OAI/2.0/oai_dc.xsd" />'
+                    . 'xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" '
+                    . 'xmlns:dc="' . $dc . '" '
+                    . 'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
+                    . 'xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ '
+                    . 'http://www.openarchives.org/OAI/2.0/oai_dc.xsd" />'
             );
             $xml->addChild('title', htmlspecialchars($this->getTitle()), $dc);
             $primary = $this->getPrimaryAuthor();
@@ -1130,49 +1352,6 @@ class SolrDefault extends VFAbstractBase
 
         // Unsupported format:
         return false;
-    }
-
-    /**
-     * Returns an associative array (action => description) of record tabs supported
-     * by the data.
-     *
-     * @return array
-     */
-    public function getTabs()
-    {
-        // Turn on all tabs by default:
-        $allTabs = array(
-            'Holdings' => 'Holdings',
-            'Description' => 'Description',
-            'TOC' => 'Table of Contents',
-            'UserComments' => 'Comments',
-            'Reviews' => 'Reviews',
-            'Excerpt' => 'Excerpt',
-            'Details' => 'Staff View'
-        );
-
-        // No reviews or excerpts without ISBNs/appropriate configuration:
-        $isbns = $this->getISBNs();
-        if (empty($isbns)) {
-            unset($allTabs['Reviews']);
-            unset($allTabs['Excerpt']);
-        } else {
-            $config = ConfigReader::getConfig();
-            if (!isset($config->Content->reviews)) {
-                unset($allTabs['Reviews']);
-            }
-            if (!isset($config->Content->excerpts)) {
-                unset($allTabs['Excerpt']);
-            }
-        }
-
-        // No Table of Contents tab if no data available:
-        $toc = $this->getTOC();
-        if (empty($toc)) {
-            unset($allTabs['TOC']);
-        }
-
-        return $allTabs;
     }
 
     /**
@@ -1286,5 +1465,16 @@ class SolrDefault extends VFAbstractBase
     {
         return isset($this->fields['title_sort'])
             ? $this->fields['title_sort'] : parent::getSortTitle();
+    }
+
+    /**
+     * Get longitude/latitude text (or false if not available).
+     *
+     * @return string|bool
+     */
+    public function getLongLat()
+    {
+        return isset($this->fields['long_lat'])
+            ? $this->fields['long_lat'] : false;
     }
 }
