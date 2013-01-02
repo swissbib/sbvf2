@@ -1,6 +1,12 @@
 <?=$this->doctype('XHTML1_TRANSITIONAL')?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="<?=$this->layout()->userLang?>" xml:lang="en">
+
+
+
   <head>
+
+      <?= $this->ScriptMarker()->headline("layout.home.phtml", true)?>
+
       <?$this->headThemeResources()?>
       <?=$this->headMeta()?>
       <?=$this->headTitle()?>
@@ -95,5 +101,6 @@
 
 </body>
 
+  <?= $this->ScriptMarker()->footline("layout.home.phtml", true)?>
 
 </html>

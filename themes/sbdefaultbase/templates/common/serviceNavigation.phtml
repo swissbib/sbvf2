@@ -1,6 +1,6 @@
 
 
-<!--START of common/serviceNavigation.phtml-->
+<?= $this->ScriptMarker()->headline("serviceNavigation.phtml", true)?>
     <? if (is_object($this->account)): // hide login/logout if unavailable ?>
 
       <div id="service">
@@ -20,4 +20,4 @@
       </div>
     <? endif; ?>
 
-<!--End of common/serviceNavigation.phtml-->
+<?= $this->ScriptMarker()->footline("serviceNavigation.phtml", true)?>
