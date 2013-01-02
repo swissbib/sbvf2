@@ -1,0 +1,439 @@
+====================================================================================
+swissbib changelog
+====================================================================================
+
+
+
+------------------------------------------------------------------------------------
+[2009-10-04] bugfixes 1.0.3
+------------------------------------------------------------------------------------
+
+Dropdown
+--------
+Abfrage auf eine Variable die null sein kann
+
+- js/lib/dropdown.js
+-- exception handling ergänzt
+
+
+
+
+------------------------------------------------------------------------------------
+[2009-10-04] bugfixes 1.0.2
+------------------------------------------------------------------------------------
+
+
+[1] Zeilenumbruch Menu / Buttons
+--------------------------------
+Mehrzeilige Navigations Items.
+
+- css/screen/content.css
+- css/patches/patch_ie6.css
+-- navigation angepasst
+
+Flexible Buttons ohne Umbruch.
+- css/screen/content.css
+- css/patches/patch_ie6.css
+-- buttons angepasst
+
+HTML
+- home.html
+-- Button Text benötigt &nbsp; statt Leerschlag (IE bricht sonst um)
+<a class="button floatright" href="erweitertesuche.html" title="Recherche étendue">Recherche&nbsp;étendue</a>
+
+
+
+
+[2] Zeilenumbruch Facetten
+--------------------------
+Das » Zeichen erscheint auf neuer Zeile.
+
+- css/screen/content.css
+-- Facetten angepasst
+
+HTML
+- suchergebnis.html
+-- &nbsp; statt Leerschlag um den ungewollten Umbruch für alle Browser zu vermeiden / zu steuern
+<li><a href="#" title="Bach, Johann Sebastian (22)">Bach, Johann Sebastian (22)&nbsp;&raquo;</a></li>
+
+-- evtl. auch bereits vor Anzahl für sinnvolleren Umbruch
+<li><a href="#" title="Bach, Johann Sebastian (22)">Bach, Johann Sebastian&nbsp;(22)&nbsp;&raquo;</a></li>
+
+
+
+
+[3] Lange Namen bei Bezeichnungen der Bibliotheken
+--------------------------------------------------
+Dropdown kürzt die Bezeichnung.
+
+- js/lib/dropdown.js
+-- titel gekürzt (parameter gibt an auf wieviele)
+
+
+
+
+[4] Zeilenumbruch im Header der Vollanzeige
+-------------------------------------------
+Text kommt jetzt direkt auf 2. Zeile. 
+
+- css/screen/global.css
+-- detail angepasst (Abstand h4 Titel)
+
+HTML
+- Server
+-- Inhalt ausserhalb der "details"
+<div class="details">
+    <h4>Verfasser:</h4>
+    <p> Johannes Stankiewicz </p>
+    <h4>Ort, Jahr:</h4>
+    <p>St. Gallen, 2005</p>
+    <h4>Format:</h4>
+    <p><span class="icon_format_book_e">eBook</span></p>
+    <h4>URL: </h4>
+    <p> <a target="_blank" href="#"> Download (PDF) via World Wide Web für Universität St. Gallen</a> </p>
+	<h4>Inhalt:</h4>
+	<p>Das Shareholder-Value Konzept hat seit seiner Einführung in den 80er Jahren viel Lob, aber auch Kritik erfahren. </p>
+</div>
+
+
+
+
+
+[5] Label am falschen Ort in Erweiterte Suche
+---------------------------------------------
+IE 7
+
+HTML
+- Server
+-- IE benötigt <br/> Tag für neue Zeile (cleared das input float)
+
+<div id="advancedSearch_lemmatized_search" class="vertical">
+<input type="radio" class="radio" id="advancedsearch_searchterm_exact" checked="checked" value="false" name="linguistic"/>
+<label class="radiolabel" for="advancedsearch_searchterm_exact">genaue Suche</label><br/>
+<input type="radio" class="radio" id="advancedsearch_searchterm_related" value="true" name="linguistic"/>
+<label class="radiolabel" for="advancedsearch_searchterm_related">auch ähnliche Begriffe finden</label>
+</div>
+
+
+
+
+[6] Erweiterung des Pagers
+--------------------------
+Paging kann (bei Bedarf) mit first / last ergänzt werden (sonst einfach weglassen).
+
+- css/screen/content.css
+-- first, last ergänzt
+
+
+HTML
+- suchergebnis.html
+-- paging_first, paging_last links hinzugefügt
+
+<!-- paging -->
+<div class="paging">
+	<a href="#" title="zum Anfang" class="paging_first">zum Anfang</a>
+	<a href="#" title="zurück" class="paging_back">zurück</a>
+	<div class="paging_pages">
+	<ul><li><span>1</span></li><li><a href="#" title="Seite 2">2</a></li><li><a href="#" title="Seite 3">3</a></li><li><a href="#" title="Seite 4">4</a></li><li><a href="#" title="Seite 5">5</a></li></ul>
+	</div>
+	<a href="#" title="weiter" class="paging_forward">weiter</a>
+	<a href="#" title="zum Ende" class="paging_last">zum Ende</a>
+</div>
+
+
+
+[8] Filterbox Auswahl Institution
+---------------------------------
+Die Auswahlbox neben der einfachen Suche lässt sich nach Öffnen nicht durch nochmalicken Click auf den Header oder das Dreieck im Header (wie es das Standardverhalten wäre) schliessen.
+
+
+- js/lib/jquery.dropdown.js
+-- events für click auf Header ergänzt (bind, unbind)
+
+
+
+[11] Laden des Buttons Bibliotheksinformationen
+-----------------------------------------------
+Internet Explorer 7  Links nicht sichtbar.
+
+- css/screen/global.css
+-- bugfix (disappearing background bug)
+
+
+
+[10] Überbreite Bilder und Text im Header überschneiden sich
+------------------------------------------------------------
+Bilder per CSS verkleinert falls grösser als 130px breit.
+
+- css/screen/global.css
+- css/patches/patch_ie6.css
+-- max width / expression für bilder in add link
+
+
+
+[15] Sponsors
+-------------
+Integration Sponsoren.
+
+- css/screen/basemod.css
+-- sponsor bereich
+
+
+HTML
+- inhaltsseite.html
+-- div sponsor ergänzen
+<!-- begin: sponsors -->
+<div id="sponsors">
+<ul>
+  <li><a href="http://www.cus.ch" title="Swiss University Conference" target="_blank"><img src="resources/sponsors/sponsor_suk-cus.gif"/></a></li>
+  <li><a href="http://www.kub-cbu.ch" title="Konferenz der Universitätsbibliotheken der Schweiz (KUB)" target="_blank"><img src="resources/sponsors/sponsor_cdu-kub.gif"/></a></li>
+  <li><a href="http://www.crus.ch" title="Rektorkonferenz der Schweizer Universitäten" target="_blank"><img src="resources/sponsors/sponsor_crus.gif"/></a></li>
+  <li><a href="http://www.e-lib.ch" title="Elektronische Bibliothek Schweiz" target="_blank"><img src="resources/sponsors/sponsor_e-lib.gif"/></a></li>
+</ul>
+</div><!-- end: sponsors -->
+
+
+
+[16] Beta Logo
+---------------
+Produktion & Integration.
+
+- css/screen/basemod.css
+-- beta logo hinzugefügt (standard logo auskommentiert)
+
+
+
+
+
+------------------------------------------------------------------------------------
+[2009-09-09] release 1.0.1
+------------------------------------------------------------------------------------
+
+Modal schliessen
+----------------
+- js/swissbib.js
+-- methode initModal angepasst
+
+
+
+
+------------------------------------------------------------------------------------
+[2009-09-09] release 1.0
+------------------------------------------------------------------------------------
+
+
+[22] Browser Optimierung / Bugfixes
+-----------------------------------
+Alle Optimierungen/Bugfixes sind soweit möglich direkt in den normalen CSS Files 
+- nur was nicht direkt integriert werden kann in den patches.
+
+Getestete Browser:
+
+- Firefox 3.0.12 (Mac OS X)
+- Safari 4.0.3 (Mac OS X)
+- Opera 10.0 (Mac OS X)
+- Google Chrome (Windows Vista) 
+
+- IE6 (Windows 2K)
+- IE7 (Windows XP)
+- IE8 (Windows Vista) 
+
+
+- alle
+-- IE Patches integrieren
+
+<!--[if IE]>
+	<link href="style/css/patches/patch_ie.css" rel="stylesheet" type="text/css"/>
+<![endif]-->
+<!--[if IE 8]> 
+	<link href="style/css/patches/patch_ie8.css" rel="stylesheet" type="text/css"/>
+<![endif]-->
+<!--[if IE 7]> 
+	<link href="style/css/patches/patch_ie7.css" rel="stylesheet" type="text/css"/>
+<![endif]-->
+<!--[if IE 6]> 
+	<link href="style/css/patches/patch_ie6.css" rel="stylesheet" type="text/css"/>
+<![endif]-->
+
+
+- style/swissbib.css
+-- safari, opera patches importieren
+
+@import url(css/patches/patch_safari.css);
+@import url(css/patches/patch_opera.css);
+
+
+[12] Logo
+---------
+Logo ergänzt.
+
+
+[3] Icon Formate
+----------------
+CSS Klassen für die 15 Icons.
+
+- suchergebnis.html
+-- klassen für formate ergänzt in der Beispiel Liste unten
+
+
+[28] Autocomplete
+-----------------
+Property "server = (true | false)" in swissbib.js gibt an ob das Framework auf dem Server 
+oder als Prototyp läuft. 
+
+- swissbib.js
+-- property server setzten
+
+- jquery.enhancedsearch.js
+-- Server logik für autocomplete muss da dann noch umgesetzt werden
+
+
+[29] Fokus erweiterte Suche
+---------------------------
+In jQuery Plugin ergänzt.
+
+- jquery.enhancedsearch.js
+-- logik für erweiterte suche ergänzt
+
+
+
+
+
+------------------------------------------------------------------------------------
+[2009-09-03] release 0.6
+------------------------------------------------------------------------------------
+
+
+[1] Frbr Facetten
+-----------------
+Back Button ergänzt.
+
+- frbr.html
+-- tools komponente unterhalb liste eingefügt
+
+<!-- begin: tools -->
+<div class="tools floatbox">
+<!-- back -->
+<a href="#" title="Zurück" class="linkbutton icon_backto back"><span>Zurück</span></a>
+</div><!-- end: tools -->
+
+
+[6] Erweiterte Suche
+--------------------
+Erweiterte Suche als separate Seite mit Baukasten Formular.
+
+- alle
+-- jquery.ui.slider, jquery.info plugins hinzugefügt
+
+<script type="text/javascript" src="js/lib/jquery.info.js"></script>
+<script type="text/javascript" src="js/lib/jquery.ui.slider.js"></script>
+
+
+- erweitertesuche.html
+-- neu
+
+
+[19] Sucheinstellungen
+----------------------
+Neue Seite Sucheinstellungen mit Baukasten Formular.
+
+- sucheinstellungen.html
+-- neu
+
+
+[11] Bibliotheksadressen
+------------------------
+Icon www als anpassbarer Text.
+
+- detail.html
+-- reihenfolge miniactions umgestellt
+<ul class="miniactions boxed">
+  <li class="miniaction_favorite_remove"><a href="#" title="Bibliothek aus Favoriten entfernen">Bibliothek aus Favoriten entfernen</a></li>
+  <li class="miniaction_link"><a href="http://aleph.unibas.ch" class="externallink" title="Historisches Seminar">http://aleph.unibas.ch</a></li>
+</ul>
+
+
+
+[15] Inhaltsseite
+-----------------
+Bilder in 3 standard Formaten + Formulare ergänzt.
+
+- inhaltsseite.html
+-- bilder klassen: large, image, small
+-- bilder ergänzt (die müssen mit yaml in eine floatbox)
+
+<div class="floatbox">
+	<img src="resources/images/image_small.jpg" class="small"/>
+	...
+</div>
+
+-- formulare
+<form action="#" class="form">
+</form>
+
+
+[21] Subnavigation
+------------------
+Subnavigation mit Klasse statt id.
+
+- alle
+-- id ersetzten durch klasse
+
+<!-- begin: subnavigation -->
+<h3>Erweiterte Suche</h3>
+<div class="subnavigation">
+...
+</div><!-- end: subnavigation -->
+
+
+
+[16] Merkliste
+--------------
+Breadcrumb ergänzt.
+
+- merklisten.html, merkliste.html
+-- Breadcrumb ergänzen
+-- Klasse auf h1 setzten
+
+<!-- begin: breadcrumb -->
+<div id="breadcrumb">
+<h3 class="hidden">Sie befinden sich hier:</h3>
+<ul><li><a href="merklisten.html" title="Merklisten" class="notepad">Merklisten</a></li><li class="selected"><a title="Amerikanische Autoren der Moderne" href="merkliste.html">Amerikanische Autoren der Moderne</a></li></ul>
+</div><!-- end: breadcrumb -->
+<h1 class="nopadding">Amerikanische Autoren der Moderne</h1>
+
+
+[17] Tagging
+------------
+Tagging ergänzt.
+
+- detail.html
+-- tab tagging ergänzen
+
+<!-- begin: tab tags -->
+<div id="tab-tags" class="tab">
+...
+</div><!-- end: tab tags -->
+
+
+[18] Rezensionen
+----------------
+Rezensionen ergänzt.
+
+- detail.html
+-- tab tagging ergänzen
+
+<!-- begin: tab review -->
+<div id="tab-review" class="tab">
+...
+</div><!-- end: tab review -->
+
+
+[20] Suchhistorie
+-----------------
+Suchhistorie ergänzt.
+
+- suchhistorie.html
+-- neu
+
+
