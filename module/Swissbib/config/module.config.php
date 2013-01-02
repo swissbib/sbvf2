@@ -40,8 +40,10 @@ $config = array(
     ),
     'recorddriver_plugin_manager' => array(
         'invokables' => array(
-            'solrdefault' => 'Swissbib\RecordDriver\SolrDefault',
-            'solrmarc' => 'Swissbib\RecordDriver\SolrMarc',
+            'solrmarc' => 'Swissbib\RecordDriver\SbSolrMarc',
+            //'solrdefault' => 'VuFind\RecordDriver\SolrDefault',
+            //'solrmarc' => 'VuFind\RecordDriver\SolrMarc',
+
         ),
     ),
 
