@@ -56,5 +56,5 @@ class SbSolrMarc extends VFSolrMarc
     //    parent::setRawData($data);
     //}
 
-    //now you can start to override the desired functions or to create new functions used by the view-scrips
+    //now you can start to overwrite the desired functions or to create new functions used by the view-scrips
 }
