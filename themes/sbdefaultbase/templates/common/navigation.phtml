@@ -1,0 +1,68 @@
+<!--START of /nose/common/sbNavigation.jsp-->
+
+    <!-- language -->
+     <div id="meta">
+
+           <h3 class="hidden">Metanavigation</h3>
+
+           <ul>
+                <li class="nav_german selected">
+                    <a href="#">de</a>
+                </li>
+                <li class="nav_italian">
+                    <a href="<?=$this->url('home')?>" title="english">en</a>
+                </li>
+
+                <li class="nav_french">
+                    <a href="<?=$this->url('home')?>" title="français">fr</a>
+                </li>
+
+                <li class="nav_italian">
+                    <a href="<?=$this->url('home')?>" title="italiano">it</a>
+                </li>
+
+           </ul>
+
+    </div>
+
+    <!-- navigation  -->
+    <div id="navigation">
+        <h3 class="hidden">Hauptnavigation</h3>
+
+        <ul>
+            <li class="nav_home">
+                    <a href="<?=$this->url('home')?>" title="Einfache Suche">Home</a>
+            </li>
+            <li>
+                <a href="#">My swissbib</a>
+                <ul class="subnavigation">
+
+                    <li>
+                        <a href="<?=$this->url('home')?>" title="Merkliste">Merkliste</a>
+                    </li>
+                    <li>
+                        <a href="<?=$this->url('home')?>" title="Sucheinstellungen">Sucheinstellungen</a>
+                    </li>
+
+                    <li>
+                        <a href="<?=$this->url('home')?>" title="Rezensionen / Tags">Rezensionen / Tags</a>
+                    </li>
+                    <li>
+                        <a href="<?=$this->url('home')?>">Meine Favoriten</a>
+                    </li>
+
+                </ul>
+            </li>
+            <li>
+            <a href="<?=$this->url('home')?>" title="Über swissbib">Über swissbib</a>
+            </li>
+            <li>
+                <a href="javascript:UserVoice.showPopupWidget();" title="Feedback">Feedback</a>
+            </li>
+            <li class="nav_help">
+                <a href="<?=$this->url('home')?>" title="Hilfe">Hilfe</a>
+
+            </li>
+        </ul>
+    </div>
+<!--END of /nose/common/sbNavigation.jsp-->

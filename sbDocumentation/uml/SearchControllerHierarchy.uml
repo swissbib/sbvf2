@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>PHP</ID>
+  <OriginalElement>\VuFind\Controller\SearchController</OriginalElement>
+  <nodes>
+    <node x="565.5" y="148.0">\Zend\Mvc\Controller\AbstractController</node>
+    <node x="773.0" y="0.0">\Zend\ServiceManager\ServiceLocatorAwareInterface</node>
+    <node x="1188.0" y="15.0">\Zend\EventManager\EventManagerAwareInterface</node>
+    <node x="564.5" y="1553.0">\VuFind\Controller\AbstractSearch</node>
+    <node x="0.0" y="15.0">\Zend\Stdlib\DispatchableInterface</node>
+    <node x="370.1861537909783" y="1901.4137036494649">\VuFind\Controller\SearchController</node>
+    <node x="547.0" y="954.0">\VuFind\Controller\AbstractBase</node>
+    <node x="358.0" y="0.0">\Zend\Mvc\InjectApplicationEventInterface</node>
+    <node x="531.0" y="716.0">\Zend\Mvc\Controller\AbstractActionController</node>
+  </nodes>
+  <notes>
+    <note x="91.42665803937257" y="1711.414087693554">
+      <node>\VuFind\Controller\SearchController</node>
+      <value>Missing on this diagram:\nSwissbib/Controller/SearchController\nas subtype of \nVuFind/Controller/SearchController</value>
+      <edge>
+        <point x="-135.75" y="-274.0" />
+        <point x="423.25000000000006" y="1827.0" />
+        <point x="355.0" y="1827.0" />
+        <point x="0.0" y="53.0" />
+      </edge>
+    </note>
+  </notes>
+  <edges>
+    <edge source="\Zend\Mvc\Controller\AbstractController" target="\Zend\EventManager\EventManagerAwareInterface">
+      <point x="148.125" y="-259.0" />
+      <point x="911.125" y="128.0" />
+      <point x="1383.5" y="128.0" />
+      <point x="0.0" y="34.0" />
+    </edge>
+    <edge source="\VuFind\Controller\AbstractSearch" target="\VuFind\Controller\AbstractBase">
+      <point x="0.0" y="-124.5" />
+      <point x="0.0" y="274.5" />
+    </edge>
+    <edge source="\Zend\Mvc\Controller\AbstractController" target="\Zend\ServiceManager\ServiceLocatorAwareInterface">
+      <point x="49.375" y="-259.0" />
+      <point x="812.375" y="118.0" />
+      <point x="970.5" y="118.0" />
+      <point x="0.0" y="49.0" />
+    </edge>
+    <edge source="\Zend\Mvc\Controller\AbstractController" target="\Zend\Stdlib\DispatchableInterface">
+      <point x="-148.125" y="-259.0" />
+      <point x="614.875" y="128.0" />
+      <point x="169.0" y="128.0" />
+      <point x="0.0" y="34.0" />
+    </edge>
+    <edge source="\Zend\Mvc\Controller\AbstractActionController" target="\Zend\Mvc\Controller\AbstractController">
+      <point x="0.0" y="-94.0" />
+      <point x="0.0" y="259.0" />
+    </edge>
+    <edge source="\VuFind\Controller\SearchController" target="\VuFind\Controller\AbstractSearch">
+      <point x="135.75" y="-274.0" />
+      <point x="776.6092142188962" y="1836.2235734331152" />
+      <point x="774.5294667913939" y="1827.0" />
+      <point x="0.0" y="124.5" />
+    </edge>
+    <edge source="\VuFind\Controller\AbstractBase" target="\Zend\Mvc\Controller\AbstractActionController">
+      <point x="0.0" y="-274.5" />
+      <point x="0.0" y="94.0" />
+    </edge>
+    <edge source="\Zend\Mvc\Controller\AbstractController" target="\Zend\Mvc\InjectApplicationEventInterface">
+      <point x="-49.375" y="-259.0" />
+      <point x="713.625" y="118.0" />
+      <point x="555.5" y="118.0" />
+      <point x="0.0" y="49.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.8673427991886409" x="788.7446211412536" y="1568.8959307764267" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+  </Categories>
+</Diagram>
+
