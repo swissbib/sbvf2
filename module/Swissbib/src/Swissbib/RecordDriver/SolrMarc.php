@@ -60,16 +60,19 @@ class SolrMarc extends SbSolrDefault
     protected $marcRecord;
 
     /**
-     * Constructor.
+     * Set raw data to initialize the object.
      *
-     * @param array $data Raw data from the Solr index representing the record;
-     * Solr Record Model objects are normally constructed by Solr Record Driver
-     * objects using data passed in from a Solr Search Results object.
+     * @param mixed $data Raw data representing the record; Record Model
+     * objects are normally constructed by Record Driver objects using data
+     * passed in from a Search Results object.  In this case, $data is a Solr record
+     * array containing MARC data in the 'fullrecord' field.
+     *
+     * @return void
      */
-    public function __construct($data)
+    public function setRawData($data)
     {
-        // Call the parent's constructor...
-        parent::__construct($data);
+        // Call the parent's set method...
+        parent::setRawData($data);
 
         // Also process the MARC record:
         $marc = trim($data['fullrecord']);
@@ -173,20 +176,20 @@ class SolrMarc extends SbSolrDefault
         $biblioLevel = strtoupper($leader[7]);
 
         switch ($biblioLevel) {
-        case 'M': // Monograph
-            return "Monograph";
-        case 'S': // Serial
-            return "Serial";
-        case 'A': // Monograph Part
-            return "MonographPart";
-        case 'B': // Serial Part
-            return "SerialPart";
-        case 'C': // Collection
-            return "Collection";
-        case 'D': // Collection Part
-            return "CollectionPart";
-        default:
-            return "Unknown";
+            case 'M': // Monograph
+                return "Monograph";
+            case 'S': // Serial
+                return "Serial";
+            case 'A': // Monograph Part
+                return "MonographPart";
+            case 'B': // Serial Part
+                return "SerialPart";
+            case 'C': // Collection
+                return "Collection";
+            case 'D': // Collection Part
+                return "CollectionPart";
+            default:
+                return "Unknown";
         }
     }
 
@@ -291,6 +294,20 @@ class SolrMarc extends SbSolrDefault
     }
 
     /**
+     * Get an array of newer titles for the record.
+     *
+     * @return array
+     */
+    public function getNewerTitles()
+    {
+        // If the MARC links are being used, return blank array
+        $config = ConfigReader::getConfig();
+        $fieldsNames = isset($config->Record->marc_links)
+            ? array_map('trim', explode(',', $config->Record->marc_links)) : array();
+        return in_array('785', $fieldsNames) ? array() : parent::getNewerTitles();
+    }
+
+    /**
      * Get the item's places of publication.
      *
      * @return array
@@ -317,6 +334,20 @@ class SolrMarc extends SbSolrDefault
         }
 
         return $times;
+    }
+
+    /**
+     * Get an array of previous titles for the record.
+     *
+     * @return array
+     */
+    public function getPreviousTitles()
+    {
+        // If the MARC links are being used, return blank array
+        $config = ConfigReader::getConfig();
+        $fieldsNames = isset($config->Record->marc_links)
+            ? array_map('trim', explode(',', $config->Record->marc_links)) : array();
+        return in_array('780', $fieldsNames) ? array() : parent::getPreviousTitles();
     }
 
     /**
@@ -554,8 +585,16 @@ class SolrMarc extends SbSolrDefault
     }
 
     /**
-     * Return an associative array of URLs associated with this record (key = URL,
-     * value = description).
+     * Return an array of associative URL arrays with one or more of the following
+     * keys:
+     *
+     * <li>
+     *   <ul>desc: URL description text to display (optional)</ul>
+     *   <ul>url: fully-formed URL (required if 'route' is absent)</ul>
+     *   <ul>route: VuFind route to build URL with (required if 'url' is absent)</ul>
+     *   <ul>routeParams: Parameters for route (optional)</ul>
+     *   <ul>queryString: Query params to append after building route (optional)</ul>
+     * </li>
      *
      * @return array
      */
@@ -617,31 +656,56 @@ class SolrMarc extends SbSolrDefault
      */
     public function getAllRecordLinks()
     {
+        // Load configurations:
         $config = ConfigReader::getConfig();
-
         $fieldsNames = isset($config->Record->marc_links)
             ? explode(',', $config->Record->marc_links) : array();
+        $useVisibilityIndicator
+            = isset($config->Record->marc_links_use_visibility_indicator)
+            ? $config->Record->marc_links_use_visibility_indicator : true;
+
         $retVal = array();
         foreach ($fieldsNames as $value) {
             $value = trim($value);
             $fields = $this->marcRecord->getFields($value);
             if (!empty($fields)) {
                 foreach ($fields as $field) {
-                    $indicator = $field->getIndicator('2');
-                    switch ($value) {
-                    case '780':
-                        if ($indicator == '0' || $indicator == '1'
-                            || $indicator == '5'
-                        ) {
-                            $value .= '_' . $indicator;
+                    // Check to see if we should display at all
+                    if ($useVisibilityIndicator) {
+                        $visibilityIndicator = $field->getIndicator('1');
+                        if ($visibilityIndicator == '1') {
+                            continue;
                         }
-                        break;
-                    case '785':
-                        if ($indicator == '0' || $indicator == '7') {
-                            $value .= '_' . $indicator;
-                        }
-                        break;
                     }
+                    // The relationship type is one of the following and there is a
+                    // 580 field, the 580 field should be shown instead see:
+                    //     http://www.loc.gov/marc/bibliographic/bd580.html
+                    $has580 = $this->marcRecord->getFields('580');
+
+                    $relationshipIndicator = $field->getIndicator('2');
+                    if ($has580
+                        && (($value == '780') && ($relationshipIndicator == '4'))
+                        || (($value == '785') && (($relationshipIndicator == '6')
+                            || ($relationshipIndicator =='7')))
+                    ) {
+                        continue;
+                    }
+
+                    // Assign notes based on the relationship type
+                    switch ($value) {
+                        case '780':
+                            if (in_array($relationshipIndicator, range('0', '7'))) {
+                                $value .= '_' . $relationshipIndicator;
+                            }
+                            break;
+                        case '785':
+                            if (in_array($relationshipIndicator, range('0', '8'))) {
+                                $value .= '_' . $relationshipIndicator;
+                            }
+                            break;
+                    }
+
+                    // Get data for field
                     $tmp = $this->getFieldData($field, $value);
                     if (is_array($tmp)) {
                         $retVal[] = $tmp;
@@ -666,44 +730,102 @@ class SolrMarc extends SbSolrDefault
      */
     protected function getFieldData($field, $value)
     {
-        $labelPrfx   = 'note_';
+        // Make sure that there is a t field to be displayed:
+        if ($title = $field->getSubfield('t')) {
+            $title = $title->getData();
+        } else {
+            return;
+        }
 
-        // There are two possible ways we may want to link to a record -- either
-        // we will have a raw bibliographic record in subfield w, or else we will
-        // have an OCLC number prefixed by (OCoLC).  If we have both, we want to
-        // favor the bib number over the OCLC number.  If we have an unrecognized
-        // parenthetical prefix to the number, we should simply ignore it.
-        $bib = $oclc = '';
+        $config = ConfigReader::getConfig();
+        $linkTypeSetting = isset($config->Record->marc_links_link_types)
+            ? $config->Record->marc_links_link_types : 'id,oclc,dlc,isbn,issn,title';
+        $linkTypes = explode(',', $linkTypeSetting);
         $linkFields = $field->getSubfields('w');
-        foreach ($linkFields as $current) {
-            $text = $current->getData();
-            // Extract parenthetical prefixes:
-            if (preg_match('/\(([^)]+)\)(.+)/', $text, $matches)) {
-                // Is it an OCLC number?
-                if ($matches[1] == 'OCoLC') {
-                    $oclc = $matches[2];
-                }
-            } else {
-                // No parenthetical prefix found -- assume raw bib number:
-                $bib = $text;
+
+        // Run through the link types specified in the config.
+        // For each type, check field for reference
+        // If reference found, exit loop and go straight to end
+        // If no reference found, check the next link type instead
+        foreach ($linkTypes as $linkType) {
+            switch (trim($linkType)){
+                case 'oclc':
+                    foreach ($linkFields as $current) {
+                        if ($oclc = $this->getIdFromLinkingField($current, 'OCoLC')) {
+                            $link = array('type' => 'oclc', 'value' => $oclc);
+                        }
+                    }
+                    break;
+                case 'dlc':
+                    foreach ($linkFields as $current) {
+                        if ($dlc = $this->getIdFromLinkingField($current, 'DLC', true)) {
+                            $link = array('type' => 'dlc', 'value' => $dlc);
+                        }
+                    }
+                    break;
+                case 'id':
+                    foreach ($linkFields as $current) {
+                        if ($bibLink = $this->getIdFromLinkingField($current)) {
+                            $link = array('type' => 'bib', 'value' => $bibLink);
+                        }
+                    }
+                    break;
+                case 'isbn':
+                    if ($isbn = $field->getSubfield('z')) {
+                        $link = array(
+                            'type' => 'isn', 'value' => trim($isbn->getData()),
+                            'exclude' => $this->getUniqueId()
+                        );
+                    }
+                    break;
+                case 'issn':
+                    if ($issn = $field->getSubfield('x')) {
+                        $link = array(
+                            'type' => 'isn', 'value' => trim($issn->getData()),
+                            'exclude' => $this->getUniqueId()
+                        );
+                    }
+                    break;
+                case 'title':
+                    $link = array('type' => 'title', 'value' => $title);
+                    break;
+            }
+            // Exit loop if we have a link
+            if (isset($link)) {
+                break;
             }
         }
+        // Make sure we have something to display:
+        return isset($link)
+            ? array('title' => 'note_' . $value, 'value' => $title, 'link'  => $link)
+            : false;
+    }
 
-        // Check which link type we found in the code above... and fail if we
-        // found nothing!
-        if (!empty($bib)) {
-            $link = array('type' => 'bib', 'value' => $bib);
-        } else if (!empty($oclc)) {
-            $link = array('type' => 'oclc', 'value' => $oclc);
-        } else {
-            return false;
+    /**
+     * Returns an id extracted from the identifier subfield passed in
+     *
+     * @param \File_MARC_Subfield $idField MARC field containing id information
+     * @param string              $prefix  Prefix to search for in id field
+     * @param bool                $raw     Return raw match, or normalize?
+     *
+     * @return string|bool                 ID on success, false on failure
+     */
+    protected function getIdFromLinkingField($idField, $prefix = null, $raw = false)
+    {
+        $text = $idField->getData();
+        if (preg_match('/\(([^)]+)\)(.+)/', $text, $matches)) {
+            // If prefix matches, return ID:
+            if ($matches[1] == $prefix) {
+                // Special case -- LCCN should not be stripped:
+                return $raw
+                    ? $matches[2]
+                    : trim(str_replace(range('a', 'z'), '', ($matches[2])));
+            }
+        } else if ($prefix == null) {
+            // If no prefix was given or found, we presume it is a raw bib record
+            return $text;
         }
-
-        return array(
-            'title' => $labelPrfx.$value,
-            'value' => $field->getSubfield('t')->getData(),
-            'link'  => $link
-        );
+        return false;
     }
 
     /**
@@ -788,7 +910,7 @@ class SolrMarc extends SbSolrDefault
             $xml->record->addAttribute(
                 'xsi:schemaLocation',
                 'http://www.loc.gov/MARC21/slim ' .
-                'http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd',
+                    'http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd',
                 'http://www.w3.org/2001/XMLSchema-instance'
             );
             $xml->record->addAttribute('type', 'Bibliographic');
@@ -800,6 +922,17 @@ class SolrMarc extends SbSolrDefault
     }
 
     /**
+     * Get the ILS connection.
+     *
+     * @return \VuFind\ILS\Connection
+     */
+    protected function getILS()
+    {
+        return $this->getServiceLocator()->getServiceLocator()
+            ->get('VuFind\ILSConnection');
+    }
+
+    /**
      * Get an array of information about record holdings, obtained in real-time
      * from the ILS.
      *
@@ -807,9 +940,9 @@ class SolrMarc extends SbSolrDefault
      *
      * @return array
      */
-    public function getRealTimeHoldings($account)
+    public function getRealTimeHoldings(\VuFind\Auth\Manager $account)
     {
-        $holdLogic = new HoldLogic($account);
+        $holdLogic = new HoldLogic($account, $this->getILS());
         return $holdLogic->getHoldings($this->getUniqueID());
     }
 
@@ -823,9 +956,7 @@ class SolrMarc extends SbSolrDefault
     {
         // Get Acquisitions Data
         try {
-            return ConnectionManager::connectToCatalog()->getPurchaseHistory(
-                $this->getUniqueID()
-            );
+            return $this->getILS()->getPurchaseHistory($this->getUniqueID());
         } catch (ILSException $e) {
             return array();
         }
@@ -838,43 +969,19 @@ class SolrMarc extends SbSolrDefault
      *
      * @return mixed A url if a hold is possible, boolean false if not
      */
-    public function getRealTimeTitleHold($account)
+    public function getRealTimeTitleHold(\VuFind\Auth\Manager $account)
     {
         $biblioLevel = $this->getBibliographicLevel();
         if ("monograph" == strtolower($biblioLevel)
             || stristr("part", $biblioLevel)
         ) {
             if (ILSConnection::getTitleHoldsMode() != "disabled") {
-                $holdLogic = new TitleHoldLogic($account);
+                $holdLogic = new TitleHoldLogic($account, $this->getILS());
                 return $holdLogic->getHold($this->getUniqueID());
             }
         }
 
         return false;
-    }
-
-    /**
-     * Returns an associative array (action => description) of record tabs supported
-     * by the data.
-     *
-     * @return array
-     */
-    public function getTabs()
-    {
-        $tabs = parent::getTabs();
-        // Check if we need to disable the holdings tab:
-        if (isset($tabs['Holdings'])) {
-            $config = ConfigReader::getConfig();
-            if (isset($config->Site->hideHoldingsTabWhenEmpty)
-                && $config->Site->hideHoldingsTabWhenEmpty
-            ) {
-                $catalog = ConnectionManager::connectToCatalog();
-                if (!$catalog->hasHoldings($this->getUniqueID())) {
-                    unset($tabs['Holdings']);
-                }
-            }
-        }
-        return $tabs;
     }
 
     /**
