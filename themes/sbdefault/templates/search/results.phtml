@@ -1,6 +1,6 @@
 <?
     // Set up page title:
-    $lookfor = $this->results->getDisplayQuery();
+    $lookfor = $this->results->getParams()->getDisplayQuery();
     if (isset($this->overrideTitle)) {
         $this->headTitle($this->overrideTitle);
     } else {
@@ -26,7 +26,7 @@
 
 
 
-<h1>Anzahl Treffer fuer <cite><?=$this->results->getDisplayQuery()?></cite><?=$this->results->getResultTotal()?></h1>
+<h1>Anzahl Treffer fuer <cite><?=$this->results->getParams()->getDisplayQuery()?></cite><?=$this->results->getResultTotal()?></h1>
 
 <form id="RefineHitListForm" method="get" action="" class="RefineHitListForm">
     <input type="hidden" name="methodToCall" value="refineHitList" />
@@ -57,7 +57,7 @@
         </thead>
         <tbody>
 
-        <?=$this->render('search/list-' . $this->results->getView() . '.phtml')?>
+        <?=$this->render('search/list-' . $this->results->getParams()->getView() . '.phtml')?>
 
         </tbody>
         </table>

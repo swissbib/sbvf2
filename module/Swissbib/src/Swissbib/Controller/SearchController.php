@@ -89,23 +89,26 @@ class SearchController extends VFSearchController
             return $this->redirectToSavedSearch($savedId);
         }
 
-        $paramsClass = $this->getParamsClass();
-        $params = new $paramsClass();
+        $manager = $this->getSearchManager();
+        $params = $manager->setSearchClassId($this->searchClassId)->getParams();
         $params->recommendationsEnabled(true);
 
         // Send both GET and POST variables to search class:
         $params->initFromRequest(
             new Parameters(
                 $this->getRequest()->getQuery()->toArray()
-                + $this->getRequest()->getPost()->toArray()
+                    + $this->getRequest()->getPost()->toArray()
             )
         );
 
         // Attempt to perform the search; if there is a problem, inspect any Solr
         // exceptions to see if we should communicate to the user about them.
         try {
-            $resultsClass = $this->getResultsClass();
-            $results = new $resultsClass($params);
+            // We need to reset the searchClassId here because it may have been
+            // changed if recommendation modules initialized by the params object
+            // manipulated the shared search manager object.
+            $results = $manager->setSearchClassId($this->searchClassId)
+                ->getResults($params);
 
             // Explicitly execute search within controller -- this allows us to
             // catch exceptions more reliably:
@@ -120,18 +123,21 @@ class SearchController extends VFSearchController
             // search.
             $view->results = $results;
             if ($this->rememberSearch) {
-                $searchUrl = $this->url()->fromRoute($results->getSearchAction())
-                    . $results->getUrl()->getParams(false);
+                $searchUrl = $this->url()->fromRoute(
+                    $results->getOptions()->getSearchAction()
+                ) . $results->getUrlQuery()->getParams(false);
                 Memory::rememberSearch($searchUrl);
             }
 
             // Add to search history:
             if ($this->saveToHistory) {
                 $user = $this->getUser();
-                $sessId = $this->getServiceLocator()->get('SessionManager')->getId();
-                $history = new SearchTable();
+                $sessId = $this->getServiceLocator()->get('VuFind\SessionManager')
+                    ->getId();
+                $history = $this->getTable('Search');
                 $history->saveSearch(
-                    $results, $sessId, $history->getSearches(
+                    $this->getSearchManager(), $results, $sessId,
+                    $history->getSearches(
                         $sessId, isset($user->id) ? $user->id : null
                     )
                 );
@@ -150,23 +156,23 @@ class SearchController extends VFSearchController
                 // We need to create and process an "empty results" object to
                 // ensure that recommendation modules and templates behave
                 // properly when displaying the error message.
-                $view->results = new \VuFind\Search\EmptySet\Results($params);
+                $view->results = $this->getSearchManager()
+                    ->setSearchClassId('EmptySet')->getResults($params);
                 $view->results->performAndProcessSearch();
             } else {
                 // Unexpected error -- let's throw this up to the next level.
                 throw $e;
             }
         }
-        /* TODO
         // Save statistics:
         if ($this->logStatistics) {
-            $statController = new VF_Statistics_Search();
+            $statController = new \VuFind\Statistics\Search();
+            $statController->setServiceLocator($this->getServiceLocator());
             $statController->log($results, $this->getRequest());
         }
-         */
 
         // Special case: If we're in RSS view, we need to render differently:
-        if ($view->results->getView() == 'rss') {
+        if ($view->results->getParams()->getView() == 'rss') {
             $response = $this->getResponse();
             $response->getHeaders()->addHeaderLine('Content-type', 'text/xml');
             $feed = $this->getViewRenderer()->plugin('resultfeed');

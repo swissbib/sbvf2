@@ -8,7 +8,7 @@
         <h3>Ihre Suche</h3>
         <div class="filters">
             <p><cite>Alle Felder = ???</cite></p>
-            <? $filterList = $this->results->getFilterList(true); if (!empty($filterList)): ?>
+            <? $filterList = $this->results->getParams()->getFilterList(true); if (!empty($filterList)): ?>
                 <? foreach ($filterList as $field => $filters): ?>
                   <? foreach ($filters as $filter): ?>
                     <?
@@ -64,9 +64,14 @@
                                 <? ++$i;?>
 
                                 <li>
-                                    <a href="<?=$this->url().$this->results->getUrl()->addFacet($title, $thisFacet['value'])?>" title="Hamlet">
-                                        <?=$this->escape($thisFacet['displayText'])?> (<?=$this->escape($thisFacet['count'])?>)
-                                       </a>
+
+                                    <!--
+                                    guenterh local - in Bearbeitung
+                                    Problem mit geänderten Methodenaufrufen
+                                    nach Umbau des search objects
+
+                                     -->
+
                                 </li>
 
                             <? endforeach; ?>
