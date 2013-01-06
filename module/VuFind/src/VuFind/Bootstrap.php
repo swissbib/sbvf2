@@ -27,10 +27,7 @@
  */
 namespace VuFind;
 use VuFind\Config\Reader as ConfigReader,
-    VuFind\Theme\Initializer as ThemeInitializer, Zend\Console\Console,
-    Zend\Mvc\MvcEvent, Zend\Mvc\Router\Http\RouteMatch,
-    Zend\ServiceManager\Config as ServiceManagerConfig,
-    Zend\ServiceManager\ServiceLocatorAwareInterface;
+    Zend\Console\Console, Zend\Mvc\MvcEvent, Zend\Mvc\Router\Http\RouteMatch;
 
 /**
  * VuFind Bootstrapper
@@ -100,7 +97,7 @@ class Bootstrap
                 $configKey = strtolower(str_replace('\\', '_', $ns))
                     . '_plugin_manager';
                 return new $className(
-                    new ServiceManagerConfig($config[$configKey])
+                    new \Zend\ServiceManager\Config($config[$configKey])
                 );
             };
             $serviceManager->setFactory($serviceName, $factory);
@@ -304,14 +301,14 @@ class Bootstrap
 
         // Attach template injection configuration to the route event:
         $this->events->attach(
-            'route', array('VuFind\Theme\Initializer', 'configureTemplateInjection')
+            'route', array('VuFindTheme\Initializer', 'configureTemplateInjection')
         );
 
         // Attach remaining theme configuration to the dispatch event at high
         // priority (TODO: use priority constant once defined by framework):
-        $config =& $this->config;
+        $config = $this->config->Site;
         $callback = function ($event) use ($config) {
-            $theme = new ThemeInitializer($config, $event);
+            $theme = new \VuFindTheme\Initializer($config, $event);
             $theme->init();
         };
         $this->events->attach('dispatch.error', $callback, 10000);
