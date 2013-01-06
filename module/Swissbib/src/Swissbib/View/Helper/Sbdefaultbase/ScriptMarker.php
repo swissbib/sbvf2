@@ -31,9 +31,8 @@
  */
 
 
-namespace Swissbib\Theme\Sbdefaultbase\Helper;
-use VuFind\Theme\Tools as ThemeTools,
-    Zend\View\Helper\AbstractHelper;
+namespace Swissbib\View\Helper\Sbdefaultbase;
+use Zend\View\Helper\AbstractHelper;
 
 
 /**
