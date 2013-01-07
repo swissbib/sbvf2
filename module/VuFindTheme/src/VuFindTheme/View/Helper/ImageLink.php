@@ -1,6 +1,6 @@
 <?php
 /**
- * Cart view helper
+ * Image link view helper (extended for VuFind's theme system)
  *
  * PHP version 5
  *
@@ -23,45 +23,56 @@
  * @package  View_Helpers
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org/wiki/building_a_recommendations_module Wiki
+ * @link     http://www.vufind.org  Main Page
  */
-namespace VuFind\View\Helper\Root;
+namespace VuFindTheme\View\Helper;
 
 /**
- * Cart view helper
+ * Image link view helper (extended for VuFind's theme system)
  *
  * @category VuFind2
  * @package  View_Helpers
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org/wiki/building_a_recommendations_module Wiki
+ * @link     http://www.vufind.org  Main Page
  */
-class Cart extends \Zend\View\Helper\AbstractHelper
+class ImageLink extends \Zend\View\Helper\AbstractHelper
 {
     /**
-     * VuFind Cart Model
+     * Theme information service
      *
-     * @var \VuFind\Cart
+     * @var \VuFindTheme\ThemeInfo
      */
-    protected $cart;
+    protected $themeInfo;
 
     /**
      * Constructor
      *
-     * @param \VuFind\Cart $cart Cart model
+     * @param \VuFindTheme\ThemeInfo $themeInfo Theme information service
      */
-    public function __construct(\VuFind\Cart $cart)
+    public function __construct(\VuFindTheme\ThemeInfo $themeInfo)
     {
-        $this->cart = $cart;
+        $this->themeInfo = $themeInfo;
     }
 
     /**
-     * Get the Cart object from the service manager.
+     * Returns an image path according the configured theme
      *
-     * @return \VuFind\Cart
+     * @param string $image image name/path
+     *
+     * @return string path, null if image not found
      */
-    public function __invoke()
+    public function __invoke($image)
     {
-        return $this->cart;
+        // Normalize href to account for themes:
+        $relPath = 'images/' . $image;
+        $currentTheme = $this->themeInfo->findContainingTheme($relPath);
+
+        if (is_null($currentTheme)) {
+            return null;
+        }
+
+        $urlHelper = $this->getView()->plugin('url');
+        return $urlHelper('home') . "themes/$currentTheme/" . $relPath;
     }
 }

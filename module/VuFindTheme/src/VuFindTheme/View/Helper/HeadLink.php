@@ -1,6 +1,6 @@
 <?php
 /**
- * Base class for helpers that pull resources from the service locator.
+ * Head link view helper (extended for VuFind's theme system)
  *
  * PHP version 5
  *
@@ -25,13 +25,10 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/building_a_recommendations_module Wiki
  */
-namespace VuFind\View\Helper\Root;
-use Zend\ServiceManager\ServiceLocatorInterface,
-    Zend\ServiceManager\ServiceLocatorAwareInterface,
-    Zend\View\Helper\AbstractHelper;
+namespace VuFindTheme\View\Helper;
 
 /**
- * Base class for helpers that pull resources from the service locator.
+ * Head link view helper (extended for VuFind's theme system)
  *
  * @category VuFind2
  * @package  View_Helpers
@@ -39,38 +36,44 @@ use Zend\ServiceManager\ServiceLocatorInterface,
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/building_a_recommendations_module Wiki
  */
-abstract class AbstractServiceLocator extends AbstractHelper
-    implements ServiceLocatorAwareInterface
+class HeadLink extends \Zend\View\Helper\HeadLink
 {
     /**
-     * Service locator
+     * Theme information service
      *
-     * @var ServiceLocatorInterface
+     * @var \VuFindTheme\ThemeInfo
      */
-    protected $serviceLocator;
+    protected $themeInfo;
 
     /**
-     * Set the service locator.
+     * Constructor
      *
-     * @param ServiceLocatorInterface $serviceLocator Locator to register
-     *
-     * @return AbstractServiceLocator
+     * @param \VuFindTheme\ThemeInfo $themeInfo Theme information service
      */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    public function __construct(\VuFindTheme\ThemeInfo $themeInfo)
     {
-        // The service locator passed in here is a Zend\View\HelperPluginManager;
-        // we want to pull out the main Zend\ServiceManager\ServiceManager.
-        $this->serviceLocator = $serviceLocator->getServiceLocator();
-        return $this;
+        parent::__construct();
+        $this->themeInfo = $themeInfo;
     }
 
     /**
-     * Get the service locator.
+     * Create HTML link element from data item
      *
-     * @return \Zend\ServiceManager\ServiceLocatorInterface
+     * @param stdClass $item data item
+     *
+     * @return string
      */
-    public function getServiceLocator()
+    public function itemToString(\stdClass $item)
     {
-        return $this->serviceLocator;
+        // Normalize href to account for themes, then call the parent class:
+        $relPath = 'css/' . $item->href;
+        $currentTheme = $this->themeInfo->findContainingTheme($relPath);
+
+        if (!empty($currentTheme)) {
+            $urlHelper = $this->getView()->plugin('url');
+            $item->href = $urlHelper('home') . "themes/$currentTheme/" . $relPath;
+        }
+
+        return parent::itemToString($item);
     }
 }
