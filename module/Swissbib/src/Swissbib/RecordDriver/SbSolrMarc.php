@@ -49,12 +49,12 @@ use VuFind\RecordDriver\SolrMarc as VFSolrMarc;
 class SbSolrMarc extends VFSolrMarc
 {
 
-    //public function setRawData($data)
-    //{
-    //    //only for test purposes within this type to see if the type is correct instantiated
+    public function setRawData($data)
+    {
+        //only for test purposes within this type to see if the type is correct instantiated
         // Call the parent's set method...
-    //    parent::setRawData($data);
-    //}
+        parent::setRawData($data);
+    }
 
     //now you can start to overwrite the desired functions or to create new functions used by the view-scrips
 }
