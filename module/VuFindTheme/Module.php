@@ -61,6 +61,7 @@ class Module
      */
     public function getServiceConfig()
     {
+        // @codingStandardsIgnoreStart
         return array(
             'factories' => array(
                 'VuFindTheme\ThemeInfo' => function ($sm) {
@@ -74,6 +75,7 @@ class Module
                 'VuFindTheme\ResourceContainer' => 'VuFindTheme\ResourceContainer',
             ),
         );
+        // @codingStandardsIgnoreEnd
     }
 
     /**
@@ -83,6 +85,7 @@ class Module
      */
     public function getViewHelperConfig()
     {
+        // @codingStandardsIgnoreStart
         return array(
             'factories' => array(
                 'headlink' => function ($sm) {
@@ -117,6 +120,7 @@ class Module
                 },
             ),
         );
+        // @codingStandardsIgnoreEnd
     }
 
     /**

@@ -20,8 +20,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * @category Http
- * @package  Service
+ * @category VuFind2
+ * @package  Http
  * @author   David Maus <maus@hab.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://github.com/dmj/vf2-HTTP
@@ -32,8 +32,8 @@ namespace VuFindHttp;
 /**
  * VuFind HTTP service.
  *
- * @category Http
- * @package  Service
+ * @category VuFind2
+ * @package  Http
  * @author   David Maus <maus@hab.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://github.com/dmj/vf2-search-subsystem
@@ -56,6 +56,13 @@ class HttpService implements HttpServiceInterface
      * @var array
      */
     protected $proxyConfig;
+
+    /**
+     * Default adapter
+     *
+     * @var \Zend\Http\Client\Adapter\AdapterInterface
+     */
+    protected $defaultAdapter = null;
 
     /**
      * Constructor.
@@ -112,7 +119,8 @@ class HttpService implements HttpServiceInterface
                 $url .= '?' . $query;
             }
         }
-        $client = $this->createClient($url, \Zend\Http\Request::METHOD_GET, $timeout);
+        $client
+            = $this->createClient($url, \Zend\Http\Request::METHOD_GET, $timeout);
         return $this->send($client);
     }
 
@@ -126,11 +134,15 @@ class HttpService implements HttpServiceInterface
      *
      * @return \Zend\Http\Response
      */
-    public function post ($url, $body = null, $type = 'application/octet-stream', $timeout = null)
-    {
-        $client = $this->createClient($url, \Zend\Http\Request::METHOD_POST, $timeout);
+    public function post ($url, $body = null, $type = 'application/octet-stream',
+        $timeout = null
+    ) {
+        $client
+            = $this->createClient($url, \Zend\Http\Request::METHOD_POST, $timeout);
         $client->setRawBody($body);
-        $client->setHeaders(array('Content-Type' => $type, 'Content-Length' => strlen($body)));
+        $client->setHeaders(
+            array('Content-Type' => $type, 'Content-Length' => strlen($body))
+        );
         return $this->send($client);
     }
 
@@ -150,6 +162,19 @@ class HttpService implements HttpServiceInterface
     }
 
     /**
+     * Set a default HTTP adapter (primarily for testing purposes).
+     *
+     * @param \Zend\Http\Client\Adapter\AdapterInterface $adapter Adapter
+     *
+     * @return void
+     */
+    public function setDefaultAdapter(
+        \Zend\Http\Client\Adapter\AdapterInterface $adapter
+    ) {
+        $this->defaultAdapter = $adapter;
+    }
+
+    /**
      * Return a new HTTP client.
      *
      * @param string $url     Target URL
@@ -158,10 +183,14 @@ class HttpService implements HttpServiceInterface
      *
      * @return \Zend\Http\Client
      */
-    public function createClient ($url = null, $method = \Zend\Http\Request::METHOD_GET, $timeout = null)
-    {
+    public function createClient ($url = null,
+        $method = \Zend\Http\Request::METHOD_GET, $timeout = null
+    ) {
         $client = new \Zend\Http\Client();
         $client->setMethod($method);
+        if (null !== $this->defaultAdapter) {
+            $client->setAdapter($this->defaultAdapter);
+        }
         if (null !== $url) {
             $client->setUri($url);
         }
