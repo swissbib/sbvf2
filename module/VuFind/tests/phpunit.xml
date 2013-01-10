@@ -1,5 +1,8 @@
 <phpunit bootstrap="./bootstrap.php" backupGlobals="false">
   <testsuites>
+    <testsuite name="VuFindHttp">
+      <directory>../../VuFindHttp/tests/unit-tests/src</directory>
+    </testsuite>
     <testsuite name="VuFindUnit">
       <directory>unit-tests/src</directory>
     </testsuite>
@@ -11,6 +14,9 @@
   <filter>
     <whitelist addUncoveredFilesFromWhitelist="true">
       <directory suffix=".php">../src</directory>
+      <directory suffix=".php">../../VuFindConsole/src</directory>
+      <directory suffix=".php">../../VuFindHttp/src</directory>
+      <directory suffix=".php">../../VuFindTheme/src</directory>
     </whitelist>
   </filter>
 </phpunit>
