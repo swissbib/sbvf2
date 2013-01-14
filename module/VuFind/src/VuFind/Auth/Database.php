@@ -25,10 +25,10 @@
  * @author   Franck Borel <franck.borel@gbv.de>
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org/wiki/building_an_authentication_handler Wiki
+ * @link     http://vufind.org/wiki/vufind2:authentication_handlers Wiki
  */
 namespace VuFind\Auth;
-use VuFind\Exception\Auth as AuthException;
+use VuFind\Exception\Auth as AuthException, Zend\Crypt\Password\Bcrypt;
 
 /**
  * Database authentication class
@@ -39,7 +39,7 @@ use VuFind\Exception\Auth as AuthException;
  * @author   Franck Borel <franck.borel@gbv.de>
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org/wiki/building_an_authentication_handler Wiki
+ * @link     http://vufind.org/wiki/vufind2:authentication_handlers Wiki
  */
 class Database extends AbstractBase
 {
@@ -72,6 +72,17 @@ class Database extends AbstractBase
 
         // If we got this far, the login was successful:
         return $user;
+    }
+
+    /**
+     * Is password hashing enabled?
+     *
+     * @return bool
+     */
+    protected function passwordHashingEnabled()
+    {
+        return isset($this->config->Authentication->hash_passwords)
+            ? $this->config->Authentication->hash_passwords : false;
     }
 
     /**
@@ -127,13 +138,18 @@ class Database extends AbstractBase
         // If we got this far, we're ready to create the account:
         $data = array(
             'username'  => $params['username'],
-            'password'  => $params['password'],
             'firstname' => $params['firstname'],
             'lastname'  => $params['lastname'],
             'email'     => $params['email'],
             'created'   => date('Y-m-d h:i:s')
         );
 
+        if ($this->passwordHashingEnabled()) {
+            $bcrypt = new Bcrypt();
+            $data['pass_hash'] = $bcrypt->create($params['password']);
+        } else {
+            $data['password'] = $params['password'];
+        }
         // Create the row and send it back to the caller:
         $table->insert($data);
         return $table->getByUsername($params['username'], false);
@@ -143,12 +159,27 @@ class Database extends AbstractBase
      * Check that the user's password matches the provided value.
      *
      * @param string $password Password to check.
-     * @param object $userRow  The user row.
+     * @param object $userRow  The user row.  We pass this instead of the password
+     * because we may need to check different values depending on the password
+     * hashing configuration.
      *
      * @return bool
      */
     protected function checkPassword($password, $userRow)
     {
+        // Special case: hashing enabled:
+        if ($this->passwordHashingEnabled()) {
+            if ($userRow->password) {
+                throw new \VuFind\Exception\PasswordSecurity(
+                    'Unexpected unencrypted password found in database'
+                );
+            }
+
+            $bcrypt = new Bcrypt();
+            return $bcrypt->verify($password, $userRow->pass_hash);
+        }
+
+        // Default case: unencrypted passwords:
         return $password == $userRow->password;
     }
 

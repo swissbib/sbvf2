@@ -26,9 +26,12 @@
  * @link     http://vufind.org   Main Site
  */
 namespace VuFind\Controller;
-use VuFind\Config\Reader as ConfigReader, VuFind\Config\Writer as ConfigWriter,
-    VuFind\Connection\Manager as ConnectionManager, VuFind\Db\AdapterFactory,
-    Zend\Mvc\MvcEvent;
+use VuFind\Config\Reader as ConfigReader,
+    VuFind\Config\Writer as ConfigWriter,
+    VuFind\Connection\Manager as ConnectionManager,
+    VuFind\Db\AdapterFactory,
+    Zend\Mvc\MvcEvent,
+    Zend\Crypt\Password\Bcrypt;
 
 /**
  * Class controls VuFind auto-configuration.
@@ -234,7 +237,9 @@ class InstallController extends AbstractBase
     protected function checkDependencies()
     {
         $requiredFunctionsExist
-            = function_exists('mb_substr') && is_callable('imagecreatefromstring');
+            = function_exists('mb_substr') && is_callable('imagecreatefromstring')
+              && function_exists('mcrypt_module_open');
+
         return array(
             'title' => 'Dependencies',
             'status' => $requiredFunctionsExist && $this->phpVersionIsNewEnough(),
@@ -265,7 +270,7 @@ class InstallController extends AbstractBase
                 = "Your PHP installation appears to be missing the mbstring plug-in."
                 ." For better language support, it is recommended that you add this."
                 ." For details on how to do this, see "
-                ."http://vufind.org/wiki/installation "
+                ."http://vufind.org/wiki/vufind2:installation_notes "
                 ."and look at the PHP installation instructions for your platform.";
             $this->flashMessenger()->setNamespace('error')->addMessage($msg);
             $problems++;
@@ -277,11 +282,22 @@ class InstallController extends AbstractBase
                 = "Your PHP installation appears to be missing the GD plug-in. "
                 . "For better graphics support, it is recommended that you add this."
                 . " For details on how to do this, see "
-                . "http://vufind.org/wiki/installation "
+                . "http://vufind.org/wiki/vufind2:installation_notes "
                 . "and look at the PHP installation instructions for your platform.";
             $this->flashMessenger()->setNamespace('error')->addMessage($msg);
             $problems++;
         }
+
+        // Is the mcrypt library missing?
+        if (!function_exists('mcrypt_module_open')) {
+            $msg
+                = "Your PHP installation appears to be missing the mcrypt plug-in."
+                ." For better security support, it is recommended that you add this."
+                ." For details on how to do this, see "
+                ."http://vufind.org/wiki/vufind2:installation_notes "
+                ."and look at the PHP installation instructions for your platform.";
+        }
+
 
         return $this->createViewModel(array('problems' => $problems));
     }
@@ -543,6 +559,147 @@ class InstallController extends AbstractBase
             ? $config->Index->default_core : "biblio";
         $view->configFile = $configFile;
         return $view;
+    }
+
+    /**
+     * Check if Security configuration is set.
+     *
+     * @return array
+     */
+    protected function checkSecurity()
+    {
+        // Are configuration settings missing?
+        $config = ConfigReader::getConfig();
+        if (!isset($config->Authentication->hash_passwords)
+            || !$config->Authentication->hash_passwords
+            || !isset($config->Authentication->encrypt_ils_password)
+            || !$config->Authentication->encrypt_ils_password
+        ) {
+            $status = false;
+        } else {
+            $status = true;
+        }
+
+        // If we're correctly configured, check that the data in the database is ok:
+        if ($status) {
+            try {
+                $rows = $this->getTable('user')->getInsecureRows();
+                $status = (count($rows) == 0);
+            } catch (\VuFind\Exception\PasswordSecurity $e) {
+                // Any security exception means we have a problem!
+                $status = false;
+            }
+        }
+
+        return array(
+            'title' => 'Security', 'status' => $status, 'fix' => 'fixsecurity'
+        );
+    }
+
+    /**
+     * Support method for fixsecurityAction().  Returns true if the configuration
+     * was modified, false otherwise.
+     *
+     * @param \Zend\Config\Config $config Existing VuFind configuration
+     * @param ConfigWriter        $writer Config writer
+     *
+     * @return bool
+     */
+    protected function fixSecurityConfiguration($config, $writer)
+    {
+        $changed = false;
+
+        if (!isset($config->Authentication->hash_passwords)
+            || !$config->Authentication->hash_passwords
+            || !isset($config->Authentication->encrypt_ils_password)
+            || !$config->Authentication->encrypt_ils_password
+        ) {
+            $writer->set('Authentication', 'hash_passwords', true);
+            $writer->set('Authentication', 'encrypt_ils_password', true);
+            $changed = true;
+        }
+        // Only rewrite encryption key if we don't already have one:
+        if (!isset($config->Authentication->ils_encryption_key)
+            || empty($config->Authentication->ils_encryption_key)
+        ) {
+            $enc_key = sha1(microtime(true).mt_rand(10000, 90000));
+            $writer->set('Authentication', 'ils_encryption_key', $enc_key);
+            $changed = true;
+        }
+
+        return $changed;
+    }
+
+    /**
+     * Display repair instructions for Security problems.
+     *
+     * @return mixed
+     */
+    public function fixsecurityAction()
+    {
+        // If the user doesn't want to proceed, abort now:
+        $userConfirmation = $this->params()->fromPost('fix-user-table', 'Unset');
+        if ($userConfirmation == 'No') {
+            $msg = 'Security upgrade aborted.';
+            $this->flashMessenger()->setNamespace('error')->addMessage($msg);
+            return $this->redirect()->toRoute('install-home');
+        }
+
+        // If we don't need to prompt the user, or if they confirmed, do the fix:
+        $rows = $this->getTable('user')->getInsecureRows();
+        if (count($rows) == 0 || $userConfirmation == 'Yes') {
+            return $this->forwardTo('Install', 'performsecurityfix');
+        }
+
+        // If we got this far, we need to ask permission to proceed:
+        $view = $this->createViewModel();
+        $view->confirmUserFix = true;
+        return $view;
+    }
+
+    /**
+     * Perform fix for Security problems.
+     *
+     * @return mixed
+     */
+    public function performsecurityfixAction()
+    {
+        // First, set encryption/hashing to true, and set the key
+        $config = ConfigReader::getConfig();
+        $configPath = ConfigReader::getLocalConfigPath('config.ini', null, true);
+        $writer = new ConfigWriter($configPath);
+        if ($this->fixSecurityConfiguration($config, $writer)) {
+            // Problem writing? Show the user an error:
+            if (!$writer->save()) {
+                return $this->forwardTo('Install', 'fixbasicconfig');
+            }
+
+            // Success? Redirect to this action in order to reload the configuration:
+            return $this->redirect()->toRoute('install-performsecurityfix');
+        }
+
+        // Now we want to loop through the database and update passwords (if
+        // necessary).
+        $rows = $this->getTable('user')->getInsecureRows();
+        if (count($rows) > 0) {
+            // If we got this far, the user POSTed their confirmation -- go ahead
+            // with the fix:
+            $bcrypt = new Bcrypt();
+            foreach ($rows as $row) {
+                if ($row->password != '') {
+                    $row->pass_hash = $bcrypt->create($row->password);
+                    $row->password = '';
+                }
+                if ($row->cat_password) {
+                    $row->saveCredentials($row->cat_username, $row->cat_password);
+                } else {
+                    $row->save();
+                }
+            }
+            $msg = count($rows) . ' user row(s) encrypted.';
+            $this->flashMessenger()->setNamespace('info')->addMessage($msg);
+        }
+        return $this->redirect()->toRoute('install-home');
     }
 
     /**
