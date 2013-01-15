@@ -13,13 +13,26 @@
     <td>
 
 
-    <h3><a href="<?=$this->recordLink()->getUrl($this->driver)?>" title="<?=$this->driver->getTitle()?>" class="color"><?=$this->driver->getTitle()?></a></h3>
+    <h3><a href="<?=$this->recordLink()->getUrl($this->driver)?>" title="<?=$this->driver->getShortTitle()?>" class="color"><?=$this->driver->getShortTitle()?></a></h3>
 
-        <? $summAuthor = $this->driver->getPrimaryAuthor();  ?>
+        <? $summTitleRemainder = $this->driver->getSubtitle(); ?>
+        <? $summAuthor = $this->driver->getTitleStatement();  ?>
+        <? /* erster Entwurf, bei n Listeninhalten keine gute Lösung, eigenes solr-Feld planen*/
+           $summDate = $this->driver->getPublicationDates(); ?>
 
         <div class="meta">
-        <h6>Verfasser:</h6> <span><?=$summAuthor?></span><br/>
-        <h6>Jahr:</h6> <span><?= $this->driver->getPublicationDates()?></span><h6>Auflage:</h6> <span>[todo]</span>
+            <? if (!empty($summTitleRemainder)): ?>
+                <span><?=$summTitleRemainder?></span><br />
+            <? endif; ?>
+            <? if (!empty($summAuthor)): ?>
+                <h6>Verfasser:</h6> <span><?=$summAuthor?></span><br/>
+            <? endif; ?>
+            <? if (!empty($summDate)): ?>
+                <h6>Jahr:</h6> <span><?=$summDate[0]?></span>
+            <? endif; ?>
+            <?if (!empty($edition)): ?>
+                <h6>Auflage:</h6> <span>[todo]</span>
+            <? endif; ?>
         </div>
 
 
@@ -32,11 +45,11 @@
 
         <? $formatlink = "#"; ?>
 
-        <!-- es feht der Frbr link -->
+        <!-- es fehlt der Frbr link -->
         <? if (strlen($formatlink) > 0): ?>
 
             <a  href="<?=$formatlink ?>" class="linkbutton icon_show" title="Weitere Ausgaben und Formate">
-                <span>FRBR-link has to be done</span>
+                <span>FRBR-link has to be done (slowly)</span>
             </a>
 
 
