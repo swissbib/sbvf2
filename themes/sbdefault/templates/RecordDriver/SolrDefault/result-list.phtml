@@ -16,17 +16,23 @@
     <h3><a href="<?=$this->recordLink()->getUrl($this->driver)?>" title="<?=$this->driver->getShortTitle()?>" class="color"><?=$this->driver->getShortTitle()?></a></h3>
 
         <? $summTitleRemainder = $this->driver->getSubtitle(); ?>
-        <? $summTitleResponsibility = $this->driver->getTitleStatement();  ?>
-        <? $summDate = $this->driver->getPublicationDates(); ?>
+        <? $summAuthor = $this->driver->getTitleStatement();  ?>
+        <? /* erster Entwurf, bei n Listeninhalten keine gute Lösung, eigenes solr-Feld planen*/
+           $summDate = $this->driver->getPublicationDates(); ?>
 
         <div class="meta">
             <? if (!empty($summTitleRemainder)): ?>
                 <span><?=$summTitleRemainder?></span><br />
             <? endif; ?>
-            <? if (!empty($summTitleResponsibility)): ?>
-                <h6>Verfasser:</h6> <span><?=$summTitleResponsibility?></span><br/>
+            <? if (!empty($summAuthor)): ?>
+                <h6>Verfasser:</h6> <span><?=$summAuthor?></span><br/>
             <? endif; ?>
-            <h6>Jahr:</h6> <span><?=$summDate?></span><h6>Auflage:</h6> <span>[todo]</span>
+            <? if (!empty($summDate)): ?>
+                <h6>Jahr:</h6> <span><?=$summDate[0]?></span>
+            <? endif; ?>
+            <?if (!empty($edition)): ?>
+                <h6>Auflage:</h6> <span>[todo]</span>
+            <? endif; ?>
         </div>
 
 

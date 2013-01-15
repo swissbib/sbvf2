@@ -49,12 +49,19 @@ use VuFind\RecordDriver\SolrMarc as VFSolrMarc;
 class SbSolrMarc extends VFSolrMarc
 {
 
-    public function setRawData($data)
-    {
+    //public function setRawData($data)
+    //{
         //only for test purposes within this type to see if the type is correct instantiated
         // Call the parent's set method...
-        parent::setRawData($data);
+    //    parent::setRawData($data);
+    //}
+
+    public function getTitleStatement()
+    {
+        return isset($this->fields['title_statement']) ?
+            $this->fields['title_statement'] : '';
     }
+
 
     //now you can start to overwrite the desired functions or to create new functions used by the view-scrips
 }
