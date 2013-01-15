@@ -159,6 +159,11 @@ $config = array(
             'VuFind\RecordRouter' => function ($sm) {
                 return new \VuFind\Record\Router($sm->get('VuFind\RecordLoader'));
             },
+            'VuFind\SearchSpecsReader' => function ($sm) {
+                return new \VuFind\Config\SearchSpecsReader(
+                    $sm->get('VuFind\CacheManager')
+                );
+            },
             'VuFind\SMS' => 'VuFind\SMS\Factory',
             'VuFind\Translator' => function ($sm) {
                 $factory = new \Zend\I18n\Translator\TranslatorServiceFactory();
@@ -197,7 +202,6 @@ $config = array(
             'VuFind\CacheManager' => 'VuFind\Cache\Manager',
             'VuFind\Mailer' => 'VuFind\Mailer',
             'VuFind\RecordLoader' => 'VuFind\Record\Loader',
-            'VuFind\SearchSpecsReader' => 'VuFind\Config\SearchSpecsReader',
             'VuFind\SessionManager' => 'Zend\Session\SessionManager',
             'VuFind\WorldCatUtils' => 'VuFind\Connection\WorldCatUtils',
         ),
@@ -320,8 +324,14 @@ $config = array(
             ),
             'ils_driver' => array(
                 'abstract_factories' => array('VuFind\ILS\Driver\PluginFactory'),
+                'factories' => array(
+                    'aleph' => function ($sm) {
+                        return new \VuFind\ILS\Driver\Aleph(
+                            $sm->getServiceLocator()->get('VuFind\CacheManager')
+                        );
+                    },
+                ),
                 'invokables' => array(
-                    'aleph' => 'VuFind\ILS\Driver\Aleph',
                     'amicus' => 'VuFind\ILS\Driver\Amicus',
                     'daia' => 'VuFind\ILS\Driver\DAIA',
                     'demo' => 'VuFind\ILS\Driver\Demo',
@@ -591,7 +601,8 @@ $staticRoutes = array(
     'Tag/Home',
     'Upgrade/Home', 'Upgrade/FixAnonymousTags', 'Upgrade/FixConfig',
     'Upgrade/FixDatabase', 'Upgrade/FixMetadata', 'Upgrade/GetDBCredentials',
-    'Upgrade/GetSourceDir', 'Upgrade/Reset', 'Upgrade/ShowSQL',
+    'Upgrade/GetDbEncodingPreference', 'Upgrade/GetSourceDir', 'Upgrade/Reset',
+    'Upgrade/ShowSQL',
     'VuDL/Browse', 'VuDL/DSRecord', 'VuDL/Record',
     'Worldcat/Advanced', 'Worldcat/Home', 'Worldcat/Search'
 );
