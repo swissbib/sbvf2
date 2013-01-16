@@ -19,6 +19,7 @@
         <? $summAuthor = $this->driver->getTitleStatement();  ?>
         <? /* erster Entwurf, bei n Listeninhalten keine gute Lösung, eigenes solr-Feld planen*/
            $summDate = $this->driver->getPublicationDates(); ?>
+        <? $edition = $this->driver->getEdition(); ?>
 
         <div class="meta">
             <? if (!empty($summTitleRemainder)): ?>
@@ -30,8 +31,9 @@
             <? if (!empty($summDate)): ?>
                 <h6>Jahr:</h6> <span><?=$summDate[0]?></span>
             <? endif; ?>
-            <?if (!empty($edition)): ?>
-                <h6>Auflage:</h6> <span>[todo]</span>
+            <h6>Auflage:</h6> <span><?=$edition?>haha</span>
+            <?if (!empty($summEdition)): ?>
+                <h6>Auflage:</h6> <span><?=$edition?></span>
             <? endif; ?>
         </div>
 
