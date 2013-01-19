@@ -1,83 +1,8 @@
+/*global contextHelp, vufindString*/
+
 var _CART_COOKIE = 'vufind_cart';
 var _CART_COOKIE_SOURCES = 'vufind_cart_src';
 var _CART_COOKIE_DELIM = "\t";
-
-$(document).ready(function() {
-
-    var cartRecordId = $('#cartId').val();
-    $('#cartItems').hide();
-    $('#viewCart, #updateCart, #bottom_updateCart').removeClass('offscreen');
-
-    // Record
-    $('#recordCart').removeClass('offscreen').click(function() {
-        if(cartRecordId != undefined) {
-            if ($(this).hasClass('bookbagAdd')) {
-                updateCartSummary(addItemToCartCookie(cartRecordId));
-                $(this).html(vufindString.removeBookBag).removeClass('bookbagAdd').addClass('bookbagDelete');
-            } else {
-                updateCartSummary(removeItemFromCartCookie(cartRecordId));
-                $(this).html(vufindString.addBookBag).removeClass('bookbagDelete').addClass('bookbagAdd');
-            }
-        }
-        return false;
-    });
-    redrawCartStatus()
-    var $form = $('form[name="bulkActionForm"]');
-    registerUpdateCart($form);
-
-});
-
-function registerUpdateCart($form) {
-    if($form) {
-        $("#updateCart, #bottom_updateCart").unbind('click').click(function(){
-            var elId = this.id;
-            var selectedBoxes = $("input[name='ids[]']:checked", $form);
-            var selected = [];
-            $(selectedBoxes).each(function(i) {
-                selected[i] = this.value;
-            });
-
-            if (selected.length > 0) {
-                var inCart = 0;
-                var msg = "";
-                var orig = getItemsFromCartCookie();
-                $(selected).each(function(i) {
-                    for (i in orig) {
-                        if (this == orig[i]) {
-                            inCart++;
-                        }
-                    }
-                    addItemToCartCookie(this);
-                });
-                var updated = getItemsFromCartCookie();
-                var added = updated.length - orig.length;
-                msg += added + " " + vufindString.itemsAddBag + "<br />";
-                if (inCart > 0 && orig.length > 0) {
-                    msg += inCart + " " + vufindString.itemsInBag + "<br />";
-                }
-                if (updated.length >= vufindString.bookbagMax) {
-                  msg += vufindString.bookbagFull + "<br />";
-                }
-                cartHelp(msg, elId);
-            } else {
-                cartHelp(vufindString.bulk_noitems_advice, elId);
-            }
-            redrawCartStatus();
-            return false;
-        });
-    }
-}
-
-function cartHelp(msg, elId) {
-    contextHelp.flash('#' + elId, '10', '1', 'down', 'right', msg, 5000);
-}
-
-function redrawCartStatus() {
-    var items = getItemsFromCartCookie();
-    removeCartCheckbox();
-    updateRecordState(items);
-    updateCartSummary(items);
-}
 
 function getItemsFromCartCookie() {
     var ids = $.cookie(_CART_COOKIE);
@@ -89,16 +14,17 @@ function getItemsFromCartCookie() {
 
         var sources = $.cookie(_CART_COOKIE_SOURCES);
 
+        var i;
         if (!sources) {
             // Backward compatibility with VuFind 1.x -- if no source cookie, all
             // items come from the VuFind source:
-            for (var i = 0; i < cart.length; i++) {
+            for (i = 0; i < cart.length; i++) {
                 cart[i] = 'VuFind|' + cart[i];
             }
         } else {
             // Default case for VuFind 2.x carts -- decompress source data:
             sources = sources.split(_CART_COOKIE_DELIM);
-            for (var i = 0; i < cart.length; i++) {
+            for (i = 0; i < cart.length; i++) {
                 var sourceIndex = cart[i].charCodeAt(0) - 65;
                 cart[i] = sources[sourceIndex] + '|' + cart[i].substr(1);
             }
@@ -109,24 +35,20 @@ function getItemsFromCartCookie() {
     return [];
 }
 
-function addItemToCartCookie(item) {
-    var items = getItemsFromCartCookie();
-    if(items.length < vufindString.bookbagMax) {
-      items.push(item);
-    }
-    items = uniqueValues(items);
-    saveCartCookie(items);
-    return items;
+function cartHelp(msg, elId) {
+    contextHelp.flash('#' + elId, '10', '1', 'down', 'right', msg, 5000);
 }
 
-function removeItemFromCartCookie(item) {
-    var items = getItemsFromCartCookie();
-    var index = $.inArray(item, items);
-    if (index != -1) {
-        items.splice(index, 1);
+// return unique values from the given array
+function uniqueValues(array) {
+    var o = {}, i, l = array.length, r = [];
+    for(i=0; i<l;i++) {
+        o[array[i]] = array[i];
     }
-    saveCartCookie(items);
-    return items;
+    for(i in o) {
+        r.push(o[i]);
+    }
+    return r;
 }
 
 function saveCartCookie(items) {
@@ -165,6 +87,26 @@ function saveCartCookie(items) {
     $.cookie(_CART_COOKIE_SOURCES, sources.join(_CART_COOKIE_DELIM), { path: '/' });
 }
 
+function addItemToCartCookie(item) {
+    var items = getItemsFromCartCookie();
+    if(items.length < vufindString.bookbagMax) {
+      items.push(item);
+    }
+    items = uniqueValues(items);
+    saveCartCookie(items);
+    return items;
+}
+
+function removeItemFromCartCookie(item) {
+    var items = getItemsFromCartCookie();
+    var index = $.inArray(item, items);
+    if (index != -1) {
+        items.splice(index, 1);
+    }
+    saveCartCookie(items);
+    return items;
+}
+
 function updateRecordState(items) {
     var cartRecordId = $('#cartId').val();
     if (cartRecordId != undefined) {
@@ -193,3 +135,75 @@ function removeCartCheckbox() {
      $(this).attr('checked', false);
  });
 }
+
+function redrawCartStatus() {
+    var items = getItemsFromCartCookie();
+    removeCartCheckbox();
+    updateRecordState(items);
+    updateCartSummary(items);
+}
+
+function registerUpdateCart($form) {
+    if($form) {
+        $("#updateCart, #bottom_updateCart").unbind('click').click(function(){
+            var elId = this.id;
+            var selectedBoxes = $("input[name='ids[]']:checked", $form);
+            var selected = [];
+            $(selectedBoxes).each(function(i) {
+                selected[i] = this.value;
+            });
+
+            if (selected.length > 0) {
+                var inCart = 0;
+                var msg = "";
+                var orig = getItemsFromCartCookie();
+                $(selected).each(function(i) {
+                    for (var x in orig) {
+                        if (this == orig[x]) {
+                            inCart++;
+                            return;
+                        }
+                    }
+                    addItemToCartCookie(this);
+                });
+                var updated = getItemsFromCartCookie();
+                var added = updated.length - orig.length;
+                msg += added + " " + vufindString.itemsAddBag + "<br />";
+                if (inCart > 0 && orig.length > 0) {
+                    msg += inCart + " " + vufindString.itemsInBag + "<br />";
+                }
+                if (updated.length >= vufindString.bookbagMax) {
+                  msg += vufindString.bookbagFull + "<br />";
+                }
+                cartHelp(msg, elId);
+            } else {
+                cartHelp(vufindString.bulk_noitems_advice, elId);
+            }
+            redrawCartStatus();
+            return false;
+        });
+    }
+}
+
+$(document).ready(function() {
+    var cartRecordId = $('#cartId').val();
+    $('#cartItems').hide();
+    $('#viewCart, #updateCart, #bottom_updateCart').removeClass('offscreen');
+
+    // Record
+    $('#recordCart').removeClass('offscreen').click(function() {
+        if(cartRecordId != undefined) {
+            if ($(this).hasClass('bookbagAdd')) {
+                updateCartSummary(addItemToCartCookie(cartRecordId));
+                $(this).html(vufindString.removeBookBag).removeClass('bookbagAdd').addClass('bookbagDelete');
+            } else {
+                updateCartSummary(removeItemFromCartCookie(cartRecordId));
+                $(this).html(vufindString.addBookBag).removeClass('bookbagDelete').addClass('bookbagAdd');
+            }
+        }
+        return false;
+    });
+    redrawCartStatus();
+    var $form = $('form[name="bulkActionForm"]');
+    registerUpdateCart($form);
+});

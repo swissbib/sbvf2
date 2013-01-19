@@ -440,44 +440,37 @@ abstract class Results implements ServiceLocatorAwareInterface
      */
     public function spellingTokens($input)
     {
+        // Blacklist of useless tokens:
         $joins = array("AND", "OR", "NOT");
-        $paren = array("(" => "", ")" => "");
 
-        // Base of this algorithm comes straight from
-        // PHP doco examples & benighted at gmail dot com
-        // http://php.net/manual/en/function.strtok.php
+        // Strip out parentheses -- irrelevant for tokenization:
+        $paren = array("(" => " ", ")" => " ");
+        $input = trim(strtr($input, $paren));
+
+        // Base of this algorithm comes straight from PHP doc example by
+        // benighted at gmail dot com: http://php.net/manual/en/function.strtok.php
         $tokens = array();
-        $token = strtok($input, ' ');
-        while ($token) {
-            // find bracketed tokens
-            if ($token{0}=='(') {
-                $token .= ' '.strtok(')').')';
-            }
+        $token = strtok($input, " \t");
+        while ($token !== false) {
             // find double quoted tokens
-            if ($token{0}=='"') {
+            if (substr($token, 0, 1) == '"' && substr($token, -1) != '"') {
                 $token .= ' '.strtok('"').'"';
             }
-            // find single quoted tokens
-            if ($token{0}=="'") {
-                $token .= ' '.strtok("'")."'";
-            }
-            $tokens[] = $token;
-            $token = strtok(' ');
-        }
-        // Some cleaning of tokens that are just boolean joins
-        //  and removal of brackets
-        $return = array();
-        foreach ($tokens as $token) {
-            // Ignore join
+            // skip boolean operators
             if (!in_array($token, $joins)) {
-                // And strip parentheses
-                $final = trim(strtr($token, $paren));
-                if ($final != "") {
-                    $return[] = $final;
-                }
+                $tokens[] = $token;
             }
+            $token = strtok(" \t");
         }
-        return $return;
+
+        // If the last token ends in a double quote but the input string does not,
+        // the tokenization process added the quote, which will break spelling
+        // replacements.  We need to strip it back off again:
+        $last = count($tokens) > 0 ? $tokens[count($tokens) - 1] : null;
+        if ($last && substr($last, -1) == '"' && substr($input, -1) != '"') {
+            $tokens[count($tokens) - 1] = substr($last, 0, strlen($last) - 1);
+        }
+        return $tokens;
     }
 
     /**

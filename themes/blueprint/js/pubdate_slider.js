@@ -1,11 +1,29 @@
-$(document).ready(function(){
-    // create the slider for the publish date facet
-    $('.dateSlider').each(function(i) {
-        var myId = $(this).attr('id');
-        var prefix = myId.substr(0, myId.length - 6);
-        makePublishDateSlider(prefix);
+function updatePublishDateSlider(prefix) {
+    var from = parseInt($('#' + prefix + 'from').val(), 10);
+    var to = parseInt($('#' + prefix + 'to').val(), 10);
+
+    // assuming our oldest item is published in the 15th century
+    var min = 1500;
+    if (!from || from < min) {
+        from = min;
+    }
+    // move the min 20 years away from the "from" value
+    if (from > min + 20) {
+        min = from - 20;
+    }
+    // and keep the max at 1 years from now
+    var max = (new Date()).getFullYear() + 1;
+    if (!to || to > max) {
+        to = max;
+    }
+    if (from > max) {
+        from = max;
+    }
+    // update the slider with the new min/max/values
+    $('#' + prefix + 'Slider').slider('option', {
+        min: min, max: max, values: [from, to]
     });
-});
+}
 
 function makePublishDateSlider(prefix) {
     // create the slider widget
@@ -28,25 +46,11 @@ function makePublishDateSlider(prefix) {
     });
 }
 
-function updatePublishDateSlider(prefix) {
-    var from = parseInt($('#' + prefix + 'from').val());
-    var to = parseInt($('#' + prefix + 'to').val());
-    // assuming our oldest item is published in the 15th century
-    var min = 1500;
-    if (!from || from < min) {
-        from = min;
-    }
-    // move the min 20 years away from the "from" value
-    if (from > min + 20) {
-        min = from - 20;
-    }
-    // and keep the max at 1 years from now
-    var max = (new Date()).getFullYear() + 1;
-    if (!to || to > max) {
-        to = max;
-    }
-    // update the slider with the new min/max/values
-    $('#' + prefix + 'Slider').slider('option', {
-        min: min, max: max, values: [from, to]
+$(document).ready(function(){
+    // create the slider for the publish date facet
+    $('.dateSlider').each(function(i) {
+        var myId = $(this).attr('id');
+        var prefix = myId.substr(0, myId.length - 6);
+        makePublishDateSlider(prefix);
     });
-}
+});

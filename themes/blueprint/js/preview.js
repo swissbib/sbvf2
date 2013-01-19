@@ -1,67 +1,12 @@
-$(document).ready(function() {
-    if (!Array.prototype.indexOf) {
-        setIndexOf();
-    }
-    getBookPreviews();
-});
-
-function getBookPreviews() {
-    var skeys = '';
-    $('.previewBibkeys').each(function(){
-        skeys += $(this).attr('class');
-    });
-    skeys = skeys.replace(/previewBibkeys/g, '').replace(/^\s+|\s+$/g, '');
-    var bibkeys = skeys.split(/\s+/);
-
-    // fetch Google preview if enabled
-    if ($('.previewGBS').length > 0) {
-        // checks if query string might break URI limit - if not, run as normal
-        if (!bibkeys.length > 150){
-            var script = 'https://encrypted.google.com/books?jscmd=viewapi&bibkeys='
-                + bibkeys.join(',') + '&callback=processGBSBookInfo';
-            $.getScript(script);
-        } else {
-            // if so, break request into chunks of 100
-            var keyString = '';
-            // loop through array
-            for (var i=0; i < bibkeys.length; i++){
-                keyString += bibkeys[i] + ',';
-                // send request when there are 100 requests ready or when there are no
-                // more elements to be sent
-                if ((i > 0 && i % 100 == 0) || i == bibkeys.length-1) {
-                    var  script = 'https://encrypted.google.com/books?jscmd=viewapi&bibkeys='
-                        + keyString + '&callback=processGBSBookInfo';
-                    $.getScript(script);
-                    keyString = '';
-                }
-            }
-        }
-    }
-
-    // fetch OpenLibrary preview if enabled
-    if ($('.previewOL').length > 0) {
-        var script = 'http://openlibrary.org/api/books?bibkeys='
-            + bibkeys.join(',') + '&callback=processOLBookInfo';
-        $.getScript(script);
-    }
-
-    // fetch HathiTrust preview if enabled
-    if ($('.previewHT').length > 0) {
-        getHTPreviews(skeys);
-    }
-}
 // functions to get rights codes for previews
 function getHathiOptions() {
-    HathiOptions = $('[class*="hathiPreviewDiv"]').attr("class").split('__')[1].split(',');
-    return HathiOptions;
+    return $('[class*="hathiPreviewDiv"]').attr("class").split('__')[1].split(',');
 }
 function getGoogleOptions() {
-    GoogleOptions = $('[class*="googlePreviewDiv"]').attr("class").split('__')[1].split(',');
-    return GoogleOptions;
+    return $('[class*="googlePreviewDiv"]').attr("class").split('__')[1].split(',');
 }
 function getOLOptions() {
-    OlOptions = $('[class*="olPreviewDiv"]').attr("class").split('__')[1].split(',');
-    return OlOptions;
+    return $('[class*="olPreviewDiv"]').attr("class").split('__')[1].split(',');
 }
 
 function getHTPreviews(skeys) {
@@ -71,13 +16,28 @@ function getHTPreviews(skeys) {
     // since hathitrust only allows 20 at a time
     // as per http://vufind.org/jira/browse/VUFIND-317
     var batch = [];
-    for(i = 0; i < bibkeys.length; i++) {
+    for(var i = 0; i < bibkeys.length; i++) {
         batch.push(bibkeys[i]);
         if ((i > 0 && i % 20 == 0) || i == bibkeys.length-1) {
             var script = 'http://catalog.hathitrust.org/api/volumes/brief/json/'
                 + batch.join('|') + '&callback=processHTBookInfo';
             $.getScript(script);
             batch = [];
+        }
+    }
+}
+
+function processBookInfo(booksInfo, previewClass) {
+    // assign the correct rights string depending on source
+    var viewOptions = (previewClass == 'previewGBS')
+        ? getGoogleOptions() : getOLOptions();
+    for (var bibkey in booksInfo) {
+        var bookInfo = booksInfo[bibkey];
+        if (bookInfo) {
+          if (viewOptions.indexOf(bookInfo.preview)>= 0) {
+                var $link = $('.' + previewClass + '.' + bibkey);
+                $link.attr('href', bookInfo.preview_url).show();
+            }
         }
     }
 }
@@ -91,7 +51,7 @@ function processOLBookInfo(booksInfo) {
 }
 
 function processHTBookInfo(booksInfo) {
-    for (b in booksInfo) {
+    for (var b in booksInfo) {
         var bibkey = b.replace(/:/, '').toUpperCase();
         var $link = $('.previewHT.' + bibkey);
         var items = booksInfo[b].items;
@@ -104,23 +64,6 @@ function processHTBookInfo(booksInfo) {
     }
 }
 
-function processBookInfo(booksInfo, previewClass) {
-    // assign the correct rights string depending on source
-    if (previewClass == 'previewGBS') {
-        var viewOptions = getGoogleOptions();
-    } else {
-        var viewOptions = getOLOptions();
-    }
-    for (bibkey in booksInfo) {
-        var bookInfo = booksInfo[bibkey];
-        if (bookInfo) {
-          if (viewOptions.indexOf(bookInfo.preview)>= 0) {
-                $link = $('.' + previewClass + '.' + bibkey);
-                $link.attr('href', bookInfo.preview_url).show();
-            }
-        }
-    }
-}
 /**
  * Array.indexOf is not universally supported
  * We need to set it for users who don't have it.
@@ -134,7 +77,9 @@ function setIndexOf() {
             throw new TypeError();
         }
         var t = Object(this);
+        /*jslint bitwise: false*/
         var len = t.length >>> 0;
+        /*jslint bitwise: true*/
         if (len === 0) {
             return -1;
         }
@@ -157,5 +102,59 @@ function setIndexOf() {
             }
         }
         return -1;
+    };
+}
+
+function getBookPreviews() {
+    var skeys = '';
+    $('.previewBibkeys').each(function(){
+        skeys += $(this).attr('class');
+    });
+    skeys = skeys.replace(/previewBibkeys/g, '').replace(/^\s+|\s+$/g, '');
+    var bibkeys = skeys.split(/\s+/);
+    var script;
+
+    // fetch Google preview if enabled
+    if ($('.previewGBS').length > 0) {
+        // checks if query string might break URI limit - if not, run as normal
+        if (bibkeys.length <= 150){
+            script = 'https://encrypted.google.com/books?jscmd=viewapi&bibkeys='
+                + bibkeys.join(',') + '&callback=processGBSBookInfo';
+            $.getScript(script);
+        } else {
+            // if so, break request into chunks of 100
+            var keyString = '';
+            // loop through array
+            for (var i=0; i < bibkeys.length; i++){
+                keyString += bibkeys[i] + ',';
+                // send request when there are 100 requests ready or when there are no
+                // more elements to be sent
+                if ((i > 0 && i % 100 == 0) || i == bibkeys.length-1) {
+                    script = 'https://encrypted.google.com/books?jscmd=viewapi&bibkeys='
+                        + keyString + '&callback=processGBSBookInfo';
+                    $.getScript(script);
+                    keyString = '';
+                }
+            }
+        }
+    }
+
+    // fetch OpenLibrary preview if enabled
+    if ($('.previewOL').length > 0) {
+        script = 'http://openlibrary.org/api/books?bibkeys='
+            + bibkeys.join(',') + '&callback=processOLBookInfo';
+        $.getScript(script);
+    }
+
+    // fetch HathiTrust preview if enabled
+    if ($('.previewHT').length > 0) {
+        getHTPreviews(skeys);
     }
 }
+
+$(document).ready(function() {
+    if (!Array.prototype.indexOf) {
+        setIndexOf();
+    }
+    getBookPreviews();
+});

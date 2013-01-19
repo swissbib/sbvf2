@@ -1,6 +1,6 @@
-$(document).ready(function() {
-    showMoreInfoToggle();
-});
+function toggleCollectionInfo() {
+    $("#collectionInfo").toggle();
+}
 
 function showMoreInfoToggle() {
     toggleCollectionInfo();
@@ -11,6 +11,6 @@ function showMoreInfoToggle() {
     });
 }
 
-function toggleCollectionInfo() {
-    $("#collectionInfo").toggle();
-}
+$(document).ready(function() {
+    showMoreInfoToggle();
+});
