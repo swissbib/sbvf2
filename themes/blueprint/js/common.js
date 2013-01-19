@@ -1,3 +1,5 @@
+/*global getLightbox, path*/
+
 /**
  * Initialize common functions and event handlers.
  */
@@ -8,79 +10,14 @@ $.ajaxSetup({cache: false});
 $.validator.setDefaults({
     errorClass: 'invalid'
 });
-    
-// add a modified version of the original phoneUS rule 
+
+// add a modified version of the original phoneUS rule
 // to accept only 10-digit phone numbers
 $.validator.addMethod("phoneUS", function(phone_number, element) {
-    phone_number = phone_number.replace(/[-\s().]+/g, ""); 
+    phone_number = phone_number.replace(/[\-\s().]+/g, "");
     return this.optional(element) || phone_number.length > 9 &&
         phone_number.match(/^(\([2-9]\d{2}\)|[2-9]\d{2})[2-9]\d{2}\d{4}$/);
 }, 'Please specify a valid phone number');
-
-$(document).ready(function(){
-    // initialize autocomplete
-    initAutocomplete();    
-
-    // put focus on the "mainFocus" element
-    $('.mainFocus').each(function(){ $(this).focus(); } );
-
-    // support "jump menu" dropdown boxes
-    $('select.jumpMenu').change(function(){ $(this).parent('form').submit(); });
-
-    // attach click event to the "keep filters" checkbox
-    $('#searchFormKeepFilters').change(function() { filterAll(this); });
-
-    // attach click event to the search help links
-    $('a.searchHelp').click(function(){
-        window.open(path + '/Help/Home?topic=search', 'Help', 'width=625, height=510');
-        return false;
-    });
-
-    // attach click event to the advanced search help links
-    $('a.advsearchHelp').click(function(){
-        window.open(path + '/Help/Home?topic=advsearch', 'Help', 'width=625, height=510');
-        return false;
-    });
-
-    // assign click event to "email search" links
-    $('a.mailSearch').click(function() {
-        var id = this.id.substr('mailSearch'.length);
-        var $dialog = getLightbox('Search', 'Email', id, null, this.title, 'Search', 'Email', id);
-        return false;
-    });
-
-    // assign action to the "select all checkboxes" class
-    $('input[type="checkbox"].selectAllCheckboxes').change(function(){
-        $(this.form).find('input[type="checkbox"]').attr('checked', $(this).is(':checked'));
-    });
-    
-    // attach mouseover event to grid view records
-    $('.gridCellHover').mouseover(function() {
-        $(this).addClass('gridMouseOver')
-    });
-    
-    // attach mouseout event to grid view records
-    $('.gridCellHover').mouseout(function() {
-        $(this).removeClass('gridMouseOver')
-    });  
-    
-    // assign click event to "viewCart" links
-    $('a.viewCart').click(function() {
-        var $dialog = getLightbox('Cart', 'Home', null, null, this.title, '', '', '', {viewCart:"1"});
-        return false;
-    });
-    
-    // Print
-    var url = window.location.href;
-    if(url.indexOf('?' + 'print' + '=') != -1  || url.indexOf('&' + 'print' + '=') != -1) {
-        $("link[media='print']").attr("media", "all");
-        window.print();
-    }
-    
-    //ContextHelp
-    contextHelp.init();
-    contextHelp.contextHelpSys.load();
-});
 
 function toggleMenu(elemId) {
     var elem = $("#"+elemId);
@@ -113,25 +50,13 @@ function filterAll(element, formId) {
 function extractParams(str) {
     var params = {};
     var classes = str.split(/\s+/);
-    for(i = 0; i < classes.length; i++) {
+    for(var i = 0; i < classes.length; i++) {
         if (classes[i].indexOf(':') > 0) {
             var pair = classes[i].split(':');
             params[pair[0]] = pair[1];
         }
     }
     return params;
-}
-
-// return unique values from the given array
-function uniqueValues(array) {
-    var o = {}, i, l = array.length, r = [];
-    for(i=0; i<l;i++) {
-        o[array[i]] = array[i];
-    }
-    for(i in o) {
-        r.push(o[i]);
-    }
-    return r;
 }
 
 function initAutocomplete() {
@@ -143,7 +68,7 @@ function initAutocomplete() {
                 var type = params.type;
                 if (!type && params.typeSelector) {
                     type = $('#' + params.typeSelector).val();
-                } 
+                }
                 var searcher = params.searcher;
                 if (!searcher) {
                     searcher = 'Solr';
@@ -185,7 +110,7 @@ function printIDs(ids)
     }
     var parts = [];
         $(ids).each(function() {
-       parts[parts.length] = encodeURIComponent('id[]') + '=' + encodeURIComponent(this); 
+       parts[parts.length] = encodeURIComponent('id[]') + '=' + encodeURIComponent(this);
         });
     var url =  path + '/Records?print=true&' + parts.join('&');
     window.open(url);
@@ -193,12 +118,11 @@ function printIDs(ids)
 }
 
 var contextHelp = {
-        
     init: function() {
         $('body').append('<table cellspacing="0" cellpadding="0" id="contextHelp"><tbody><tr class="top"><td class="left"></td><td class="center"><div class="arrow up"></div></td><td class="right"></td></tr><tr class="middle"><td></td><td class="body"><div id="closeContextHelp"></div><div id="contextHelpContent"></div></td><td></td></tr><tr class="bottom"><td class="left"></td><td class="center"><div class="arrow down"></div></td><td class="right"></td></tr></tbody></table>');
     },
-    
-    hover: function(listenTo, widthOffset, heightOffset, direction, align, msgText) {     
+
+    hover: function(listenTo, widthOffset, heightOffset, direction, align, msgText) {
         $(listenTo).mouseenter(function() {
             contextHelp.contextHelpSys.setPosition(listenTo, widthOffset, heightOffset, direction, align, '', false);
             contextHelp.contextHelpSys.updateContents(msgText);
@@ -206,14 +130,14 @@ var contextHelp = {
         $(listenTo).mouseleave(function() {
             contextHelp.contextHelpSys.hideMessage();
         });
-    }, 
-    
+    },
+
     flash: function(id, widthOffset, heightOffset, direction, align, msgText, duration) {
         this.contextHelpSys.setPosition(id, widthOffset, heightOffset, direction, align);
         this.contextHelpSys.updateContents(msgText);
         setTimeout(this.contextHelpSys.hideMessage, duration);
     },
-    
+
     contextHelpSys: {
         CHTable:"#contextHelp",
         CHContent:"#contextHelpContent",
@@ -230,14 +154,14 @@ var contextHelp = {
         isUp:false,
         load:function(){
             $(contextHelp.contextHelpSys.closeButton).click(contextHelp.contextHelpSys.hideMessage);
-            $(window).resize(contextHelp.contextHelpSys.position)},
+            $(window).resize(contextHelp.contextHelpSys.position);},
         setPosition:function(element, offsetX, offsetY, direction, align, maxWidth, showCloseButton){
-            if(element==null){element=document}
-            if(offsetX==null){offsetX=0}
-            if(offsetY==null){offsetY=0}
-            if(direction==null){direction="auto"}
-            if(align==null){align="auto"}
-            if(showCloseButton==null){showCloseButton=true}
+            if(element==null){element=document;}
+            if(offsetX==null){offsetX=0;}
+            if(offsetY==null){offsetY=0;}
+            if(direction==null){direction="auto";}
+            if(align==null){align="auto";}
+            if(showCloseButton==null){showCloseButton=true;}
             contextHelp.contextHelpSys.curElement=$(element);
             contextHelp.contextHelpSys.curOffsetX=offsetX;
             contextHelp.contextHelpSys.curOffsetY=offsetY;
@@ -246,47 +170,54 @@ var contextHelp = {
             contextHelp.contextHelpSys.curMaxWidth=maxWidth;
             contextHelp.contextHelpSys.showCloseButton=showCloseButton;},
         position:function(){
-            if(!contextHelp.contextHelpSys.isUp||!contextHelp.contextHelpSys.curElement.length){return}
+            if(!contextHelp.contextHelpSys.isUp||!contextHelp.contextHelpSys.curElement.length){return;}
             var offset=contextHelp.contextHelpSys.curElement.offset();
-            var left=parseInt(offset.left)+parseInt(contextHelp.contextHelpSys.curOffsetX);
-            var top=parseInt(offset.top)+parseInt(contextHelp.contextHelpSys.curOffsetY);
+            var left=parseInt(offset.left, 10)+parseInt(contextHelp.contextHelpSys.curOffsetX, 10);
+            var top=parseInt(offset.top, 10)+parseInt(contextHelp.contextHelpSys.curOffsetY, 10);
             var direction=contextHelp.contextHelpSys.curDirection;
             var align=contextHelp.contextHelpSys.curAlign;
             if(contextHelp.contextHelpSys.curMaxWidth){
-                $(contextHelp.contextHelpSys.CHTable).css("width",contextHelp.contextHelpSys.curMaxWidth)}
-            else{
-                $(contextHelp.contextHelpSys.CHTable).css("width","auto")}
-            if(direction=="auto"){
-                if(parseInt(top)-parseInt($(contextHelp.contextHelpSys.CHTable).height()<$(document).scrollTop())){
-                    direction="down"}
-                else{direction="up"}
+                $(contextHelp.contextHelpSys.CHTable).css("width",contextHelp.contextHelpSys.curMaxWidth);
+            } else {
+                $(contextHelp.contextHelpSys.CHTable).css("width","auto");
+            }
+            if (direction=="auto") {
+                if (parseInt(top, 10)-parseInt($(contextHelp.contextHelpSys.CHTable).height()<$(document).scrollTop(), 10)) {
+                    direction="down";
+                } else {
+                    direction="up";
+                }
             }
             if(direction=="up"){
-                top = parseInt(top) - parseInt($(contextHelp.contextHelpSys.CHTable).height());
+                top = parseInt(top, 10) - parseInt($(contextHelp.contextHelpSys.CHTable).height(), 10);
                 $(contextHelp.contextHelpSys.arrowUp).css("display","none");
-                $(contextHelp.contextHelpSys.arrowDown).css("display","block")}
-            else{
+                $(contextHelp.contextHelpSys.arrowDown).css("display","block");
+            } else {
                 if(direction=="down"){
-                    top = parseInt(top) + parseInt(contextHelp.contextHelpSys.curElement.height());
+                    top = parseInt(top, 10) + parseInt(contextHelp.contextHelpSys.curElement.height(), 10);
                     $(contextHelp.contextHelpSys.arrowUp).css("display","block");
-                    $(contextHelp.contextHelpSys.arrowDown).css("display","none")}
+                    $(contextHelp.contextHelpSys.arrowDown).css("display","none");
                 }
+            }
             if(align=="auto"){
-                if(left+parseInt($(contextHelp.contextHelpSys.CHTable).width()>$(document).width())){
-                    align="left"}
-                else{align="right"}
+                if(left+parseInt($(contextHelp.contextHelpSys.CHTable).width()>$(document).width(), 10)){
+                    align="left";
+                } else {
+                    align="right";
+                }
             }
             if(align=="right"){
                 left-=24;
                 $(contextHelp.contextHelpSys.arrowUp).css("background-position","0 0");
-                $(contextHelp.contextHelpSys.arrowDown).css("background-position","0 -6px")
+                $(contextHelp.contextHelpSys.arrowDown).css("background-position","0 -6px");
             }
             else{
                 if(align=="left"){
-                    left-=parseInt($(contextHelp.contextHelpSys.CHTable).width());
+                    left-=parseInt($(contextHelp.contextHelpSys.CHTable).width(), 10);
                     left+=24;
                     $(contextHelp.contextHelpSys.arrowUp).css("background-position","100% 0");
-                    $(contextHelp.contextHelpSys.arrowDown).css("background-position","100% -6px")}
+                    $(contextHelp.contextHelpSys.arrowDown).css("background-position","100% -6px");
+                }
             }
             if(contextHelp.contextHelpSys.showCloseButton) {
                 $(contextHelp.contextHelpSys.closeButton).show();
@@ -294,23 +225,24 @@ var contextHelp = {
                 $(contextHelp.contextHelpSys.closeButton).hide();
             }
             $(contextHelp.contextHelpSys.CHTable).css("left",left + "px");
-            $(contextHelp.contextHelpSys.CHTable).css("top",top + "px");},
-            
+            $(contextHelp.contextHelpSys.CHTable).css("top",top + "px");
+        },
         updateContents:function(msg){
             contextHelp.contextHelpSys.isUp=true;
             $(contextHelp.contextHelpSys.CHContent).empty();
             $(contextHelp.contextHelpSys.CHContent).append(msg);
             contextHelp.contextHelpSys.position();
             $(contextHelp.contextHelpSys.CHTable).hide();
-            $(contextHelp.contextHelpSys.CHTable).fadeIn()
-            },
+            $(contextHelp.contextHelpSys.CHTable).fadeIn();
+        },
         hideMessage:function(){
             if(contextHelp.contextHelpSys.isUp){
                 $(contextHelp.contextHelpSys.CHTable).fadeOut();
-                contextHelp.contextHelpSys.isUp=false}
+                contextHelp.contextHelpSys.isUp=false;
+            }
         }
     }
-}
+};
 
 function extractDataByClassPrefix(element, prefix)
 {
@@ -339,3 +271,68 @@ function extractSource(element)
     var x = extractDataByClassPrefix(element, 'source');
     return x.length == 0 ? 'VuFind' : x;
 }
+
+$(document).ready(function(){
+    // initialize autocomplete
+    initAutocomplete();
+
+    // put focus on the "mainFocus" element
+    $('.mainFocus').each(function(){ $(this).focus(); } );
+
+    // support "jump menu" dropdown boxes
+    $('select.jumpMenu').change(function(){ $(this).parent('form').submit(); });
+
+    // attach click event to the "keep filters" checkbox
+    $('#searchFormKeepFilters').change(function() { filterAll(this); });
+
+    // attach click event to the search help links
+    $('a.searchHelp').click(function(){
+        window.open(path + '/Help/Home?topic=search', 'Help', 'width=625, height=510');
+        return false;
+    });
+
+    // attach click event to the advanced search help links
+    $('a.advsearchHelp').click(function(){
+        window.open(path + '/Help/Home?topic=advsearch', 'Help', 'width=625, height=510');
+        return false;
+    });
+
+    // assign click event to "email search" links
+    $('a.mailSearch').click(function() {
+        var id = this.id.substr('mailSearch'.length);
+        var $dialog = getLightbox('Search', 'Email', id, null, this.title, 'Search', 'Email', id);
+        return false;
+    });
+
+    // assign action to the "select all checkboxes" class
+    $('input[type="checkbox"].selectAllCheckboxes').change(function(){
+        $(this.form).find('input[type="checkbox"]').attr('checked', $(this).is(':checked'));
+    });
+
+    // attach mouseover event to grid view records
+    $('.gridCellHover').mouseover(function() {
+        $(this).addClass('gridMouseOver');
+    });
+
+    // attach mouseout event to grid view records
+    $('.gridCellHover').mouseout(function() {
+        $(this).removeClass('gridMouseOver');
+    });
+
+    // assign click event to "viewCart" links
+    $('a.viewCart').click(function() {
+        var $dialog = getLightbox('Cart', 'Home', null, null, this.title, '', '', '', {viewCart:"1"});
+        return false;
+    });
+
+    // Print
+    var url = window.location.href;
+    if(url.indexOf('?' + 'print' + '=') != -1  || url.indexOf('&' + 'print' + '=') != -1) {
+        $("link[media='print']").attr("media", "all");
+        window.print();
+    }
+
+    //ContextHelp
+    contextHelp.init();
+    contextHelp.contextHelpSys.load();
+});

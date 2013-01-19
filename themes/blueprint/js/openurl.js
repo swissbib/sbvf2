@@ -1,21 +1,4 @@
-$(document).ready(function() {
-    // assign action to the openUrlWindow link class
-    $('a.openUrlWindow').click(function(){
-        var params = extractParams($(this).attr('class'));
-        var settings = params.window_settings;
-        window.open($(this).attr('href'), 'openurl', settings);
-        return false;
-    });
-
-    // assign action to the openUrlEmbed link class
-    $('a.openUrlEmbed').click(function(){
-        var params = extractParams($(this).attr('class'));
-        var openUrl = $(this).children('span.openUrl:first').attr('title');
-        $(this).hide();
-        loadResolverLinks($('#openUrlEmbed'+params.openurl_id).show(), openUrl);
-        return false;
-    });
-});
+/*global extractParams, path*/
 
 function loadResolverLinks($target, openUrl) {
     $target.addClass('ajax_availability');
@@ -34,3 +17,22 @@ function loadResolverLinks($target, openUrl) {
         }
     });
 }
+
+$(document).ready(function() {
+    // assign action to the openUrlWindow link class
+    $('a.openUrlWindow').click(function(){
+        var params = extractParams($(this).attr('class'));
+        var settings = params.window_settings;
+        window.open($(this).attr('href'), 'openurl', settings);
+        return false;
+    });
+
+    // assign action to the openUrlEmbed link class
+    $('a.openUrlEmbed').click(function(){
+        var params = extractParams($(this).attr('class'));
+        var openUrl = $(this).children('span.openUrl:first').attr('title');
+        $(this).hide();
+        loadResolverLinks($('#openUrlEmbed'+params.openurl_id).show(), openUrl);
+        return false;
+    });
+});

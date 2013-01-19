@@ -1,3 +1,5 @@
+/*global checkSaveStatuses, confirm, extractController, extractSource, getItemsFromCartCookie, hexEncode, htmlEncode, path, printIDs, rc4Encrypt, redrawCartStatus, refreshCommentList, removeRecordState, saveCartCookie, vufindString*/
+
 // keep a handle to the current opened dialog so we can access it later
 var __dialogHandle = {dialog: null, processFollowup:false, followupModule: null, followupAction: null, recordId: null, postParams: null};
 
@@ -21,7 +23,7 @@ function getLightbox(module, action, id, lookfor, message, followupModule, follo
     };
 
     // create a new modal dialog
-    $dialog = $('<div id="modalDialog"><div class="dialogLoading">&nbsp;</div></div>')
+    var $dialog = $('<div id="modalDialog"><div class="dialogLoading">&nbsp;</div></div>')
         .load(path + '/AJAX/JSON?' + $.param(params), postParams)
             .dialog({
                 modal: true,
@@ -62,7 +64,7 @@ function hideLightbox() {
 }
 
 function displayLightboxFeedback($form, message, type) {
-    $container = $form.parent();
+    var $container = $form.parent();
     $container.empty();
     $container.append('<div class="' + type + '">' + message + '</div>');
 }
@@ -83,28 +85,6 @@ function showLoadingGraphic($form) {
 
 function hideLoadingGraphic($form) {
     $form.parent().parent().find('.dialogLoading').remove();
-}
-
-/**
- * This is called by the lightbox when it
- * finished loading the dialog content from the server
- * to register the form in the dialog for ajax submission.
- */
-function lightboxDocumentReady() {
-    registerAjaxLogin();
-    registerAjaxCart();
-    registerAjaxCartExport();
-    registerAjaxSaveRecord();
-    registerAjaxListEdit();
-    registerAjaxEmailRecord();
-    registerAjaxSMSRecord();
-    registerAjaxTagRecord();
-    registerAjaxEmailSearch();
-    registerAjaxBulkSave();
-    registerAjaxBulkEmail();
-    registerAjaxBulkExport();
-    registerAjaxBulkDelete();
-    $('.mainFocus').focus();
 }
 
 function registerAjaxLogin() {
@@ -147,8 +127,9 @@ function registerAjaxLogin() {
 
                                 // refresh the comment list so the "Delete" links will show
                                 $('.commentList').each(function(){
-                                    recordId = $(this).attr('id').substr('commentList'.length);
-                                    refreshCommentList(recordId);
+                                    var recordId = $('#record_id').val();
+                                    var recordSource = extractSource($('#record'));
+                                    refreshCommentList(recordId, recordSource);
                                 });
 
                                 // if there is a followup action, then it should be processed
@@ -181,7 +162,7 @@ function registerAjaxCart() {
             },
             showErrors: function(x) {
                 hideLoadingGraphic($form);
-                for (y in x) {
+                for (var y in x) {
                     if (y == 'ids[]') {
                         displayFormError($form, vufindString.bulk_noitems_advice);
                     }
@@ -250,7 +231,7 @@ function registerAjaxCart() {
                 success: function(response, statusText, xhr, $form) {
                     if (response.status == 'OK') {
                         var items = getItemsFromCartCookie();
-                        redrawCartStatus()
+                        redrawCartStatus();
                         hideLightbox();
                     }
                     var $dialog = getLightbox('Cart', 'Home', null, null, vufindString.viewBookBag, '', '', '', {viewCart:"1"});
@@ -278,6 +259,29 @@ function registerAjaxCart() {
     });
 }
 
+function refreshTagList(id, recordSource) {
+    var tagList = $('#tagList');
+    if (tagList.length > 0) {
+        tagList.empty();
+        var url = path + '/AJAX/JSON?' + $.param({method:'getRecordTags',id:id,'source':recordSource});
+        $.ajax({
+            dataType: 'json',
+            url: url,
+            success: function(response) {
+                if (response.status == 'OK') {
+                    $.each(response.data, function(i, tag) {
+                        var href = path + '/Tag?' + $.param({lookfor:tag.tag});
+                        var html = (i>0 ? ', ' : ' ') + '<a href="' + htmlEncode(href) + '">' + htmlEncode(tag.tag) +'</a> (' + htmlEncode(tag.cnt) + ')';
+                        tagList.append(html);
+                    });
+                } else if (response.data && response.data.length > 0) {
+                    tagList.append(response.data);
+                }
+            }
+        });
+    }
+}
+
 function registerAjaxSaveRecord() {
     var saveForm = $('#modalDialog form[name="saveRecord"]');
     if (saveForm.length > 0) {
@@ -297,10 +301,8 @@ function registerAjaxSaveRecord() {
                         if (typeof(checkSaveStatuses) == 'function') {
                             checkSaveStatuses();
                         }
-                        // Update tag list if appropriate:
-                        if (typeof(refreshTagList) == 'function') {
-                            refreshTagList(recordId, recordSource);
-                        }
+                        // Update tag list:
+                        refreshTagList(recordId, recordSource);
                     } else {
                         displayFormError($form, response.data);
                     }
@@ -422,26 +424,6 @@ function registerAjaxTagRecord() {
     });
 }
 
-function refreshTagList(id, recordSource) {
-    $('#tagList').empty();
-    var url = path + '/AJAX/JSON?' + $.param({method:'getRecordTags',id:id,'source':recordSource});
-    $.ajax({
-        dataType: 'json',
-        url: url,
-        success: function(response) {
-            if (response.status == 'OK') {
-                $.each(response.data, function(i, tag) {
-                    var href = path + '/Tag?' + $.param({lookfor:tag.tag});
-                    var html = (i>0 ? ', ' : ' ') + '<a href="' + htmlEncode(href) + '">' + htmlEncode(tag.tag) +'</a> (' + htmlEncode(tag.cnt) + ')';
-                    $('#tagList').append(html);
-                });
-            } else if (response.data && response.data.length > 0) {
-                $('#tagList').append(response.data);
-            }
-        }
-    });
-}
-
 function registerAjaxEmailSearch() {
     $('#modalDialog form[name="emailSearch"]').unbind('submit').submit(function(){
         if (!$(this).valid()) { return false; }
@@ -484,7 +466,7 @@ function registerAjaxBulkEmail() {
             success: function(response, statusText, xhr, $form) {
                 if (response.status == 'OK') {
                     displayLightboxFeedback($form, response.data, 'info');
-                    setTimeout("hideLightbox();", 3000);
+                    setTimeout(function() { hideLightbox(); }, 3000);
                 } else {
                     displayFormError($form, response.data);
                 }
@@ -580,7 +562,7 @@ function registerAjaxBulkDelete() {
             success: function(response, statusText, xhr, $form) {
                 if (response.status == 'OK') {
                     displayLightboxFeedback($form, response.data.result, 'info');
-                    setTimeout("hideLightbox(); window.location.reload();", 3000);
+                    setTimeout(function() { hideLightbox(); window.location.reload(); }, 3000);
                 } else {
                     displayFormError($form, response.data);
                 }
@@ -588,4 +570,26 @@ function registerAjaxBulkDelete() {
         });
         return false;
     });
+}
+
+/**
+ * This is called by the lightbox when it
+ * finished loading the dialog content from the server
+ * to register the form in the dialog for ajax submission.
+ */
+function lightboxDocumentReady() {
+    registerAjaxLogin();
+    registerAjaxCart();
+    registerAjaxCartExport();
+    registerAjaxSaveRecord();
+    registerAjaxListEdit();
+    registerAjaxEmailRecord();
+    registerAjaxSMSRecord();
+    registerAjaxTagRecord();
+    registerAjaxEmailSearch();
+    registerAjaxBulkSave();
+    registerAjaxBulkEmail();
+    registerAjaxBulkExport();
+    registerAjaxBulkDelete();
+    $('.mainFocus').focus();
 }

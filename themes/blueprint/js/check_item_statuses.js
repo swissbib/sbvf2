@@ -1,6 +1,4 @@
-$(document).ready(function() {
-    checkItemStatuses();
-});
+/*global path*/
 
 function checkItemStatuses() {
     var id = $.map($('.ajaxItemId'), function(i) {
@@ -41,7 +39,7 @@ function checkItemStatuses() {
                             item.find('.hideIfDetailed').hide();
                             item.find('.location').hide();
                             var locationListHTML = "";
-                            for (x=0; x<result.locationList.length; x++) {
+                            for (var x=0; x<result.locationList.length; x++) {
                                 locationListHTML += '<div class="groupLocation">';
                                 if (result.locationList[x].availability) {
                                     locationListHTML += '<span class="availableLoc">'
@@ -77,3 +75,7 @@ function checkItemStatuses() {
         });
     }
 }
+
+$(document).ready(function() {
+    checkItemStatuses();
+});
