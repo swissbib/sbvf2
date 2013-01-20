@@ -5,23 +5,12 @@ namespace swissbib\Module\Configuration;
 //Todo: the old style for the namespace was SwissBib\Module\Config; (same as VuFind standard module) now Configuration - why?
 
 
+
+
 $config = array(
-
-
-    'controllers' => array(
-        'invokables' => array(
-            'Swissbib\Controller\Index' => 'Swissbib\Controller\IndexController',
-            'record' => 'Swissbib\Controller\RecordController',
-            'search' => 'Swissbib\Controller\SearchController',
-
-
-
-
-        ),
-    ),
-
     'router' => array(
         'routes' => array(
+
             'default' => array(
                 'type'    => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
@@ -31,25 +20,127 @@ $config = array(
                         'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
                     ),
                     'defaults' => array(
+                        //'controller' => 'index',
                         'controller' => 'Swissbib\Controller\Index',
+                        //'action'     => 'Home',
                         'action'     => 'Home',
                     ),
                 ),
-            )
+            ),
         )
     ),
-    'recorddriver_plugin_manager' => array(
+    'controllers' => array(
         'invokables' => array(
-            'solrmarc' => 'Swissbib\RecordDriver\SbSolrMarc',
-            //'solrdefault' => 'VuFind\RecordDriver\SolrDefault',
-            //'solrmarc' => 'VuFind\RecordDriver\SolrMarc',
-
+            'Swissbib\Controller\Index' => 'Swissbib\Controller\IndexController',
+            //'record' => 'Swissbib\Controller\RecordController',
+            //'search' => 'Swissbib\Controller\SearchController',
         ),
     ),
-
-
-
+    'controller_plugins' => array(
+        'invokables' => array()
+    ),
+    'service_manager' => array(
+        'factories' => array(),
+        'invokables' => array(),
+        'initializers' => array(),
+        'aliases' => array(),
+    ),
+    'translator' => array(),
+    'view_helpers' => array(),
+    'view_manager' => array(),
+    // This section contains all VuFind-specific settings (i.e. configurations
+    // unrelated to specific Zend Framework 2 components).
+    'vufind' => array(
+        // This section contains service manager configurations for all VuFind
+        // pluggable components:
+        'plugin_managers' => array(
+            'auth' => array(
+                'abstract_factories' => array(),
+                'factories' => array(),
+                'invokables' => array(),
+                'aliases' => array(),
+            ),
+            'autocomplete' => array(
+                'abstract_factories' => array(),
+                'invokables' => array(),
+                'aliases' => array(),
+            ),
+            'db_table' => array(
+                'abstract_factories' => array(),
+                'invokables' => array(),
+            ),
+            'hierarchy_driver' => array(
+                'factories' => array()
+            ),
+            'hierarchy_treedatasource' => array(
+                'factories' => array(),
+                'invokables' => array(),
+            ),
+            'hierarchy_treerenderer' => array(
+                'invokables' => array()
+            ),
+            'ils_driver' => array(
+                'abstract_factories' => array(),
+                'factories' => array(),
+                'invokables' => array(),
+            ),
+            'recommend' => array(
+                'abstract_factories' => array(),
+                'factories' => array(),
+                'invokables' => array(),
+            ),
+            'recorddriver' => array(
+                'abstract_factories' => array(),
+                'invokables' => array(
+                    'solrmarc' => 'Swissbib\RecordDriver\SbSolrMarc',
+                ),
+            ),
+            'recordtab' => array(
+                'abstract_factories' => array(),
+                'factories' => array(),
+                'invokables' => array(),
+            ),
+            'related' => array(
+                'abstract_factories' => array(),
+                'invokables' => array(),
+            ),
+            'resolver_driver' => array(
+                'abstract_factories' => array(),
+                'invokables' => array(),
+                'aliases' => array(),
+            ),
+            'session' => array(
+                'abstract_factories' => array(),
+                'invokables' => array(),
+                'aliases' => array(),
+            ),
+            'statistics_driver' => array(
+                'abstract_factories' => array(),
+                'invokables' => array(),
+                'aliases' => array(),
+            ),
+        ),
+        // This section controls which tabs are used for which record driver classes.
+        // Each sub-array is a map from a tab name (as used in a record URL) to a tab
+        // service (found in recordtab_plugin_manager, below).  If a particular record
+        // driver is not defined here, it will inherit configuration from a configured
+        // parent class.
+        'recorddriver_tabs' => array(
+            'VuFind\RecordDriver\SolrAuth' => array(),
+            'VuFind\RecordDriver\SolrDefault' => array(),
+            'VuFind\RecordDriver\SolrMarc' => array(),
+            'VuFind\RecordDriver\Summon' => array(),
+            'VuFind\RecordDriver\WorldCat' => array(),
+        ),
+        // This section controls the SearchManager service:
+        'search_manager' => array(
+            'default_namespace' => 'VuFind\Search',
+            'namespaces_by_id' => array(),
+            'aliases' => array(),
+        ),
+    ),
 );
+
 
 // Add the home route last
 $config['router']['routes']['home'] = array(
@@ -62,6 +153,7 @@ $config['router']['routes']['home'] = array(
         )
     )
 );
+
 
 
 return $config;
