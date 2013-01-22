@@ -1,6 +1,6 @@
 <?php
 //namespace SwissBib\Module\Config;
-namespace swissbib\Module\Configuration;
+namespace Swissbib\Module\Configuration;
 
 //Todo: the old style for the namespace was SwissBib\Module\Config; (same as VuFind standard module) now Configuration - why?
 
