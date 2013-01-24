@@ -18,6 +18,11 @@ return array(
                     $sm->getServiceLocator()->get('VuFind\Translator')
                 );
             },
+            'flashmessages' => function ($sm) {
+                $messenger = $sm->getServiceLocator()->get('ControllerPluginManager')
+                    ->get('FlashMessenger');
+                return new \VuFind\View\Helper\Root\Flashmessages($messenger);
+            },
             'ils' => function ($sm) {
                 return new \VuFind\View\Helper\Root\Ils(
                     $sm->getServiceLocator()->get('VuFind\ILSConnection')
@@ -33,6 +38,12 @@ return array(
                     $sm->getServiceLocator()->get('SearchManager')
                 );
             },
+            'syndeticsplus' => function ($sm) {
+                $config = \VuFind\Config\Reader::getConfig();
+                return new \VuFind\View\Helper\Root\SyndeticsPlus(
+                    isset($config->Syndetics) ? $config->Syndetics : null
+                );
+            }
         ),
         'invokables' => array(
             'addellipsis' => 'VuFind\View\Helper\Root\AddEllipsis',
@@ -44,7 +55,6 @@ return array(
             'currentpath' => 'VuFind\View\Helper\Root\CurrentPath',
             'datetime' => 'VuFind\View\Helper\Root\DateTime',
             'excerpt' => 'VuFind\View\Helper\Root\Excerpt',
-            'flashmessages' => 'VuFind\View\Helper\Root\Flashmessages',
             'getlastsearchlink' => 'VuFind\View\Helper\Root\GetLastSearchLink',
             'highlight' => 'VuFind\View\Helper\Root\Highlight',
             'jqueryvalidation' => 'VuFind\View\Helper\Root\JqueryValidation',
@@ -60,7 +70,6 @@ return array(
             'safemoneyformat' => 'VuFind\View\Helper\Root\SafeMoneyFormat',
             'sortfacetlist' => 'VuFind\View\Helper\Root\SortFacetList',
             'summon' => 'VuFind\View\Helper\Root\Summon',
-            'syndeticsplus' => 'VuFind\View\Helper\Root\SyndeticsPlus',
             'systememail' => 'VuFind\View\Helper\Root\SystemEmail',
             'transesc' => 'VuFind\View\Helper\Root\TransEsc',
             'translate' => 'VuFind\View\Helper\Root\Translate',
