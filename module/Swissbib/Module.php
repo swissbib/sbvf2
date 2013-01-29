@@ -2,7 +2,8 @@
 
 namespace Swissbib;
 use Zend\ModuleManager\ModuleManager,
-    Zend\Mvc\MvcEvent;
+    Zend\Mvc\MvcEvent,
+    Zend\ModuleManager\ModuleEvent;
 
 class Module
 {
@@ -24,9 +25,24 @@ class Module
 
     public function init(ModuleManager $m)
     {
+
+        //note: only for testing
+        $m->getEventManager()->attach(ModuleEvent::EVENT_LOAD_MODULES_POST,array($this,'postInSwissbib'),10000);
+
     }
 
     public function onBootstrap(MvcEvent $e)
     {
+    }
+
+
+    public function postInSwissbib(ModuleEvent $e) {
+
+        //note: only for testing
+        $mName = $e->getModuleName();
+
+        $params =  $e->getParams();
+
+
     }
 }
