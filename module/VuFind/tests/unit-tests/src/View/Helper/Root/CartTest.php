@@ -1,6 +1,6 @@
 <?php
 /**
- * Cart view helper
+ * Cart view helper Test Class
  *
  * PHP version 5
  *
@@ -20,48 +20,40 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @category VuFind2
- * @package  View_Helpers
+ * @package  Tests
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org/wiki/vufind2:developer_manual Wiki
+ * @link     http://vufind.org/wiki/vufind2:unit_tests Wiki
  */
-namespace VuFind\View\Helper\Root;
+namespace VuFind\Test\View\Helper\Root;
 
 /**
- * Cart view helper
+ * Cart view helper Test Class
  *
  * @category VuFind2
- * @package  View_Helpers
+ * @package  Tests
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org/wiki/vufind2:developer_manual Wiki
+ * @link     http://vufind.org/wiki/vufind2:unit_tests Wiki
  */
-class Cart extends \Zend\View\Helper\AbstractHelper
+class CartTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * VuFind Cart Model
+     * Test the helper
      *
-     * @var \VuFind\Cart
+     * @return void
      */
-    protected $cart;
-
-    /**
-     * Constructor
-     *
-     * @param \VuFind\Cart $cart Cart model
-     */
-    public function __construct(\VuFind\Cart $cart)
+    public function testCart()
     {
-        $this->cart = $cart;
-    }
+        // Create a mock cart object:
+        $cart = $this->getMock(
+            'VuFind\Cart', null, array($this->getMock('VuFind\Record\Loader'))
+        );
 
-    /**
-     * Get the Cart object.
-     *
-     * @return \VuFind\Cart
-     */
-    public function __invoke()
-    {
-        return $this->cart;
+        // Create a helper object:
+        $helper = new \VuFind\View\Helper\Root\Cart($cart);
+
+        // Test that __invoke returns the object that was passed to the constructor:
+        $this->assertEquals($cart, $helper());
     }
 }
