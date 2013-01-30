@@ -78,16 +78,18 @@ class Cart
      * @param \VuFind\Record\Loader $loader  Object for loading records
      * @param int                   $maxSize Maximum size of cart contents
      * @param bool                  $active  Is cart enabled?
+     * @param array                 $cookies Current cookie values (leave null
+     * to use $_COOKIE superglobal)
      */
     public function __construct(\VuFind\Record\Loader $loader,
-        $maxSize = 100, $active = true
+        $maxSize = 100, $active = true, $cookies = null
     ) {
         $this->recordLoader = $loader;
         $this->maxSize = $maxSize;
         $this->active = $active;
 
         // Initialize contents
-        $this->init();
+        $this->init(null === $cookies ? $_COOKIE : $cookies);
     }
 
     /**
@@ -220,16 +222,18 @@ class Cart
     /**
      * Initialize the cart model.
      *
-     * @return array   contents of the cart
+     * @param array $cookies Current cookie values
+     *
+     * @return void
      */
-    protected function init()
+    protected function init($cookies)
     {
         $items = null;
-        if (isset($_COOKIE[self::CART_COOKIE])) {
-            $cookie = $_COOKIE[self::CART_COOKIE];
+        if (isset($cookies[self::CART_COOKIE])) {
+            $cookie = $cookies[self::CART_COOKIE];
             $items = explode(self::CART_COOKIE_DELIM, $cookie);
 
-            if (!isset($_COOKIE[self::CART_COOKIE_SOURCES])) {
+            if (!isset($cookies[self::CART_COOKIE_SOURCES])) {
                 // Backward compatibility with VuFind 1.x -- if no source cookie, all
                 // items come from the VuFind source:
                 for ($i = 0; $i < count($items); $i++) {
@@ -238,7 +242,7 @@ class Cart
             } else {
                 // Default case for VuFind 2.x carts -- decompress source data:
                 $sources = explode(
-                    self::CART_COOKIE_DELIM, $_COOKIE[self::CART_COOKIE_SOURCES]
+                    self::CART_COOKIE_DELIM, $cookies[self::CART_COOKIE_SOURCES]
                 );
                 for ($i = 0; $i < count($items); $i++) {
                     $sourceIndex = ord(substr($items[$i], 0, 1)) - 65;
@@ -278,9 +282,22 @@ class Cart
 
         // Save the cookies:
         $cookie = implode(self::CART_COOKIE_DELIM, $ids);
-        setcookie(self::CART_COOKIE, $cookie, 0, '/');
+        $this->setCookie(self::CART_COOKIE, $cookie, 0, '/');
         $cookie = implode(self::CART_COOKIE_DELIM, $sources);
-        setcookie(self::CART_COOKIE_SOURCES, $cookie, 0, '/');
+        $this->setCookie(self::CART_COOKIE_SOURCES, $cookie, 0, '/');
+    }
+
+    /**
+     * Set a cookie (wrapper in case Zend Framework offers a better abstraction
+     * of cookie handling in the future).
+     *
+     * @return bool
+     */
+    protected function setCookie()
+    {
+        // @codeCoverageIgnoreStart
+        return call_user_func_array('setcookie', func_get_args());
+        // @codeCoverageIgnoreEnd
     }
 
     /**
