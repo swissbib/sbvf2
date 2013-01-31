@@ -1,10 +1,18 @@
 <?php
 
 namespace Swissbib;
+
+use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
+use Zend\ModuleManager\Feature\ConfigProviderInterface;
+use Zend\ModuleManager\Feature\InitProviderInterface;
+use Zend\ModuleManager\ModuleManagerInterface;
+
 use Zend\ModuleManager\ModuleManager,
     Zend\Mvc\MvcEvent;
 
-class Module
+class Module implements AutoloaderProviderInterface,
+						ConfigProviderInterface,
+						InitProviderInterface
 {
     public function getConfig()
     {
@@ -22,7 +30,7 @@ class Module
         );
     }
 
-    public function init(ModuleManager $m)
+    public function init(ModuleManagerInterface $m)
     {
     }
 
