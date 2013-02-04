@@ -22,7 +22,15 @@
 	</thead>
 	<tbody>
 
-		<?=$this->partialLoop('search/list-list-item.phtml', $this->results->getResults()); ?>
+	<?php
+	$this->startIndex	= $this->results->getStartRecord();
+
+	foreach ($this->results->getResults() as $index => $result) {
+		$this->recordIndex = $this->startIndex + $index;
+		echo $this->record($result)->getSearchResult('list');
+	}
+
+	?>
 
 	</tbody>
 </table>
