@@ -91,10 +91,20 @@ $config = array(
             ),
             'recorddriver' => array(
                 'abstract_factories' => array(),
-                'invokables' => array(
-                    'solrmarc' => 'Swissbib\RecordDriver\SbSolrMarc',
+                'factories' => array(
+                    'solrmarc' => function () {
+                        return new \Swissbib\RecordDriver\SbSolrMarc(
+                            \VuFind\Config\Reader::getConfig(), null,
+                            \VuFind\Config\Reader::getConfig('searches')
+                        );
+                    },
                 ),
+                'aliases' => array(
+                    'solrsbmarc' => 'solrmarc',
+                ),
+
             ),
+
             'recordtab' => array(
                 'abstract_factories' => array(),
                 'factories' => array(),
