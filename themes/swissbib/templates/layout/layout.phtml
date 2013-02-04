@@ -7,7 +7,7 @@
 	<body>
 		<!-- begin: page -->
 		<div class="page_margins">
-			<div class="page template_home">
+			<div class="page">
 				<!-- begin: header -->
 				<?=$this->partial('global/header.phtml')?>
 				<!-- end: header -->
@@ -15,9 +15,7 @@
 				<?=$this->partial('global/searchbox.phtml')?>
 				<!-- end: search -->
 				<!-- begin: main  -->
-				<div id="main">
-					<?=$this->layout()->content?>
-				</div>
+				<div id="main"><?=$this->layout()->content?></div>
 
 				<!-- end: main -->
 			</div>

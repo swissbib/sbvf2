@@ -23,7 +23,7 @@ return array(
     'helpers' => array(
         'invokables' => array(
             'layoutclass' => 'VuFind\View\Helper\Blueprint\LayoutClass',
-            'search' => 'VuFind\View\Helper\Blueprint\Search',
+            'search' => 'VuFind\View\Helper\Blueprint\Search'
         )
     )
 );

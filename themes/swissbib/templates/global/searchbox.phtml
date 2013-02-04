@@ -1,11 +1,11 @@
 <div id="search">
-	<form id="form_search" name="form_search" action="suchergebnis.html" method="get">
-		<h3><label for="search_term">Suchen nach</label></h3>
-		<input type="text" class="text" name="search_term" id="search_term" autocomplete="off"/>
+	<form id="form_search" name="form_search" action="<?=$this->url('default', array('controller'=>'search', 'action'=>'results'))?>" method="get">
+		<h3><label for="lookfor">Suchen nach</label></h3>
+		<input type="text" class="text" name="lookfor" id="lookfor" autocomplete="off"/>
 		<label for="search_submit" class="hidden">Suchanfrage senden</label>
 		<input type="submit" class="submit primary" id="search_submit" name="search_submit" value="Suchen"/>
 		<label for="search_favorites" class="checker">Nur in Favoriten</label>
 		<input type="checkbox" class="hidden" id="search_favorites" name="search_favorites" />
-		<a href="erweitertesuche.html" title="Erweiterte Suche" id="search_extended">Erweiterte&nbsp;Suche</a>
+		<a href="<?=$this->url('default', array('controller'=>'search', 'action'=>'advanced'))?>" title="Erweiterte Suche" id="search_extended">Erweiterte&nbsp;Suche</a>
 	</form>
 </div>
