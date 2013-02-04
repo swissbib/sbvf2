@@ -1,0 +1,317 @@
+/* --- NOSE AG Design Intelligence --------------------------------------------------- */
+/* --- CSS Framework: basic layout (modifies yaml) ----------------------------------- */
+/* --- swissbib  --------------------------------------------------------------------- */
+ 
+@media screen, projection {
+
+/* -------------------------------------------------------------------------------------
+ BASIC LAYOUT
+ ======================================================================================*/
+html {
+	height:100%;
+	margin:0;
+}
+body { 
+  background-color: #4F545F;
+  overflow-y: scroll;
+}
+
+/* centering layout in old IE-versions */
+body { 
+	text-align: center; 
+}
+.page_margins { 
+	text-align:left; 
+	margin: 0 auto; 
+}
+
+/* layout width, background, borders */
+.page_margins { 
+	width:1000px;
+}
+.page { 
+	padding:0 0 20px 0; 
+}
+
+/* main layout elements */
+#header {
+	position:relative;
+	width:990px;
+	height:109px;
+	margin:0 5px;
+	border-bottom:1px solid #363940;
+	background-color:#32CD0F;
+	background-image:url(../../images/bg_header.gif);
+	background-position:left top;
+	background-repeat:repeat-x;
+	z-index:3;
+}
+.template_home #header {
+	height:249px;
+	background-image:url(../../images/bg_header-home.gif);
+}
+
+#search {
+	width:775px;
+	padding:20px 20px 20px 205px;
+	height:25px;
+	background-color:#8C919E;
+	background-image:url(../../images/bg_search.gif);
+	background-position:left top;
+	background-repeat:repeat-y;
+	z-index:2;
+}
+#main {
+	position:relative; 
+	z-index:1;
+}
+
+
+
+
+/* -------------------------------------------------------------------------------------
+ CONTENT CONTAINER
+ ======================================================================================*/
+
+
+/* sidebar */
+#col1 {
+	width:205px;
+	background-image:url(../../images/bg_sidebar.gif);
+	background-position:left top;
+	background-repeat:repeat-y;
+}
+#col1_content {
+	width:200px;
+	padding:20px 0 5px 5px; 
+	background-image:url(../../images/bg_sidebar_end.gif);
+	background-position:left bottom;
+	background-repeat:repeat-x;
+}
+
+
+/* marginal (not used) */
+#col2 {
+	display:none;
+}
+#col2_content {  
+	display:none;
+}
+
+/* content */
+#col3 {
+	margin:0 0 0 200px;
+	width:auto;
+	background-color:transparent;
+	background-image:url(../../images/bg_content.gif);
+	background-position:left top;
+	background-repeat:repeat-y;  
+}
+#col3_content {
+	padding:0 5px 0 5px;
+	background-image:url(../../images/bg_content_end.gif);
+	background-position:left bottom;
+	background-repeat:repeat-x;
+}
+
+
+
+/* -------------------------------------------------------------------------------------
+ AREAS
+ ======================================================================================*/
+ 
+/* header */
+#logo {
+}
+#logo h1 {
+	font-size:0;
+	line-height:0;
+	text-indent:-10000px;
+	margin:0;
+	padding:0;
+}
+/* logo
+#logo a {
+	display:block;
+	height:50px;
+	width:140px;
+	padding:15px 835px 18px 15px;
+	background-color:#32CD0F;
+	background-image:url(../../images/logo_swissbib.gif);
+	background-position:15px 15px;
+	background-repeat:no-repeat;
+}*/
+#logo a {
+	display:block;
+	/* beta logo */
+	height:60px;
+	width:140px;
+	padding:15px 835px 8px 15px;
+	background-color:#32CD0F;
+	background-color:transparent;
+	background-image:url(../../images/logo_swissbib_beta.gif);
+	background-position:15px 15px;
+	background-repeat:no-repeat;
+}
+#service {
+	position:absolute;
+	bottom:0px;
+	right:0px;
+	height:25px;
+	width:600px;
+}
+#service ul {
+	float:right;
+}
+#meta {
+	position:absolute;
+	top:5px;
+	right:10px;
+	height:25px;
+	width:300px;
+}
+#meta ul {
+	float:right;
+}
+#plogo {
+	display:none;
+}
+#navigation {
+	height:25px;
+	padding:0;
+	border-top:1px solid #849E85;
+	background-color:#D4f2CE;
+	background-image:url(../../images/bg_navigation.gif);
+	background-position:left top;
+	background-repeat:repeat-x;
+	z-index:2;
+}
+
+/* sidebar */
+#sidebar {
+	width:180px;
+	min-height:120px;
+	padding:0 10px 10px 10px;
+}
+
+
+/* content */
+#content {
+	position:relative;
+	min-height:380px;
+	padding:0 15px 15px 15px;
+	background-image:url(../../images/bg_content_inlay.gif);
+	background-position:left top;
+	background-repeat:no-repeat;
+}
+
+/* modal */
+#modal {
+	text-align:left;
+	background-color:#FFFFFF;
+	padding:20px;
+	width:780px;
+}
+#modal.small {
+	width:380px;
+}
+
+/* sponsors */
+#sponsors {
+	height:35px;
+	margin:25px 0 0 0;
+}
+
+
+
+
+/* -------------------------------------------------------------------------------------
+ TEMPLATES
+ ======================================================================================*/
+ 
+/* template home */
+
+/* logo 
+.template_home #logo a {
+	display:block;
+	height:100px;
+	width:300px;
+	padding:75px 660px 48px 30px;
+	background-image:url(../../images/logo_swissbib-home.gif);
+	background-position:30px 75px;
+} */
+.template_home #logo a {
+	display:block;
+	/* beta logo */
+	height:135px;
+	width:300px;
+	padding:75px 660px 13px 30px;
+	background-image:url(../../images/logo_swissbib_beta-home.gif);
+	background-position:30px 75px;
+}
+.template_home #main {
+	margin:0 5px;
+	padding:10px 0 0 0;
+	background-color:#ECECEC;
+	background-image:url(../../images/bg_main.gif);
+	background-position:left top;
+	background-repeat:repeat-x;
+}
+.template_home #col1 {
+	display:none;
+}
+.template_home #col3 {
+	background-image:none;
+	background-color:transparent;
+}
+.template_home #col3_content {
+	background-image:none;
+	padding:10px 15px 20px 15px;
+}
+.template_home #content {
+	background-image:none;
+	padding:0;
+}
+
+
+/* template page */
+.template_page #main {
+	margin:0 5px;
+	padding:10px 0 0 0;
+	background-color:#ECECEC;
+	background-image:url(../../images/bg_main.gif);
+	background-position:left top;
+	background-repeat:repeat-x;
+}
+.template_page #col1 {
+	margin:0;
+	padding:0;
+	width:200px;
+	background-image:none;
+}
+.template_page #col1_content {
+	margin:0;
+	padding:10px 0 10px 10px;
+	background-image:none;
+}
+.template_page #sidebar {
+	padding:0;
+}
+.template_page #col3 {
+	background-image:none;
+	background-color:transparent;
+}
+.template_page #col3_content {
+	background-image:none;
+	padding:10px 15px 20px 15px;
+}
+.template_page #content {
+	background-image:none;
+	background-color:#FFFFFF;
+	padding:20px;
+}
+
+
+
+
+}

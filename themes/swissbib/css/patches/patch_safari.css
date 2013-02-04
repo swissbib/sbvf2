@@ -1,0 +1,45 @@
+/* --- NOSE AG Design Intelligence --------------------------------------------------- */
+/* --- CSS Framework: Safari modifications ------------------------------------------- */
+/* --- swissbib  --------------------------------------------------------------------- */
+
+@media screen, projection {
+
+
+/* -------------------------------------------------------------------------------------
+ global.css
+ ======================================================================================*/
+
+/* forms */
+body.safari input.submit, body.safari input.reset {
+	padding:4px 4px 4px 4px; 
+}
+
+/* checkbox */
+.safari input.checkbox {
+	margin-top:5px;
+}
+
+/* radios */
+.safari input.radio { 
+	margin-top:5px;
+}
+
+/* -------------------------------------------------------------------------------------
+ content.additional.css
+ ======================================================================================*/
+
+/* form-buttons
+   macht einen override von "forms", da bei safari/chrome im Gegensatz zu Firefox der
+   Border-Wert nicht eingerechnet wird (TVI 20110107) */
+
+body.safari .linkbutton.submit {
+    padding:2px 6px 1px 6px;
+}
+
+body.safari .linkbutton.submit.primary {
+    padding:3px 6px 2px 6px;
+}
+
+
+
+}
