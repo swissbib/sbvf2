@@ -26,8 +26,7 @@
  * @link     http://www.vufind.org  Main Page
  */
 namespace VuFind\RecordDriver;
-use VuFind\Config\Reader as ConfigReader,
-    VuFind\Exception\LoginRequired as LoginRequiredException,
+use VuFind\Exception\LoginRequired as LoginRequiredException,
     VuFind\Tags, VuFind\XSLT\Import\VuFind as ArticleStripper,
     Zend\ServiceManager\ServiceLocatorInterface,
     Zend\ServiceManager\ServiceLocatorAwareInterface;
@@ -61,11 +60,18 @@ abstract class AbstractBase implements ServiceLocatorAwareInterface,
     protected $extraDetails = array();
 
     /**
-     * ini file for record settings
+     * Main VuFind configuration
      *
-     * @var string
+     * @var \Zend\Config\Config
      */
-    protected $recordIni = null;
+    protected $mainConfig;
+
+    /**
+     * Record-specific configuration
+     *
+     * @var \Zend\Config\Config
+     */
+    protected $recordConfig;
 
     /**
      * Raw data
@@ -87,6 +93,20 @@ abstract class AbstractBase implements ServiceLocatorAwareInterface,
      * @var \Zend\I18n\Translator\Translator
      */
     protected $translator = null;
+
+    /**
+     * Constructor
+     *
+     * @param \Zend\Config\Config $mainConfig   VuFind main configuration (omit for
+     * built-in defaults)
+     * @param \Zend\Config\Config $recordConfig Record-specific configuration file
+     * (omit to use $mainConfig as $recordConfig)
+     */
+    public function __construct($mainConfig = null, $recordConfig = null)
+    {
+        $this->mainConfig = $mainConfig;
+        $this->recordConfig = (null === $recordConfig) ? $mainConfig : $recordConfig;
+    }
 
     /**
      * Set raw data to initialize the object.
@@ -300,9 +320,8 @@ abstract class AbstractBase implements ServiceLocatorAwareInterface,
     public function getRelated($types = null)
     {
         if (is_null($types)) {
-            $config = ConfigReader::getConfig($this->recordIni);
-            $types = isset($config->Record->related) ?
-                $config->Record->related : array();
+            $types = isset($this->recordConfig->Record->related) ?
+                $this->recordConfig->Record->related : array();
         }
         $retVal = array();
         foreach ($types as $current) {
@@ -332,17 +351,15 @@ abstract class AbstractBase implements ServiceLocatorAwareInterface,
      */
     public function openURLActive($area)
     {
-        $config = ConfigReader::getConfig();
-
         // Doesn't matter the target area if no OpenURL resolver is specified:
-        if (!isset($config->OpenURL->url)) {
+        if (!isset($this->mainConfig->OpenURL->url)) {
             return false;
         }
 
         // If a setting exists, return that:
         $key = 'show_in_' . $area;
-        if (isset($config->OpenURL->$key)) {
-            return $config->OpenURL->$key;
+        if (isset($this->mainConfig->OpenURL->$key)) {
+            return $this->mainConfig->OpenURL->$key;
         }
 
         // If we got this far, use the defaults -- true for results, false for
@@ -357,9 +374,8 @@ abstract class AbstractBase implements ServiceLocatorAwareInterface,
      */
     public function replaceURLsWithOpenURL()
     {
-        $config = ConfigReader::getConfig();
-        return isset($config->OpenURL->replace_other_urls)
-            ? $config->OpenURL->replace_other_urls : false;
+        return isset($this->mainConfig->OpenURL->replace_other_urls)
+            ? $this->mainConfig->OpenURL->replace_other_urls : false;
     }
 
     /**
@@ -369,35 +385,6 @@ abstract class AbstractBase implements ServiceLocatorAwareInterface,
      */
     public function supportsAjaxStatus()
     {
-        return false;
-    }
-
-    /**
-     * Returns true if the record supports export in the requested format.
-     *
-     * @param string $format Format corresponding with export.ini
-     *
-     * @return bool
-     */
-    public function supportsExport($format)
-    {
-        // Check the requirements for export in the requested format:
-        $exportConfig = ConfigReader::getConfig('export');
-        if (isset($exportConfig->$format)) {
-            if (isset($exportConfig->$format->requiredMethods)) {
-                foreach ($exportConfig->$format->requiredMethods as $method) {
-                    // If a required method is missing, give up now:
-                    if (!method_exists($this, $method)) {
-                        return false;
-                    }
-                }
-            }
-            // If we got this far, we didn't encounter a problem, and the
-            // requested export format is valid, so we can report success!
-            return true;
-        }
-
-        // If we got this far, we couldn't find evidence of support:
         return false;
     }
 
