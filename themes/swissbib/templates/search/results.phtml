@@ -110,35 +110,13 @@
 					<!-- data -->
 					<?=$this->render('search/list-' . $this->results->getParams()->getView() . '.phtml')?>
 
-					<!-- begin: tools -->
-					<div class="tools floatbox">
-						<!-- paging -->
-						<div class="paging">
-							<a href="#" title="zum Anfang" class="paging_first">zum Anfang</a>
-							<a href="#" title="zurück" class="paging_back">zurück</a>
-							<div class="paging_pages">
-								<ul>
-									<li>
-										<span>1</span>
-									</li>
-									<li>
-										<a href="#" title="Seite 2">2</a>
-									</li>
-									<li>
-										<a href="#" title="Seite 3">3</a>
-									</li>
-									<li>
-										<a href="#" title="Seite 4">4</a>
-									</li>
-									<li>
-										<a href="#" title="Seite 5">5</a>
-									</li>
-								</ul>
-							</div>
-							<a href="#" title="weiter" class="paging_forward">weiter</a>
-							<a href="#" title="zum Ende" class="paging_last">zum Ende</a>
-						</div>
-					</div><!-- end: tools -->
+					<?php if($recordTotal): ?>
+						<!-- begin: tools -->
+						<div class="tools floatbox">
+							<!-- paging -->
+							<?=$this->partial('search/controls/view.phtml')?>
+						</div><!-- end: tools -->
+					<?php endif; ?>
 				</form>
 
 			</div><!-- end: tabbed swissbib -->
