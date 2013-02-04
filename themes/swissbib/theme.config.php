@@ -1,23 +1,29 @@
 <?php
 return array(
     'extends' => 'blueprint',
+//    'extends' => 'root',
     'css' => array(
-//        'blueprint/screen.css:screen, projection',
-//        'blueprint/print.css:print',
-//        'blueprint/ie.css:screen, projection:lt IE 8',
-//        'jquery-ui/css/smoothness/jquery-ui.css',
-//        'styles.css:screen, projection',
-//        'print.css:print',
-//        'ie.css:screen, projection:lt IE 8',
+		'patches/patch_ie.css:all:IE'
     ),
     'js' => array(
-//        'jquery.min.js',
-//        'jquery.form.js',
-//        'jquery.metadata.js',
-//        'jquery.validate.min.js',
-//        'jquery-ui/js/jquery-ui.js',
-//        'lightbox.js',
-//        'common.js',
+		'lib/jquery.cookie.js',
+		'lib/jquery.easing.js',
+		'lib/jquery.hoverintent.js',
+		'lib/jquery.tabbed.js',
+		'lib/jquery.toggler.js',
+		'lib/jquery.checker.js',
+		'lib/jquery.menunav.js',
+		'lib/jquery.dropdown.js',
+		'lib/jquery.hint.js',
+		'lib/jquery.info.js',
+		'lib/jquery.info.rollover.js',
+		'lib/jquery.nyromodal.js',
+		'swissbib.js',
+		'nose_prototype.js',
+//		'sb.extensions.singletarget.js',
+//		'sb.extensions.singletarget.js',
+//		'lib/colorbox/jquery.colorbox.js',
+
     ),
 //    'favicon' => 'vufind-favicon.ico',
 //    'helpers' => array(

@@ -60,14 +60,11 @@ class IndexController extends VFIndexController
      */
     public function homeAction()
     {
+        $homeView = parent::homeAction();
 
-        //$view = $this->getServiceLocator()->get("View");
+        $this->layout()->setTemplate("layout/layout.home");
 
-        $p = parent::homeAction();
-        $layout = $this->layout();
-        $layout->setTemplate("layout/layout.home");
-
-        return $p;
+        return $homeView;
     }
 
 }

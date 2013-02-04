@@ -1,0 +1,55 @@
+<?php $this->headThemeResources(); ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<?=$this->headTitle()?>
+		<?=$this->headMeta()?>
+
+		<?=$this->headLink()?>
+		<?=$this->headScript()?>
+	</head>
+	<body>
+		<!-- begin: page -->
+		<div class="page_margins">
+			<div class="page template_home">
+				<!-- begin: header -->
+				<div id="header">
+					<!-- logo -->
+					<?=$this->partial('global/logo.phtml')?>
+					<!-- access -->
+					<?=$this->partial('global/jumpNavi.phtml')?>
+					<!-- service -->
+					<?=$this->partial('global/serviceNavi.phtml')?>
+					<!-- meta -->
+					<?=$this->partial('global/metaNavi.phtml')?>
+					<!-- navigation  -->
+					<?=$this->partial('global/navigation.phtml')?>
+				</div>
+				<!-- end: header -->
+				<!-- begin: search -->
+				<?=$this->partial('global/searchbox.phtml')?>
+				<!-- end: search -->
+				<!-- begin: main  -->
+				<div id="main">
+					<!-- begin: col3 (content) -->
+					<div id="col3" class="content">
+						<div id="col3_content" class="clearfix">
+							<!-- begin: content -->
+							<div id="content">
+								<?=$this->layout()->content?>
+							</div>
+							<!-- end: content -->
+						</div>
+						<div id="ie_clearing">
+							&nbsp;
+						</div>
+					</div>
+					<!-- end: col3 (content) -->
+				</div>
+				<!-- end: main -->
+			</div>
+		</div>
+		<!-- end: page -->
+	</body>
+</html>
