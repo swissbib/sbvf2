@@ -3,7 +3,11 @@ return array(
     'extends' => 'blueprint',
 //    'extends' => 'root',
     'css' => array(
-		'patches/patch_ie.css:all:IE'
+		'patches/patch_ie.css:all:IE',
+		'patches/patch_ie9.css:all:IE 9',
+		'patches/patch_ie8.css:all:IE 8',
+		'patches/patch_ie7.css:all:IE 7',
+		'patches/patch_ie6.css:all:IE 6',
     ),
     'js' => array(
 		'lib/jquery.cookie.js',
@@ -20,16 +24,7 @@ return array(
 		'lib/jquery.nyromodal.js',
 		'swissbib.js',
 		'nose_prototype.js',
-//		'sb.extensions.singletarget.js',
-//		'sb.extensions.singletarget.js',
-//		'lib/colorbox/jquery.colorbox.js',
-
+		'lib/jquery.bgiframe.js::IE 6'
     ),
-//    'favicon' => 'vufind-favicon.ico',
-//    'helpers' => array(
-//        'invokables' => array(
-//            'layoutclass' => 'VuFind\View\Helper\Blueprint\LayoutClass',
-//            'search' => 'VuFind\View\Helper\Blueprint\Search',
-//        )
-//    )
+	'favicon' => 'favicon.ico'
 );
