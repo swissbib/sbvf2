@@ -258,7 +258,7 @@ body {
 	background-repeat:repeat-x;
 }
 .template_home #col1 {
-	display:none;
+	/*display:none;*/
 }
 .template_home #col3 {
 	background-image:none;
