@@ -33,6 +33,7 @@ $config = array(
         'invokables' => array(
 //            'Swissbib\Controller\Index' => 'Swissbib\Controller\IndexController',
 			'index'			=> 'Swissbib\Controller\IndexController',
+			'search'		=> 'Swissbib\Controller\SearchController',
             //'record' => 'Swissbib\Controller\RecordController',
             //'search' => 'Swissbib\Controller\SearchController',
         ),
