@@ -22,9 +22,13 @@ return array(
 		'lib/jquery.info.js',
 		'lib/jquery.info.rollover.js',
 		'lib/jquery.nyromodal.js',
+		'lib/jquery.bgiframe.js::IE 6',
+
+		'check_item_statuses.js',
+		'check_save_statuses.js',
+
 		'swissbib.js',
-		'nose_prototype.js',
-		'lib/jquery.bgiframe.js::IE 6'
+		'nose_prototype.js'
     ),
 	'favicon' => 'favicon.ico'
 );

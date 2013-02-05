@@ -13,6 +13,12 @@ return array(
 			'VuFindTheme\ResourceContainer' => 'Swissbib\VuFind\ResourceContainer'
 		)
 	),
+	'view_helpers' => array(
+		'invokables' => array(
+			'number'	=> 'Swissbib\View\Helper\Number',
+//			'config' => 'Swissbib\View\Helper\Config'
+		)
+	),
     'vufind' => array(
         // This section contains service manager configurations for all VuFind
         // pluggable components:
