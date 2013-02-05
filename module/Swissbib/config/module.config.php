@@ -4,7 +4,6 @@ namespace Swissbib\Module\Config;
 return array(
     'controllers' => array(
         'invokables' => array(
-			'index'		=> 'Swissbib\Controller\IndexController',
 			'search'	=> 'Swissbib\Controller\SearchController'
         )
     ),

@@ -1,0 +1,8 @@
+#content .tools .limitSelect {
+	display: inline-block;
+}
+
+#content .tools .sortSelector {
+	display: inline-block;
+	margin-right: 20px;
+}

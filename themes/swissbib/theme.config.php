@@ -8,6 +8,7 @@ return array(
 		'patches/patch_ie8.css:all:IE 8',
 		'patches/patch_ie7.css:all:IE 7',
 		'patches/patch_ie6.css:all:IE 6',
+		'blueprint-overrides.css'
     ),
     'js' => array(
 		'lib/jquery.cookie.js',
@@ -28,7 +29,6 @@ return array(
 		'check_save_statuses.js',
 
 		'swissbib.js',
-		'nose_prototype.js'
     ),
 	'favicon' => 'favicon.ico'
 );
