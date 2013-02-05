@@ -31,6 +31,7 @@ $config = array(
     ),
     'controllers' => array(
         'invokables' => array(
+<<<<<<< HEAD
             'Swissbib\Controller\Index' => 'Swissbib\Controller\IndexController',
             //'record' => 'Swissbib\Controller\RecordController',
             //'search' => 'Swissbib\Controller\SearchController',
@@ -50,6 +51,22 @@ $config = array(
     'view_manager' => array(),
     // This section contains all VuFind-specific settings (i.e. configurations
     // unrelated to specific Zend Framework 2 components).
+=======
+			'search'	=> 'Swissbib\Controller\SearchController'
+        )
+    ),
+	'service_manager' => array(
+		'invokables' => array(
+			'VuFindTheme\ResourceContainer' => 'Swissbib\VuFind\ResourceContainer'
+		)
+	),
+	'view_helpers' => array(
+		'invokables' => array(
+			'number'	=> 'Swissbib\View\Helper\Number',
+//			'config' => 'Swissbib\View\Helper\Config'
+		)
+	),
+>>>>>>> 9d59fcab4c52d62a336229b2f27dbc923b2d7a82
     'vufind' => array(
         // This section contains service manager configurations for all VuFind
         // pluggable components:
