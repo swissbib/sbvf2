@@ -8,23 +8,41 @@ use Zend\Config\Config;
 
 class ResourceContainer extends VfResourceContainer implements ServiceLocatorAwareInterface {
 
-	protected $services;
+	/**
+	 * @var	ServiceLocatorInterface
+	 */
+	protected $serviceLocator;
+
 
 	/**
-	 * @var	Array
+	 * @var	String[]		List of ignore patterns
 	 */
 	protected $ignoredFiles;
 
+
+
+	/**
+	 * Inject service locator
+	 *
+	 * @param	ServiceLocatorInterface $serviceLocator
+	 */
 	public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
 	{
-		$this->services 	= $serviceLocator;
+		$this->serviceLocator 	= $serviceLocator;
 		$config				= new Config($serviceLocator->get('Config'));
 		$this->ignoredFiles	= $config->swissbib->ignore_assets->toArray();
 	}
 
+
+
+	/**
+	 * Get service locator
+	 *
+	 * @return	ServiceLocatorInterface
+	 */
 	public function getServiceLocator()
 	{
-		return $this->services;
+		return $this->serviceLocator;
 	}
 
 
@@ -34,7 +52,23 @@ class ResourceContainer extends VfResourceContainer implements ServiceLocatorAwa
 	 *
 	 * @param	Array|String		$css
 	 */
-	public function addCss($css) {
+	public function addCss($css)
+	{
+		$css	= $this->removeIgnoredFiles($css);
+
+		parent::addCss($css);
+	}
+
+
+
+	/**
+	 * Remove ignored files
+	 *
+	 * @param	Array|String|\Traversable	$css
+	 * @return 	Array|\Traversable
+	 */
+	protected function removeIgnoredFiles($css)
+	{
 		if (!is_array($css) && !is_a($css, 'Traversable')) {
 			$css = array($css);
 		}
@@ -48,6 +82,7 @@ class ResourceContainer extends VfResourceContainer implements ServiceLocatorAwa
 			}
 		}
 
-		parent::addCss($css);
+		return $css;
 	}
+
 }
