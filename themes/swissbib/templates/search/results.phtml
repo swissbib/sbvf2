@@ -7,19 +7,30 @@
         $this->headTitle($this->translate('Search Results') . (empty($lookfor) ? '' : " - {$lookfor}"));
     }
 
-    // Set up breadcrumbs:
-    if (isset($this->overrideTitle)) {
-        $this->layout()->breadcrumbs = '<em>' . $this->escapeHtml($this->overrideTitle) . '</em>';
-    } else {
-        $this->layout()->breadcrumbs = '<em>' . $this->transEsc('Search') . ': ' .
-            $this->escapeHtml($lookfor) . '</em>';
-    }
+//    // Set up breadcrumbs:
+//    if (isset($this->overrideTitle)) {
+//        $this->layout()->breadcrumbs = '<em>' . $this->escapeHtml($this->overrideTitle) . '</em>';
+//    } else {
+//        $this->layout()->breadcrumbs = '<em>' . $this->transEsc('Search') . ': ' .
+//            $this->escapeHtml($lookfor) . '</em>';
+//    }
 
-    // Load Javascript dependencies into header:
-    $this->headScript()->appendFile("check_item_statuses.js");
-    $this->headScript()->appendFile("check_save_statuses.js");
+		// Dummy: how to separate different views
+	$baseResultsTotal	= $this->results->getResultTotal();
 
-	$recordTotal = $this->results->getResultTotal();
+	$tabHeadConfigs	= array(
+		array(
+			'id'		=> 'swissbib',
+			'label'		=> 'Bücher & mehr',
+			'count'		=> $baseResultsTotal,
+			'selected'	=> true
+		),
+		array(
+			'id'	=> 'external',
+			'label'	=> 'Artikel & mehr',
+			'count'	=> 123456789
+		)
+	)
 
 ?>
 <!-- begin: col1 (sidebar)  -->
@@ -27,7 +38,7 @@
 	<div id="col1_content" class="clearfix">
 		<!-- begin: sidebar -->
 		<div id="sidebar">
-			<?=$this->partial('global/sidebar/search/results.phtml')?>
+			<?=$this->render('global/sidebar/search/results.phtml')?>
 		</div>
 		<!-- end: sidebar -->
 	</div>
@@ -43,206 +54,21 @@
 			<div id="inlay">
 
 				<!-- begin: tabbed -->
-				<div id="tabbed" rel="catalog">
-					<ul>
-						<li id="tabbed_swissbib" class="selected">
-							<a href="#"><span>Bücher &amp; mehr<em>&nbsp;(6’072)</em></span></a>
-						</li>
-						<li id="tabbed_externe-bibliothek">
-							<a href="#"><span>Artikel &amp; mehr<em>&nbsp;(4’845)</em></span></a>
-						</li>
-					</ul>
-				</div><!-- end: tabbed -->
+				<?=$this->render('search/tabs.phtml', array('tabs' => $tabHeadConfigs))?>
+				<!-- end: tabbed -->
 
 				<!-- begin: notepad -->
-				<?=$this->partial('search/controls/notepad.phtml')?>
+				<?=$this->render('search/controls/notepad.phtml')?>
 				<!-- end: notepad -->
 
 			</div><!-- end: inlay -->
 
-			<!-- begin: tabbed swissbib -->
-			<div class="tabbed tabbed_selected tabbed_swissbib">
-
-				<h1><?=intval($recordTotal)?> Treffer für ihre Suchanfrage <cite><?=$this->escapeHtml($lookfor)?></cite></h1>
-				<form id="form_searchresult" name="form_searchresult" action="#">
-
-					<?php if($recordTotal): ?>
-						<!-- begin: tools -->
-						<div class="tools floatbox">
-							<!-- sort -->
-							<h3 class="hidden">Einstellungen Suchresultat Anzeige</h3>
-							<?=$this->partial('search/controls/sort.phtml')?>
-							<!-- display -->
-							<?=$this->partial('search/controls/limit.phtml')?>
-							<!-- paging -->
-							<?=$this->partial('search/controls/view.phtml')?>
-						</div>
-						<!-- end: tools -->
-					<?php endif; ?>
-
-					<!-- data -->
-					<?=$this->render('search/list-' . $this->results->getParams()->getView() . '.phtml')?>
-
-					<?php if($recordTotal): ?>
-						<!-- begin: tools -->
-						<div class="tools floatbox">
-							<!-- paging -->
-							<?=$this->partial('search/controls/view.phtml')?>
-						</div><!-- end: tools -->
-					<?php endif; ?>
-				</form>
-
-			</div><!-- end: tabbed swissbib -->
-
-			<!-- begin: tabbed externe bibliothek -->
-			<div class="tabbed tabbed_externe-bibliothek">
-
-				<h1>4’845 Treffer für ihre Suchanfrage <cite>Marke</cite></h1>
-				<form id="form_searchresult" name="form_searchresult" action="#">
-
-					<!-- begin: tools -->
-					<div class="tools floatbox">
-						<!-- sort -->
-						<h3 class="hidden">Einstellungen Suchresultat Anzeige</h3>
-						<label for="searchresult_sortby">Sortieren nach</label>
-						<select class="select mright" name="searchresult_sortby" id="searchresult_sortby">
-							<option value="sortby_unsorted">unsortiert</option>
-							<option value="sortby_ascending">Jahr aufsteigend</option>
-							<option value="sortby_descending">Jahr aufsteigend</option>
-						</select>
-						<!-- display -->
-						<label for="searchresult_displaynb">max. Treffer pro Seite</label>
-						<select class="select tiny" name="searchresult_displaynb" id="searchresult_displaynb">
-							<option value="displaynb_5">5</option>
-							<option value="displaynb_10" selected="selected">10</option>
-							<option value="displaynb_15">15</option>
-							<option value="displaynb_20">20</option>
-							<option value="displaynb_30">30</option>
-							<option value="displaynb_40">40</option>
-							<option value="displaynb_50">50</option>
-						</select>
-
-					</div>
-					<!-- end: tools -->
-
-					<!-- data -->
-					<table class="data">
-						<colgroup>
-							<col width="1%"/>
-							<col width="1%"/>
-							<col width="10%"/>
-							<col width="*"/>
-							<col width="13%"/>
-						</colgroup>
-						<caption class="hidden">
-							Suchergebnisse für Begriff &quot;Marke&quot;
-						</caption>
-						<thead class="hidden">
-							<tr>
-								<th>Nummer</th>
-								<th>Merkliste</th>
-								<th>Bild</th>
-								<th>Beschreibung</th>
-								<th>Verfügbarkeit</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td class="small center nodivider">3</td>
-								<td class="nodivider"><a href="#" class="icon_notepad_remove" title="Aus der Merkliste entfernen">Aus der Merkliste entfernen</a></td>
-								<td class="right nodivider"><a href="detail.html" title="Markenketten"><img src="resources/images/item_03_thumb.jpg" alt="Markenketten" class="dropshadow"/></a></td>
-								<td><h3><a href="detail.html" title="Markenketten" class="color">Design und Markenketten</a></h3>
-								<p>
-									Markenketten - das neue Design Paradigma.
-								</p><!-- meta -->
-								<div class="meta">
-									<h6>Verfasser:</h6><span>Walter Stulzer</span>
-									<br/>
-									<h6>Jahr:</h6><span>2009</span><h6>Auflage:</h6><span>[1. Aufl.]</span>
-								</div><!-- format -->
-								<div class="format">
-									<h6 class="icon_format_book_e">Buch</h6>
-									<a href="frbr.html" class="linkbutton icon_show" title="Weitere Ausgaben und Formate anzeigen"><span>Weitere Ausgaben und Formate</span></a>
-								</div></td>
-								<td class="right">
-								<p class="small">
-									3 Bibliotheken
-								</p>
-								<ul class="lending">
-									<li>
-										<span class="icon_lending_online" title="Online Ausleihbar">3</span>
-									</li>
-								</ul></td>
-							</tr>
-							<tr>
-								<td class="small center nodivider">1</td>
-								<td class="nodivider"><a href="#" class="icon_notepad_add" title="Zur Merkliste hinzufügen">Zur Merkliste hinzufügen</a></td>
-								<td class="right nodivider"><a href="detail.html" title="Marke und Wertschöpfung"><img src="resources/images/item_01_thumb.jpg" alt="Marke und Wertschöpfung" class="dropshadow"/></a></td>
-								<td><h3><a href="detail.html" title="Marke und Wertschöpfung" class="color">Marke und Wertschöpfung</a></h3>
-								<p>
-									Die Marke als Katalysator im Sales Funnel.
-								</p><!-- meta -->
-								<div class="meta">
-									<h6>Verfasser:</h6><span>David Riedrich-Karl</span>
-									<br/>
-									<h6>Jahr:</h6><span>2008</span><h6>Auflage:</h6><span>[3. Aufl.]</span>
-								</div><!-- format -->
-								<div class="format">
-									<h6 class="icon_format_book">Buch</h6>
-									<a href="frbr.html" class="linkbutton icon_show" title="Weitere Ausgaben und Formate anzeigen"><span>Weitere Ausgaben und Formate</span></a>
-								</div></td>
-								<td class="right">
-								<p class="small">
-									5 Bibliotheken
-								</p>
-								<ul class="lending">
-									<li>
-										<span class="icon_lending_online" title="Online Ausleihbar">3</span>
-									</li>
-									<li>
-										<span class="icon_lending_onplace" title="Vor Ort konsultierbar">2</span>
-									</li>
-								</ul></td>
-							</tr>
-							<tr>
-								<td class="small center nodivider">2</td>
-								<td class="nodivider"><a href="#" class="icon_notepad_add" title="Zur Merkliste hinzufügen">Zur Merkliste hinzufügen</a></td>
-								<td class="right nodivider"><a href="detail.html" title="Die Bindung von Marke und Firma"><img src="resources/images/item_02_thumb.jpg" alt="Die Bindung von Marke und Firma" class="dropshadow"/></a></td>
-								<td><h3><a href="detail.html" title="Die Bindung von Marke und Firma" class="color">Die Bindung von Marke und Firma</a></h3>
-								<p>
-									Diskrepanzen zwischen der unterschiedlichen Behandlung von Marke und Firma im internationalen Kontext der globalisierten Wirtschaft des neuen Jahrhunderts.
-								</p><!-- meta -->
-								<div class="meta">
-									<h6>Verfasser:</h6><span>Armin Bregy, John Ford, Judith Cousins, Pablo Picasso</span>
-									<br/>
-									<h6>Jahr:</h6><span>2008</span><h6>Auflage:</h6><span>[3. Aufl.]</span>
-								</div><!-- format -->
-								<div class="format">
-									<h6 class="icon_format_article">Artikel</h6>
-									<a href="frbr.html" class="linkbutton icon_show" title="Weitere Ausgaben und Formate anzeigen"><span>Weitere Ausgaben und Formate</span></a>
-								</div></td>
-								<td class="right">
-								<p>
-									5 Bibliotheken
-								</p>
-								<ul class="lending">
-									<li>
-										<span class="icon_lending_online" title="Online Ausleihbar">3</span>
-									</li>
-									<li>
-										<span class="icon_lending_onplace" title="Vor Ort konsultierbar">2</span>
-									</li>
-								</ul></td>
-							</tr>
-
-						</tbody>
-					</table>
-				</form>
-
-			</div><!-- end: tabbed externe bibliothek -->
+			<!-- begin: tabbed view -->
+			<?=$this->render('search/result-tabs.phtml')?>
+			<!-- end: tabbed view -->
 
 			<!-- begin: pagefunctions -->
-			<?=$this->partial('search/controls/pagefunctions.phtml')?>
+			<?=$this->render('search/controls/pagefunctions.phtml')?>
 			<!-- end: pagefunctions -->
 
 		</div>

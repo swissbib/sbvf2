@@ -1,0 +1,41 @@
+<?php
+
+$recordTotal= $this->results->getResultTotal();
+$lookfor	= $this->params->getDisplayQuery();
+
+?>
+
+<!-- begin: tabbed swissbib -->
+<div class="tabbed tabbed_selected tabbed_swissbib">
+
+	<h1><?=$this->number($recordTotal)?> Treffer für ihre Suchanfrage <cite><?=$this->escapeHtml($lookfor)?></cite></h1>
+	<form id="form_searchresult" name="form_searchresult" action="#">
+
+		<?php if($recordTotal): ?>
+			<!-- begin: tools -->
+			<div class="tools floatbox">
+				<!-- sort -->
+				<h3 class="hidden">Einstellungen Suchresultat Anzeige</h3>
+				<?=$this->render('search/controls/sort.phtml')?>
+				<!-- display -->
+				<?=$this->render('search/controls/limit.phtml')?>
+				<!-- paging -->
+				<?=$this->paginationControl($this->results->getPaginator(), 'Sliding', 'search/pagination.phtml', array('results' => $this->results))?>
+			</div>
+			<!-- end: tools -->
+		<?php endif; ?>
+
+		<!-- data -->
+		<?=$this->render('search/list-' . $this->results->getParams()->getView() . '.phtml')?>
+
+		<?php if($recordTotal): ?>
+			<!-- begin: tools -->
+			<div class="tools floatbox">
+				<!-- paging -->
+				<?=$this->partial('search/controls/view.phtml')?>
+			</div><!-- end: tools -->
+		<?php endif; ?>
+	</form>
+
+</div>
+<!-- end: tabbed swissbib -->

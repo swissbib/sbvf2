@@ -52,19 +52,5 @@ use VuFind\Controller\IndexController as VFIndexController;
  */
 class IndexController extends VFIndexController
 {
-    /**
-     * Determines what elements are displayed on the home page based on whether
-     * the user is logged in.
-     *
-     * @return mixed
-     */
-    public function homeAction()
-    {
-        $homeView = parent::homeAction();
-
-        $this->layout()->setTemplate("layout/layout.home");
-
-        return $homeView;
-    }
 
 }
