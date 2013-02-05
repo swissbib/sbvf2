@@ -1,0 +1,77 @@
+<?php
+	/** @var	Swissbib\RecordDriver\SbSolrMarc	$solrRecord  */
+	/** @var	VuFind\View\Helper\Root\Record		$viewRecord  */
+	$solrRecord		= $this->driver;
+	$viewRecord		= $this->record($this->driver);
+	$thumbnail		= $solrRecord->getThumbnail();
+	$detailLink		= $this->recordLink()->getUrl($solrRecord);
+	$title			= $solrRecord->getTitle();
+
+?>
+<tr>
+	<td class="small center nodivider"><?=$this->recordIndex?></td>
+	<td class="nodivider">
+		<a href="#" class="icon_notepad_add" title="Zur Merkliste hinzufügen">Zur Merkliste hinzufügen</a>
+	</td>
+	<td class="right nodivider">
+		<a href="<?=$detailLink?>" title="<?=$title?>">
+			<img src="<?=$thumbnail?$thumbnail:$this->url('cover-unavailable')?>" alt="<?=$title?>" class="dropshadow"/>
+		</a>
+	</td>
+	<td>
+		<h3><a href="<?=$detailLink?>" title="<?=$title?>" class="color"><?=$title?></a></h3>
+		<p>
+			<?php /*var_dump($solrRecord->getSummary())*/?>
+		</p><!-- meta -->
+		<div class="meta">
+			<h6>Verfasser:</h6>
+			<span><?=$solrRecord->getPrimaryAuthor()?></span><br/>
+			<h6>Jahr:</h6>
+			<span><?=implode(', ', $solrRecord->getPublicationDates())?></span><br/>
+			<h6>Auflage:</h6>
+			<span>[3. Aufl.]</span>
+		</div><!-- format -->
+		<div class="format">
+			<?=$viewRecord->getFormatList()?>
+			<h6 class="icon_format_book">Buch</h6>
+			<a href="frbr.html" class="linkbutton icon_show" title="Weitere Ausgaben und Formate anzeigen"><span>Weitere Ausgaben und Formate</span></a>
+		</div>
+	</td>
+	<td class="small right nodivider">
+		<p>
+			5 Bibliotheken
+		</p>
+		<ul class="lending">
+			<li>
+				<span class="icon_lending_online" title="Online Ausleihbar">3</span>
+			</li>
+			<li>
+				<span class="icon_lending_onplace" title="Vor Ort konsultierbar">2</span>
+			</li>
+		</ul>
+	</td>
+	<td class="right">
+		<span class="info rollover right">
+			<ul class="infolist">
+				<li>
+					<a href="#">Schweizerisches Institut für Kunstwissenschaft SIK-ISEA, Bibliothek</a>
+				</li>
+				<li>
+					<a href="#">Zentralbibliothek Zürich</a>
+				</li>
+				<li>
+					<a href="#">Schweizerische Nationalbibliothek</a>
+				</li>
+				<li>
+					<a href="#">Médiathèque Valais Sion</a>
+				</li>
+				<li>
+					<a href="#">Graphische Sammlung der ETH Zürich</a>
+				</li>
+				<li>
+					<a href="#">Zentral- und Hochschulbibliothek Luzern</a>
+				</li>
+			</ul>
+		</span>
+	</td>
+</tr>

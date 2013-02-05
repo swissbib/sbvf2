@@ -1,0 +1,25 @@
+<?php $this->headThemeResources(); ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<?=$this->partial('global/head.phtml')?>
+	</head>
+	<body>
+		<!-- begin: page -->
+		<div class="page_margins">
+			<div class="page">
+				<!-- begin: header -->
+				<?=$this->render('global/header.phtml')?>
+				<!-- end: header -->
+				<!-- begin: search -->
+				<?=$this->render('global/searchbox.phtml')?>
+				<!-- end: search -->
+				<!-- begin: main  -->
+				<div id="main"><?=$this->layout()->content?></div>
+
+				<!-- end: main -->
+			</div>
+		</div>
+		<!-- end: page -->
+	</body>
+</html>

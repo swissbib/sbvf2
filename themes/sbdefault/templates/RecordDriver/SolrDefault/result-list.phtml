@@ -17,9 +17,12 @@
 
         <? $summTitleRemainder = $this->driver->getSubtitle(); ?>
         <? $summAuthor = $this->driver->getTitleStatement();  ?>
-        <? /* erster Entwurf, bei n Listeninhalten keine gute Lösung, eigenes solr-Feld planen*/
-           $summDate = $this->driver->getPublicationDates(); ?>
-        <? $edition = $this->driver->getEdition(); ?>
+        <? $summDate = $this->driver->getPublicationDates(); ?>
+        <? $summEdition = $this->driver->getEdition(); ?>
+        <!-- empty, not stored yet in solr index (5.02.2013 / osc) -->
+        <? $group_id = $this->driver->getGroup(); ?>
+        <!-- array of library codes -->
+        <? $institution = $this->driver->getInstitution(); ?>
 
         <div class="meta">
             <? if (!empty($summTitleRemainder)): ?>
@@ -29,11 +32,10 @@
                 <h6>Verfasser:</h6> <span><?=$summAuthor?></span><br/>
             <? endif; ?>
             <? if (!empty($summDate)): ?>
-                <h6>Jahr:</h6> <span><?=$summDate[0]?></span>
+                <h6>Jahr:</h6> <span><?=$summDate?></span>
             <? endif; ?>
-            <h6>Auflage:</h6> <span><?=$edition?>haha</span>
             <?if (!empty($summEdition)): ?>
-                <h6>Auflage:</h6> <span><?=$edition?></span>
+                <h6>Auflage:</h6> <span><?=$summEdition?></span>
             <? endif; ?>
         </div>
 
@@ -47,11 +49,11 @@
 
         <? $formatlink = "#"; ?>
 
-        <!-- es fehlt der Frbr link -->
-        <? if (strlen($formatlink) > 0): ?>
+        <!-- if $group_id exists, set this link and icon -->
+        <? if (!empty($group_id)): ?>
 
-            <a  href="<?=$formatlink ?>" class="linkbutton icon_show" title="Weitere Ausgaben und Formate">
-                <span>FRBR-link has to be done (slowly)</span>
+            <a  href="<?=$group_id ?>" class="linkbutton icon_show" title="Weitere Ausgaben und Formate">
+                <span>FRBR-link has to be done</span>
             </a>
 
 
@@ -63,5 +65,6 @@
 
     </div>
     </td>
+    <!-- see $institution, if none, create links according to TP-logic -->
     <td class="right"><p class="small">todo Bibliotheken</p><ul class="lending"><li><span class="icon_lending_online" title="Online Ausleihbar">3</span></li><li><span class="icon_lending_onplace" title="Vor Ort konsultierbar">2</span></li></ul></td>
 </tr>

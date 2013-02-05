@@ -1,0 +1,26 @@
+/* --- NOSE AG Design Intelligence --------------------------------------------------- */
+/* --- CSS Framework: IE7 modifications ---------------------------------------------- */
+/* --- swissbib  --------------------------------------------------------------------- */
+
+@media screen, projection {
+
+/* -------------------------------------------------------------------------------------
+ global.css
+ ======================================================================================*/
+
+/* forms */
+input.submit, input.reset {
+	padding:3px 4px 1px 4px; /* compensate outline border */
+}
+input.checkbox {
+	margin:0px 5px 0 0;
+}
+input.radio {
+	margin:0 5px 0 0;
+}
+#search select.select  {
+	line-height:30px;
+}
+
+	
+}

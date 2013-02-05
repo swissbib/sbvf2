@@ -1,0 +1,394 @@
+@charset "UTF-8";
+/* --- NOSE AG Design Intelligence --------------------------------------------------- */
+/* --- CSS Framework: skin orange ---------------------------------------------------- */
+/* --- swissbib  --------------------------------------------------------------------- */
+
+/**
+* Colors
+* Base:		FF9900
+* Icons: 	F4901C / fA930B
+* Lite: 	FED99F
+* Link: 	C76402 / F67F00
+*/
+@media all {
+
+/* -------------------------------------------------------------------------------------
+ HEADER
+ ======================================================================================*/
+
+/* container */
+#header {
+	border-bottom:1px solid #353940;
+	background-color:#FF9900;
+	background-image:url('img/bg_header.gif');
+}
+.template_home #header {
+	background-image:url('img/bg_header-home.gif');
+}
+
+
+
+/* -------------------------------------------------------------------------------------
+ LOGO
+ ======================================================================================*/
+
+/* default */
+#logo a {
+	background-image:url('img/logo_swissbib_beta-bern_basel.png');
+	background-position: 0 0;
+}
+
+/* home */
+.template_home #logo a {
+	background-image:url('img/logo_swissbib_beta-bern_basel_home.png');
+	background-position: 0 0;
+
+}
+
+
+
+/* -------------------------------------------------------------------------------------
+ TEXT
+ ======================================================================================*/
+
+/* links */
+a.color {
+	color:#C76402;
+	text-decoration:none;
+}
+a.color:hover {
+	color:#FFFFFF;
+	background-color:#F67F00;
+}
+a.externallink {
+	background-image:url('img/icon_link-external.gif');
+}
+
+
+/* -------------------------------------------------------------------------------------
+ FORMS
+ ======================================================================================*/
+
+/* submit */
+input.submit, input.reset {
+	background-color:#E8E8E8;
+	background-image:url('img/bg_button.gif');
+	border:1px solid #494E59;
+}
+input.primary {
+	background-color:#FF9900;
+	background-image:url('img/bg_button_primary.gif');
+}
+
+
+
+
+/* -------------------------------------------------------------------------------------
+ LINKBUTTON
+ ======================================================================================*/
+
+/* buttons */
+.button {
+	background-image:url('img/bg_button.gif');
+}
+
+/* link buttons */
+.linkbutton,
+.toggler.icon_show.linkbutton {
+	background-color:#E8E8E8;
+	background-image:url('img/bg_button.gif');
+	background-position:left top;
+	background-repeat:repeat-x;
+}
+.linkbutton.primary {
+	background-color:#FF9900;
+	border:1px solid #FFA313;
+	background-image:url('img/bg_button_primary.gif');
+}
+
+
+
+
+/* -------------------------------------------------------------------------------------
+ ICONS
+ ======================================================================================*/
+ 
+/* aikis */
+.icon_goto_primary span {
+	background-image:url('img/icon_goto_primary.gif');
+}
+.icon_show span {
+	background-image:url('img/icon_show.gif');
+}
+
+.icon_favorit span {
+	background-image:url('img/icon_favorit.gif');
+}
+.icon_favorit_remove span {
+	background-image:url('img/icon_favorit_remove.gif');
+}
+
+.icon_delete span {
+	background-image:url('img/icon_delete.gif');
+}
+.icon_link_primary span {
+	background-image:url('img/icon_link_primary.gif');
+}
+.icon_notepad_add {
+	background-image:url('img/icon_notepad_add.gif');
+}
+.icon_notepad_remove {
+	background-image:url('img/icon_notepad_remove.gif');
+}
+.icon_notepad_add_link {
+	background-image:url('img/icon_notepad_add.gif');
+}
+
+
+
+/* actions */
+ul.miniactions li.miniaction_link a {
+	background-image:url('img/icon_miniaction_link.gif');
+}
+ul.miniactions li.miniaction_favorite_add a {
+	background-image:url('img/icon_miniaction_favorite_add.gif');
+}
+ul.miniactions li.miniaction_favorite_remove a {
+	background-image:url('img/icon_miniaction_favorite_remove.gif');
+}
+
+
+
+
+/* -------------------------------------------------------------------------------------
+ AUTOCOMPLETE
+ ======================================================================================*/
+
+/* list */
+.ui-autocomplete li a:hover,
+.ui-autocomplete li a.ui-state-hover  {
+	background-color:#FED99F;
+}
+
+/* -------------------------------------------------------------------------------------
+ DROPDOWN
+ ======================================================================================*/
+
+/* list */
+.dropdown ul li a:hover,
+.dropdown ul li.hover a {
+	background-color:#FED99F;
+}
+
+/* search */
+#search .dropdown h3 {
+	background-image:url('img/icon_dropdown_primary.gif');
+}
+
+
+/* -------------------------------------------------------------------------------------
+ SLIDER
+ ======================================================================================*/
+
+/* handle */
+.ui-slider .ui-slider-handle { 
+	background-image:url('img/icon_slider_handle.png');
+}
+
+
+/* -------------------------------------------------------------------------------------
+ HINT
+ ======================================================================================*/
+
+/* hint */
+.hint_color,
+#notepad form.hint_color {
+	color:#494E59;
+	background-color:#FED99F;
+}
+
+
+/* -------------------------------------------------------------------------------------
+ NAVIGATION
+ ======================================================================================*/
+
+/* navigation */
+#navigation {
+	border-top:1px solid #884D00;
+	background-color:#D4F2CE;
+	background-image:url('img/bg_navigation.gif');
+}
+
+/* items */
+#navigation ul li {
+	background-image:url('img/divider_navigation.gif');
+}
+#navigation ul li.nav_home a {
+	background-image:url('img/icon_nav_home.gif');
+}
+#navigation ul li.nav_home a:hover {
+	background-image:url('img/icon_nav_home-hover.gif');
+}
+#navigation ul li.nav_help a {
+	background-image:url('img/icon_nav_help.gif');
+}
+#navigation ul li.nav_help a:hover {
+	background-image:url('img/icon_nav_help-hover.gif');
+}
+
+/* subnavigation */
+#navigation .subnavigation {
+	background-image:url('img/bg_subnavigation.png');
+}
+
+
+/* -------------------------------------------------------------------------------------
+ SERVICE NAVIGATION
+ ======================================================================================*/
+
+/* items */
+#service ul li {
+	background-image:url('img/divider_navigation.gif');
+}
+#service ul li.nav_account a {
+	background-image:url('img/icon_nav_account.gif');
+}
+#service ul li.nav_account a:hover {
+	background-image:url('img/icon_nav_account-hover.gif');
+}
+#service ul li.nav_logout a {
+	background-image:url('img/icon_nav_logout.gif');
+}
+#service ul li.nav_logout a:hover {
+	background-image:url('img/icon_nav_logout-hover.gif');
+}
+#service ul li.nav_login a {
+	background-image:url('img/icon_nav_login.gif');
+}
+#service ul li.nav_login a:hover {
+	background-image:url('img/icon_nav_login-hover.gif');
+}
+
+
+/* -------------------------------------------------------------------------------------
+ META NAVIGATION
+ ======================================================================================*/
+
+/* items */
+#meta ul li a {
+	background-color:#FED99F;
+}
+
+
+
+/* -------------------------------------------------------------------------------------
+ SUBNAVIGATION
+ ======================================================================================*/
+
+/* item */
+#sidebar .subnavigation ul li.selected a {
+	background-color:#F67F00;
+}
+#sidebar .subnavigation ul li a:hover, #sidebar .subnavigation ul li.selected ul li a:hover {
+	background-color:#F67F00;
+}
+#sidebar .subnavigation ul li.action a:hover,  #sidebar .subnavigation ul li.selected ul li.action a:hover {
+	background-color:#F67F00;
+}
+
+
+
+
+/* -------------------------------------------------------------------------------------
+ FILTERS
+ ======================================================================================*/
+
+
+/* items */
+.filters ul li a.filter_remove {
+	background-image:url('img/icon_remove.gif');
+}
+.filters ul li a:hover {
+	background-color:#F67F00;
+}
+
+
+
+/* -------------------------------------------------------------------------------------
+ FACETS
+ ======================================================================================*/
+
+
+/* facete font */
+.facet ul li a:hover {
+	background-color:#F67F00;
+}
+
+/* show more */
+.facet_more a:hover {
+	background-color:#F67F00;
+}
+
+
+/* -------------------------------------------------------------------------------------
+ INFO
+ ======================================================================================*/
+
+/* icon */
+.info {
+	background-image:url('img/icon_info.gif');
+}
+
+/* info window */
+#infoWindow #infoWindowInner {
+    background-image:url('img/bg_rollover.gif') !important;
+}
+
+
+
+/* -------------------------------------------------------------------------------------
+ PAGEFUNCTIONS
+ ======================================================================================*/
+
+
+/* link */
+#pagefunctions ul li a {
+	background-image:url('img/bg_button-light.gif');
+}
+#pagefunctions ul li a:hover {
+	color:#000000;
+}
+
+/* icons */
+#pagefunctions #pagefunction_rss a {
+	background-image:url('img/icon_pagefunctions_rss.gif');
+}
+#pagefunctions #pagefunction_print a {
+	background-image:url('img/icon_pagefunctions_print.gif');
+}
+#pagefunctions #pagefunction_send a {
+	background-image:url('img/icon_pagefunctions_send.gif');
+}
+#pagefunctions #pagefunction_save a {
+	background-image:url('img/icon_pagefunctions_save.gif');
+}
+#pagefunctions #permalink-link a,
+#pagefunctions #pagefunction_link a {
+	background-image:url('img/icon_pagefunctions_perma.gif');
+}
+
+/* -------------------------------------------------------------------------------------
+ TABBED
+ ======================================================================================*/
+#tabbed {
+	display: block;
+}
+
+/* -------------------------------------------------------------------------------------
+ MOTEPAD
+ ======================================================================================*/
+#inlay #notepad {
+	float:right;
+}
+
+}

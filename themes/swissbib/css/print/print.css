@@ -1,0 +1,105 @@
+/* --- NOSE AG Design Intelligence --------------------------------------------------- */
+/* --- CSS Framework: print styles --------------------------------------------------- */
+/* --- swissbib  --------------------------------------------------------------------- */
+
+
+@media print {
+
+ 
+/* -------------------------------------------------------------------------------------
+ basemod.css
+ ======================================================================================*/
+ 
+/* general settings */
+body{
+	font-size: 10pt;
+	line-height:15pt;
+	text-align: left;
+	background-color:#FFFFFF;
+	color:#000000;
+}
+
+/* hide areas */
+#header, #search, #navigation, #logo, #service, #col1, .c25l .dropshadow, #notepad, #sponsors, #pagefunctions, .addthis_button_compact, h1, .paging.paging_pages, .tools.floatbox  {
+	display: none;
+}
+ 
+/* adjust size of areas */
+
+html, body, #container, #main, table.data {
+	width:17cm;
+	padding:0;
+	margin:0;
+	background-image:none;
+	background-color:#FFFFFF;
+}
+
+
+#col3 {
+margin:0 0 0 0px;
+width:auto;
+}
+
+
+/* -------------------------------------------------------------------------------------
+ fonts.css
+ ======================================================================================*/
+ 
+/* adjust font size */
+h1, h2, h3, h4 {
+	color:#000000;
+	font-weight:bold;
+}
+h1 {
+	font-size:18pt;
+	font-weight:normal;
+}
+h2 {
+	font-size:14pt;
+}
+h3 {
+	font-size:12pt;
+}
+h4 {
+	font-size:9pt;
+	line-height:15pt;
+}
+p, a, ul, ol, ul li, ul li a, ol li, ol li a, table, table th, table td, table tbody th, table tbody td, label, input, textarea {
+	font-size:9pt;
+	line-height:15pt;
+	color:#000000;
+} 
+
+.toggler_rendered_marcview div p {
+	font-size:9pt;
+	line-height:12pt;
+	color:#000000;
+}
+
+/* list */
+ul.list li {
+	background-image:none;
+	list-style-type:square;
+	list-style-position:inside;
+	padding-left:0;
+}
+
+/* table */
+table td, table th, table td.background, table.background td,
+table th, table th, table th.background, table.background th {
+	padding:0 5px 0 0;
+	background-color:#FFFFFF;
+	border:none;
+	color:#000000;
+}
+table th, table th, table th.background, table.background th {
+	font-weight:bold;
+}
+
+
+/* -------------------------------------------------------------------------------------
+ content.css
+ ======================================================================================*/
+ 
+ 
+}
