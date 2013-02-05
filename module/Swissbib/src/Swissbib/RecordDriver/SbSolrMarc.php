@@ -56,20 +56,38 @@ class SbSolrMarc extends VFSolrMarc
         parent::setRawData($data);
     }
 
+    public function getSubtitle()
+    {
+        return $this->getFirstFieldValue('245', array('b'));
+    }
+
     public function getEdition()
     {
-        //return "";
         return $this->getFirstFieldValue('250', array('a'));
     }
 
-
-    public function getTitleStatement()
+    /* first shot, better read dates from field 008 */
+    public function getPublicationDates()
     {
-
-        //only for testing
-        return parent::getTitleStatement();
+        return $this->getFirstFieldValue('260', array('c'));
     }
 
+    /* trial and error */
+    public function getYear()
+    {
+        return $this->marcRecord->getField('008');
+    }
 
-    //now you can start to overwrite the desired functions or to create new functions used by the view-scrips
+    /* FRBR-Link */
+    public function getGroup()
+    {
+        return isset($this->fields['group_id']) ? $this->fields['group_id'] : '';
+    }
+
+    /* Library / Institution Code as array */
+    public function getInstitution()
+    {
+        return isset($this->fields['institution']) ? $this->fields['institution'] : array();
+    }
+
 }
