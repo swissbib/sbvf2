@@ -8,6 +8,7 @@ return array(
 		'patches/patch_ie8.css:all:IE 8',
 		'patches/patch_ie7.css:all:IE 7',
 		'patches/patch_ie6.css:all:IE 6',
+		'blueprint-overrides.css'
     ),
     'js' => array(
 		'lib/jquery.cookie.js',
@@ -22,9 +23,12 @@ return array(
 		'lib/jquery.info.js',
 		'lib/jquery.info.rollover.js',
 		'lib/jquery.nyromodal.js',
+		'lib/jquery.bgiframe.js::IE 6',
+
+		'check_item_statuses.js',
+		'check_save_statuses.js',
+
 		'swissbib.js',
-		'nose_prototype.js',
-		'lib/jquery.bgiframe.js::IE 6'
     ),
 	'favicon' => 'favicon.ico'
 );

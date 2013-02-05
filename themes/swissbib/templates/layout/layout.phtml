@@ -9,10 +9,10 @@
 		<div class="page_margins">
 			<div class="page">
 				<!-- begin: header -->
-				<?=$this->partial('global/header.phtml')?>
+				<?=$this->render('global/header.phtml')?>
 				<!-- end: header -->
 				<!-- begin: search -->
-				<?=$this->partial('global/searchbox.phtml')?>
+				<?=$this->render('global/searchbox.phtml')?>
 				<!-- end: search -->
 				<!-- begin: main  -->
 				<div id="main"><?=$this->layout()->content?></div>

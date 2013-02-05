@@ -30,9 +30,24 @@ use VuFind\Controller\SearchController as VFSearchController;
  */
 class SearchController extends VFSearchController {
 
+	public function homeAction() {
+		$homeView = parent::homeAction();
+
+		$this->layout()->setTemplate("layout/layout.home");
+
+		return $homeView;
+	}
+
 	public function resultsAction()
 	{
-		return parent::resultsAction();
+		$resultView = parent::resultsAction();
+
+			// Store result view params in layout
+		$this->layout()->resultViewParams = $resultView->params;
+
+		parent::advancedAction();
+
+		return $resultView;
 	}
 
 }
