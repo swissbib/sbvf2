@@ -11,23 +11,24 @@ return array(
 	'service_manager' => array(
 		'invokables' => array(
 			'VuFindTheme\ResourceContainer' => 'Swissbib\VuFind\ResourceContainer'
-		),
-//		'factories' => array(
-//			'VuFindTheme\ResourceContainer' => function ($sm) {
-//				return new Swissbib\VuFind\ResourceContainer(
-//					$sm->getServiceLocator()->get('Config')
-//				);
-//			}
-//		)
+		)
 	),
     'vufind' => array(
         // This section contains service manager configurations for all VuFind
         // pluggable components:
         'plugin_managers' => array(
             'recorddriver' => array(
-                'invokables' => array(
-                    'solrmarc' => 'Swissbib\RecordDriver\SbSolrMarc'
-                )
+                'factories' => array(
+                    'solrmarc' => function () {
+						return new \Swissbib\RecordDriver\SbSolrMarc(
+							\VuFind\Config\Reader::getConfig(), null,
+							\VuFind\Config\Reader::getConfig('searches')
+						);
+					}
+                ),
+				'aliases' => array(
+					'solrsbmarc' => 'solrmarc'
+				)
             )
         )
     ),
