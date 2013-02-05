@@ -149,6 +149,24 @@ $config = array(
             'aliases' => array(),
         ),
     ),
+    'swissbib' => array(
+        // This section contains service manager configurations for all Swissbib
+        // pluggable components:
+        'plugin_managers' => array(
+
+            'db_table' => array(
+                'abstract_factories' => array('Swissbib\Db\Table\SbPluginFactory'),
+                'invokables' => array(
+                    'holdingsitems' => 'Swissbib\Db\Table\SbHoldingsItems',
+                ),
+            ),
+
+
+        ),
+
+
+    ),
+
 );
 
 
