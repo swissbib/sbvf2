@@ -32,7 +32,12 @@ class SearchController extends VFSearchController {
 
 	public function resultsAction()
 	{
-		return parent::resultsAction();
+		$resultView = parent::resultsAction();
+
+			// Store result view params in layout
+		$this->layout()->resultViewParams = $resultView->params;
+
+		return $resultView;
 	}
 
 }
