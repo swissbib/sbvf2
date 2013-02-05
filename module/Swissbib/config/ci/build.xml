@@ -6,7 +6,7 @@
 	<property name="memorylimit" value="512M" />
 
 
-	<target name="build" depends="prepare,lint,phploc"/>
+	<target name="build" depends="prepare,lint,phploc,phpcs"/>
 	<!--<target name="build" depends="prepare,lint,phploc,phpunit,phpcpd,pdepend,phpmd,jslint"/>-->
 
 	<target name="prepare" depends="preparefolders" description="Prepare folders"/>
@@ -35,6 +35,19 @@
 			<arg path="/usr/bin/phploc"/>
 			<arg value="--log-csv"/>
 			<arg value="${build}/phploc.csv"/>
+			<arg path="${source}"/>
+		</exec>
+	</target>
+
+	<target name="phpcs"	description="Find coding standard violations using PHP_CodeSniffer">
+		<exec executable="php" output="/dev/null" failonerror="false">
+			<arg value="-d"/>
+			<arg value="memory_limit=${memorylimit}"/>
+			<arg path="/usr/bin/phpcs"/>
+			<arg value="--report=checkstyle"/>
+			<arg value="--report-file=${build}/checkstyle.xml"/>
+			<arg value="--standard=ZEND"/>
+			<arg value="--extensions=php" />
 			<arg path="${source}"/>
 		</exec>
 	</target>
@@ -84,16 +97,5 @@
 			<arg value="${build}/pmd.xml"/>
 		</exec>
 	</target>
-
-	<taskdef name="jslint4java" classname="com.googlecode.jslint4java.ant.JSLintTask" classpath="${basedir}/jslint4java-2.0.3.jar" />
-
-	<target name="jslint">
-        <jslint4java options="browser,white,undef,plusplus,newcap,vars,indent=4,sloppy" haltOnFailure="false">
-            <predef>Prototype, $$, $$$$, window, document, continue, Ext</predef>
-            <formatter type="junit" destfile="${build}/jslint" />
-            <formatter type="xml" destfile="${build}/jslint.xml" />
-            <fileset dir="${source}" includes="**/*.js" excludes="**/prototype.js,**/ux/*" />
-        </jslint4java>
-    </target>
 
 </project>
