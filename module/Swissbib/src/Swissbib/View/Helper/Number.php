@@ -2,12 +2,19 @@
 namespace Swissbib\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\Config\Config as ZendConfig;
 
+/**
+ * Format integers
+ *
+ */
 class Number extends AbstractHelper {
 
+	/**
+	 * Format integer with thousand separator
+	 *
+	 * @param	Integer		$number
+	 * @return	String
+	 */
 	public function __invoke($number) {
 		return number_format($number, 0, '', '\'');
 	}

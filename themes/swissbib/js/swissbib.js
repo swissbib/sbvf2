@@ -231,8 +231,8 @@ var swissbib = {
 	 */
 	initAutocomplete: function(ctx) {
 		var options = {
-			setWidth : 5, /* below this number of results the width is calculated */
-		}
+			setWidth : 5 /* below this number of results the width is calculated */
+		};
 		var availableTags = [
 			"ActionScript",
 			"AppleScript",
