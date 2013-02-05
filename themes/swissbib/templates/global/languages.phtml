@@ -1,0 +1,29 @@
+<?php
+
+$languages	= array(
+	array(
+		'key'		=> 'de',
+		'label'		=> 'Deutsch',
+		'selected'	=> true
+	),
+	array(
+		'key'		=> 'fr',
+		'label'		=> 'Français'
+	),
+	array(
+		'key'		=> 'it',
+		'label'		=> 'Italiano'
+	)
+);
+
+?>
+<div id="meta">
+	<h3 class="hidden">Metanavigation</h3>
+	<ul>
+		<?php foreach($languages as $lang): ?>
+		<li class="nav_<?=$lang['key']?><?=isset($lang['selected'])?' selected':''?>">
+			<a href="<?=$this->serverUrl(true)?>&lng=<?=$lang['key']?>" title="<?=$lang['label']?>"><?=$lang['key']?></a>
+		</li>
+		<?php endforeach; ?>
+	</ul>
+</div>

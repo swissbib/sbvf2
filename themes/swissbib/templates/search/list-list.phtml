@@ -1,0 +1,36 @@
+<table class="data">
+	<colgroup>
+		<col width="1%">
+		<col width="1%">
+		<col width="10%">
+		<col width="*">
+		<col width="11%">
+		<col width="1%">
+	</colgroup>
+	<caption class="hidden">
+		Suchergebnisse für Begriff &quot;Marke&quot;
+	</caption>
+	<thead class="hidden">
+		<tr>
+			<th>Nummer</th>
+			<th>Merkliste</th>
+			<th>Bild</th>
+			<th>Beschreibung</th>
+			<th>Verfügbarkeit</th>
+			<th>Information</th>
+		</tr>
+	</thead>
+	<tbody>
+
+	<?php
+	$this->startIndex	= $this->results->getStartRecord();
+
+	foreach ($this->results->getResults() as $index => $result) {
+		$this->recordIndex = $this->startIndex + $index;
+		echo $this->record($result)->getSearchResult('list');
+	}
+
+	?>
+
+	</tbody>
+</table>

@@ -1,0 +1,144 @@
+/* --- NOSE AG Design Intelligence --------------------------------------------------- */
+/* --- CSS Framework: IE6 modifications ---------------------------------------------- */
+/* --- swissbib  --------------------------------------------------------------------- */
+
+@media screen, projection {
+
+/* -------------------------------------------------------------------------------------
+ clear
+ ======================================================================================*/
+
+/* clear floats */
+.teaser, .fieldgroup, fieldset .fieldbox, ul.listing, .metatitle, ul.items li h4  {
+	width:100%;
+}
+.box {
+	width:96%; /* compensate for padding */
+	padding:2%;
+}
+.teaser .box {
+	width:90%; /* compensate for padding */
+	padding:4%;
+}
+form.data, form.form {
+	width:95%; /* compensate for padding */
+	padding:1%;
+}
+form.data fieldset, form.form fieldset {
+	width:98%; /* compensate for padding */
+	padding:1%;
+}
+form.data fieldset.actions, form.form fieldset.actions  {
+	width:90%; /* compensate for padding */
+}
+
+
+
+/* -------------------------------------------------------------------------------------
+ basemod.css
+ ======================================================================================*/
+#col3_content, #content {
+	background-image:none;
+}
+
+
+/* -------------------------------------------------------------------------------------
+ global.css
+ ======================================================================================*/
+ 
+/* images */
+img.large {
+	width:700px;
+}
+ 
+/* forms */
+.fieldgroup .c50l, .fieldgroup .c50r {
+	float:none;
+	width:100%;
+}
+
+/* slider */
+.slider, .ui-slider {
+	display:none;
+}
+
+
+/* forms */
+input.submit, input.reset {
+	padding:3px 4px 1px 4px; /* compensate outline border */
+}
+input.checkbox {
+	margin:0px 5px 0 0;
+}
+input.radio {
+	margin:0 5px 0 0;
+}
+#search select.select  {
+	line-height:30px;
+}
+
+/* icons */
+.c25l .icon_notepad_add_link img {
+	width: expression(this.width > 130 ? 130:  true);
+}
+
+
+
+/* -------------------------------------------------------------------------------------
+ content.css
+ ======================================================================================*/
+
+
+/* navigation */
+#navigation .subnavigation {
+	left:0;
+	width:150px;
+	padding:0;
+	background-image:none; /* ie6 can't handle png transparency */
+	background-color:#D4F2CE;
+	border-bottom:1px solid #363940;
+	border-left:1px solid #363940;
+	border-right:1px solid #363940;
+}
+
+
+/* navigation */
+#navigation ul li {
+	height:25px;
+}
+#sidebar .subnavigation ul li {
+	display:inline-block; /* avoids height bug caused by newline */
+}
+
+/* search */
+#search input.submit {
+	padding-left:0;
+	padding-right:0;
+}
+
+
+/* filters */
+.filters ul li {
+	display:inline-block; /* avoids height bug caused by newline */
+}
+
+
+/* facets */
+.facets ul li {
+	display:inline-block; /* avoids height bug caused by newline */
+}
+
+/* notepad */
+#notepad {
+	width:auto; /* width in px breaks layout */
+	background-image:none;
+	background-color:#CCCCCC;
+	margin-top:5px;
+}
+
+/* info window */
+#infoWindow {
+	width:350px;
+}
+	
+}

@@ -1,0 +1,81 @@
+<?
+    // Set up page title:
+    $lookfor = $this->params->getDisplayQuery();
+    if (isset($this->overrideTitle)) {
+        $this->headTitle($this->overrideTitle);
+    } else {
+        $this->headTitle($this->translate('Search Results') . (empty($lookfor) ? '' : " - {$lookfor}"));
+    }
+
+//    // Set up breadcrumbs:
+//    if (isset($this->overrideTitle)) {
+//        $this->layout()->breadcrumbs = '<em>' . $this->escapeHtml($this->overrideTitle) . '</em>';
+//    } else {
+//        $this->layout()->breadcrumbs = '<em>' . $this->transEsc('Search') . ': ' .
+//            $this->escapeHtml($lookfor) . '</em>';
+//    }
+
+		// Dummy: how to separate different views
+	$baseResultsTotal	= $this->results->getResultTotal();
+
+	$tabHeadConfigs	= array(
+		array(
+			'id'		=> 'swissbib',
+			'label'		=> 'Bücher & mehr',
+			'count'		=> $baseResultsTotal,
+			'selected'	=> true
+		),
+		array(
+			'id'	=> 'external',
+			'label'	=> 'Artikel & mehr',
+			'count'	=> 123456789
+		)
+	)
+
+?>
+<!-- begin: col1 (sidebar)  -->
+<div id="col1" class="sidebar">
+	<div id="col1_content" class="clearfix">
+		<!-- begin: sidebar -->
+		<div id="sidebar">
+			<?=$this->render('global/sidebar/search/results.phtml')?>
+		</div>
+		<!-- end: sidebar -->
+	</div>
+</div>
+<!-- end: col1 (sidebar) -->
+<!-- begin: col3 (content) -->
+<div id="col3" class="content">
+	<div id="col3_content" class="clearfix">
+		<!-- begin: content -->
+		<div id="content">
+
+			<!-- begin: inlay -->
+			<div id="inlay">
+
+				<!-- begin: tabbed -->
+				<?=$this->render('search/tab-heads.phtml', array('tabs' => $tabHeadConfigs))?>
+				<!-- end: tabbed -->
+
+				<!-- begin: notepad -->
+				<?=$this->render('search/controls/notepad.phtml')?>
+				<!-- end: notepad -->
+
+			</div><!-- end: inlay -->
+
+			<!-- begin: tabbed view -->
+			<?=$this->render('search/result-tabs.phtml')?>
+			<!-- end: tabbed view -->
+
+			<!-- begin: pagefunctions -->
+			<?=$this->render('search/controls/pagefunctions.phtml')?>
+			<!-- end: pagefunctions -->
+
+		</div>
+		<!-- end: content -->
+	</div>
+	<div id="ie_clearing">
+		&nbsp;
+	</div>
+</div>
+<!-- end: col3 (content) -->
