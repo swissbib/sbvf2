@@ -1,26 +1,11 @@
 <?
     // Set up page title:
-    $lookfor = $this->results->getParams()->getDisplayQuery();
+    $lookfor = $this->params->getDisplayQuery();
     if (isset($this->overrideTitle)) {
         $this->headTitle($this->overrideTitle);
     } else {
         $this->headTitle($this->translate('Search Results') . (empty($lookfor) ? '' : " - {$lookfor}"));
     }
-
-    // Set up search box:
-    $this->layout()->searchbox = $this->context($this)->renderInContext(
-        'search/searchbox.phtml',
-        array(
-            'lookfor' => $lookfor,
-            'searchIndex' => $this->results->getParams()->getSearchHandler(),
-            'searchType' => $this->results->getParams()->getSearchType(),
-            'searchId' => $this->results->getSearchId(),
-            'searchClassId' => $this->results->getParams()->getsearchClassId(),
-            'checkboxFilters' => $this->results->getParams()->getCheckboxFacets(),
-            'filterList' => $this->results->getParams()->getFilters(),
-            'selectedShards' => $this->results->getParams()->getSelectedShards()
-        )
-    );
 
     // Set up breadcrumbs:
     if (isset($this->overrideTitle)) {
@@ -70,17 +55,7 @@
 				</div><!-- end: tabbed -->
 
 				<!-- begin: notepad -->
-				<div id="notepad">
-					<form id="form_notepad" name="form_notepad" action="#" class="hint">
-						<h3 class="hidden"><label for="notepad_list">Merklisten</label></h3>
-						<select class="select dropdown" name="notepad_list" id="notepad_list">
-							<option value="l01">Amerikanische Autoren</option>
-							<option value="l02">Natur</option>
-							<option value="default">Default</option>
-						</select>
-					</form>
-					<a href="merkliste.html" class="linkbutton icon_goto" title="Merkliste anzeigen"><span>Anzeigen</span></a>
-				</div>
+				<?=$this->partial('search/controls/notepad.phtml')?>
 				<!-- end: notepad -->
 
 			</div><!-- end: inlay -->
@@ -267,26 +242,8 @@
 			</div><!-- end: tabbed externe bibliothek -->
 
 			<!-- begin: pagefunctions -->
-			<div id="pagefunctions" class="offset">
-				<h3 class="hidden">Seitenfunktionen</h3>
-				<ul>
-					<li id="pagefunction_rss">
-						<a href="#" title="RSS Feed abonnieren">RSS Feed</a>
-					</li>
-					<li id="pagefunction_link">
-						<a title="Permanenter Link zu diesem/n Treffer(n)" class="modal" href="#display_permalink">permalink</a>
-					</li>
-					<li id="pagefunction_print">
-						<a href="#" title="Seite drucken">Seite drucken</a>
-					</li>
-					<li id="pagefunction_send">
-						<a href="#" title="Link per Email senden">Link per Email senden</a>
-					</li>
-					<li id="pagefunction_save">
-						<a href="#" title="Seite speichern">Seite speichern</a>
-					</li>
-				</ul>
-			</div><!-- end: pagefunctions -->
+			<?=$this->partial('search/controls/pagefunctions.phtml')?>
+			<!-- end: pagefunctions -->
 
 		</div>
 		<!-- end: content -->
