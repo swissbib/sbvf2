@@ -1,4 +1,7 @@
 <?php
 return array(
-    'extends' => 'swissbib'
+    'extends' => 'swissbib',
+	'css' => array(
+		'orange.css'
+	)
 );
