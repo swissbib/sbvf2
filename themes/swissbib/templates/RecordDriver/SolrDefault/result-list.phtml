@@ -3,7 +3,7 @@
 	/** @var	VuFind\View\Helper\Root\Record		$viewRecord  */
 	$resultItem		= $this->driver;
 	$viewRecord		= $this->record($this->driver);
-	$thumbnail		= $resultItem->getThumbnail();
+	$thumbnailUrl	= $resultItem->getThumbnail() ? $resultItem->getThumbnail() : $this->url('cover-unavailable');
 	$detailLink		= $this->recordLink()->getUrl($resultItem);
 	$title			= $resultItem->getTitle();
 
@@ -15,7 +15,7 @@
 	</td>
 	<td class="right nodivider">
 		<a href="<?=$detailLink?>" title="<?=$title?>">
-			<img src="<?=$thumbnail?$thumbnail:$this->url('cover-unavailable')?>" alt="<?=$title?>" class="dropshadow"/>
+			<img src="<?=$thumbnailUrl?>" alt="<?=$title?>" class="dropshadow"/>
 		</a>
 	</td>
 	<td>
