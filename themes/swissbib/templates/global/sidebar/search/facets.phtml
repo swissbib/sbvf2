@@ -1,88 +1,39 @@
+<?php
+
+$facetList	= $this->results->getFacetList();
+$options	= $this->searchOptions($this->searchClassId);
+$basicSearch= $options->getSearchAction();
+
+
+?>
 <h3>Treffer eingrenzen</h3>
 
 <div class="facets">
-	<!-- facet -->
-	<div class="facet" id="facet_author">
-		<h5 class="toggler persist expanded" id="facet_toggler_author">Autor</h5>
-		<ul class="facet_toggler_author">
-			<li>
-				<a href="#" title="Bach, Johann Sebastian (22)">Bach, Johann Sebastian&nbsp;(22)&nbsp;&raquo;</a>
-			</li>
-			<li>
-				<a href="#" title="David, Lucas (22)">David, Lucas (22)&nbsp;&raquo;</a>
-			</li>
-			<li>
-				<a href="#" title="Simon, Jürg (6)">Simon, Jürg (6)&nbsp;&raquo;</a>
-			</li>
-			<li>
-				<a href="#" title="Pacozi, Gilbert (8)">Pacozi, Gilbert (8)&nbsp;&raquo;</a>
-			</li>
-			<li>
-				<a href="#" title="Beier, Raricht (2)">Beier, Raricht (2)&nbsp;&raquo;</a>
-			</li>
-			<li>
-				<a href="#" title="John, Ford (14)">John, Ford (14)&nbsp;&raquo;</a>
-			</li>
-			<li class="facet_more">
-				<a href="#" title="Mehr anzeigen">Mehr anzeigen</a>
-			</li>
-		</ul>
-	</div>
-	<!-- facet -->
-	<div class="facet" id="facet_format">
-		<h5 class="toggler persist expanded" id="facet_toggler_format">Format</h5>
-		<ul class="facet_toggler_format">
-			<li>
-				<a href="#" title="Video (22)">Video (22)&nbsp;&raquo;</a>
-			</li>
-			<li>
-				<a href="#" title="Musik (ReRo) (6)">Musik (ReRo) (6)&nbsp;&raquo;</a>
-			</li>
-			<li>
-				<a href="#" title="Journal (1)">Journal (1)&nbsp;&raquo;</a>
-			</li>
-			<li class="facet_more">
-				<a href="#" title="Mehr anzeigen">Mehr anzeigen</a>
-			</li>
-		</ul>
-	</div>
-	<!-- facet -->
-	<div class="facet" id="facet_language">
-		<h5 class="toggler persist collapsed" id="facet_toggler_language">Sprache</h5>
-		<ul class="facet_toggler_language">
-			<li>
-				<a href="#" title="Spanisch (5)">Spanisch (5)&nbsp;&raquo;</a>
-			</li>
-			<li>
-				<a href="#" title="Ungarisch (6)">Ungarisch (6)&nbsp;&raquo;</a>
-			</li>
-			<li>
-				<a href="#" title="Serbo-Kroatisch (1)">Serbo-Kroatisch (1)&nbsp;&raquo;</a>
-			</li>
-		</ul>
-	</div>
-	<!-- facet -->
-	<div class="facet" id="facet_year">
-		<h5 class="toggler persist collapsed" id="facet_toggler_year">Jahr</h5>
-		<ul class="facet_toggler_year">
-			<li>
-				<a href="#" title="2009 (3)">2009 (3)&nbsp;&raquo;</a>
-			</li>
-			<li>
-				<a href="#" title="2008 (2)">2009 (2)&nbsp;&raquo;</a>
-			</li>
-			<li>
-				<a href="#" title="2007 (6)">2007 (6)&nbsp;&raquo;</a>
-			</li>
-			<li>
-				<a href="#" title="2006 (9)">2006 (9)&nbsp;&raquo;</a>
-			</li>
-			<li>
-				<a href="#" title="2005 (5)">2005 (5)&nbsp;&raquo;</a>
-			</li>
-			<li class="facet_more">
-				<a href="#" title="Mehr anzeigen">Mehr anzeigen</a>
-			</li>
-		</ul>
-	</div>
+
+	<?php foreach($facetList as $facetGroup => $facetGroupData): ?>
+		<?php
+			$facetId		= strtolower($facetGroup);
+			$facetGroupLabel= $facetGroupData['label'];
+			$facetGroupItems= $this->SortAndPrepareFacetList($this->results, $facetGroup, $facetGroupData['list'], $basicSearch);
+		?>
+		<!-- facet start: <?=$facetGroup?> -->
+		<div class="facet" id="facet_<?=$facetId?>">
+			<h5 class="toggler persist expanded" id="facet_toggler_<?=$facetId?>"><?=$this->escapeHtml($facetGroupLabel)?></h5>
+			<ul class="facet_toggler_<?=$facetId?>">
+
+				<?php foreach($facetGroupItems as $facet): ?>
+					<?php $facetLabel = $this->escapeHtml($facet['displayText']) . '&nbsp;(' . $facet['count'] . ')'; ?>
+					<li>
+						<a href="<?=$facet['url']?>" title="<?=$facetLabel?>"><?=$facetLabel?>&nbsp;&raquo;</a>
+					</li>
+				<?php endforeach; ?>
+
+				<li class="facet_more">
+					<a href="#" title="Mehr anzeigen">Mehr anzeigen</a>
+				</li>
+			</ul>
+		</div>
+		<!-- facet -->
+	<?php endforeach; ?>
+
 </div>

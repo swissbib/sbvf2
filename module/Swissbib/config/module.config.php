@@ -15,6 +15,7 @@ return array(
     'view_helpers' => array(
         'invokables' => array(
             'number'	=> 'Swissbib\View\Helper\Number',
+			'SortAndPrepareFacetList'	=> 'Swissbib\View\Helper\SortAndPrepareFacetList'
 //			'config' => 'Swissbib\View\Helper\Config'
         )
     ),
