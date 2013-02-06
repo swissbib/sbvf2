@@ -26,7 +26,7 @@ var swissbib = {
 		// init
 		swissbib.initBrowserFlags();
 		swissbib.initNavigation(ctxHeader);
-		swissbib.initAutocomplete(ctxAll);
+		//swissbib.initAutocomplete(ctxAll);
 		swissbib.initToggler(ctxMain);
 		swissbib.initTabs(ctxContent);
 		swissbib.initForms(ctxAll);
