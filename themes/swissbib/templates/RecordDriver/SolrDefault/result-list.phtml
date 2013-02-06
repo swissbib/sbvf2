@@ -1,11 +1,11 @@
 <?php
-	/** @var	Swissbib\RecordDriver\SbSolrMarc	$solrRecord  */
+	/** @var	Swissbib\RecordDriver\SbSolrMarc	$resultItem  */
 	/** @var	VuFind\View\Helper\Root\Record		$viewRecord  */
-	$solrRecord		= $this->driver;
+	$resultItem		= $this->driver;
 	$viewRecord		= $this->record($this->driver);
-	$thumbnail		= $solrRecord->getThumbnail();
-	$detailLink		= $this->recordLink()->getUrl($solrRecord);
-	$title			= $solrRecord->getTitle();
+	$thumbnail		= $resultItem->getThumbnail();
+	$detailLink		= $this->recordLink()->getUrl($resultItem);
+	$title			= $resultItem->getTitle();
 
 ?>
 <tr>
@@ -25,9 +25,9 @@
 		</p><!-- meta -->
 		<div class="meta">
 			<h6>Verfasser:</h6>
-			<span><?=$solrRecord->getPrimaryAuthor()?></span><br/>
+			<span><?=$resultItem->getPrimaryAuthor()?></span><br/>
 			<h6>Jahr:</h6>
-			<span><?=implode(', ', $solrRecord->getPublicationDates())?></span><br/>
+			<span><?=$resultItem->getPublicationDates()?></span><br/>
 			<h6>Auflage:</h6>
 			<span>[3. Aufl.]</span>
 		</div><!-- format -->
