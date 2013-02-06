@@ -2,11 +2,11 @@
 <project name="snmcms" default="build">
 
 	<property name="build" location="${basedir}/../../../../build" />
-	<property name="source" location="${basedir}/../.." />
+	<property name="source" location="${basedir}/../.." /> <!--Swissbib module-->
 	<property name="memorylimit" value="512M" />
 
 
-	<target name="build" depends="prepare,lint,phploc,phpcs"/>
+	<target name="build" depends="prepare,lint,phploc,phpcs,phpcpd"/>
 	<!--<target name="build" depends="prepare,lint,phploc,phpunit,phpcpd,pdepend,phpmd,jslint"/>-->
 
 	<target name="prepare" depends="preparefolders" description="Prepare folders"/>
@@ -46,7 +46,7 @@
 			<arg path="/usr/bin/phpcs"/>
 			<arg value="--report=checkstyle"/>
 			<arg value="--report-file=${build}/checkstyle.xml"/>
-			<arg value="--standard=ZEND"/>
+			<arg value="--standard=PEAR"/>
 			<arg value="--extensions=php" />
 			<arg path="${source}"/>
 		</exec>
