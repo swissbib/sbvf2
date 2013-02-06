@@ -23,8 +23,10 @@
         <? $group_id = $this->driver->getGroup(); ?>
         <!-- array of library codes -->
         <? $institution = $this->driver->getInstitution(); ?>
+        <? $cf8 = $this->driver->getYear(); ?>
 
         <div class="meta">
+            <h1><?=$cf8?></h1>
             <? if (!empty($summTitleRemainder)): ?>
                 <span><?=$summTitleRemainder?></span><br />
             <? endif; ?>

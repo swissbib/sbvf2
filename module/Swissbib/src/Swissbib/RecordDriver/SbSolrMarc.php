@@ -72,12 +72,6 @@ class SbSolrMarc extends VFSolrMarc
         return $this->getFirstFieldValue('260', array('c'));
     }
 
-    /* trial and error */
-    public function getYear()
-    {
-        return $this->marcRecord->getField('008');
-    }
-
     /* FRBR-Link */
     public function getGroup()
     {
@@ -88,6 +82,14 @@ class SbSolrMarc extends VFSolrMarc
     public function getInstitution()
     {
         return isset($this->fields['institution']) ? $this->fields['institution'] : array();
+    }
+
+    /* trial and error */
+    public function getYear()
+    {
+        $cf8 = substr($this->marcRecord->getField('008'), 3);
+        return $cf8;
+        //return $this->marcRecord->getField('008')[13];
     }
 
 }
