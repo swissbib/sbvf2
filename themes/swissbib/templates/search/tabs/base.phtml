@@ -1,7 +1,11 @@
 <?php
+/** @var \VuFind\Search\Solr\Results	$results  */
+$results	= $this->results;
+/** @var \VuFind\Search\Solr\Params		$params  */
+$params		= $this->params;
 
-$recordTotal= $this->results->getResultTotal();
-$lookfor	= $this->params->getDisplayQuery();
+$recordTotal= $results->getResultTotal();
+$lookfor	= $params->getDisplayQuery();
 
 ?>
 
