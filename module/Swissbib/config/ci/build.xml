@@ -2,6 +2,7 @@
 <project name="snmcms" default="build">
 
 	<property name="build" location="${basedir}/../../../../build" />
+	<property name="logs" location="${build}/logs" />
 	<property name="source" location="${basedir}/../.." /> <!--Swissbib module-->
 	<property name="memorylimit" value="512M" />
 
@@ -14,6 +15,7 @@
 	<target name="preparefolders" description="Prepare all folders (remove and recreate)">
 		<delete dir="${build}"/>
 		<mkdir dir="${build}"/>
+		<mkdir dir="${logs}"/>
 	</target>
 
 	<target name="lint" description="Lint all PHP Files">
@@ -34,7 +36,7 @@
 			<arg value="memory_limit=${memorylimit}"/>
 			<arg path="/usr/bin/phploc"/>
 			<arg value="--log-csv"/>
-			<arg value="${build}/phploc.csv"/>
+			<arg value="${logs}/phploc.csv"/>
 			<arg path="${source}"/>
 		</exec>
 	</target>
@@ -45,7 +47,7 @@
 			<arg value="memory_limit=${memorylimit}"/>
 			<arg path="/usr/bin/phpcs"/>
 			<arg value="--report=checkstyle"/>
-			<arg value="--report-file=${build}/checkstyle.xml"/>
+			<arg value="--report-file=${logs}/checkstyle.xml"/>
 			<arg value="--standard=PEAR"/>
 			<arg value="--extensions=php" />
 			<arg path="${source}"/>
@@ -68,7 +70,7 @@
 			<arg value="memory_limit=${memorylimit}"/>
 			<arg path="/usr/bin/phpcpd"/>
 			<arg value="--log-pmd"/>
-			<arg value="${build}/pmdcpd.xml"/>
+			<arg value="${logs}/pmdcpd.xml"/>
 			<arg path="${source}"/>
 		</exec>
 	</target>
@@ -78,7 +80,7 @@
 			<arg value="-d"/>
 			<arg value="memory_limit=${memorylimit}"/>
 			<arg path="/usr/bin/pdepend"/>
-			<arg value="--jdepend-xml=${build}/jdepend.xml"/>
+			<arg value="--jdepend-xml=${logs}/jdepend.xml"/>
 			<arg value="--jdepend-chart=${build}/dependencies.svg"/>
 			<arg value="--overview-pyramid=${build}/overview-pyramid.svg"/>
 			<arg path="${source}"/>
@@ -94,7 +96,7 @@
 			<arg value="xml"/>
 			<arg path="${basedir}/phpmd.xml"/>
 			<arg value="--reportfile"/>
-			<arg value="${build}/pmd.xml"/>
+			<arg value="${logs}/pmd.xml"/>
 		</exec>
 	</target>
 
