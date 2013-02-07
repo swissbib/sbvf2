@@ -12,8 +12,8 @@ class Number extends AbstractHelper {
 	/**
 	 * Format integer with thousand separator
 	 *
-	 * @param	Integer		$number
-	 * @return	String
+	 * @param    Integer        $number
+	 * @return    String
 	 */
 	public function __invoke($number) {
 		return number_format($number, 0, '', '\'');
