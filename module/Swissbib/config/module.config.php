@@ -15,7 +15,8 @@ return array(
     'view_helpers' => array(
         'invokables' => array(
             'number'	=> 'Swissbib\View\Helper\Number',
-            'SortAndPrepareFacetList'	=> 'Swissbib\View\Helper\SortAndPrepareFacetList'
+            'SortAndPrepareFacetList'	=> 'Swissbib\View\Helper\SortAndPrepareFacetList',
+            'publicationDate'	=> 'Swissbib\View\Helper\YearFormatter',
 // 'config' => 'Swissbib\View\Helper\Config'
         )
     ),
