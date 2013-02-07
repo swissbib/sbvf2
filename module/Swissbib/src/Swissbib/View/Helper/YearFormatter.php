@@ -15,6 +15,9 @@ use Zend\View\Helper\AbstractHelper;
 
 class YearFormatter extends AbstractHelper {
     public function __invoke($publicationDate) {
+		if( !is_array($publicationDate) || sizeof($publicationDate) == 0 ) {
+			return '';
+		}
         $datetype = $publicationDate[0];
         $year1 = $publicationDate[1];
         $year2 = $publicationDate[2];
