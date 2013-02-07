@@ -1,3 +1,4 @@
 .idea
 local/config/vufind/config.ini
 public/.htaccess
+build
