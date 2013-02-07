@@ -1,31 +1,41 @@
+<?php
+$filters	= $this->params->getFilterList();
+/** @var	Vufind\Search\Base\Results	$results  */
+$results	= $this->results;
+/** @var	VuFind\Search\UrlQueryHelper	$urlQuery  */
+$urlQuery	= $results->getUrlQuery();
+
+
+?>
 <h3>Ihre Suche</h3>
 <div class="filters">
 	<p>
-		Freie Suche:
-		<br/>
-		<cite>Marke</cite>
+		Freie Suche:<br/>
+		<cite><?=$this->escapeHtml($this->params->getDisplayQuery())?></cite>
 	</p>
-	<h4 class="filters_indicator"><span>Suchfilter B&uuml;cher</span></h4>
-	<!-- filter -->
-	<div class="filter" id="filter_autor">
-		<h5>Autor</h5>
-		<ul>
-			<li>
-				<a href="#" title="Filter entfernen: Armin Bregy" class="filter_remove">Armin Bregy</a>
-			</li>
-			<li>
-				<a href="#" title="Filter entfernen: David Riedrich-Karl" class="filter_remove">David Riedrich-Karl</a>
-			</li>
-		</ul>
-	</div>
-	<!-- filter -->
-	<div class="filter" id="filter_language">
-		<h5>Sprache</h5>
-		<ul>
-			<li>
-				<a href="#" title="Filter entfernen: Englisch" class="filter_remove">Englisch</a>
-			</li>
-		</ul>
-	</div>
+
+	<?php if( sizeof($filters) ): ?>
+		<h4 class="filters_indicator"><span>Suchfilter B&uuml;cher</span></h4>
+
+		<?php foreach($filters as $filterLabel => $filterValues): ?>
+			<?php
+				$firstItem	= reset($filterValues);
+				$filterType	= $firstItem['field'];
+			?>
+			<!-- filter -->
+			<div class="filter" id="filter_<?=$filterType?>">
+				<h5><?=$this->escapeHtml($filterLabel)?></h5>
+				<ul>
+					<?php foreach($filterValues as $filter): ?>
+						<?php $removalUrl = $urlQuery->removeFacet($filter['field'], $filter['value']);	?>
+						<li>
+							<a href="<?=$removalUrl?>" title="Filter entfernen: <?=$this->escapeHtml($filter['displayText'])?>" class="filter_remove"><?=$this->escapeHtml($filter['displayText'])?></a>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+			</div>
+		<?php endforeach; ?>
+
+	<?php endif; ?>
 
 </div>
