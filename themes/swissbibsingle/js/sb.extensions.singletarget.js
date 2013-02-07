@@ -1,19 +1,24 @@
 /**
- * swissbib Javascript Stuff.
- * @author project swissbib, G�nter Hipler
- * @version 0.1 first prototype
- * */
-var swissbibgh = {
+ * Created by IntelliJ IDEA.
+ * User: swissbib
+ * Date: 2/7/12
+ * Time: 4:30 PM
+ * To change this template use File | Settings | File Templates.
+ */
+
+
+
+var swissbibextensionsSingleTarget = {
 
     initOnReady: function () {
 
-       swissbibgh.initSelectSortShortList();
-        swissbibgh.initLoginForm();
+        swissbibextensionsSingleTarget.initSortType_ListLength_ItemDisplay();
+        swissbibextensionsSingleTarget.initAddRemoveMemorizeList();
 
 
     },
 
-    initSelectSortShortList: function () {
+    initSortType_ListLength_ItemDisplay: function () {
         jQuery("[name=selectedSorting]").bind('change',function (event)
         {
 
@@ -44,7 +49,9 @@ var swissbibgh = {
             $("#changeHitListSizebutton").click();
         });
 
+    },
 
+    initAddRemoveMemorizeList: function() {
         jQuery(".icon_notepad_add").bind("click",function(event){
 
             var url = event.target.href;
@@ -62,11 +69,11 @@ var swissbibgh = {
         jQuery("#icon_notepad_addadd").bind("click",function(event){
 
             /*
-                        Out of [design /css] reasons we had to include the img - object within a span object
-                        it might happen that users will reach the unserlying a object when the mouse pointer is a the edge of the span object
-                         Therefore ask for the tagname of the object which has triggered the event.
+             Out of [design /css] reasons we had to include the img - object within a span object
+             it might happen that users will reach the unserlying a object when the mouse pointer is a the edge of the span object
+             Therefore ask for the tagname of the object which has triggered the event.
 
-                     */
+             */
             var urlObject = null;
             switch (event.target.tagName) {
                 case "A":
@@ -87,12 +94,12 @@ var swissbibgh = {
 
             var isMarkedExpression = /(isMarked=[\d_]+)/;
 
-           $(".icon_notepad_add").each(function(){
+            $(".icon_notepad_add").each(function(){
 
-               if(isMarkedExpression.exec(this.href)) {
-                   itemsInList.push(RegExp.$1);
-                   //alert (RegExp.$1);
-               }
+                if(isMarkedExpression.exec(this.href)) {
+                    itemsInList.push(RegExp.$1);
+                    //alert (RegExp.$1);
+                }
             });
 
             var joinedList =  itemsInList.join("&");
@@ -107,16 +114,16 @@ var swissbibgh = {
         jQuery("#icon_notepad_removeAll_memitems").bind("click",function(event){
 
 
-    /*Example for the link to used to delete all the items of the list shown in one step
-                /TouchPoint_tptest2/memorizelist.do?
-                    methodToCall=deleteSelectedEntries&selectedMemListentries[0]=on&selectedMemorizeList=-1&listafteritemdeletion=-1
+            /*Example for the link to used to delete all the items of the list shown in one step
+             /TouchPoint_tptest2/memorizelist.do?
+             methodToCall=deleteSelectedEntries&selectedMemListentries[0]=on&selectedMemorizeList=-1&listafteritemdeletion=-1
 
-                    search and replace the parameter 'selectedMemListentries[0]=on'
-                    selectedMemorizeList=-1  //used for the current listnumber
+             search and replace the parameter 'selectedMemListentries[0]=on'
+             selectedMemorizeList=-1  //used for the current listnumber
 
-                    template of the "delete all link" => event.target.href
-                    memorizelist.do?methodToCall=deleteSelectedEntries&SELECTEDITEMS&selectedMemorizeList=SELECTEDLIST&listafteritemdeletion=SELECTEDLIST
-        */
+             template of the "delete all link" => event.target.href
+             memorizelist.do?methodToCall=deleteSelectedEntries&SELECTEDITEMS&selectedMemorizeList=SELECTEDLIST&listafteritemdeletion=SELECTEDLIST
+             */
 
             var url = event.target.href;
             var selectedListNr = null;
@@ -127,15 +134,15 @@ var swissbibgh = {
             var listNumber = null;
             var memItems = new Array();
 
-           $(".deleteAllItemsAtOnceSingleItem").each(function(){
+            $(".deleteAllItemsAtOnceSingleItem").each(function(){
 
-               if(searchedItemExpression.exec(this.href)) {
-                   memItems.push(RegExp.$1);
-               }
+                if(searchedItemExpression.exec(this.href)) {
+                    memItems.push(RegExp.$1);
+                }
 
-               if(searchedListNumber.exec(this.href)) {
-                   listNumber = RegExp.$1
-               }
+                if(searchedListNumber.exec(this.href)) {
+                    listNumber = RegExp.$1
+                }
             });
 
 
@@ -157,7 +164,7 @@ var swissbibgh = {
 
 
         //change should only be possible because of event bubbling
-        //event might be better bind on the select element itself 
+        //event might be better bind on the select element itself
         jQuery(".notepadJQueryMemorizeListGrip").bind('change',function(event){
 
             //the selected value of the visible element has to be set to the 'hidden' memorylist select box which is part of the
@@ -191,47 +198,25 @@ var swissbibgh = {
                 } );
             }
 
-             //$("#hiddensaveToListbutton").click();
+            //$("#hiddensaveToListbutton").click();
 
         });
 
         jQuery("[name^=dummylistToDelete]").bind('click',function(event){
 
-            
+
 
             $("#dummyHiddenMemorizeList")[0].value = this.attributes["listnumber"].nodeValue;
             $("#dummyHiddenDeleteListSubmit").click();
 
         });
 
-        /*
-        currently not used -> Problem with MemorizeBean
-        jQuery("#callCurrentMemorizeListFromHitlist").bind('click',function(event){
-
-            var tempselect =  $("[id^=form_notepad_dummy-selectedMemorizeList]")[0].value;
-            var tempHref  =  this.attributes["href"].nodeValue;
-            var selectedList = tempselect.split("_");
-            selectedList = selectedList[1];
-            tempHref = tempHref + "&selectedMemorizeList=" + selectedList;
-
-            window.location.href = tempHref;
-
-            //$("#form_notepad_dummy")[0].submit();
-            return false;
-
-        });
-        */
-
-    },
-    initLoginForm: function() {
 
     }
-
-	
 };
 
 jQuery(document).ready(function(){
 
-    swissbibgh.initOnReady();
+    swissbibextensionsSingleTarget.initOnReady();
 
 });
