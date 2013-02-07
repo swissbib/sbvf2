@@ -35,22 +35,26 @@ class Module implements AutoloaderProviderInterface,
     {
 
         //note: only for testing
-        $m->getEventManager()->attach(ModuleEvent::EVENT_LOAD_MODULES_POST,array($this,'postInSwissbib'),10000);
+        //$m->getEventManager()->attach(ModuleEvent::EVENT_LOAD_MODULES_POST,array($this,'postInSwissbib'),10000);
 
     }
 
     public function onBootstrap(MvcEvent $e)
     {
+
+        $b = new SbBootstrapper($e);
+        $b->bootstrap();
+
     }
 
 
-    public function postInSwissbib(ModuleEvent $e) {
+    //public function postInSwissbib(ModuleEvent $e) {
 
         //note: only for testing
-        $mName = $e->getModuleName();
+    //    $mName = $e->getModuleName();
 
-        $params =  $e->getParams();
+    //    $params =  $e->getParams();
 
 
-    }
+    //}
 }
