@@ -48,7 +48,7 @@
 			<arg path="/usr/bin/phpcs"/>
 			<arg value="--report=checkstyle"/>
 			<arg value="--report-file=${logs}/checkstyle.xml"/>
-			<arg value="--standard=PEAR"/>
+			<arg value="--standard=${basedir}/ruleset.xml"/>
 			<arg value="--extensions=php" />
 			<arg path="${source}"/>
 		</exec>

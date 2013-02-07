@@ -10,102 +10,111 @@ use RuntimeException;
 error_reporting(E_ALL | E_STRICT);
 chdir(__DIR__);
 
-class Bootstrap
-{
-    protected static $serviceManager;
-    protected static $config;
-    protected static $bootstrap;
+class Bootstrap {
 
-    public static function init()
-    {
-        // Load the user-defined test configuration file, if it exists; otherwise, load
-        if (is_readable(__DIR__ . '/TestConfig.php')) {
-            $testConfig = include __DIR__ . '/TestConfig.php';
-        } else {
-            $testConfig = include __DIR__ . '/TestConfig.php.dist';
-        }
+	protected static $serviceManager;
 
-        $zf2ModulePaths = array();
+	protected static $config;
 
-        if (isset($testConfig['module_listener_options']['module_paths'])) {
-            $modulePaths = $testConfig['module_listener_options']['module_paths'];
-            foreach ($modulePaths as $modulePath) {
-                if (($path = static::findParentPath($modulePath)) ) {
-                    $zf2ModulePaths[] = $path;
-                }
-            }
-        }
+	protected static $bootstrap;
 
-        $zf2ModulePaths  = implode(PATH_SEPARATOR, $zf2ModulePaths) . PATH_SEPARATOR;
-        $zf2ModulePaths .= getenv('ZF2_MODULES_TEST_PATHS') ?: (defined('ZF2_MODULES_TEST_PATHS') ? ZF2_MODULES_TEST_PATHS : '');
 
-        static::initAutoloader();
 
-        // use ModuleManager to load this module and it's dependencies
-        $baseConfig = array(
-            'module_listener_options' => array(
-                'module_paths' => explode(PATH_SEPARATOR, $zf2ModulePaths),
-            ),
-        );
+	public static function init() {
+		// Load the user-defined test configuration file, if it exists; otherwise, load
+		if( is_readable(__DIR__ . '/TestConfig.php') ) {
+			$testConfig = include __DIR__ . '/TestConfig.php';
+		}
+		else {
+			$testConfig = include __DIR__ . '/TestConfig.php.dist';
+		}
 
-        $config = ArrayUtils::merge($baseConfig, $testConfig);
+		$zf2ModulePaths = array();
 
-        $serviceManager = new ServiceManager(new ServiceManagerConfig());
-        $serviceManager->setService('ApplicationConfig', $config);
-        $serviceManager->get('ModuleManager')->loadModules();
+		if( isset($testConfig['module_listener_options']['module_paths']) ) {
+			$modulePaths = $testConfig['module_listener_options']['module_paths'];
+			foreach($modulePaths as $modulePath) {
+				if( ($path = static::findParentPath($modulePath)) ) {
+					$zf2ModulePaths[] = $path;
+				}
+			}
+		}
 
-        static::$serviceManager = $serviceManager;
-        static::$config = $config;
-    }
+		$zf2ModulePaths = implode(PATH_SEPARATOR, $zf2ModulePaths) . PATH_SEPARATOR;
+		$zf2ModulePaths .= getenv('ZF2_MODULES_TEST_PATHS') ? : (defined('ZF2_MODULES_TEST_PATHS') ? ZF2_MODULES_TEST_PATHS : '');
 
-    public static function getServiceManager()
-    {
-        return static::$serviceManager;
-    }
+		static::initAutoloader();
 
-    public static function getConfig()
-    {
-        return static::$config;
-    }
+		// use ModuleManager to load this module and it's dependencies
+		$baseConfig = array(
+			'module_listener_options' => array(
+				'module_paths' => explode(PATH_SEPARATOR, $zf2ModulePaths),
+			),
+		);
 
-    protected static function initAutoloader()
-    {
-        $vendorPath = static::findParentPath('vendor');
+		$config = ArrayUtils::merge($baseConfig, $testConfig);
 
-        if (is_readable($vendorPath . '/autoload.php')) {
-            $loader = include $vendorPath . '/autoload.php';
-        } else {
-            $zf2Path = getenv('ZF2_PATH') ?: (defined('ZF2_PATH') ? ZF2_PATH : (is_dir($vendorPath . '/ZF2/library') ? $vendorPath . '/ZF2/library' : false));
+		$serviceManager = new ServiceManager(new ServiceManagerConfig());
+		$serviceManager->setService('ApplicationConfig', $config);
+		$serviceManager->get('ModuleManager')->loadModules();
 
-            if (!$zf2Path) {
-                throw new RuntimeException('Unable to load ZF2. Run `php composer.phar install` or define a ZF2_PATH environment variable.');
-            }
+		static::$serviceManager = $serviceManager;
+		static::$config = $config;
+	}
 
-            include $zf2Path . '/Zend/Loader/AutoloaderFactory.php';
 
-        }
 
-        AutoloaderFactory::factory(array(
-            'Zend\Loader\StandardAutoloader' => array(
-                'autoregister_zf' => true,
-                'namespaces' => array(
-                    __NAMESPACE__ => __DIR__ . '/' . __NAMESPACE__,
-                ),
-            ),
-        ));
-    }
+	public static function getServiceManager() {
+		return static::$serviceManager;
+	}
 
-    protected static function findParentPath($path)
-    {
-        $dir = __DIR__;
-        $previousDir = '.';
-        while (!is_dir($dir . '/' . $path)) {
-            $dir = dirname($dir);
-            if ($previousDir === $dir) return false;
-            $previousDir = $dir;
-        }
-        return $dir . '/' . $path;
-    }
+
+
+	public static function getConfig() {
+		return static::$config;
+	}
+
+
+
+	protected static function initAutoloader() {
+		$vendorPath = static::findParentPath('vendor');
+
+		if( is_readable($vendorPath . '/autoload.php') ) {
+			$loader = include $vendorPath . '/autoload.php';
+		}
+		else {
+			$zf2Path = getenv('ZF2_PATH') ? : (defined('ZF2_PATH') ? ZF2_PATH : (is_dir($vendorPath . '/ZF2/library') ? $vendorPath . '/ZF2/library' : false));
+
+			if( !$zf2Path ) {
+				throw new RuntimeException('Unable to load ZF2. Run `php composer.phar install` or define a ZF2_PATH environment variable.');
+			}
+
+			include $zf2Path . '/Zend/Loader/AutoloaderFactory.php';
+
+		}
+
+		AutoloaderFactory::factory(array(
+			'Zend\Loader\StandardAutoloader' => array(
+				'autoregister_zf' => true,
+				'namespaces' => array(
+					__NAMESPACE__ => __DIR__ . '/' . __NAMESPACE__,
+				),
+			),
+		));
+	}
+
+
+
+	protected static function findParentPath($path) {
+		$dir = __DIR__;
+		$previousDir = '.';
+		while( !is_dir($dir . '/' . $path) ) {
+			$dir = dirname($dir);
+			if( $previousDir === $dir ) return false;
+			$previousDir = $dir;
+		}
+		return $dir . '/' . $path;
+	}
 }
 
 Bootstrap::init();

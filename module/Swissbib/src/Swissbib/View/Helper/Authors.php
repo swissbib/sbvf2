@@ -2,8 +2,6 @@
 namespace Swissbib\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
-use Vufind\Search\Base\Results;
-
 
 /**
  * Prepare authors link list
@@ -14,23 +12,23 @@ class Authors extends AbstractHelper {
 	/**
 	 * Merge author fields to a single list with urls
 	 *
-	 * @param	Array	$authors
-	 * @return	Array[]
+	 * @param    Array    $authors
+	 * @return    Array[]
 	 */
 	public function __invoke(array $authors = array()) {
-		$recordPlugin	= $this->getView()->plugin('record');
+		$recordPlugin = $this->getView()->plugin('record');
 
 		$mainAuthor			= isset($authors['main']) && !empty($authors['main']) ? $authors['main'] : false;
 		$corporateAuthor	= isset($authors['corporate']) && !empty($authors['corporate']) ? $authors['corporate'] : false;
 		$secondaryAuthors	= isset($authors['secondary']) ? $authors['secondary'] : false;
 
-		$authorsData		= array();
+		$authorsData = array();
 
 		if( $mainAuthor ) {
 			$authorsData[] = array(
-				'author'	=> $mainAuthor,
-				'url'		=> $recordPlugin->getLink('author', $mainAuthor),
-				'type'		=> 'main'
+				'author'=> $mainAuthor,
+				'url'	=> $recordPlugin->getLink('author', $mainAuthor),
+				'type'	=> 'main'
 			);
 		}
 		if( $corporateAuthor ) {

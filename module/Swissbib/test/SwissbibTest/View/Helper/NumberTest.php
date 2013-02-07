@@ -3,7 +3,6 @@ namespace SwissbibTest;
 
 use Swissbib\View\Helper\Number;
 
-
 class NumberTest extends \PHPUnit_Framework_TestCase {
 
 	public function testInvoke() {
