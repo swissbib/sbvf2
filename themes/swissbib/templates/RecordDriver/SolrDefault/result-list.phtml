@@ -5,31 +5,36 @@
 	$viewRecord		= $this->record($this->driver);
 	$thumbnailUrl	= $resultItem->getThumbnail() ? $resultItem->getThumbnail() : $this->url('cover-unavailable');
 	$detailLink		= $this->recordLink()->getUrl($resultItem);
-	$title			= $resultItem->getTitle();
+	$title			= $resultItem->getShortTitle();
 
 ?>
 <tr>
+    <!-- col 1: Counter -->
 	<td class="small center nodivider"><?=$this->recordIndex?></td>
+    <!-- colr 2: Merkliste -->
 	<td class="nodivider">
 		<a href="#" class="icon_notepad_add" title="Zur Merkliste hinzufügen">Zur Merkliste hinzufügen</a>
 	</td>
+    <!-- col 3: Teaser-image / Thumbnail -->
 	<td class="right nodivider">
 		<a href="<?=$detailLink?>" title="<?=$title?>">
 			<img src="<?=$thumbnailUrl?>" alt="<?=$title?>" class="dropshadow"/>
 		</a>
 	</td>
+    <!-- col 4: Title and author details => links to full-view -->
 	<td>
 		<h3><a href="<?=$detailLink?>" title="<?=$title?>" class="color"><?=$title?></a></h3>
 		<p>
 			<?php /*var_dump($solrRecord->getSummary())*/?>
 		</p><!-- meta -->
 		<div class="meta">
-			<h6>Verfasser:</h6>
-			<span><?=$resultItem->getPrimaryAuthor()?></span><br/>
+            <span><?=$resultItem->getSubtitle()?></span><br />
+            <h6>Verfasser:</h6>
+            <span><?=$resultItem->getTitleStatement()?></span><br/>
 			<h6>Jahr:</h6>
-			<span><?=$resultItem->getPublicationDates()?></span><br/>
+            <span><?=$this->publicationDate($this->driver->getPublicationDates())?></span><br />
 			<h6>Auflage:</h6>
-			<span>[3. Aufl.]</span>
+			<span><?=$resultItem->getEdition()?></span>
 		</div><!-- format -->
 		<div class="format">
 			<?=$viewRecord->getFormatList()?>
@@ -37,6 +42,7 @@
 			<a href="frbr.html" class="linkbutton icon_show" title="Weitere Ausgaben und Formate anzeigen"><span>Weitere Ausgaben und Formate</span></a>
 		</div>
 	</td>
+    <!-- col 5 & 6 : libraries, links, info -->
 	<td class="small right nodivider">
 		<p>
 			5 Bibliotheken
