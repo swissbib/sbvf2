@@ -7,7 +7,7 @@
 	<property name="memorylimit" value="512M" />
 
 
-	<target name="build" depends="prepare,lint,phploc,phpcs,phpcpd"/>
+	<target name="build" depends="prepare,lint,phploc,phpcs,phpunit,phpcpd,phpmd,pdepend"/>
 	<!--<target name="build" depends="prepare,lint,phploc,phpunit,phpcpd,pdepend,phpmd,jslint"/>-->
 
 	<target name="prepare" depends="preparefolders" description="Prepare folders"/>
@@ -60,7 +60,7 @@
 			<arg value="memory_limit=${memorylimit}"/>
 			<arg path="/usr/bin/phpunit"/>
 			<arg value="--configuration" />
-			<arg path="${basedir}/phpunit.xml"/>
+			<arg path="${source}/test/phpunit.xml.dist"/>
 		</exec>
 	</target>
 
@@ -70,7 +70,7 @@
 			<arg value="memory_limit=${memorylimit}"/>
 			<arg path="/usr/bin/phpcpd"/>
 			<arg value="--log-pmd"/>
-			<arg value="${logs}/pmdcpd.xml"/>
+			<arg value="${logs}/pmd-cpd.xml"/>
 			<arg path="${source}"/>
 		</exec>
 	</target>
