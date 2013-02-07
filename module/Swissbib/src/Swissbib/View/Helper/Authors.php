@@ -44,7 +44,7 @@ class Authors extends AbstractHelper {
 			foreach($secondaryAuthors as $secondaryAuthor) {
 				$authorsData[] = array(
 					'author'	=> $corporateAuthor,
-					'url'		=> $recordPlugin->getLink('author', $secondaryAuthors),
+					'url'		=> $recordPlugin->getLink('author', $secondaryAuthor),
 					'type'		=> 'secondary'
 				);
 			}
