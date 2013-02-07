@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="sbvf2">
+	<description>Coding standard for swissbib vufind 2</description>
+
+	<exclude-pattern>*/config/*</exclude-pattern>
+	<exclude-pattern>*/test/*</exclude-pattern>
+
+	<!--Extend Zend standard-->
+	<rule ref="Zend">
+		<exclude name="Generic.WhiteSpace.DisallowTabIndent" />
+		<exclude name="Generic.Functions.OpeningFunctionBraceBsdAllman" />
+		<exclude name="Generic.Files.LineEndings.InvalidEOLChar" />
+		<exclude name="PEAR.Classes.ClassDeclaration.OpenBraceNewLine" />
+		<exclude name="PEAR.ControlStructures.ControlSignature" />
+		<exclude name="Zend.NamingConventions.ValidVariableName.PrivateNoUnderscore" />
+	</rule>
+
+	<rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie" />
+
+	<rule ref="Generic.Files.LineLength">
+		<properties>
+			<property name="lineLimit" value="120"/>
+			<property name="absoluteLineLimit" value="150"/>
+		</properties>
+	</rule>
+
+</ruleset>

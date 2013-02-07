@@ -1,0 +1,57 @@
+<?php
+/** @var	Swissbib\RecordDriver\SbSolrMarc	$resultRecord  */
+$resultRecord		= $this->driver;
+/** @var	VuFind\View\Helper\Root\Record		$record  */
+$viewRecord	= $this->record($resultRecord);
+
+$authors	= $this->Authors($resultRecord->getDeduplicatedAuthors());
+$edition	= $resultRecord->getEdition();
+
+$mediumThumb= $viewRecord->getThumbnail('medium');
+//$largeThumb	= $viewRecord->getThumbnail('large');
+$thumbUrl	= $mediumThumb ? $mediumThumb : $this->url('cover-unavailable');
+
+?>
+<!-- col -->
+<div class="c25l">
+	<a title="Zur Merkliste hinzufügen" class="icon_notepad_add_link" href="#">
+		<img src="<?=$thumbUrl?>" class="dropshadow"/>
+	</a>
+</div>
+
+<!-- col -->
+<div class="c75l">
+	<h2><?=$this->escapeHtml($resultRecord->getShortTitle())?></h2>
+	<p><?=$this->escapeHtml($resultRecord->getSubtitle())?></p>
+	<!-- details -->
+	<div class="details">
+		<h4>Verfasser:</h4>
+		<p>
+			<?php foreach($authors as $index => $author): ?>
+				<?=($index==0)?'':', '?>
+				<a href="<?=$author['url']?>"><?=$this->escapeHtml($author['author'])?></a>
+			<?php endforeach; ?>
+		</p>
+		<h4>Verlag:</h4>
+		<p>Fischer (UNBEKANNTES FELD)</p>
+		<h4>Jahr:</h4>
+		<p><?=$resultRecord->getYear()?></p>
+		<h4>Format:</h4>
+		<p>
+			<?php foreach($resultRecord->getFormats() as $format): ?>
+				<span class="icon_format_book"><?=$this->escapeHtml($format)?></span>
+			<?php endforeach; ?>
+		</p>
+		<?php if($edition): ?>
+			<h4>Auflage:</h4>
+			<p><?=$this->escapeHtml($edition)?></p>
+		<?php endif; ?>
+		<h4>Inhalt:</h4>
+		<p>
+			HIER INHALT FELD Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata.
+		</p>
+	</div>
+
+	<a href="frbr.html" class="linkbutton icon_show" title="Weitere Ausgaben und Formate anzeigen"><span>Weitere Ausgaben und Formate</span></a>
+
+</div>
