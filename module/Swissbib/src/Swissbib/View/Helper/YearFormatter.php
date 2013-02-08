@@ -21,50 +21,50 @@ class YearFormatter extends AbstractHelper {
         $datetype = $publicationDate[0];
         $year1 = $publicationDate[1];
         $year2 = $publicationDate[2];
-        if ($datetype === 's' xor 'n' xor 'e')
-        {
-            $retval = str_replace('u', '?', $year1);
-            return $retval;
-        }
-        if ($datetype === 'c' || 'u')
-        {
-            $retval = str_replace('u', '?', $year1) . '-';
-            return $retval;
-        }
-        if ($datetype === 'd')
-        {
-            $retval = str_replace('u', '?', $year1) . '-' . str_replace('u', '?', $year2);
-            return $retval;
-        }
-        if ($datetype === 'p' || 'r')
-        {
-            $retval = str_replace('u', '?', $year1) . ' [' . str_replace('u', '?', $year2) . ']';
-            return $retval;
-        }
-        if ($datetype === 'q')
-        {
-            if ($year2 === '9999')
-            {
-                $retval = str_replace('u', '?', $year1);
 
-            }
-            if ($year2 != '9999')
-            {
-                $retval = str_replace('u', '?', $year1) . ' / ' . str_replace('u', '?', $year2);
-            }
-            return $retval;
-        }
-        if ($datetype === 'm')
+        switch ($datetype)
         {
-            if ($year2 === '9999')
-            {
+            case 's':
+            case 'n':
+            case 'e':
+                $retval = str_replace('u', '?', $year1);
+                return $retval;
+            break;
+
+            case 'c':
+            case 'u':
                 $retval = str_replace('u', '?', $year1) . '-';
-            }
-            if ($year2 != '9999')
-            {
+                return $retval;
+            break;
+
+            case 'd':
                 $retval = str_replace('u', '?', $year1) . '-' . str_replace('u', '?', $year2);
-            }
-            return $retval;
+                return $retval;
+            break;
+
+            case 'p':
+            case 'r':
+                $retval = str_replace('u', '?', $year1) . ' [' . str_replace('u', '?', $year2) . ']';
+                return $retval;
+            break;
+
+            case 'q':
+                if ($year2 === '9999'):
+                    $retval = str_replace('u', '?', $year1);
+                elseif ($year2 != '9999'):
+                    $retval = str_replace('u', '?', $year1) . ' / ' . str_replace('u', '?', $year2);
+                endif;
+                return $retval;
+            break;
+
+            case 'm':
+                if ($year2 === '9999'):
+                    $retval = str_replace('u', '?', $year1) . '-';
+                elseif ($year2 != '9999'):
+                    $retval = str_replace('u', '?', $year1) . '-' . str_replace('u', '?', $year2);
+                endif;
+                return $retval;
+            break;
         }
     }
 }
