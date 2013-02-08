@@ -1,11 +1,11 @@
 <?php
-/** @var	Swissbib\RecordDriver\SbSolrMarc	$resultRecord  */
-$resultRecord		= $this->driver;
+/** @var	Swissbib\RecordDriver\SbSolrMarc	$resultItem  */
+$resultItem	= $this->driver;
 /** @var	VuFind\View\Helper\Root\Record		$record  */
-$viewRecord	= $this->record($resultRecord);
+$viewRecord	= $this->record($resultItem);
 
-$authors	= $this->Authors($resultRecord->getDeduplicatedAuthors());
-$edition	= $resultRecord->getEdition();
+$authors	= $this->Authors($resultItem->getDeduplicatedAuthors());
+$edition	= $resultItem->getEdition();
 
 $mediumThumb= $viewRecord->getThumbnail('medium');
 //$largeThumb	= $viewRecord->getThumbnail('large');
@@ -21,8 +21,8 @@ $thumbUrl	= $mediumThumb ? $mediumThumb : $this->url('cover-unavailable');
 
 <!-- col -->
 <div class="c75l">
-	<h2><?=$this->escapeHtml($resultRecord->getShortTitle())?></h2>
-	<p><?=$this->escapeHtml($resultRecord->getSubtitle())?></p>
+	<h2><?=$this->escapeHtml($resultItem->getShortTitle())?></h2>
+	<p><?=$this->escapeHtml($resultItem->getSubtitle())?></p>
 	<!-- details -->
 	<div class="details">
 		<h4>Verfasser:</h4>
@@ -35,10 +35,10 @@ $thumbUrl	= $mediumThumb ? $mediumThumb : $this->url('cover-unavailable');
 		<h4>Verlag:</h4>
 		<p>Fischer (UNBEKANNTES FELD)</p>
 		<h4>Jahr:</h4>
-		<p><?=$resultRecord->getYear()?></p>
+		<p><?=$this->publicationDate($resultItem->getPublicationDates())?></p>
 		<h4>Format:</h4>
 		<p>
-			<?php foreach($resultRecord->getFormats() as $format): ?>
+			<?php foreach($resultItem->getFormats() as $format): ?>
 				<span class="icon_format_book"><?=$this->escapeHtml($format)?></span>
 			<?php endforeach; ?>
 		</p>
