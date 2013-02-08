@@ -32,7 +32,7 @@
             <h6>Verfasser:</h6>
             <span><?=$resultItem->getTitleStatement()?></span><br/>
 			<h6>Jahr:</h6>
-            <span><?=$this->publicationDate($this->driver->getPublicationDates())?></span><br />
+            <span><?=$this->publicationDate($resultItem->getPublicationDates())?></span><br />
 			<h6>Auflage:</h6>
 			<span><?=$resultItem->getEdition()?></span>
 		</div><!-- format -->
@@ -44,40 +44,9 @@
 	</td>
     <!-- col 5 & 6 : libraries, links, info -->
 	<td class="small right nodivider">
-		<p>
-			5 Bibliotheken
-		</p>
-		<ul class="lending">
-			<li>
-				<span class="icon_lending_online" title="Online Ausleihbar">3</span>
-			</li>
-			<li>
-				<span class="icon_lending_onplace" title="Vor Ort konsultierbar">2</span>
-			</li>
-		</ul>
+		<?=$this->render('search/results/available.phtml')?>
 	</td>
 	<td class="right">
-		<span class="info rollover right">
-			<ul class="infolist">
-				<li>
-					<a href="#">Schweizerisches Institut für Kunstwissenschaft SIK-ISEA, Bibliothek</a>
-				</li>
-				<li>
-					<a href="#">Zentralbibliothek Zürich</a>
-				</li>
-				<li>
-					<a href="#">Schweizerische Nationalbibliothek</a>
-				</li>
-				<li>
-					<a href="#">Médiathèque Valais Sion</a>
-				</li>
-				<li>
-					<a href="#">Graphische Sammlung der ETH Zürich</a>
-				</li>
-				<li>
-					<a href="#">Zentral- und Hochschulbibliothek Luzern</a>
-				</li>
-			</ul>
-		</span>
+		<?=$this->render('search/results/libraries.phtml')?>
 	</td>
 </tr>
