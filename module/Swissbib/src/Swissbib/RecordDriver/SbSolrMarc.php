@@ -50,11 +50,22 @@ use VuFind\RecordDriver\SolrMarc as VFSolrMarc;
 class SbSolrMarc extends VFSolrMarc
 {
 
+
+    protected $marcHoldings;
+
     public function setRawData($data)
     {
         //only for test purposes within this type to see if the type is correct instantiated
         //Call the parent's set method...
         parent::setRawData($data);
+
+        //todo: integrate the holdings helper (GH)
+        //$holdings = trim($data['holdings']);
+        //$this->marcHoldings = new \Swissbib\RecordDriver\Helper\HoldingsHelper($holdings);
+        //$t =  $this->marcHoldings->getHoldings949(array("b","B","E","j","p","z","Z"),false);
+
+
+
     }
 
     /**
