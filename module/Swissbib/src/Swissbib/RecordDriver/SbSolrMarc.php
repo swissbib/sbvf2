@@ -63,9 +63,19 @@ class SbSolrMarc extends VFSolrMarc
         //$holdings = trim($data['holdings']);
         //$this->marcHoldings = new \Swissbib\RecordDriver\Helper\HoldingsHelper($holdings);
         //$t =  $this->marcHoldings->getHoldings949(array("b","B","E","j","p","z","Z"),false);
+    }
 
+    /**
+     * get years and datetype from field 008 for display
+     * @return array
+     */
+    public function getPublicationDates()
+    {
+        $datetype = substr($this->marcRecord->getField('008')->getData(), 6, 1);
+        $year1 = substr($this->marcRecord->getField('008')->getData(), 7, 4);
+        $year2 = substr($this->marcRecord->getField('008')->getData(), 11, 4);
 
-
+        return array($datetype, $year1, $year2);
     }
 
     /**
@@ -117,18 +127,26 @@ class SbSolrMarc extends VFSolrMarc
         return $this->getFirstFieldValue('250', array('a'));
     }
 
-    /* build from controlfield 008 */
-    public function getPublicationDates()
-    {
-        $datetype = substr($this->marcRecord->getField('008')->getData(), 6, 1);
-        $year1 = substr($this->marcRecord->getField('008')->getData(), 7, 4);
-        $year2 = substr($this->marcRecord->getField('008')->getData(), 11, 4);
+    /**
+     * get subject headings from GND subject headings
+     * build an array (multidimensional?) from all GND headings
+     * GND headings
+     * fields: 600, 610, 611, 630, 648, 650, 651, 655
+     * @ind2=7
+     * subfield $2=gnd
+     * subfields vary per field, build array per field with all
+     * content to be able to treat it in a view helper
+     * @return array
+     */
 
-        return array($datetype, $year1, $year2);
+    public function getGNDSubjectHeadings()
+    {
+        return array();
     }
 
-    /*
-     * FRBR-Link
+    /**
+     * get group-id from solr-field to display FRBR-Button
+     * @return string
      */
     public function getGroup()
     {
