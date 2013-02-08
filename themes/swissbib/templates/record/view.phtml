@@ -1,4 +1,8 @@
 <?
+/**
+ * Record detail view
+ */
+
 // Set up standard record scripts:
 $this->headScript()->appendFile("record.js");
 $this->headScript()->appendFile("check_save_statuses.js");
@@ -9,8 +13,8 @@ if ($this->export()->recordSupportsFormat($this->driver, 'RDF')) {
 }
 
 // Set up breadcrumbs:
-$this->layout()->breadcrumbs = $this->getLastSearchLink($this->transEsc('Search'), '', '<span>&gt;</span>') .
-	$this->recordLink()->getBreadcrumb($this->driver);
+//$this->layout()->breadcrumbs = $this->getLastSearchLink($this->transEsc('Search'), '', '<span>&gt;</span>') .
+//	$this->recordLink()->getBreadcrumb($this->driver);
 
 $lastSearchUrl = VuFind\Search\Memory::retrieve();
 
