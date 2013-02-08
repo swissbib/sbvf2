@@ -1,0 +1,465 @@
+<?
+    // Set page title.
+    $this->headTitle($this->translate('Advanced Search'));
+
+    // Disable top search box -- this page has a special layout.
+//    $this->layout()->searchbox = false;
+
+    // Set up breadcrumbs:
+//    $this->layout()->breadcrumbs = '<em>' . $this->transEsc('Advanced') . '</em>';
+
+    // Set up saved search details:
+    if (isset($this->saved) && is_object($this->saved)) {
+        $searchDetails = $this->saved->getParams()->getSearchTerms();
+        $searchFilters = $this->saved->getParams()->getFilterList();
+    } else {
+        $searchDetails = $searchFilters = false;
+    }
+
+    // Set up Javascript:
+    // Step 1: Define our search arrays so they are usuable in the javascript
+    $this->headScript()->appendScript($this->render('search/advanced/globals.phtml'));
+    // Step 2: Call the javascript to make use of the above
+    $this->headScript()->appendFile('advanced_search.js');
+    // Step 3: Build the page
+    $this->headScript()->appendScript($this->partial('search/advanced/build_page.phtml', array('searchDetails' => $searchDetails)));
+?>
+
+<!-- begin: col1 (sidebar)  -->
+<div id="col1" class="sidebar">
+	<div id="col1_content" class="clearfix">
+		<!-- begin: sidebar -->
+		<?=$this->render('search/advanced/sidebar.phtml')?>
+		<!-- end: sidebar -->
+	</div>
+</div>
+<!-- end: col1 (sidebar) -->
+<!-- begin: col3 (content) -->
+<div id="col3" class="content">
+	<div id="col3_content" class="clearfix">
+		<!-- begin: content -->
+		<div id="content">
+			<h1><?=$this->transEsc('Advanced Search')?></h1>
+			<?=$this->flashmessages()?>
+			<form  action="<?=$this->url($this->options->getSearchAction())?>" method="get" class="data" id="form_advancedsearch" name="form_advancedsearch">
+				<!-- begin: basics -->
+				<fieldset>
+					<h3>Sucheingabe</h3>
+					<!-- row -->
+					<div class="fieldbox">
+						<label for="advancedsearch_searchcategory_01" class="hidden">Suchkategorie</label>
+						<select name="advancedsearch_searchcategory_01" id="advancedsearch_searchcategory_01" class="select">
+							<option selected="selected" value="-1">Freie Suche</option>
+							<option value="331">Titel</option>
+							<option value="100">Autor</option>
+							<option value="540">ISBN</option>
+							<option value="8100">Jahr</option>
+						</select>
+						<label for="advancedsearch_searchstring_01" class="hidden">Suchbegriff</label>
+						<input name="advancedsearch_searchstring_01" id="advancedsearch_searchstring_01" type="text" class="text large" />
+						<label for="advancedsearch_boostfactor_01" class="hidden">Gewichtung</label>
+						<input name="advancedsearch_boostfactor_01" id="advancedsearch_boostfactor_01" type="text" class="text small slider"  title="Gewichtung" rel="min:0;max:100;step:10"/>
+					</div>
+					<!-- row -->
+					<div class="fieldbox">
+						<label for="advancedsearch_combinationoperator_02" class="hidden">Operator</label>
+						<select id="advancedsearch_combinationoperator_02" name="advancedsearch_combinationoperator_01" class="select tiny">
+							<option selected="selected" value="AND"> und </option>
+							<option value="OR"> oder </option>
+							<option value="NOT"> und nicht </option>
+						</select>
+						<label for="advancedsearch_searchcategory_02" class="hidden">Suchkategorie</label>
+						<select name="advancedsearch_searchcategory_02" id="advancedsearch_searchcategory_02" class="select tinycomplement">
+							<option value="-1">Freie Suche</option>
+							<option selected="selected" value="331">Titel</option>
+							<option value="100">Autor</option>
+							<option value="540">ISBN</option>
+							<option value="8100">Jahr</option>
+						</select>
+						<label for="advancedsearch_searchstring_02" class="hidden">Suchbegriff</label>
+						<input name="advancedsearch_searchstring_02" id="advancedsearch_searchstring_02" type="text" class="text large" />
+						<label for="advancedsearch_boostfactor_02" class="hidden">Gewichtung</label>
+						<input name="advancedsearch_boostfactor_02" id="advancedsearch_boostfactor_02" type="text" class="text small slider" value="0" title="Gewichtung" rel="min:0;max:100;step:10"/>
+					</div>
+					<!-- row -->
+					<div class="fieldbox">
+						<label for="advancedsearch_combinationoperator_03" class="hidden">Operator</label>
+						<select id="advancedsearch_combinationoperator_03" name="advancedsearch_combinationoperator_01" class="select tiny">
+							<option selected="selected" value="AND"> und </option>
+							<option value="OR"> oder </option>
+							<option value="NOT"> und nicht </option>
+						</select>
+						<label for="advancedsearch_searchcategory_03" class="hidden">Suchkategorie</label>
+						<select name="advancedsearch_searchcategory_03" id="advancedsearch_searchcategory_03" class="select tinycomplement">
+							<option value="-1">Freie Suche</option>
+							<option value="331">Titel</option>
+							<option selected="selected" value="100">Autor</option>
+							<option value="540">ISBN</option>
+							<option value="8100">Jahr</option>
+						</select>
+						<label for="advancedsearch_searchstring_03" class="hidden">Suchbegriff</label>
+						<input name="advancedsearch_searchstring_03" id="advancedsearch_searchstring_03" type="text" class="text large" />
+						<label for="advancedsearch_boostfactor_03" class="hidden">Gewichtung</label>
+						<input name="advancedsearch_boostfactor_03" id="advancedsearch_boostfactor_03" type="text" class="text small slider" value="0" title="Gewichtung" rel="min:0;max:100;step:10"/>
+					</div>
+
+				</fieldset>
+				<!-- end: basics -->
+
+				<!-- begin: refine -->
+				<fieldset>
+					<h3 class="toggler persist collapsed" id="searchoption_toggler_refine">Suche eingrenzen</h3>
+					<div class="searchoption_toggler_refine">
+						<!-- row -->
+						<div class="fieldbox">
+							<label for="advancedsearch_searchterm" class="label">Suchbegriff</label>
+							<div class="vertical">
+								<input id="advancedsearch_searchterm_exact" name="advancedsearch_searchterm" type="radio" class="radio" checked="checked"/>
+								<label for="advancedsearch_searchterm_exact" class="radiolabel">genaue Suche</label>
+								<br/>
+								<input id="advancedsearch_searchterm_related" name="advancedsearch_searchterm" type="radio" class="radio"/>
+								<label for="advancedsearch_searchterm_related" class="radiolabel">Auch ähnliche Begriffe finden</label>
+							</div>
+						</div>
+						<!-- row -->
+						<div class="fieldbox">
+
+							<label for="advancedsearch_format" class="label">Format</label>
+							<select name="advancedsearch_format" id="advancedsearch_format" class="select multiple" multiple="multiple">
+								<option value="all" selected="selected">alle</option>
+								<option value="book">Bücher</option>
+								<option value="magazines">Zeitschriften</option>
+								<option value="video">Video</option>
+								<option value="dvd">DVD</option>
+							</select>
+
+							<label for="advancedsearch_language" class="label small">Sprache</label>
+							<select name="advancedsearch_language" id="advancedsearch_language" class="select multiple" multiple="multiple">
+								<option value="all" selected="selected">alle</option>
+								<option value="de">Deutsch</option>
+								<option value="en">Englisch</option>
+								<option value="fr">Französisch</option>
+								<option value="rm">Rumänisch</option>
+							</select>
+						</div>
+					</div>
+
+				</fieldset><!-- end:  refine -->
+
+				<!-- begin: other -->
+				<fieldset>
+					<h3 class="toggler persist collapsed" id="searchoption_toggler_other">Weitere</h3>
+
+					<div class="searchoption_toggler_other">
+
+						<!-- begin: status -->
+						<div class="status information">
+							<h4>Status Information</h4>
+							<p>
+								Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+							</p>
+						</div><!-- end: status -->
+
+						<!-- begin: status -->
+						<div class="status error">
+							<h4>Status Fehler</h4>
+							<p>
+								Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+							</p>
+						</div><!-- end: status -->
+
+						<!-- begin: status -->
+						<div class="status success">
+							<h4>Status Erfolg</h4>
+							<p>
+								At vero eos et accusam et justo duo dolores et ea rebum.
+							</p>
+						</div><!-- end: status -->
+
+						<!-- begin: fieldgroup -->
+						<div class="fieldgroup">
+							<!-- col -->
+							<div class="c50l">
+
+								<!-- row -->
+								<div class="fieldbox">
+									<label for="advancedsearch_text_small" class="label">Text Klein</label>
+									<input id="advancedsearch_text_small" name="advancedsearch_text_small" type="text" class="text small" />
+								</div>
+
+								<!-- row -->
+								<div class="fieldbox">
+									<label for="advancedsearch_text_regular" class="label">Text Normal</label>
+									<input id="advancedsearch_text_regular" name="advancedsearch_text_regular" type="text" class="text" />
+								</div>
+
+							</div>
+
+							<!-- col -->
+							<div class="c50l">
+
+								<!-- row -->
+								<div class="fieldbox">
+									<label for="advancedsearch_select_tiny" class="label">Select Ganzklein</label>
+									<select id="advancedsearch_select_tiny" name="advancedsearch_select_tiny" class="select tiny">
+										<option value="value_a">A</option>
+										<option value="value_b">B</option>
+										<option value="value_c">C</option>
+									</select>
+								</div>
+
+								<!-- row -->
+								<div class="fieldbox">
+									<label for="advancedsearch_select_small" class="label">Select Klein</label>
+									<select id="advancedsearch_select_small" name="advancedsearch_select_small" class="select small">
+										<option value="value_a">Option A</option>
+										<option value="value_b">Option B</option>
+										<option value="value_c">Option C</option>
+									</select>
+								</div>
+
+								<!-- row -->
+								<div class="fieldbox">
+									<label for="advancedsearch_select_regular" class="label">Select Normal</label>
+									<select id="advancedsearch_select_regular" name="advancedsearch_select_regular" class="select">
+										<option value="value_a">Option A</option>
+										<option value="value_b">Option B</option>
+										<option value="value_c">Option C</option>
+									</select>
+								</div>
+
+							</div>
+
+						</div><!-- end: fieldgroup -->
+
+						<!-- row -->
+						<div class="fieldbox">
+							<label for="advancedsearch_text_large" class="label">Text Gross</label>
+							<input id="advancedsearch_text_large" name="advancedsearch_text_large" type="text" class="text large" />
+						</div>
+
+						<!-- row -->
+						<div class="fieldbox">
+							<label for="advancedsearch_textarea" class="label">Textfeld Normal</label>
+							<textarea id="advancedsearch_textarea" name="advancedsearch_textarea" class="textarea"></textarea>												<span class="info">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</span>
+						</div>
+
+						<!-- row -->
+						<div class="fieldbox">
+							<label for="advancedsearch_textarea_large" class="label">Textfeld Gross</label>
+							<textarea id="advancedsearch_textarea_large" name="advancedsearch_textarea_large" class="textarea large"></textarea>												<span class="info ifield">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</span>
+						</div>
+
+						<!-- row -->
+						<div class="fieldbox">
+							<label for="advancedsearch_checkbox_horizontal" class="label">Checkbox Horizontal</label>
+							<input id="advancedsearch_checkbox_horizontal_01" name="advancedsearch_checkbox_horizontal" type="checkbox" class="checkbox" checked="checked" />
+							<label for="advancedsearch_checkbox_horizontal_01" class="checkboxlabel">Checkbox 01</label>
+							<input id="advancedsearch_checkbox_horizontal_02" name="advancedsearch_checkbox_horizontal" type="checkbox" class="checkbox" />
+							<label for="advancedsearch_checkbox_horizontal_02" class="checkboxlabel">Checkbox 02</label>
+							<input id="advancedsearch_checkbox_horizontal_03" name="advancedsearch_checkbox_horizontal" type="checkbox" class="checkbox" />
+							<label for="advancedsearch_checkbox_horizontal_03" class="checkboxlabel">Checkbox 03</label>
+						</div>
+
+						<!-- row -->
+						<div class="fieldbox">
+							<label for="advancedsearch_checkbox_vertical" class="label">Checkbox Vertikal</label>
+							<div class="vertical">
+								<input id="advancedsearch_checkbox_vertical_01" name="advancedsearch_checkbox_vertical" type="checkbox" class="checkbox" checked="checked" />
+								<label for="advancedsearch_checkbox_vertical_01" class="checkboxlabel">Checkbox 01</label>
+								<br/>
+								<input id="advancedsearch_checkbox_vertical_02" name="advancedsearch_checkbox_vertical" type="checkbox" class="checkbox" />
+								<label for="advancedsearch_checkbox_vertical_02" class="checkboxlabel">Checkbox 02</label>
+								<br/>
+								<input id="advancedsearch_checkbox_vertical_03" name="advancedsearch_checkbox_vertical" type="checkbox" class="checkbox" />
+								<label for="advancedsearch_checkbox_vertical_03" class="checkboxlabel">Checkbox 03</label>
+							</div>
+						</div>
+
+						<!-- row -->
+						<div class="fieldbox">
+							<label for="advancedsearch_radio_horizontal" class="label">Radio Horizontal</label>
+							<input id="advancedsearch_radio_horizontal_01" name="advancedsearch_radio_horizontal" type="radio" class="radio" checked="checked" />
+							<label for="advancedsearch_radio_horizontal_01" class="radiolabel">Radio 01</label>
+							<input id="advancedsearch_radio_horizontal_02" name="advancedsearch_radio_horizontal" type="radio" class="radio" />
+							<label for="advancedsearch_radio_horizontal_02" class="radiolabel">Radio 02</label>
+							<input id="advancedsearch_radio_horizontal_03" name="advancedsearch_radio_horizontal" type="radio" class="radio" />
+							<label for="advancedsearch_radio_horizontal_03" class="radiolabel">Radio 03</label>
+						</div>
+
+						<!-- row -->
+						<div class="fieldbox">
+							<label for="advancedsearch_radio_vertical" class="label">Radio Vertikal</label>
+							<div class="vertical">
+								<input id="advancedsearch_radio_vertical_01" name="advancedsearch_radio_vertical" type="radio" class="radio" checked="checked" />
+								<label for="advancedsearch_radio_vertical_01" class="radiolabel">Radio 01</label>
+								<br/>
+								<input id="advancedsearch_radio_vertical_02" name="advancedsearch_radio_vertical" type="radio" class="radio" />
+								<label for="advancedsearch_radio_vertical_02" class="radiolabel">Radio 02</label>
+								<br/>
+								<input id="advancedsearch_radio_vertical_03" name="advancedsearch_radio_vertical" type="radio" class="radio" />
+								<label for="advancedsearch_radio_vertical_03" class="radiolabel">Radio 03</label>
+							</div>
+						</div>
+
+					</div>
+				</fieldset><!-- end:  other -->
+
+				<!-- begin: actions -->
+				<fieldset class="actions">
+					<label for="advancedsearch_submit" class="hidden">Suchanfrage senden</label>
+					<input id="advancedsearch_submit" name="advancedsearch_submit" type="submit" class="submit primary" value="Suchen"/>
+					<label for="advancedsearch_reset" class="hidden">Formular zurücksetzen</label>
+					<input id="advancedsearch_reset" name="advancedsearch_reset" type="reset" class="reset" value="Zurücksetzen"/>
+				</fieldset>
+				<!-- end: actions -->
+
+			</form>
+
+			<!-- begin: pagefunctions -->
+			<?php
+				// set pageFunctionsOffsetClass to prevent offset class in next rendered template
+				// @todo build a view helper to clean this up
+				$this->pageFunctionsOffsetClass = '';
+			?>
+			<?=$this->render('global/pagefunctions.phtml')?>
+			<!-- end: pagefunctions -->
+		</div>
+		<!-- end: content -->
+	</div>
+	<div id="ie_clearing">
+		&nbsp;
+	</div>
+</div>
+<!-- end: col3 (content) -->
+
+
+<?php return; ?>
+
+
+
+
+
+<form method="get" action="<?=$this->url($this->options->getSearchAction())?>" id="advSearchForm" name="searchForm" class="search">
+  <div class="<?=$this->layoutClass('mainbody')?>">
+    <h3><?=$this->transEsc('Advanced Search')?></h3>
+    <div class="advSearchContent">
+      <?=$this->flashmessages()?>
+      <div id="groupJoin" class="searchGroups">
+        <div class="searchGroupDetails">
+          <label for="groupJoinOptions"><?=$this->transEsc("search_match")?>:</label>
+          <select id="groupJoinOptions" name="join">
+            <option value="AND"><?=$this->transEsc("group_AND")?></option>
+            <option value="OR"<?=(isset($searchDetails[0]['join']) && $searchDetails[0]['join'] == 'OR') ? ' selected="selected"' : ''?>><?=$this->transEsc("group_OR")?></option>
+          </select>
+        </div>
+        <strong><?=$this->transEsc("search_groups")?></strong>:
+      </div>
+
+      <? /* An empty div. This is the target for the javascript that builds this screen */ ?>
+      <div id="searchHolder">
+        <? /* fallback to a fixed set of search groups/fields if JavaScript is turned off */ ?>
+        <noscript>
+        <? if ($searchDetails !== false) {
+               $numGroups = count($searchDetails);
+           }
+           if (!isset($numGroups) || $numGroups < 3) {
+               $numGroups = 3;
+           }
+        ?>
+        <? for ($i = 0; $i < $numGroups; $i++): ?>
+          <div class="group group<?=$i%2?>" id="group<?=$i?>">
+            <div class="groupSearchDetails">
+              <div class="join">
+                <label for="search_bool<?=$i?>"><?=$this->transEsc("search_match")?>:</label>
+                <select id="search_bool<?=$i?>" name="bool<?=$i?>[]">
+                  <?
+                    $options = array('AND', 'OR', 'NOT');
+                    foreach ($options as $option) {
+                        echo '<option value="' . $this->escapeHtml($option) . '"';
+                        if ($searchDetails && isset($searchDetails[$i]['group'][0]['bool'])
+                            && $searchDetails[$i]['group'][0]['bool'] == $option
+                        ) {
+                            echo ' selected="selected"';
+                        }
+                        echo '>' . $this->transEsc('search_' . $option) . '</option>';
+                    }
+                  ?>
+                </select>
+              </div>
+            </div>
+            <div class="groupSearchHolder" id="group<?=$i?>SearchHolder">
+            <?
+              if (isset($searchDetails[$i]['group'])) {
+                  $numRows = count($searchDetails[$i]['group']);
+              }
+              if (!isset($numRows) || $numRows < 3) {
+                  $numRows = 3;
+              }
+            ?>
+            <? for ($j = 0; $j < $numRows; $j++): ?>
+              <? $currRow = isset($searchDetails[$i]['group'][$j]) ? $searchDetails[$i]['group'][$j] : false; ?>
+              <div class="advRow">
+                <div class="label">
+                  <label <?=($j > 0)?'class="offscreen" ':''?>for="search_lookfor<?=$i?>_<?=$j?>"><?=$this->transEsc("adv_search_label")?>:</label>&nbsp;
+                </div>
+                <div class="terms">
+                  <input id="search_lookfor<?=$i?>_<?=$j?>" type="text" value="<?=isset($currRow['lookfor'])?$this->escapeHtml($currRow['lookfor']):''?>" size="50" name="lookfor<?=$i?>[]"/>
+                </div>
+                <div class="field">
+                  <label for="search_type<?=$i?>_<?=$j?>"><?=$this->transEsc("in")?></label>
+                  <select id="search_type<?=$i?>_<?=$j?>" name="type<?=$i?>[]">
+                  <? foreach ($this->options->getAdvancedHandlers() as $searchVal => $searchDesc): ?>
+                    <option value="<?=$this->escapeHtml($searchVal)?>"<?=(isset($currRow['field']) && $currRow['field'] == $searchVal)?' selected="selected"':''?>><?=$this->transEsc($searchDesc)?></option>
+                  <? endforeach; ?>
+                  </select>
+                </div>
+                <span class="clearer"></span>
+              </div>
+            <? endfor; ?>
+            </div>
+          </div>
+        <? endfor; ?>
+        </noscript>
+      </div>
+
+      <a id="addGroupLink" href="#" class="add offscreen" onclick="addGroup(); return false;"><?=$this->transEsc("add_search_group")?></a>
+
+      <br/><br/>
+
+      <? $lastSort = $this->options->getLastSort(); if (!empty($lastSort)): ?>
+        <input type="hidden" name="sort" value="<?=$this->escapeHtml($lastSort)?>" />
+      <? endif; ?>
+      <input type="submit" name="submit" value="<?=$this->transEsc("Find")?>"/>
+      <? if (isset($this->extraAdvancedControls)): ?>
+        <?=$this->extraAdvancedControls?>
+        <input type="submit" name="submit" value="<?=$this->transEsc("Find")?>"/>
+      <? endif; ?>
+    </div>
+  </div>
+
+  <div class="<?=$this->layoutClass('sidebar')?>">
+    <? if (!empty($searchFilters)): ?>
+      <div class="filterList">
+        <h3><?=$this->transEsc("adv_search_filters")?><br/><span>(<?=$this->transEsc("adv_search_select_all")?> <input type="checkbox" checked="checked" onclick="filterAll(this, 'advSearchForm');" />)</span></h3>
+        <? foreach ($searchFilters as $field => $data): ?>
+          <div>
+            <h4><?=$this->transEsc($field)?></h4>
+            <ul>
+              <? foreach ($data as $value): ?>
+                <li><input type="checkbox" checked="checked" name="filter[]" value='<?=$this->escapeHtml($value['field'])?>:"<?=$this->escapeHtml($value['value'])?>"' /> <?=$this->escapeHtml($value['displayText'])?></li>
+              <? endforeach; ?>
+            </ul>
+          </div>
+        <? endforeach; ?>
+      </div>
+    <? endif; ?>
+    <div class="sidegroup">
+      <h4><?=$this->transEsc("Search Tips")?></h4>
+      <a href="<?=$this->url('help-home')?>?topic=searchadv" class="advsearchHelp"><?=$this->transEsc("Help with Advanced Search")?></a><br />
+      <a href="<?=$this->url('help-home')?>?topic=search" class="searchHelp"><?=$this->transEsc("Help with Search Operators")?></a>
+    </div>
+  </div>
+
+  <div class="clear"></div>
+</form>
