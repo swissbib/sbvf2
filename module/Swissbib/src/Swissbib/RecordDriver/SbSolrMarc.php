@@ -30,12 +30,9 @@
  * @link    http://www.swissbib.org
  */
 
-
 namespace Swissbib\RecordDriver;
 
 use VuFind\RecordDriver\SolrMarc as VFSolrMarc;
-
-
 
 /**
  * enhancement for swissbib MARC records in Solr.
@@ -47,119 +44,314 @@ use VuFind\RecordDriver\SolrMarc as VFSolrMarc;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://www.swissbib.org
  */
-class SbSolrMarc extends VFSolrMarc
-{
+class SbSolrMarc extends VFSolrMarc {
 
 
-    protected $marcHoldings;
+	protected $personFieldMap = array(
+		'a' => 'name',
+		'b' => 'numeration',
+		'c' => 'titles',
+		'd' => 'dates',
+		'q' => 'fullername',
+		'D' => 'forname'
+	);
 
-    public function setRawData($data)
-    {
-        //only for test purposes within this type to see if the type is correct instantiated
-        //Call the parent's set method...
-        parent::setRawData($data);
 
-        //todo: integrate the holdings helper (GH)
-        //$holdings = trim($data['holdings']);
-        //$this->marcHoldings = new \Swissbib\RecordDriver\Helper\HoldingsHelper($holdings);
-        //$t =  $this->marcHoldings->getHoldings949(array("b","B","E","j","p","z","Z"),false);
-    }
+	protected $marcHoldings;
 
-    /**
-     * get years and datetype from field 008 for display
-     * @return array
-     */
-    public function getPublicationDates()
-    {
-        $datetype = substr($this->marcRecord->getField('008')->getData(), 6, 1);
-        $year1 = substr($this->marcRecord->getField('008')->getData(), 7, 4);
-        $year2 = substr($this->marcRecord->getField('008')->getData(), 11, 4);
 
-        return array($datetype, $year1, $year2);
-    }
 
-    /**
-     * get main author from field 100
-     * these subfields
-     * $a = name
-     * $D = forename
-     * $b = numeration
-     * $c = titles associated
-     * $d = dates
-     * $q = fuller name
-     * @return array
-     */
-    public function getPrimaryAuthor()
-    {
-        return array();
-    }
+	public function setRawData($data) {
+		//only for test purposes within this type to see if the type is correct instantiated
+		//Call the parent's set method...
+		parent::setRawData($data);
 
-    /**
-     * get secondary authors from field 700
-     * subfields see above
-     * exclude: if $l == fre|eng
-     * @return array
-     */
-    public function getSecondaryAuthors()
-    {
-        return array();
-    }
+		//todo: integrate the holdings helper (GH)
+		//$holdings = trim($data['holdings']);
+		//$this->marcHoldings = new \Swissbib\RecordDriver\Helper\HoldingsHelper($holdings);
+		//$t =  $this->marcHoldings->getHoldings949(array("b","B","E","j","p","z","Z"),false);
+	}
 
-    /**
-     * get corporate Authors from field 110 or fields 710
-     * these subfields
-     * $a = name
-     * $b = subordinate unit (repeatable)
-     * exclude: if $l == fre|eng
-     */
-    public function getCorporateAuthor()
-    {
-        return array();
-    }
 
-    public function getSubtitle()
-    {
-        return $this->getFirstFieldValue('245', array('b'));
-    }
 
-    public function getEdition()
-    {
-        return $this->getFirstFieldValue('250', array('a'));
-    }
+	/**
+	 * get years and datetype from field 008 for display
+	 * @return array
+	 */
+	public function getPublicationDates() {
+		$datetype = substr($this->marcRecord->getField('008')->getData(), 6, 1);
+		$year1 = substr($this->marcRecord->getField('008')->getData(), 7, 4);
+		$year2 = substr($this->marcRecord->getField('008')->getData(), 11, 4);
 
-    /**
-     * get subject headings from GND subject headings
-     * build an array (multidimensional?) from all GND headings
-     * GND headings
-     * fields: 600, 610, 611, 630, 648, 650, 651, 655
-     * @ind2=7
-     * subfield $2=gnd
-     * subfields vary per field, build array per field with all
-     * content to be able to treat it in a view helper
-     * @return array
-     */
+		return array($datetype, $year1, $year2);
+	}
 
-    public function getGNDSubjectHeadings()
-    {
-        return array();
-    }
 
-    /**
-     * get group-id from solr-field to display FRBR-Button
-     * @return string
-     */
-    public function getGroup()
-    {
-        return isset($this->fields['group_id']) ? $this->fields['group_id'] : '';
-    }
 
-    /*
-    * Library / Institution Code as array
-    * @return array
-    */
-    public function getInstitution()
-    {
-        return isset($this->fields['institution']) ? $this->fields['institution'] : array();
-    }
+	/**
+	 * Get primary author
+	 *
+	 * @param	Boolean        $asString
+	 * @return	Array|String
+	 */
+	public function getPrimaryAuthor($asString = false) {
+		$data = $this->getMarcSubFieldMap(100, $this->personFieldMap);
+
+		if( $asString ) {
+			return isset($data['name']) ? trim($data['name'] . ' ' . $data['forname']) : '';
+		}
+
+		return $data;
+	}
+
+
+
+	/**
+	 * Get list of secondary authors data
+	 *
+	 * @note	exclude: if $l == fre|eng
+	 * @todo	Implement note comment
+	 * @return	Array[]
+	 */
+	public function getSecondaryAuthors() {
+		return $this->getMarcSubFieldMaps(700, $this->personFieldMap);
+	}
+
+
+
+	/**
+	 * Get corporate authors
+	 *
+	 * @todo	Are there docs with values in field 110?
+	 * @note	exclude: if $l == fre|eng
+	 * @return	Array[]
+	 */
+	public function getCorporateAuthor() {
+		return $this->getMarcSubFieldMaps(710, array(
+			'a'	=> 'name',
+			'b'	=> 'unit'
+		));
+	}
+
+
+
+	/**
+	 * Get sub title
+	 *
+	 * @return	String
+	 */
+	public function getSubtitle() {
+		return $this->getFirstFieldValue('245', array('b'));
+	}
+
+
+
+	/**
+	 * Get edition
+	 *
+	 * @return	String
+	 */
+	public function getEdition() {
+		return $this->getFirstFieldValue('250', array('a'));
+	}
+
+
+
+	/**
+	 * get subject headings from GND subject headings
+	 * build an array (multidimensional?) from all GND headings
+	 * GND headings
+	 * fields: 600, 610, 611, 630, 648, 650, 651, 655
+	 * @ind2=7
+	 * subfield $2=gnd
+	 * subfields vary per field, build array per field with all
+	 * content to be able to treat it in a view helper
+	 * @return array
+	 */
+	/**
+	 * Get subject headings
+	 *
+	 * @return	Array[]
+	 */
+	public function getGNDSubjectHeadings() {
+		return $this->getMarcSubFieldMaps(600, array(
+			'a'	=> 'name'
+		));
+	}
+
+
+
+	/**
+	 * get group-id from solr-field to display FRBR-Button
+	 * @return string
+	 */
+	public function getGroup() {
+		return isset($this->fields['group_id']) ? $this->fields['group_id'] : '';
+	}
+
+
+
+	/*
+	* Library / Institution Code as array
+	* @return array
+	*/
+	public function getInstitution() {
+		return isset($this->fields['institution']) ? $this->fields['institution'] : array();
+	}
+
+
+
+	/**
+	 * Get local topic term
+	 *
+	 * @return	String
+	 */
+	public function getLocalTopicTerm() {
+		return $this->getSimpleMarcFieldValue('690');
+	}
+
+
+
+	/**
+	 * Get host item entry
+	 *
+	 * @return	String
+	 */
+	public function getHostItemEntry() {
+		return $this->getSimpleMarcSubFieldValue(773, 't');
+	}
+
+
+
+	/**
+	 * Get publisher
+	 *
+	 * @param	Boolean		$asString
+	 * @return	Array|String
+	 */
+	public function getPublisher($asString = false) {
+		$data = $this->getMarcSubFieldMap(260, array(
+			'a'	=> 'place',
+			'b'	=> 'name',
+			'c'	=> 'date'
+		));
+
+		if( $asString ) {
+			return isset($data['name']) ? trim($data['name'] . ', ' . $data['place']) : '';
+		}
+
+		return $data;
+	}
+
+
+
+
+	/**
+	 * Get marc field
+	 *
+	 * @param    Integer        $index
+	 * @return    \File_MARC_Data_Field|Boolean
+	 */
+	protected function getMarcField($index) {
+		return $this->marcRecord->getField($index);
+	}
+
+
+
+	/**
+	 * @param $index
+	 * @param array $fieldMap
+	 * @return array
+	 */
+	protected function getMarcSubFieldMap($index, array $fieldMap) {
+		$subFieldValues = array();
+		$field			= $this->marcRecord->getField($index);
+
+		if( $field ) {
+			$subFieldValues = $this->convertSubFieldsToMap($field, $fieldMap);
+		}
+
+		return $subFieldValues;
+	}
+
+
+
+	/**
+	 * Get sub field maps for a field which exists multiple times
+	 *
+	 * @param	Integer		$index
+	 * @param	Array		$fieldMap
+	 * @return	Array[]
+	 */
+	protected function getMarcSubFieldMaps($index, array $fieldMap) {
+		$subFieldsValues= array();
+		$fields			= $this->marcRecord->getFields($index);
+
+		foreach($fields as $field) {
+			$subFieldsValues[] = $this->convertSubFieldsToMap($field, $fieldMap);
+		}
+
+		return $subFieldsValues;
+	}
+
+
+
+	/**
+	 * Convert sub fields to array map
+	 *
+	 * @param	\File_MARC_Data_Field	$field
+	 * @param	Array					$fieldMap
+	 * @return	Array
+	 */
+	protected function convertSubFieldsToMap($field, array $fieldMap) {
+		$subFieldValues	= array();
+
+		foreach($fieldMap as $code => $name) {
+			$subField = $field->getSubfield($code);
+
+			if( $subField ) {
+				$subFieldValues[$name] = $subField->getData();
+			}
+		}
+
+		return $subFieldValues;
+	}
+
+
+
+	/**
+	 * Get value of a sub field
+	 *
+	 * @param	Integer		$index
+	 * @param	String		$subFieldCode
+	 * @return	String|Boolean
+	 */
+	protected function getSimpleMarcSubFieldValue($index, $subFieldCode) {
+		$field = $this->getMarcField($index);
+
+		if( $field ) {
+			$subField = $field->getSubfield($subFieldCode);
+
+			if( $subField ) {
+				return $subField->getData();
+			}
+		}
+
+		return false;
+	}
+
+
+
+	/**
+	 * Get value of a field
+	 *
+	 * @param	Integer			$index
+	 * @return	String|Boolean
+	 */
+	protected function getSimpleMarcFieldValue($index) {
+		$field = $this->getMarcField($index);
+
+		return $field ? $field->getData() : false;
+	}
 
 }
