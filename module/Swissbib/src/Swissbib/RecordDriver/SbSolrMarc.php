@@ -253,6 +253,8 @@ class SbSolrMarc extends VFSolrMarc {
 	 * @return    \File_MARC_Data_Field|Boolean
 	 */
 	protected function getMarcField($index) {
+		$index	= sprintf('%03d', $index);
+
 		return $this->marcRecord->getField($index);
 	}
 
@@ -264,6 +266,7 @@ class SbSolrMarc extends VFSolrMarc {
 	 * @return array
 	 */
 	protected function getMarcSubFieldMap($index, array $fieldMap) {
+		$index			= sprintf('%03d', $index);
 		$subFieldValues = array();
 		$field			= $this->marcRecord->getField($index);
 
