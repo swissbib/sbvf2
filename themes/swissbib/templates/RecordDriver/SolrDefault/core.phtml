@@ -4,12 +4,18 @@ $resultItem	= $this->driver;
 /** @var	VuFind\View\Helper\Root\Record		$record  */
 $viewRecord	= $this->record($resultItem);
 
-$authors	= $this->Authors($resultItem->getDeduplicatedAuthors());
-$edition	= $resultItem->getEdition();
+//$authors	= $this->Authors($resultItem->getDeduplicatedAuthors());
+
 
 $mediumThumb= $viewRecord->getThumbnail('medium');
 //$largeThumb	= $viewRecord->getThumbnail('large');
 $thumbUrl	= $mediumThumb ? $mediumThumb : $this->url('cover-unavailable');
+
+$primaryAuthor		= $resultItem->getPrimaryAuthor(true);
+$secondaryAuthors	= $resultItem->getSecondaryAuthors();
+$publisher			= $resultItem->getPublisher(true);
+$edition			= $resultItem->getEdition();
+$summary			= $resultItem->getSummary();
 
 ?>
 <!-- col -->
@@ -25,31 +31,37 @@ $thumbUrl	= $mediumThumb ? $mediumThumb : $this->url('cover-unavailable');
 	<p><?=$this->escapeHtml($resultItem->getSubtitle())?></p>
 	<!-- details -->
 	<div class="details">
+
+		<?php if($primaryAuthor): ?>
 		<h4>Verfasser:</h4>
-		<p>
-			<?php foreach($authors as $index => $author): ?>
-				<?=($index==0)?'':', '?>
-				<a href="<?=$author['url']?>"><?=$this->escapeHtml($author['author'])?></a>
-			<?php endforeach; ?>
-		</p>
+		<p><?=$this->escapeHtml($primaryAuthor)?></p>
+		<?php endif; ?>
+
+		<?php if($publisher): ?>
 		<h4>Verlag:</h4>
-		<p>Fischer (UNBEKANNTES FELD)</p>
+		<p><?=$this->escapeHtml($publisher)?></p>
+		<?php endif; ?>
+
 		<h4>Jahr:</h4>
 		<p><?=$this->publicationDate($resultItem->getPublicationDates())?></p>
+
 		<h4>Format:</h4>
 		<p>
-			<?php foreach($resultItem->getFormats() as $format): ?>
-				<span class="icon_format_book"><?=$this->escapeHtml($format)?></span>
-			<?php endforeach; ?>
+		<?php foreach($resultItem->getFormats() as $format): ?>
+			<span class="icon_format_book"><?=$this->escapeHtml($format)?></span>
+		<?php endforeach; ?>
 		</p>
+
 		<?php if($edition): ?>
-			<h4>Auflage:</h4>
-			<p><?=$this->escapeHtml($edition)?></p>
+		<h4>Auflage:</h4>
+		<p><?=$this->escapeHtml($edition)?></p>
 		<?php endif; ?>
+
+		<?php if($summary): ?>
 		<h4>Inhalt:</h4>
-		<p>
-			HIER INHALT FELD Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata.
-		</p>
+		<p><?=$this->escapeHtml($summary)?></p>
+		<?php endif; ?>
+
 	</div>
 
 	<a href="frbr.html" class="linkbutton icon_show" title="Weitere Ausgaben und Formate anzeigen"><span>Weitere Ausgaben und Formate</span></a>
