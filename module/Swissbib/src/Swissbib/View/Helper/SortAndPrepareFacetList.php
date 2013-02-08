@@ -24,7 +24,7 @@ class SortAndPrepareFacetList extends AbstractHelper {
 	public function __invoke(Results $results, $field, array $list, $searchRoute) {
 		$facets = array();
 		// avoid limit on URL
-		$results->getParams()->setLimit($results->getOptions()->getDefaultLimit());
+//		$results->getParams()->setLimit($results->getOptions()->getDefaultLimit());
 		$urlHelper	= $this->getView()->plugin('url');
 		$baseRout	= $urlHelper($searchRoute);
 
