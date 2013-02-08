@@ -32,7 +32,7 @@
             <h6>Verfasser:</h6>
             <span><?=$resultItem->getTitleStatement()?></span><br/>
 			<h6>Jahr:</h6>
-            <span><?=$this->publicationDate($this->driver->getPublicationDates())?></span><br />
+            <span><?=$this->publicationDate($resultItem->getPublicationDates())?></span><br />
 			<h6>Auflage:</h6>
 			<span><?=$resultItem->getEdition()?></span>
 		</div><!-- format -->
