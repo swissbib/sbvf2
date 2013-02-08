@@ -43,6 +43,7 @@ use VuFind\RecordDriver\SolrMarc as VFSolrMarc;
  * @category swissbib_VuFind2
  * @package  RecordDrivers
  * @author   Guenter Hipler  <guenter.hipler@unibas.ch>
+ * @author   Oliver Schihin <oliver.schihin@unibas.ch>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://www.swissbib.org
  */
@@ -54,6 +55,45 @@ class SbSolrMarc extends VFSolrMarc
         //only for test purposes within this type to see if the type is correct instantiated
         //Call the parent's set method...
         parent::setRawData($data);
+    }
+
+    /**
+     * get main author from field 100
+     * these subfields
+     * $a = name
+     * $D = forename
+     * $b = numeration
+     * $c = titles associated
+     * $d = dates
+     * $q = fuller name
+     * @return array
+     */
+    public function getPrimaryAuthor()
+    {
+        return array();
+    }
+
+    /**
+     * get secondary authors from field 700
+     * subfields see above
+     * exclude: if $l == fre|eng
+     * @return array
+     */
+    public function getSecondaryAuthors()
+    {
+        return array();
+    }
+
+    /**
+     * get corporate Authors from field 110 or fields 710
+     * these subfields
+     * $a = name
+     * $b = subordinate unit (repeatable)
+     * exclude: if $l == fre|eng
+     */
+    public function getCorporateAuthor()
+    {
+        return array();
     }
 
     public function getSubtitle()
@@ -76,13 +116,18 @@ class SbSolrMarc extends VFSolrMarc
         return array($datetype, $year1, $year2);
     }
 
-    /* FRBR-Link */
+    /*
+     * FRBR-Link
+     */
     public function getGroup()
     {
         return isset($this->fields['group_id']) ? $this->fields['group_id'] : '';
     }
 
-    /* Library / Institution Code as array */
+    /*
+    * Library / Institution Code as array
+    * @return array
+    */
     public function getInstitution()
     {
         return isset($this->fields['institution']) ? $this->fields['institution'] : array();
