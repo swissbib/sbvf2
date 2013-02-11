@@ -66,10 +66,15 @@ class SbSolrMarc extends VFSolrMarc {
 		//Call the parent's set method...
 		parent::setRawData($data);
 
-		//todo: integrate the holdings helper (GH)
-		//$holdings = trim($data['holdings']);
-		//$this->marcHoldings = new \Swissbib\RecordDriver\Helper\HoldingsHelper($holdings);
-		//$t =  $this->marcHoldings->getHoldings949(array("b","B","E","j","p","z","Z"),false);
+
+		//todo: I'm looking for a possibility to wire up the HoldingsHelper using
+        //ServiceLocator and configuration -> later
+		$holdings = trim($data['holdings']);
+		$this->marcHoldings = new \Swissbib\RecordDriver\Helper\HoldingsHelper();
+        $this->marcHoldings->setHoldingsContent($holdings);
+		$t =  $this->marcHoldings->getHoldings949(array("b","B","E","j","p","z","Z"),false);
+
+        $something = "blabla";
 	}
 
 
