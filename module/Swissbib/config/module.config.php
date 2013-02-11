@@ -52,5 +52,10 @@ return array(
                 ),
             ),
         ),
+        'invokables' => array(
+
+            'Swissbib\HoldingsHelper' => 'Swissbib\RecordDriver\Helper\HoldingsHelper',
+        ),
+
     )
 );

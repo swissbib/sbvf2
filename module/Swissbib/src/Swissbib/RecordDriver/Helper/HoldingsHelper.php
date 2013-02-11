@@ -37,7 +37,7 @@ namespace Swissbib\RecordDriver\Helper;
  * probably HoldingsHelper should be a subtype of ZF2 AbstractHelper
  *at first I need a better understanding how things are wired up in this case using means of ZF2
  */
-class HoldingsHelper
+class HoldingsHelper implements HoldingsAwareInterface
 {
 
     private $rawHoldingsData;
@@ -45,9 +45,6 @@ class HoldingsHelper
 
     private $parsed = false;
 
-    public function __construct($holdingsData) {
-        $this->rawHoldingsData = $holdingsData;
-    }
 
 
     private function parseRawData() {
@@ -91,9 +88,9 @@ class HoldingsHelper
      */
     private function getFieldArray($field, $subfields = null, $concat = true)
     {
-        // Default to subfield a if nothing is specified.
+        // has to be changed - makes no sense here
         if (!is_array($subfields)) {
-            $subfields = array('a');
+            $subfields = array('B');
         }
 
         // Initialize return array
@@ -170,7 +167,14 @@ class HoldingsHelper
         return $matches;
     }
 
-
+    /**
+     * Set holdings structure
+     * @param $holdings
+     */
+    public function setHoldingsContent($holdings)
+    {
+        $this->rawHoldingsData = $holdings;
+    }
 
 
 }
