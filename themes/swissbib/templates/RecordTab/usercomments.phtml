@@ -1,0 +1,17 @@
+<?php
+
+$commentCount	= sizeof($this->driver->getComments());
+
+?>
+<h3 class="metatitle">
+	<a name="rezensionen">Rezensionen (<?=$commentCount?>)</a>
+	<span class="rating rating_4"></span><span class="meta">Durchschnittliche Bewertung</span>
+</h3>
+
+<!-- begin: items review -->
+<?=$this->render('record/comments-list.phtml')?>
+<!-- end: items review -->
+
+<!-- begin: editor_rezensionen -->
+<?=$this->render('record/comments-form.phtml')?>
+<!-- end: editor_rezensionen -->
