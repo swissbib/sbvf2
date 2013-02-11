@@ -1,0 +1,50 @@
+<?php
+
+/** @var	VuFind\Db\Row\Comments[]	$comments  */
+$comments		= $this->driver->getComments();
+$commentCount	= sizeof($comments);
+
+$user			= $this->auth()->isLoggedIn();
+$isLoggedIn		= $user !== false;
+$deleteBaseUrl	= $this->recordLink()->getActionUrl($this->driver, 'DeleteComment');
+
+?>
+<?php if( $commentCount == 0 ): ?>
+	<p><?=$this->transEsc('Be the first to leave a comment')?></p>
+<?php else: ?>
+
+	<ul class="items">
+
+		<?php foreach($comments as $comment): ?>
+			<?php $canEditComment = $isLoggedIn && $comment->user_id == $user->id; ?>
+
+			<!-- review -->
+			<li>
+				<h4>
+					<?php /* ferni: Title and rating not supported yet
+					<a name="review_03">Titel der Rezession</a>
+					<span class="rating rating_5">Bewertung 5/5</span> */?>
+					<span class="meta"><?=$this->escapeHtml(trim($comment->firstname . ' ' . $comment->lastname))?> / <?=$this->escapeHtml($comment->created)?></span>
+				</h4>
+				<p><?=$this->escapeHtml($comment->comment)?></p>
+
+				<?php if( $canEditComment ): ?>
+				<!-- edit -->
+					<ul class="actions">
+						<li>
+							<a href="<?=$deleteBaseUrl?>?delete=<?=urlencode($comment->id)?>" class="linkbutton" title="Ihre Rezension löschen"><span>Löschen</span></a>
+						</li>
+						<?php /* ferni: Edit not supported yet
+						<li>
+							<a href="#" class="linkbutton" title="Ihre Rezension bearbeiten"><span>Bearbeiten</span></a>
+						</li>
+ 						*/ ?>
+					</ul>
+				<?php endif; ?>
+			</li>
+		<?php endforeach; ?>
+
+
+
+	</ul>
+<?php endif; ?>
