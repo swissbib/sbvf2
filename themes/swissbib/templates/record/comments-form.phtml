@@ -1,0 +1,52 @@
+<form action="<?=$this->recordLink()->getActionUrl($this->driver, 'AddComment')?>" name="form_rezension" id="form_rezension" method="post" class="form">
+	<input type="hidden" name="id" value="<?=$this->escapeHtml($this->driver->getUniqueId())?>"/>
+	<input type="hidden" name="source" value="<?=$this->escapeHtml($this->driver->getResourceSource())?>"/>
+
+	<h3 class="toggler persist collapsed" id="editor_toggler_rezension">Rezension verfassen</h3>
+	<div class="editor_toggler_rezension">
+
+		<!-- begin: status -->
+		<div class="status information">
+			<p>
+				Verfassen Sie eine Rezension zu diesem Titel und teilen Sie uns und anderen Nutzern Ihre Meinung mit. Ihr Kommentar sollte sich ausschließlich auf diesen Titel beziehen. Für weitere Informationen lesen Sie unseren <a href="#">Leitfaden</a>.
+			</p>
+		</div><!-- end: status -->
+
+		<fieldset>
+			<div class="fieldbox">
+				<label for="rezension_rating" class="label">Bewerten sie diesen Titel</label>
+				<select id="rezension_rating" name="rezension_rating" class="select">
+					<option selected="selected" value="0">Bitte auswählen…</option>
+					<option value="1">Schlecht</option>
+					<option value="2">Mittelmäßig</option>
+					<option value="3">Gut</option>
+					<option value="4">Sehr gut</option>
+					<option value="5">Ausgezeichnet</option>
+				</select>
+			</div>
+			<div class="fieldbox">
+				<label for="rezension_language" class="label">Sprache der Rezension</label>
+				<select id="rezension_language" name="rezension_rating" class="select">
+					<option selected="selected" value="">Bitte auswählen…</option>
+					<option value="en">Englisch</option>
+					<option value="de">Deutsch</option>
+					<option value="fr">Französisch</option>
+					<option value="nl">Niederländisch</option>
+				</select>
+			</div>
+		</fieldset>
+		<fieldset>
+			<label for="rezension_rezension" class="label"><?=$this->transEsc("Your Comment")?></label>
+			<textarea id="rezension_rezension" name="rezension_rezension" class="textarea large <?=$this->jqueryValidation(array('required'=>'This field is required'))?>"></textarea>
+		</fieldset>
+		<fieldset class="actions">
+			<label for="rezension_publish" class="hidden">Rezension speichern und publizieren</label>
+			<input id="rezension_publish" name="rezension_publish" type="submit" class="submit primary" value="Rezension veröffentlichen"/>
+			<label for="rezension_draft" class="hidden">Rezension als Entwurf speichern</label>
+<!--			<input id="rezension_draft" name="rezension_draft" type="submit" class="submit" value="Als Entwurf speichern"/>-->
+			<label for="rezension_reset" class="hidden">Entwurf zurücksetzen</label>
+			<input id="rezension_reset" name="rezension_reset" type="reset" class="reset" value="Zurücksetzen"/>
+			<a class="linkbutton" id="rezension_reset" href="#">Abbrechen</a>
+		</fieldset>
+	</div>
+</form>
