@@ -68,13 +68,13 @@ class SbSolrMarc extends VFSolrMarc {
 
 
 		//todo: I'm looking for a possibility to wire up the HoldingsHelper using
-        //ServiceLocator and configuration -> later
+        //ServiceLocator and configuration -> tbd later
 		$holdings = trim($data['holdings']);
 		$this->marcHoldings = new \Swissbib\RecordDriver\Helper\HoldingsHelper();
-        $this->marcHoldings->setHoldingsContent($holdings);
-		$t =  $this->marcHoldings->getHoldings949(array("b","B","E","j","p","z","Z"),false);
 
-        $something = "blabla";
+        //$holdings = $this->marcHoldings->getTestData();
+        $this->marcHoldings->setHoldingsContent($holdings);
+
 	}
 
 
@@ -361,5 +361,13 @@ class SbSolrMarc extends VFSolrMarc {
 
 		return $field ? $field->getData() : false;
 	}
+
+    public function getHoldings() {
+
+        return $this->marcHoldings->getHoldings();
+
+    }
+
+
 
 }

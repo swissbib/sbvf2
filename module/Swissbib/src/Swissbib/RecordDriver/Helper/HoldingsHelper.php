@@ -62,36 +62,28 @@ class HoldingsHelper implements HoldingsAwareInterface
     }
 
 
-    public function  getHoldings949 ($subfields = array(), $concat = true) {
+    public function  getHoldings () {
 
         if (!$this->parsed)  $this->parseRawData();
 
-        $t949 = $this->getFieldArray("949",$subfields, $concat);
-        return $t949;
+        $t949 = $this->getFieldValues("949");
+        $t852 = $this->getFieldValues("852");
+        $allholdings =  array_merge($t949,$t852);
+        return $allholdings;
 
     }
 
 
 
     /**
-     * Return an array of all values extracted from the specified field/subfield
-     * combination.  If multiple subfields are specified and $concat is true, they
-     * will be concatenated together in the order listed -- each entry in the array
-     * will correspond with a single MARC field.  If $concat is false, the return
-     * array will contain separate entries for separate subfields.
-     *
-     * @param string $field     The MARC field number to read
-     * @param array  $subfields The MARC subfield codes to read
-     * @param bool   $concat    Should we concatenate subfields?
-     *
-     * @return array
+     * Returns an array of all values extracted from the specified holdings field
+     * either 949 / 852
+     * the returned array is defined in the order
+     * @param string $field  The MARC field number to read
+     * @return array[networkid][institutioncode] = array() of values for the current item
      */
-    private function getFieldArray($field, $subfields = null, $concat = true)
+    private function getFieldValues($field)
     {
-        // has to be changed - makes no sense here
-        if (!is_array($subfields)) {
-            $subfields = array('B');
-        }
 
         // Initialize return array
         $matches = array();
@@ -103,69 +95,50 @@ class HoldingsHelper implements HoldingsAwareInterface
             return $matches;
         }
 
-        // Extract all the requested subfields, if applicable.
+        // Extract all the File_MARC_Data_Field 's for the requested tag number
         foreach ($fields as $currentField) {
-            $next = $this->getSubfieldArray($currentField, $subfields, $concat);
-            $matches = array_merge($matches, $next);
-        }
 
-        return $matches;
-    }
-
-
-
-
-
-    /**
-     * Return an array of non-empty subfield values found in the provided MARC
-     * field.  If $concat is true, the array will contain either zero or one
-     * entries (empty array if no subfields found, subfield values concatenated
-     * together in specified order if found).  If concat is false, the array
-     * will contain a separate entry for each subfield value found.
-     *
-     * @param object $currentField Result from File_MARC::getFields.
-     * @param array  $subfields    The MARC subfield codes to read
-     * @param bool   $concat       Should we concatenate subfields?
-     *
-     * @return array
-     */
-    private function getSubfieldArray($currentField, $subfields, $concat = true)
-    {
-        // Start building a line of text for the current field
-        $matches = array();
-        $currentLine = '';
-
-        // Loop through all subfields, collecting results that match the whitelist;
-        // note that it is important to retain the original MARC order here!
-        $allSubfields = $currentField->getSubfields();
-        if (count($allSubfields) > 0) {
-            foreach ($allSubfields as $currentSubfield) {
-                if (in_array($currentSubfield->getCode(), $subfields)) {
-                    // Grab the current subfield value and act on it if it is
-                    // non-empty:
-                    $data = trim($currentSubfield->getData());
-                    if (!empty($data)) {
-                        // Are we concatenating fields or storing them separately?
-                        if ($concat) {
-                            $currentLine .= $data . ' ';
-                        } else {
-                            $matches[$currentSubfield->getCode()] = $data;
-                        }
-                    }
+            $tempArray = array();
+            //now get the subfields for the current data field
+            //it's really weird I can only use the getSubfields - method and not the
+            //getSubfield("subfieldcode") method as documented for File_MARC_Data_Field
+            //don't know why so far...
+            //therefor the little hack to fill a temporary array with all the given subfield - values
+            $allSubfields = $currentField->getSubfields();
+            if (count($allSubfields) > 0) {
+                foreach($allSubfields as $subcode => $subdata) {
+                    $tempArray[$subcode] = $subdata->getData();
                 }
+
+                $item = array();
+                //some documentation
+                //http://www.swissbib.org/wiki/index.php?title=Members:Item-holding-url
+                // I guess we need more differantiation between Aleph and Virtua systems - tbd later
+                //these are only first examples
+                $item["bibsysnumber"] = $tempArray["E"]; // should always available - I guess...
+                $item["barcode"] =  array_key_exists("p",$tempArray) ?  $tempArray["p"] : "";
+                $item["location_expanded"] = array_key_exists("1",$tempArray)? $tempArray["1"] : "" ; //Standort (Expandiert)
+                $item["local_branch_expanded"] = array_key_exists("0",$tempArray)? $tempArray["0"] : "" ; //Zweigstelle (Expandiert)
+                $item["signature2"] = array_key_exists("s",$tempArray)? $tempArray["s"] : "" ; //signature 2
+                $item["adm_code"] = array_key_exists("C",$tempArray)? $tempArray["C"] : "" ; //adm_code -> more general name?
+                $item["opac_note"] = array_key_exists("y",$tempArray)? $tempArray["y"] : "" ; //opac note
+                $item["holding_information"] = array_key_exists("a",$tempArray)? $tempArray["a"] : "" ; //holding information
+
+
+                //$tempArray["B"] -> networkcode
+                //[$tempArray["b"] -> institution code
+                //[$tempArray["q"] -> local record id
+
+                $matches[$tempArray["B"]][$tempArray["b"]][$tempArray["q"]] = $item;
+
             }
+
         }
 
-        // If we're in concat mode and found data, it will be in $currentLine and
-        // must be moved into the matches array.  If we're not in concat mode,
-        // $currentLine will always be empty and this code will be ignored.
-        if (!empty($currentLine)) {
-            $matches[] = trim($currentLine);
-        }
-
-        // Send back our result array:
         return $matches;
     }
+
+
 
     /**
      * Set holdings structure
@@ -174,6 +147,49 @@ class HoldingsHelper implements HoldingsAwareInterface
     public function setHoldingsContent($holdings)
     {
         $this->rawHoldingsData = $holdings;
+    }
+
+
+    public function getTestData() {
+
+        return
+            $testholdings = <<<EOT
+        <record>
+            <datafield tag="949" ind1=" " ind2=" ">
+                <subfield code="B">RERO</subfield>
+                <subfield code="E">vtls0034515</subfield>
+                <subfield code="b">A100</subfield>
+                <subfield code="j">-</subfield>
+                <subfield code="p">1889908238</subfield>
+                <subfield code="4">60100</subfield>
+            </datafield>
+            <datafield tag="949" ind1=" " ind2=" ">
+                <subfield code="B">RERO</subfield>
+                <subfield code="E">vtls003451557</subfield>
+                <subfield code="b">610650002</subfield>
+                <subfield code="j">-</subfield>
+                <subfield code="p">1889908238</subfield>
+                <subfield code="4">60100</subfield>
+            </datafield>
+            <datafield tag="949" ind1=" " ind2=" ">
+                <subfield code="B">RERO</subfield>
+                <subfield code="E">vtls003451557</subfield>
+                <subfield code="b">1234</subfield>
+                <subfield code="j">-</subfield>
+                <subfield code="p">1889908238</subfield>
+                <subfield code="4">60100</subfield>
+            </datafield>
+            <datafield tag="852" ind1=" " ind2=" ">
+                <subfield code="B">IDSBB</subfield>
+                <subfield code="E">sysnr</subfield>
+                <subfield code="b">1234</subfield>
+                <subfield code="j">-</subfield>
+                <subfield code="p">recid</subfield>
+                <subfield code="4">60100</subfield>
+            </datafield>
+        </record>
+EOT;
+
     }
 
 
