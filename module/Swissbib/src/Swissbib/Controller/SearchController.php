@@ -6,7 +6,7 @@ use VuFind\Controller\SearchController as VFSearchController;
 /**
  * [Description]
  *
- * @package        Todoyu
+ * @package       Swissbib
  * @subpackage    [Subpackage]
  */
 class SearchController extends VFSearchController {
