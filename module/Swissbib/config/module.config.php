@@ -39,7 +39,8 @@ return array(
     ),
     'swissbib' => array(
         'ignore_assets' => array(
-            'blueprint/screen.css'
+            'blueprint/screen.css',
+            'jquery-ui.css'
         ),
         // This section contains service manager configurations for all Swissbib
         // pluggable components:
