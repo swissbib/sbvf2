@@ -114,10 +114,16 @@ class SbSolrMarc extends VFSolrMarc {
             $yearStart = trim(substr($code, 7, 4));
                 // Extract date 2 / end of publication
             $yearEnd   = trim(substr($code, 11, 4));
+
+            if($yearEnd === 'uuuu') {
+                $yearEnd = false;
+            }
         }
 
-        return ($yearStart ? $yearStart : '')
+        $formatted = ($yearStart ? $yearStart : '')
              . ($yearEnd && !empty($yearEnd) && $yearEnd !== ' ' ? (' - ' . $yearEnd) : '');
+
+        return str_replace('u', '?', $formatted);
 	}
 
 
