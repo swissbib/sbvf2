@@ -2,158 +2,184 @@
 
 namespace Swissbib\RecordDriver\Helper;
 
-/**
- * swissbib / VuFind <<full descriptive name of the class>>
- *
- * PHP version 5
- *
- * Copyright (C) project swissbib, University Library Basel, Switzerland
- * http://www.swissbib.org  / http://www.swissbib.ch / http://www.ub.unibas.ch
- *
- * Date: 2/7/13
- * Time: 9:02 PM
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2,
- * as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- * @category swissbib_VuFind2
- * @package  <<name of package>>
- * @author   Guenter Hipler  <guenter.hipler@unibas.ch>
- * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     << link to further documentation related to this resource type (Wiki, tracker ...)
- */
-
+	/**
+	 * swissbib / VuFind <<full descriptive name of the class>>
+	 *
+	 * PHP version 5
+	 *
+	 * Copyright (C) project swissbib, University Library Basel, Switzerland
+	 * http://www.swissbib.org  / http://www.swissbib.ch / http://www.ub.unibas.ch
+	 *
+	 * Date: 2/7/13
+	 * Time: 9:02 PM
+	 * This program is free software; you can redistribute it and/or modify
+	 * it under the terms of the GNU General Public License version 2,
+	 * as published by the Free Software Foundation.
+	 *
+	 * This program is distributed in the hope that it will be useful,
+	 * but WITHOUT ANY WARRANTY; without even the implied warranty of
+	 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	 * GNU General Public License for more details.
+	 *
+	 * You should have received a copy of the GNU General Public License
+	 * along with this program; if not, write to the Free Software
+	 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	 *
+	 * @category swissbib_VuFind2
+	 * @package  <<name of package>>
+	 * @author   Guenter Hipler  <guenter.hipler@unibas.ch>
+	 * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+	 * @link     << link to further documentation related to this resource type (Wiki, tracker ...)
+	 */
 
 /**
  * probably HoldingsHelper should be a subtype of ZF2 AbstractHelper
  *at first I need a better understanding how things are wired up in this case using means of ZF2
  */
-class HoldingsHelper implements HoldingsAwareInterface
-{
+class HoldingsHelper implements HoldingsAwareInterface {
 
-    private $rawHoldingsData;
-    private $holdingsType;
+	/**
+	 * @var	\File_MARC_Record
+	 */
+	protected $holdings;
 
-    private $parsed = false;
+	/**
+	 * @var	Array	Map of fields to named params
+	 */
+	protected $fieldMapping	= array(
+		'E'		=> 'bibsysnumber',
+		'p'		=> 'barcode',
+		'1'		=> 'location_expanded',
+		'0'		=> 'local_branch_expanded',
+		's'		=> 'signature2',
+		'C'		=> 'adm_code',
+		'y'		=> 'opac_note',
+		'a'		=> 'holding_information',
+		'B'		=> 'network',
+		'b'		=> 'institution',
+		'q'		=> 'localid'
+	);
 
-
-
-    private function parseRawData() {
-
-        $tHoldingsType  = new \File_MARCXML($this->rawHoldingsData, \File_MARCXML::SOURCE_STRING);
-
-        $this->holdingsType = $tHoldingsType->next();
-        if (!$this->holdingsType) {
-            throw new \File_MARC_Exception('Cannot Process Holdings Structure');
-        }
-
-        $parsed = true;
-
-
-    }
-
-
-    public function  getHoldings () {
-
-        if (!$this->parsed)  $this->parseRawData();
-
-        $t949 = $this->getFieldValues("949");
-        $t852 = $this->getFieldValues("852");
-        $allholdings =  array_merge($t949,$t852);
-        return $allholdings;
-
-    }
+	/**
+	 * @var	Array[]|Boolean
+	 */
+	protected $extracted = false;
 
 
+	/**
+	 * Set holdings structure
+	 *
+	 * @param    String    $holdingsXml
+	 * @throws	\File_MARC_Exception
+	 */
+	public function setHoldingsContent($holdingsXml) {
+		if( strlen($holdingsXml) > 30 ) {
+			$holdingsMarcXml= new \File_MARCXML($holdingsXml, \File_MARCXML::SOURCE_STRING);
+			$marcData		= $holdingsMarcXml->next();
 
-    /**
-     * Returns an array of all values extracted from the specified holdings field
-     * either 949 / 852
-     * the returned array is defined in the order
-     * @param string $field  The MARC field number to read
-     * @return array[networkid][institutioncode] = array() of values for the current item
-     */
-    private function getFieldValues($field)
-    {
+			if( !$marcData ) {
+				throw new \File_MARC_Exception('Cannot Process Holdings Structure');
+			}
 
-        // Initialize return array
-        $matches = array();
-
-        // Try to look up the specified field, return empty array if it doesn't
-        // exist.
-        $fields = $this->holdingsType->getFields($field);
-        if (!is_array($fields)) {
-            return $matches;
-        }
-
-        // Extract all the File_MARC_Data_Field 's for the requested tag number
-        foreach ($fields as $currentField) {
-
-            $tempArray = array();
-            //now get the subfields for the current data field
-            //it's really weird I can only use the getSubfields - method and not the
-            //getSubfield("subfieldcode") method as documented for File_MARC_Data_Field
-            //don't know why so far...
-            //therefor the little hack to fill a temporary array with all the given subfield - values
-            $allSubfields = $currentField->getSubfields();
-            if (count($allSubfields) > 0) {
-                foreach($allSubfields as $subcode => $subdata) {
-                    $tempArray[$subcode] = $subdata->getData();
-                }
-
-                $item = array();
-                //some documentation
-                //http://www.swissbib.org/wiki/index.php?title=Members:Item-holding-url
-                // I guess we need more differantiation between Aleph and Virtua systems - tbd later
-                //these are only first examples
-                $item["bibsysnumber"] = $tempArray["E"]; // should always available - I guess...
-                $item["barcode"] =  array_key_exists("p",$tempArray) ?  $tempArray["p"] : "";
-                $item["location_expanded"] = array_key_exists("1",$tempArray)? $tempArray["1"] : "" ; //Standort (Expandiert)
-                $item["local_branch_expanded"] = array_key_exists("0",$tempArray)? $tempArray["0"] : "" ; //Zweigstelle (Expandiert)
-                $item["signature2"] = array_key_exists("s",$tempArray)? $tempArray["s"] : "" ; //signature 2
-                $item["adm_code"] = array_key_exists("C",$tempArray)? $tempArray["C"] : "" ; //adm_code -> more general name?
-                $item["opac_note"] = array_key_exists("y",$tempArray)? $tempArray["y"] : "" ; //opac note
-                $item["holding_information"] = array_key_exists("a",$tempArray)? $tempArray["a"] : "" ; //holding information
-
-
-                //$tempArray["B"] -> networkcode
-                //[$tempArray["b"] -> institution code
-                //[$tempArray["q"] -> local record id
-
-                $matches[$tempArray["B"]][$tempArray["b"]][$tempArray["q"]] = $item;
-
-            }
-
-        }
-
-        return $matches;
-    }
+			$this->holdings = $marcData;
+		} else {
+				// Invalid input data. Currently just ignore it
+			$this->extracted	= array();
+		}
+	}
 
 
 
-    /**
-     * Set holdings structure
-     * @param $holdings
-     */
-    public function setHoldingsContent($holdings)
-    {
-        $this->rawHoldingsData = $holdings;
-    }
+
+	/**
+	 * Get holdings data
+	 *
+	 * @return	Array[]
+	 */
+	public function  getHoldings() {
+		if( $this->extracted === false ) {
+			$t949 	= $this->getFieldValues("949");
+			$t852 	= $this->getFieldValues("852");
+			$this->extracted = array_merge($t949, $t852);
+
+			print_r($this->extracted);
+		}
+
+		return $this->extracted;
+	}
 
 
-    public function getTestData() {
 
-        return
-            $testholdings = <<<EOT
+	/**
+	 * Get values of field
+	 *
+	 * @param	String	$fieldName		The MARC field number to read
+	 * @return	Array	array[networkid][institutioncode] = array() of values for the current item
+	 */
+	protected function getFieldValues($fieldName) {
+		$data	= array();
+		$fields	= $this->holdings->getFields($fieldName);
+
+		if( is_array($fields) ) {
+			foreach($fields as $field) {
+				$item		= $this->extractFieldData($field);
+				$network	= $item['network'];
+				$institution= $item['institution'];
+
+				if( !isset($data[$network]) ) {
+					$data[$network] = array(
+						'label'			=> 'Label: ' . $network,
+						'institutions'	=> array()
+					);
+				}
+
+				if( !isset($data[$network]['institutions'][$institution]) ) {
+					$data[$network]['institutions'][$institution] = array(
+						'label'	=> 'Label: ' . $institution,
+						'copies'=> array()
+					);
+				}
+
+				$data[$network]['institutions'][$institution]['copies'][] = $item;
+			}
+		}
+
+		return $data;
+	}
+
+
+
+	/**
+	 * Extract field data
+	 *
+	 * @param	\File_MARC_Data_Field	$field
+	 * @return	Array
+	 */
+	protected function extractFieldData(\File_MARC_Data_Field $field) {
+		$subFields	= $field->getSubfields();
+		$rawData	= array();
+		$data		= array();
+
+			// Fetch data
+		foreach($subFields as $code => $subdata) {
+			$rawData[$code] = $subdata->getData();
+		}
+
+//		var_dump($rawData);
+
+		foreach($this->fieldMapping as $code => $name) {
+			$data[$name]	= isset($rawData[$code]) ? $rawData[$code] : '';
+		}
+
+		return $data;
+	}
+
+
+
+	public function getTestData() {
+
+		return
+				$testholdings = <<<EOT
         <record>
             <datafield tag="949" ind1=" " ind2=" ">
                 <subfield code="B">RERO</subfield>
@@ -190,7 +216,6 @@ class HoldingsHelper implements HoldingsAwareInterface
         </record>
 EOT;
 
-    }
-
+	}
 
 }
