@@ -33,6 +33,7 @@
 namespace Swissbib\RecordDriver;
 
 use VuFind\RecordDriver\SolrMarc as VFSolrMarc;
+use Swissbib\RecordDriver\Helper\HoldingsHelper;
 
 /**
  * enhancement for swissbib MARC records in Solr.
@@ -56,7 +57,9 @@ class SbSolrMarc extends VFSolrMarc {
 		'D' => 'forname'
 	);
 
-
+	/**
+	 * @var	HoldingsHelper
+	 */
 	protected $marcHoldings;
 
 
@@ -66,15 +69,12 @@ class SbSolrMarc extends VFSolrMarc {
 		//Call the parent's set method...
 		parent::setRawData($data);
 
-
 		//todo: I'm looking for a possibility to wire up the HoldingsHelper using
         //ServiceLocator and configuration -> tbd later
-		$holdings = trim($data['holdings']);
-		$this->marcHoldings = new \Swissbib\RecordDriver\Helper\HoldingsHelper();
 
+		$this->marcHoldings = new HoldingsHelper();
         //$holdings = $this->marcHoldings->getTestData();
-        $this->marcHoldings->setHoldingsContent($holdings);
-
+        $this->marcHoldings->setHoldingsContent($data['holdings']);
 	}
 
 
@@ -397,12 +397,15 @@ class SbSolrMarc extends VFSolrMarc {
 		return $field ? $field->getData() : false;
 	}
 
-    public function getHoldings() {
 
+
+	/**
+	 * Get holdings
+	 *
+	 * @return	Array[]
+	 */
+	public function getHoldings() {
         return $this->marcHoldings->getHoldings();
-
     }
-
-
 
 }
