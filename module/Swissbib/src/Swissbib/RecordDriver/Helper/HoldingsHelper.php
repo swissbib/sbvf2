@@ -101,8 +101,6 @@ class HoldingsHelper implements HoldingsAwareInterface {
 			$t949 	= $this->getFieldValues("949");
 			$t852 	= $this->getFieldValues("852");
 			$this->extracted = array_merge($t949, $t852);
-
-			print_r($this->extracted);
 		}
 
 		return $this->extracted;
@@ -164,8 +162,6 @@ class HoldingsHelper implements HoldingsAwareInterface {
 		foreach($subFields as $code => $subdata) {
 			$rawData[$code] = $subdata->getData();
 		}
-
-//		var_dump($rawData);
 
 		foreach($this->fieldMapping as $code => $name) {
 			$data[$name]	= isset($rawData[$code]) ? $rawData[$code] : '';
