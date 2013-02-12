@@ -11,7 +11,7 @@ $mediumThumb= $viewRecord->getThumbnail('medium');
 //$largeThumb	= $viewRecord->getThumbnail('large');
 $thumbUrl	= $mediumThumb ? $mediumThumb : $this->url('cover-unavailable');
 
-$primaryAuthor		= $resultItem->getPrimaryAuthor(true);
+$primaryAuthor		= $resultItem->getTitleStatement(true);
 $secondaryAuthors	= $resultItem->getSecondaryAuthors();
 $publisher			= $resultItem->getPublisher(true);
 $edition			= $resultItem->getEdition();
