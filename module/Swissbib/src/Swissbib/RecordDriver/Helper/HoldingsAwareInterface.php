@@ -39,8 +39,8 @@ interface HoldingsAwareInterface
 
     /**
      * Set holdings structure
-     * @param $holdings
+     * @param $holdingsXml
      */
-    public function setHoldingsContent($holdings);
+    public function setHoldingsContent($holdingsXml);
 
 }
