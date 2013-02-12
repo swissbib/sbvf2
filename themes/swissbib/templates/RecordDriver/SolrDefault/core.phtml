@@ -6,7 +6,6 @@ $viewRecord	= $this->record($resultItem);
 
 //$authors	= $this->Authors($resultItem->getDeduplicatedAuthors());
 
-
 $mediumThumb= $viewRecord->getThumbnail('medium');
 //$largeThumb	= $viewRecord->getThumbnail('large');
 $thumbUrl	= $mediumThumb ? $mediumThumb : $this->url('cover-unavailable');
@@ -15,7 +14,7 @@ $primaryAuthor		= $resultItem->getPrimaryAuthor(true);
 $secondaryAuthors	= $resultItem->getSecondaryAuthors();
 $publisher			= $resultItem->getPublisher(true);
 $edition			= $resultItem->getEdition();
-$summary			= $resultItem->getSummary();
+$summary			= trim(implode($resultItem->getSummary()));
 
 ?>
 <!-- col -->
@@ -54,19 +53,10 @@ $summary			= $resultItem->getSummary();
 
 		<?php if($edition): ?>
 		<h4>Auflage:</h4>
-		<p><?/*=$this->escapeHtml($edition)'*/?></p>
+		<p><?=$this->escapeHtml($edition)?></p>
 		<?php endif; ?>
 
-		<?php if($summary): ?>
-        <?php
-        /* 20121202 kstenschke@snowflake.ch
-         * bugfix:  when rendering single-view of sole record result, $summary is array instead of string
-         * @todo    check cause, is this the right place to fix that issue or only fighting the symptom(?)
-         */
-        if( is_array($summary) ) {
-            $summary    = implode(' ', $summary);
-        }
-        ?>
+		<?php if(!empty($summary)): ?>
 		<h4>Inhalt:</h4>
 		<p><?$this->escapeHtml($summary)?></p>
 		<?php endif; ?>
