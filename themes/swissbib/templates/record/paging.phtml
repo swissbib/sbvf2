@@ -1,9 +1,11 @@
 <?php
 $pagingRequired = isset($this->scrollData) && ($this->scrollData['previousRecord'] || $this->scrollData['nextRecord']);
-$previousUrl	= $this->scrollData['previousRecord'] ? $this->recordLink()->getUrl($this->scrollData['previousRecord']) : false;
-$nextUrl		= $this->scrollData['nextRecord'] ? $this->recordLink()->getUrl($this->scrollData['nextRecord']) : false;
-$currentPosition= $this->scrollData['currentPosition'];
-$totalResults	= $this->scrollData['resultTotal'];
+if($pagingRequired) {
+    $previousUrl	= $this->scrollData['previousRecord'] ? $this->recordLink()->getUrl($this->scrollData['previousRecord']) : false;
+    $nextUrl		= $this->scrollData['nextRecord'] ? $this->recordLink()->getUrl($this->scrollData['nextRecord']) : false;
+    $currentPosition= $this->scrollData['currentPosition'];
+    $totalResults	= $this->scrollData['resultTotal'];
+}
 ?>
 <div class="paging">
 	<?php if($pagingRequired): ?>

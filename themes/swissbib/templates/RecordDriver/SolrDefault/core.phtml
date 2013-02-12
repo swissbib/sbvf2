@@ -6,7 +6,6 @@ $viewRecord	= $this->record($resultItem);
 
 //$authors	= $this->Authors($resultItem->getDeduplicatedAuthors());
 
-
 $mediumThumb= $viewRecord->getThumbnail('medium');
 //$largeThumb	= $viewRecord->getThumbnail('large');
 $thumbUrl	= $mediumThumb ? $mediumThumb : $this->url('cover-unavailable');
@@ -15,7 +14,7 @@ $primaryAuthor		= $resultItem->getTitleStatement(true);
 $secondaryAuthors	= $resultItem->getSecondaryAuthors();
 $publisher			= $resultItem->getPublisher(true);
 $edition			= $resultItem->getEdition();
-$summary			= $resultItem->getSummary();
+$summary			= trim(implode($resultItem->getSummary()));
 
 ?>
 <!-- col -->
@@ -57,9 +56,9 @@ $summary			= $resultItem->getSummary();
 		<p><?=$this->escapeHtml($edition)?></p>
 		<?php endif; ?>
 
-		<?php if($summary): ?>
+		<?php if(!empty($summary)): ?>
 		<h4>Inhalt:</h4>
-		<p><?=$this->escapeHtml($summary)?></p>
+		<p><?$this->escapeHtml($summary)?></p>
 		<?php endif; ?>
 
 	</div>
