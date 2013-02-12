@@ -14,7 +14,7 @@ return array(
         //'lib/jquery.js', (blueprint)
         'lib/ui/jquery.ui.core.js', //already included in blueprint -> we have chosen only the used components not the whole stack - how is this done by VuFind?
         //'bibtip_swissbib.js', only used in fullview lazy load for this specific code?
-        //'favorites.js', probabaly only used on one page - lazy load?
+        //'favorites.js', probably only used on one page - lazy load?
         //'swissbib.fullview.js', only used in full view lazy load?
         'lib/ui/jquery.effects.core.js',
         'lib/ui/jquery.ui.widget.js',

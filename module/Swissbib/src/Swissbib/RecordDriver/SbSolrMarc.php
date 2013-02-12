@@ -79,11 +79,40 @@ class SbSolrMarc extends VFSolrMarc {
 	 * @return array
 	 */
 	public function getPublicationDates() {
-		$datetype = substr($this->marcRecord->getField('008')->getData(), 6, 1);
+		$dateType = substr($this->marcRecord->getField('008')->getData(), 6, 1);
 		$year1 = substr($this->marcRecord->getField('008')->getData(), 7, 4);
 		$year2 = substr($this->marcRecord->getField('008')->getData(), 11, 4);
 
-		return array($datetype, $year1, $year2);
+		return array($dateType, $year1, $year2);
+	}
+
+
+
+    /**
+	 * Extract and format parts of "field 008" as publication date(s)
+     *
+     * @see     http://www.loc.gov/marc/umb/um07to10.html#part10
+	 * @return  String
+	 */
+	public function getPublicationDatesFormatted() {
+        $yearStart= $yearEnd  = false;
+
+            // Get field 008 fixed field code
+        $code = $this->marcRecord->getField('008')->getData();
+            // Extract date type / publication status
+        $type = $code[6];
+
+        if( !in_array($type, array('b', 'n', '|')) ) {
+                // date is NOT: missing / unknown / not coded
+
+                // Extract date 1 / beginning of publication
+            $yearStart = trim(substr($code, 7, 4));
+                // Extract date 2 / end of publication
+            $yearEnd   = trim(substr($code, 11, 4));
+        }
+
+        return ($yearStart ? $yearStart : '')
+             . ($yearEnd && !empty($yearEnd) && $yearEnd !== ' ' ? (' - ' . $yearEnd) : '');
 	}
 
 
