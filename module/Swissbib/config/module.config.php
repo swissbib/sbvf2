@@ -4,7 +4,7 @@ namespace Swissbib\Module\Config;
 return array(
     'controllers' => array(
         'invokables' => array(
-            'search'	=> 'Swissbib\Controller\SearchController'
+            'search'    => 'Swissbib\Controller\SearchController'
         )
     ),
     'service_manager' => array(
@@ -54,9 +54,7 @@ return array(
             ),
         ),
         'invokables' => array(
-
             'Swissbib\HoldingsHelper' => 'Swissbib\RecordDriver\Helper\HoldingsHelper',
         ),
-
     )
 );
