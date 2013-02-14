@@ -6,7 +6,6 @@ use SimpleXMLElement;
 use Zend\Http\Client as HttpClient;
 use Zend\Http\Request;
 use Zend\Http\Response;
-use Zend\Stdlib\ResponseInterface;
 
 use Swissbib\XServer\Exception\Exception as xException;
 use Swissbib\XServer\Exception\MissingCredentialsException;
