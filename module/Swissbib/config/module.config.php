@@ -37,8 +37,8 @@ return array(
         )
     ),
     'vufind' => array(
-        // This section contains service manager configurations for all VuFind
-        // pluggable components:
+            // This section contains service manager configurations for all VuFind
+            // pluggable components:
         'plugin_managers' => array(
             'recorddriver' => array(
                 'factories' => array(
@@ -57,10 +57,9 @@ return array(
             'blueprint/screen.css',
             'jquery-ui.css'
         ),
-        // This section contains service manager configurations for all Swissbib
-        // pluggable components:
+            // This section contains service manager configurations for all Swissbib
+            // pluggable components:
         'plugin_managers' => array(
-
             'db_table' => array(
                 'abstract_factories' => array('Swissbib\Db\Table\SbPluginFactory'),
                 'invokables' => array(
@@ -71,5 +70,23 @@ return array(
         'invokables' => array(
             'Swissbib\HoldingsHelper' => 'Swissbib\RecordDriver\Helper\HoldingsHelper',
         ),
+            // Search result tabs
+        'result_tabs' => array(
+            'swissbib' => array(
+                'model'     => '\Swissbib\ResultTab\SbResultTabSolr',
+                'params'    => array(
+                    'id'        => 'swissbib',
+                    'label'     => 'Bücher & mehr',
+                    'selected'  => true
+                )
+            ),
+            'ext' => array(
+                'model'     => '\Swissbib\ResultTab\SbResultTab',
+                'params'    => array(
+                    'id'        => 'external',
+                    'label'     => 'Artikel & mehr'
+                )
+            ),
+        )
     )
 );
