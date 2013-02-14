@@ -10,13 +10,25 @@ use Zend\Http\Response;
 use Swissbib\XServer\Exception\Exception as xException;
 use Swissbib\XServer\Exception\MissingCredentialsException;
 
-
+/**
+ * Client to connect to the x server with given credentials
+ *
+ */
 class Client extends HttpClient {
 
+	/**
+	 * @var	Array	Credentials for login
+	 */
 	protected $credentials;
 
+	/**
+	 * @var	Array	Parsed response data (converted from xml)
+	 */
 	protected $responseData;
 
+	/**
+	 * @var	Boolean		Data loaded from server
+	 */
 	protected $loaded = false;
 
 
