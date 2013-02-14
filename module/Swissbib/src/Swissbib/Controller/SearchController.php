@@ -34,8 +34,24 @@ class SearchController extends VFSearchController {
 	public function resultsAction() {
 		$resultView = parent::resultsAction();
 
-		// Store result view params in layout
-		$this->layout()->resultViewParams = $resultView->params;
+            // Add tab(s) config to view
+        $amountResults  = $resultView->results->getResultTotal();
+        $resultView->tabHeadConfigs = array(
+            array(
+                'id'		=> 'swissbib',
+                'label'		=> 'Bücher & mehr',
+                'count'		=> $amountResults,
+                'selected'	=> true
+            ),
+            array(
+                'id'	=> 'external',
+                'label'	=> 'Artikel & mehr',
+                'count'	=> 1234
+            )
+        );
+
+		    // Add view params to layout
+        $this->layout()->resultViewParams = $resultView->params;
 
 		return $resultView;
 	}
