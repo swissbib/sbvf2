@@ -2,7 +2,6 @@
 $lastSearchUrl  = parse_url(VuFind\Search\Memory::retrieve());
 if( array_key_exists('query', $lastSearchUrl) ) {
     $lastSearchQuery= $lastSearchUrl['query'];
-    print_r(urldecode($lastSearchQuery));
     $tmp            = explode('lookfor=', $lastSearchQuery);
     $tmp            = explode('&', $tmp[1]);
     $lookFor        = $tmp[0];
