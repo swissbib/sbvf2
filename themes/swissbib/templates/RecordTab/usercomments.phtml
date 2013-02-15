@@ -3,9 +3,14 @@
 $commentCount	= sizeof($this->driver->getComments());
 
 ?>
+
 <h3 class="metatitle">
-	<a name="rezensionen">Rezensionen (<?=$commentCount?>)</a>
-	<span class="rating rating_4"></span><span class="meta">Durchschnittliche Bewertung</span>
+    <?php if( $commentCount == 0 ): ?>
+    <?=$this->transEsc('No reviews were found for this record')?>
+    <?php else: ?>
+    <?=$this->transEsc('Reviews')?>
+    <?php endif?>
+	<span class="rating rating_3"></span><span class="meta">Durchschnittliche Bewertung</span>
 </h3>
 
 <!-- begin: items review -->
