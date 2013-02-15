@@ -2,3 +2,4 @@
 local/config/vufind/config.ini
 public/.htaccess
 build
+local/httpd-vufind.conf
