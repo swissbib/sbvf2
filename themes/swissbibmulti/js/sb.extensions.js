@@ -4,19 +4,15 @@
  * @version 0.1 first prototype
  * */
 
+var currentSubmitButton;
 
- var currentSubmitButton;
- var swissbibextensions = {
+var swissbibextensions = {
 
     initOnReady: function () {
-
         swissbibextensions.initSelectSortShortList();
         swissbibextensions.initLoginForm();
         swissbibextensions.initAsynchSearchRequest();
-
         swissbibextensions.initMultitargetRequest();
-
-
     },
 
     initMultitargetRequest : function () {
@@ -38,9 +34,7 @@
 
 
 
-
         jQuery(".rMT").bind("click",function(event) {
-
             // tabLeft and tabRight are JavaScript variables which are initialized in
             //within the jsp Layout file (sbLayoutHitlist.jsp) -> because target-numbers are dynamic
 
@@ -75,8 +69,6 @@
 
 
         jQuery(".sMT").bind("click",function(event) {
-
-
             currentSubmitButton = {
                 name:$(event.target).attr("name"),
                 value:$(event.target).attr("value")
@@ -86,17 +78,12 @@
 
             return false;
         });
-
-
-
-
     },
 
 
 
 
     initAsynchSearchRequest : function ()  {
-
         jQuery(".executeFilterNavigation").bind("click",function(event){
 
             var urlToExecute = $(event.target).attr("toExecute");
@@ -107,15 +94,12 @@
             $.ajax({
                 url:enhancedUrlToExecute,
                 error: function (httpRequest, textStatus, errorThrown) {
-
                     alert ("in error: " + textStatus);
                 },
                 success:function (data,textstatus) {
-
                     alert ("das Absetzen des requests refinement facets hat geklappt");
                 },
                 dataType:'xml'
-
             });
 
             setTimeout(function() {
@@ -128,45 +112,31 @@
                 $.ajax({
                     url:enhancedUrlToExecute,
                     error: function (httpRequest, textStatus, errorThrown) {
-
                         alert ("in error: " + textStatus);
                     },
                     success:function (data,textstatus) {
-
                         alert ("hat alles bestens geklappt, jetzt muss das Ergebnis des Future Objects noch in die HTLM Container gestellt werden");
                     },
                     dataType:'xml'
-
                 });
-
-
             },3000);
-
-
-
-
         });
 
     },
 
     initSelectSortShortList: function () {
-
         jQuery(".icon_notepad_add").bind("click",function(event){
-
             var url = event.target.href;
             //alert (url);
             var currentSelectedList =  $("select.select[name=selectedMemorizeList] option:selected").val();
             var searchedExpression = /^(.*selectedMemorizeList=)(\w+)$/;
 
             event.target.href = url.replace(searchedExpression, "$1" + currentSelectedList);
-
-
         });
 
 
 
         jQuery("#icon_notepad_addadd").bind("click",function(event){
-
             /*
                         Out of [design /css] reasons we had to include the img - object within a span object
                         it might happen that users will reach the unserlying a object when the mouse pointer is a the edge of the span object
@@ -182,7 +152,6 @@
                     urlObject = event.target.parentNode
                     break;
             }
-
 
             var url = urlObject.href;
             var currentSelectedList =  $("select.select[name=selectedMemorizeList] option:selected").val();
@@ -205,13 +174,11 @@
             urlNew = urlNew.replace(isMarkedExpression, joinedList);
 
             urlObject.href = urlNew;
-
         });
 
 
 
         jQuery("#icon_notepad_removeAll_memitems").bind("click",function(event){
-
 
     /*Example for the link to used to delete all the items of the list shown in one step
                 /TouchPoint_tptest2/memorizelist.do?
@@ -252,12 +219,7 @@
 
             event.target.href = urlNew;
 
-
-
             //return false;
-
-
-
         });
 
 
@@ -302,9 +264,6 @@
         });
 
         jQuery("[name^=dummylistToDelete]").bind('click',function(event){
-
-            
-
             $("#dummyHiddenMemorizeList")[0].value = this.attributes["listnumber"].nodeValue;
             $("#dummyHiddenDeleteListSubmit").click();
 
@@ -337,9 +296,7 @@
 };
 
 jQuery(document).ready(function(){
-
     swissbibextensions.initOnReady();
-
 });
 
 function showRequest(formData, jqForm, options) {
@@ -350,7 +307,6 @@ function showRequest(formData, jqForm, options) {
     } else {
         targetname = window.tabRight;
     }
-
 
     //two query - Parameters has to be added
     //a) current submit button (seems to be that Touchpoint evaluates it

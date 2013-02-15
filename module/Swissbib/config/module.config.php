@@ -73,18 +73,32 @@ return array(
         ),
             // Search result tabs
         'result_tabs' => array(
+                // Primary tab: swissbib
             'swissbib' => array(
                 'model'     => '\Swissbib\ResultTab\SbResultTabSolr',
-                'template'  => 'search/tabs/base.phtml',    // default
+                'templates'  => array(
+                        'tab'       => 'search/tabs/base.phtml',    // default
+                        'sidebar'   => array( // sidebar partial(s)
+                            'filters'       => 'global/sidebar/search/filters.phtml',
+                            'facets'        => 'global/sidebar/search/facets.phtml',
+                            'morefacets'    => 'global/sidebar/search/facets.more.phtml'
+                        )
+                ),
                 'params'    => array(
                     'id'        => 'swissbib',
                     'label'     => 'Bücher & mehr',
                     'selected'  => true
                 )
             ),
-            'ext' => array(
+                // Secondary tab
+            'external' => array(
                 'model'     => '\Swissbib\ResultTab\SbResultTab',
-                'template'  => 'search/tabs/external.phtml',
+                'templates' => array(
+                        'tab'   => 'search/tabs/external.phtml',
+                        'sidebar'   => array( // sidebar partial(s)
+                            'facetsexternal'    => 'global/sidebar/search/facets.external.phtml',
+                        )
+                ),
                 'params'    => array(
                     'id'        => 'external',
                     'label'     => 'Artikel & mehr'

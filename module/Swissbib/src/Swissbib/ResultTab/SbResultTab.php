@@ -30,8 +30,8 @@ class SbResultTab {
     /** @var    Integer */
     protected $resultTotal = 0;
 
-    /** @var    String */
-    protected $template =  'search/tabs/base.phtml';
+    /** @var    Array */
+    protected $templates;
 
 
 
@@ -40,10 +40,10 @@ class SbResultTab {
      *
      * @param   \Zend\View\Model\ViewModel  $viewModel
      * @param   Array                       $config
-     * @param   String                      $template
+     * @param   Array                       $templates
      * @throws  \Exception
      */
-    function __construct($viewModel, array $config = array(), $template = '') {
+    function __construct($viewModel, array $config = array(), array $templates = array()) {
             // Init view model and general config
         if( !is_object($viewModel) ) {
             throw new \Exception('Result tab view model is a non-object.');
@@ -51,7 +51,7 @@ class SbResultTab {
         $this->viewModel    = $viewModel;
 
             // Init view template as given / default
-        $this->setTemplate($template);
+        $this->setTemplates($templates);
 
             // Init ID
         if( !array_key_exists('id', $config) || empty($config['id']) ) {
@@ -112,20 +112,46 @@ class SbResultTab {
      * @return  String
      */
     public function getLabel() {
-        return $this->__get('label');
+        return $this->label;
     }
 
 
 
     /**
-     * Set template
+     * Set templates (tab, sidebar partial(s))
      *
-     * @param   String  $template
+     * @param   Array  $templates
      */
-    public function setTemplate($template = 'search/tabs/base.phtml') {
-        $this->__set('template', trim($template));
+    public function setTemplates(array $templates = array()) {
+            // Ensure tab template
+        $templates  = $this->ensureTemplateSet($templates, 'tab', 'search/tabs/base.phtml');
+           // Ensure sidebar partial template
+        $templates['sidebar']   = $this->ensureTemplateSet(array_key_exists('sidebar', $templates) ? $templates['sidebar'] : array(), null, 'global/sidebar/search/filters.phtml');
+
+        $this->__set('templates', $templates);
     }
 
+
+
+    /**
+     * Ensure given template to be set, if not: set given default
+     *
+     * @param   Array   $templates
+     * @param   String  $key
+     * @param   String  $default
+     * @return  Array
+     */
+    protected function ensureTemplateSet($templates, $key = 'tab', $default = 'search/tabs/base.phtml') {
+        if( !is_null($key) ) {
+            if( !array_key_exists($key, $templates) || empty($templates[$key]) ) {
+                $templates['tab']   = $default;
+            }
+        } else if( empty($templates) ) {
+            $templates[]    = $default;
+        }
+
+        return $templates;
+    }
 
 
     /**
@@ -133,8 +159,8 @@ class SbResultTab {
      *
      * @return  String
      */
-    public function getTemplate() {
-        return $this->template;
+    public function getTemplates() {
+        return $this->templates;
     }
 
 
@@ -145,7 +171,9 @@ class SbResultTab {
      * @return  Integer
      */
     public function getResultTotal() {
-        $this->resultTotal  = $this->viewModel->results->getResultTotal();
+        /** @var $results \VuFind\Search\Base\Results */
+        $results            = $this->viewModel->results;
+        $this->resultTotal  = $results->getResultTotal();
 
         return $this->resultTotal;
     }
@@ -159,7 +187,7 @@ class SbResultTab {
      */
     public function getConfig() {
         return array(
-            'template'  => $this->getTemplate(),
+            'templates'  => $this->getTemplates(),
             'id'		=> $this->id,
             'label'		=> $this->getLabel(),
             'count'		=> $this->getResultTotal(),

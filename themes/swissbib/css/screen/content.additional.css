@@ -53,7 +53,8 @@ line-height:15px;
 }
 
 
-.facets_loading_transp {
+.facets_loading_transp,
+.ajax_loading_spinner_transp {
 	background: url('../../images/facets_loading_transp.gif') right center no-repeat;
 }
 
