@@ -1,5 +1,7 @@
+!.gitignore
 .idea
-local/config/vufind/config.ini
-public/.htaccess
 build
+local/config/vufind/config.ini
 local/httpd-vufind.conf
+local/cache/*
+public/.htaccess
