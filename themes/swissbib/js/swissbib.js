@@ -9,6 +9,17 @@
  */
 var swissbib = {
 
+	/** @var	{Boolean}	ie */
+	ie:	false,
+
+	/** @var	{Boolean}	ie6 */
+	ie6:	false,
+
+	/** @var	{Object}	Log of "tabbed" tabs with already AJAXed / loaded content */
+	tabbedLoadedContent: {},
+
+
+
     /**
      * Initialize on ready.
      */
@@ -32,7 +43,10 @@ var swissbib = {
         swissbib.initModal(contextMain);
         swissbib.initLinks(contextMain);
         swissbib.initModalNBImages(contextMain);
-        swissbib.initTabbed(contextMain);	// "tabbed" = tab containers e.g. search result tabs
+
+			// "tabbed" = tab containers e.g. search result tabs
+        swissbib.initTabbed(contextMain);
+
         swissbib.initHints(contextMain);
     },
 
@@ -46,16 +60,6 @@ var swissbib = {
     },
 
 
-
-    /**
-	 * @var	{Boolean}	ie
-	 */
-    ie:false,
-
-	/**
-	 * @var	{Boolean}	ie6
-	 */
-    ie6:false,
 
 	/**
 	 * Initializes the browser flags.
@@ -143,10 +147,52 @@ var swissbib = {
      * Initialize "tabbed" elements
      */
     initTabbed: function(ctx) {
+			// Register tabs with content already loaded
+		this.tabbedLoadedContent = {};
+		this.tabbedLoadedContent[this.getIDSelectedTab()] = true;
+
+			// Init "tabbed" containers
         jQuery("#tabbed").each(function(i, tabbed){
             jQuery(tabbed).tabbed({"animate":!swissbib.ie});
         });
     },
+
+
+
+	/**
+	 * Get currently selected tab
+	 *
+	 * @param	{String}	baseClassname	Default: 'tabbed'
+	 * @return	{Element}
+	 */
+	getSelectedTab: function(baseClassname) {
+		baseClassname	= baseClassname ? baseClassname : 'tabbed';
+
+		return jQuery("#" + baseClassname + " ul li.selected")[0];
+	},
+
+
+
+	/**
+	 * Get ID of selected tab
+	 *
+	 * @return	{String}	Selected tab ID (w/o "tabbed_" prefix)
+	 */
+	getIDSelectedTab: function() {
+		var baseClassname	= "tabbed";
+		var element	= this.getSelectedTab(baseClassname);
+
+		return element ? element.id.split(baseClassname + "_")[1] : false;
+	},
+
+
+
+	/**
+	 * @param	{String}	tabID
+	 */
+	setTabContentLoaded: function(tabID) {
+		this.tabbedLoadedContent[tabID]	= true;
+	},
 
 
 
