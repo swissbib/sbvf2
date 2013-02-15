@@ -4,7 +4,6 @@
  * @author NOSE
  * @version 1.0.0	initial version			
  */
-
 var sbTabbedSettings = {
 	selectorTab:		"ul li",
 	selectorTabbed:		".tabbed",
@@ -44,19 +43,18 @@ jQuery.fn.tabbed = function(op) {
 			// Restore from cookie
 		if (sbTabbedSettings.persist) {
 				// ID
-			var tid = jQuery("." + sbTabbedSettings.classTabSelected, elContainer).attr("id");
-			dlog("tid: " + tid);
+			var tabID = jQuery("." + sbTabbedSettings.classTabSelected, elContainer).attr("id");
+			dlog("tabID: " + tabID);
 			
 				// Cookie
-			var cname = encodeURI(sbTabbedSettings.cookie + jQuery(elContainer).attr("rel"));
-			if (jQuery.cookie(cname)) {
-				var tid = jQuery.cookie(cname);
-				dlog("cookie: " + tid);
+			var cookieName = encodeURI(sbTabbedSettings.cookie + jQuery(elContainer).attr("rel"));
+			if (jQuery.cookie(cookieName)) {
+				var tid = jQuery.cookie(cookieName);
+				dlog("cookie: " + tabID);
 			}
-			
 				// Change
-			if (tid) {
-				changeTabbed(tid);
+			if (tabID) {
+				changeTabbed(tabID);
 			}
 		}
 	}
@@ -93,17 +91,17 @@ jQuery.fn.tabbed = function(op) {
 
 
 	/**
-	 * @param	{String}	tabId
+	 * @param	{String}	tabID
 	 * @param	{Boolean}	animate
 	 */
-	function changeTabbed(tabId, animate) {
-		dlog("changeTabbed: " + tabId);
+	function changeTabbed(tabID, animate) {
+		dlog("changeTabbed: " + tabID);
 		
 			// Selected
 		jQuery(elsTabs).removeClass(sbTabbedSettings.classTabSelected);
-		jQuery("#"+tabId, elContainer).addClass(sbTabbedSettings.classTabSelected);
+		jQuery("#" + tabID, elContainer).addClass(sbTabbedSettings.classTabSelected);
 
-		var elsTabbedSelected = jQuery("."+tabId);
+		var elsTabbedSelected = jQuery("." + tabID);
 		
 			// Change
 		jQuery(elsTabbed).addClass(sbTabbedSettings.classTabbedHidden);

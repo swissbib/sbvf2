@@ -76,7 +76,7 @@ return array(
                 // Primary tab: swissbib
             'swissbib' => array(
                 'model'     => '\Swissbib\ResultTab\SbResultTabSolr',
-                'templates'  => array(
+                'templates'  => array(  // templates for tab content and sidebar (=filters)
                         'tab'       => 'search/tabs/base.phtml',    // default
                         'sidebar'   => array( // sidebar partial(s)
                             'filters'       => 'global/sidebar/search/filters.phtml',
