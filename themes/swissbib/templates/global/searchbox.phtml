@@ -1,16 +1,18 @@
 <?php
-$lastSearchUrl  = parse_url(VuFind\Search\Memory::retrieve());
-if( array_key_exists('query', $lastSearchUrl) ) {
-    $lastSearchQuery= $lastSearchUrl['query'];
-    $tmp            = explode('lookfor=', $lastSearchQuery);
-    $tmp            = explode('&', $tmp[1]);
-    $lookFor        = $tmp[0];
-}
 
 /** @var VuFind\Search\Solr\Options	 $options  */
-$options 			= $this->searchOptions();
-$lastSort			= $options->getLastSort();
-$lastLimit			= $options->getLastLimit();
+$options 	= $this->searchOptions();
+$lastSort	= $options->getLastSort();
+$lastLimit	= $options->getLastLimit();
+/** @var VuFind\Search\Base\Params $resultViewParams  */
+$resultViewParams  = $this->layout()->resultViewParams;
+
+if( $resultViewParams ) {
+	$lookFor	= $resultViewParams->getDisplayQuery();
+} else {
+	$lookFor	= $this->lastSearchWord();
+}
+
 ?>
 <div id="search">
 	<form id="form_search" name="form_search" action="<?=$this->url('search-results')?>" method="get">
