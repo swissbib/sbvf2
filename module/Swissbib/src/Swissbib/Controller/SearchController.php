@@ -19,7 +19,7 @@ class SearchController extends VFSearchController {
 	public function homeAction() {
 		$homeView = parent::homeAction();
 
-		$this->layout()->setTemplate("layout/layout.home");
+		$this->layout()->setTemplate('layout/layout.home');
 
 		return $homeView;
 	}
@@ -34,21 +34,20 @@ class SearchController extends VFSearchController {
 	public function resultsAction() {
 		$resultView = parent::resultsAction();
 
-            // Add tab(s) config to view
-        $amountResults  = $resultView->results->getResultTotal();
-        $resultView->tabHeadConfigs = array(
-            array(
-                'id'		=> 'swissbib',
-                'label'		=> 'Bücher & mehr',
-                'count'		=> $amountResults,
-                'selected'	=> true
-            ),
-            array(
-                'id'	=> 'external',
-                'label'	=> 'Artikel & mehr',
-                'count'	=> 1234
-            )
-        );
+            // Initialize tab(s) config
+        $config             = $this->getServiceLocator()->get('Config');
+        $resultTabsConfig   = $config['swissbib']['result_tabs'];
+            // Init all tabs
+        foreach($resultTabsConfig as $idTab => $tabConfig) {
+            $tabModel   = $tabConfig['model'];
+            $tabParams  = $tabConfig['params'];
+
+            /** @var    \Swissbib\ResultTab\SbResultTab     $tab  */
+            $tab   = new $tabModel($resultView, $tabParams);
+            $resultTabsConfig[$idTab]   = $tab->getConfig();
+        }
+
+        $resultView->tabHeadConfigs = $resultTabsConfig;
 
 		    // Add view params to layout
         $this->layout()->resultViewParams = $resultView->params;
