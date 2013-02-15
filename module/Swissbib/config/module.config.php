@@ -32,7 +32,8 @@ return array(
             'number'					=> 'Swissbib\View\Helper\Number',
             'SortAndPrepareFacetList'	=> 'Swissbib\View\Helper\SortAndPrepareFacetList',
             'Authors'					=> 'Swissbib\View\Helper\Authors',
-            'publicationDate'	        => 'Swissbib\View\Helper\YearFormatter'
+            'publicationDate'			=> 'Swissbib\View\Helper\YearFormatter',
+            'lastSearchWord'			=> 'Swissbib\View\Helper\LastSearchWord'
 // 'config' => 'Swissbib\View\Helper\Config'
         )
     ),
