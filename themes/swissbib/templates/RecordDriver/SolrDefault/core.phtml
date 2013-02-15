@@ -10,11 +10,13 @@ $mediumThumb= $viewRecord->getThumbnail('medium');
 //$largeThumb	= $viewRecord->getThumbnail('large');
 $thumbUrl	= $mediumThumb ? $mediumThumb : $this->url('cover-unavailable');
 
-$primaryAuthor		= $resultItem->getTitleStatement(true);
+$subTitle           = $resultItem->getSubtitle(true);
+$titleStatement		= $resultItem->getTitleStatement(true);
 $secondaryAuthors	= $resultItem->getSecondaryAuthors();
 $publisher			= $resultItem->getPublisher(true);
 $edition			= $resultItem->getEdition();
 $summary			= trim(implode($resultItem->getSummary()));
+$groupID            = $resultItem->getGroup(true);
 
 ?>
 <!-- col -->
@@ -27,24 +29,27 @@ $summary			= trim(implode($resultItem->getSummary()));
 <!-- col -->
 <div class="c75l">
 	<h2><?=$this->escapeHtml($resultItem->getShortTitle())?></h2>
-	<p><?=$this->escapeHtml($resultItem->getSubtitle())?></p>
+	<?php if($subTitle): ?>
+        <p><?=$this->escapeHtml($subTitle)?></p>
+    <?php endif ?>
 	<!-- details -->
 	<div class="details">
 
-		<?php if($primaryAuthor): ?>
-		<h4>Verfasser:</h4>
-		<p><?=$this->escapeHtml($primaryAuthor)?></p>
+		<?php if($titleStatement): ?>
+		<h4><?=$this->transEsc('Author')?>:</h4>
+		<p><?=$this->escapeHtml($titleStatement)?></p>
 		<?php endif; ?>
 
 		<?php if($publisher): ?>
-		<h4>Verlag:</h4>
-		<p><?=$this->escapeHtml($publisher)?></p>
+		<h4><?=$this->transEsc('Publication')?>:</h4>
+		<p><?=$this->escapeHtml($publisher)?>, <?=$this->publicationDate($resultItem->getPublicationDates())?></p>
 		<?php endif; ?>
 
-		<h4>Jahr:</h4>
-		<p><?=$this->publicationDate($resultItem->getPublicationDates())?></p>
+        <h4><?=$this->transEsc('Description')?>:</h4>
+        <p>statisch, 300 $a, $b, $c, $e</p>
 
-		<h4>Format:</h4>
+
+		<h4><?=$this->transEsc('Format')?>:</h4>
 		<p>
 		<?php foreach($resultItem->getFormats() as $format): ?>
 			<span class="icon_format_book"><?=$this->escapeHtml($format)?></span>
@@ -52,8 +57,8 @@ $summary			= trim(implode($resultItem->getSummary()));
 		</p>
 
 		<?php if($edition): ?>
-		<h4>Auflage:</h4>
-		<p><?=$this->escapeHtml($edition)?></p>
+		    <h4><?=$this->transEsc('Edition')?>:</h4>
+		    <p><?=$this->escapeHtml($edition)?></p>
 		<?php endif; ?>
 
 		<?php if(!empty($summary)): ?>
@@ -63,6 +68,8 @@ $summary			= trim(implode($resultItem->getSummary()));
 
 	</div>
 
-	<a href="frbr.html" class="linkbutton icon_show" title="Weitere Ausgaben und Formate anzeigen"><span>Weitere Ausgaben und Formate</span></a>
+    <?php if(!empty($groupID)): ?>
+	    <a href="frbr.html" class="linkbutton icon_show" title="<?=$this->transEsc('FRBR_Button')?>"><span><?=$this->transEsc('FRBR_Button')?></span></a>
+    <?php endif; ?>
 
 </div>
