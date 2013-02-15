@@ -41,9 +41,10 @@ class SearchController extends VFSearchController {
         foreach($resultTabsConfig as $idTab => $tabConfig) {
             $tabModel   = $tabConfig['model'];
             $tabParams  = $tabConfig['params'];
+            $template   = array_key_exists('template', $tabConfig) ? $tabConfig['template'] : '';
 
             /** @var    \Swissbib\ResultTab\SbResultTab     $tab  */
-            $tab   = new $tabModel($resultView, $tabParams);
+            $tab   = new $tabModel($resultView, $tabParams, $template);
             $resultTabsConfig[$idTab]   = $tab->getConfig();
         }
 

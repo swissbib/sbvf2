@@ -62,8 +62,8 @@ return array(
             // pluggable components:
         'plugin_managers' => array(
             'db_table' => array(
-                'abstract_factories' => array('Swissbib\Db\Table\SbPluginFactory'),
-                'invokables' => array(
+                'abstract_factories'    => array('Swissbib\Db\Table\SbPluginFactory'),
+                'invokables'            => array(
                     'holdingsitems' => 'Swissbib\Db\Table\SbHoldingsItems',
                 ),
             ),
@@ -75,6 +75,7 @@ return array(
         'result_tabs' => array(
             'swissbib' => array(
                 'model'     => '\Swissbib\ResultTab\SbResultTabSolr',
+                'template'  => 'search/tabs/base.phtml',    // default
                 'params'    => array(
                     'id'        => 'swissbib',
                     'label'     => 'Bücher & mehr',
@@ -83,6 +84,7 @@ return array(
             ),
             'ext' => array(
                 'model'     => '\Swissbib\ResultTab\SbResultTab',
+                'template'  => 'search/tabs/external.phtml',
                 'params'    => array(
                     'id'        => 'external',
                     'label'     => 'Artikel & mehr'

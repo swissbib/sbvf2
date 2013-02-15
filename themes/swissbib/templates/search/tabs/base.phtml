@@ -5,14 +5,16 @@ $results	= $this->results;
 $params		= $this->params;
 
 $recordTotal= $results->getResultTotal();
-$lookfor	= $params->getDisplayQuery();
-
+$lookFor	= $params->getDisplayQuery();
 ?>
 
 <!-- begin: tabbed swissbib -->
 <div class="tabbed tabbed_selected tabbed_swissbib">
 
-	<h1><?=$this->number($recordTotal)?> Treffer für ihre Suchanfrage <cite><?=$this->escapeHtml($lookfor)?></cite></h1>
+	<h1>
+        <?=$this->number($recordTotal)?> Treffer für ihre Suchanfrage
+        <cite><?=$this->escapeHtml($lookFor)?></cite>
+    </h1>
 
 	<?php if($recordTotal): ?>
 		<!-- begin: tools -->
@@ -23,13 +25,13 @@ $lookfor	= $params->getDisplayQuery();
 			<!-- display -->
 			<?=$this->render('search/controls/limit.phtml')?>
 			<!-- paging -->
-			<?=$this->paginationControl($this->results->getPaginator(), 'Sliding', 'search/pagination.phtml', array('results' => $this->results))?>
+			<?=$this->paginationControl($results->getPaginator(), 'Sliding', 'search/pagination.phtml', array('results' => $results))?>
 		</div>
 		<!-- end: tools -->
 	<?php endif; ?>
 
 	<!-- data -->
-	<?=$this->render('search/list-' . $this->results->getParams()->getView() . '.phtml')?>
+	<?=$this->render('search/list-' . $results->getParams()->getView() . '.phtml')?>
 
 	<?php if($recordTotal): ?>
 		<!-- begin: tools -->
