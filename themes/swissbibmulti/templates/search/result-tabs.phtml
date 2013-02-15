@@ -1,8 +1,10 @@
-<? foreach ($tabHeadConfigs as $tabConfig): ?>
+<? foreach ($tabHeadConfigs as $tabKey => $tabConfig): ?>
     <? if($tabConfig['selected']): ?>
         <?= $this->render($tabConfig['templates']['tab']) ?>
     <? else: // Render placeholder for lazy-loaded inactive tab ?>
-        <h1>Lade <?= $tabConfig['label']?><h1>
-        <div class="ajax_loading_spinner_transp" style="width:32px; height:32px;"></div>
+        <div class="tabbed tabbed_hidden tabbed_<?=$tabKey?>">
+            <h1>Lade <?= $tabConfig['label']?><h1>
+            <div class="ajax_loading_spinner_transp" style="width:32px; height:32px;"></div>
+        </div>
     <? endif; ?>
 <? endforeach; ?>
