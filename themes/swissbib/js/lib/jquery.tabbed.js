@@ -67,25 +67,32 @@ jQuery.fn.tabbed = function(op) {
 	 * @param	{Event}	e
 	 */
 	function actionTabbed(e) {
-		dlog("actionTabbed");
-		
 			// Prevent
 		var evt = jQuery.Event(e);
 		evt.preventDefault();
 		evt.stopPropagation();	
 		
-		var tabID = jQuery(this).attr("id");
-		
+		var tabId = jQuery(this).attr("id");
+		dlog("actionTabbed - tab: " + tabId + " activated");
+
+		if( swissbib.isTabContentLoaded(tabId) ) {
+			// @todo	add content loading via AJAX
+			alert("Tab " + tabId + " content is already present.");
+		} else {
+			alert("AJAX load tab " + tabId + " content...");
+			swissbib.registerTabContentLoaded(tabId);
+		}
+
 			// Persist active tab preference?
 		if (sbTabbedSettings.persist) {
 				// Write cookie
 			var cookieName = encodeURI(sbTabbedSettings.cookie + jQuery(elContainer).attr("rel"));
-			var cookieValue= tabID;
+			var cookieValue= tabId;
 			jQuery.cookie(cookieName, cookieValue, {path: '/'});
 		}
 		
 			// Change active tab
-		changeTabbed(tabID, sbTabbedSettings.animate);
+		changeTabbed(tabId, sbTabbedSettings.animate);
 	}
 
 
