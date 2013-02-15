@@ -149,7 +149,7 @@ var swissbib = {
     initTabbed: function(ctx) {
 			// Register tabs with content already loaded
 		this.tabbedLoadedContent = {};
-		this.tabbedLoadedContent[this.getIDSelectedTab()] = true;
+		this.tabbedLoadedContent[this.getIdSelectedTab()] = true;
 
 			// Init "tabbed" containers
         jQuery("#tabbed").each(function(i, tabbed){
@@ -174,24 +174,51 @@ var swissbib = {
 
 
 	/**
-	 * Get ID of selected tab
+	 * Get id of selected tab
 	 *
-	 * @return	{String}	Selected tab ID (w/o "tabbed_" prefix)
+	 * @param	{String}			classnamePrefix
+	 * @return	{String|Boolean}	Selected tab ID (w/o "tabbed_" prefix)
 	 */
-	getIDSelectedTab: function() {
-		var baseClassname	= "tabbed";
-		var element	= this.getSelectedTab(baseClassname);
+	getIdSelectedTab: function(classnamePrefix) {
+		classnamePrefix	= classnamePrefix ? classnamePrefix : "tabbed";
 
-		return element ? element.id.split(baseClassname + "_")[1] : false;
+		var element	= this.getSelectedTab(classnamePrefix);
+
+		return element ? element.id : false;
+	},
+
+
+
+//	/**
+//	 * Get key from (prefixed) tab ID (e.g. 'tabbed_swissbib' -> 'swissbib')
+//	 *
+//	 * @param	{String}	tabID
+//	 * @param	{String}	classnamePrefix
+//	 * @return	{String|Boolean}
+//	 */
+//	getTabKeyFromTabID: function(tabID, classnamePrefix) {
+//		classnamePrefix	= classnamePrefix ? classnamePrefix : "tabbed";
+//
+//		return tabID ? tabID.split(classnamePrefix + "_")[1] : false;
+//	},
+
+
+
+	/**
+	 * @param	{String}	tabId
+	 */
+	registerTabContentLoaded: function(tabId) {
+		this.tabbedLoadedContent[tabId]	= true;
 	},
 
 
 
 	/**
-	 * @param	{String}	tabID
+	 * @param	{String}	tabId
+	 * @return	{Boolean}
 	 */
-	setTabContentLoaded: function(tabID) {
-		this.tabbedLoadedContent[tabID]	= true;
+	isTabContentLoaded: function(tabId) {
+		return !!this.tabbedLoadedContent[tabId];
 	},
 
 
