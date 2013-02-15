@@ -1,2 +1,3 @@
-<?=$this->render('search/tabs/base.phtml')?>
-<?=$this->render('search/tabs/external.phtml')?>
+<? foreach ($tabHeadConfigs as $tabConfig): ?>
+    <?= $this->render($tabConfig['template']) ?>
+<? endforeach; ?>

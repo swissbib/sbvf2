@@ -30,6 +30,9 @@ class SbResultTab {
     /** @var    Integer */
     protected $resultTotal = 0;
 
+    /** @var    String */
+    protected $template =  'search/tabs/base.phtml';
+
 
 
     /**
@@ -37,14 +40,18 @@ class SbResultTab {
      *
      * @param   \Zend\View\Model\ViewModel  $viewModel
      * @param   Array                       $config
+     * @param   String                      $template
      * @throws  \Exception
      */
-    function __construct($viewModel, array $config = array()) {
+    function __construct($viewModel, array $config = array(), $template = '') {
             // Init view model and general config
         if( !is_object($viewModel) ) {
             throw new \Exception('Result tab view model is a non-object.');
         }
         $this->viewModel    = $viewModel;
+
+            // Init view template as given / default
+        $this->setTemplate($template);
 
             // Init ID
         if( !array_key_exists('id', $config) || empty($config['id']) ) {
@@ -56,8 +63,34 @@ class SbResultTab {
         $label  = trim($config['label']);
         $this->label= empty($label) ? 'Label missing!' : $label;
 
-            // Init isSelected
-        $this->isSelected   = array_key_exists('selected', $config) ? (!!$config['selected']) : false;
+            /**
+             * Init isSelected
+             * @note    When there's a key 'selected' it's considered true, w/o looking at the value
+             */
+        $this->isSelected   = array_key_exists('selected', $config);
+    }
+
+
+
+    /**
+     * Get given property
+     *
+     * @param   String  $property
+     */
+    public function __get($property) {
+        return $this->$property;
+    }
+
+
+
+    /**
+     * Set given property, optional trim
+     *
+     * @param   String  $property
+     * @param   Mixed   $value
+     */
+    public function __set($property, $value) {
+        $this->$property = $value;
     }
 
 
@@ -68,9 +101,7 @@ class SbResultTab {
      * @param   String  $label
      */
     public function setLabel($label) {
-        $label  = trim($label);
-
-        $this->label    = $label;
+        $this->__set('label', trim($label));
     }
 
 
@@ -81,7 +112,29 @@ class SbResultTab {
      * @return  String
      */
     public function getLabel() {
-        return $this->label;
+        return $this->__get('label');
+    }
+
+
+
+    /**
+     * Set template
+     *
+     * @param   String  $template
+     */
+    public function setTemplate($template = 'search/tabs/base.phtml') {
+        $this->__set('template', trim($template));
+    }
+
+
+
+    /**
+     * Get template
+     *
+     * @return  String
+     */
+    public function getTemplate() {
+        return $this->template;
     }
 
 
@@ -106,10 +159,11 @@ class SbResultTab {
      */
     public function getConfig() {
         return array(
+            'template'  => $this->getTemplate(),
             'id'		=> $this->id,
             'label'		=> $this->getLabel(),
             'count'		=> $this->getResultTotal(),
-            'selected'	=> $this->isSelected
+            'selected'	=> $this->isSelected,
         );
     }
 
