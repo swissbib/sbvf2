@@ -48,8 +48,8 @@ button {
 	background: url('../../img/facets_loading.gif') right center no-repeat;
 }
 
-
-.facets_loading_transp {
+.facets_loading_transp,
+.ajax_loading_spinner_transp {
 	background: url('../../img/facets_loading_transp.gif') right center no-repeat;
 }
 
