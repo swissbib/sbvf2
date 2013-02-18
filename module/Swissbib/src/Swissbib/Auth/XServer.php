@@ -41,7 +41,7 @@ class XServer extends AbstractBase {
 			throw new AuthException($xServer->getLoginException()->getMessage());
 		}
 
-		return $this->getUser($username);
+		return $this->getUser($username, $password);
 	}
 
 
@@ -72,20 +72,23 @@ class XServer extends AbstractBase {
 	 * User is created in the database if not available
 	 *
 	 * @param	String		$username
+	 * @param	String		$password
 	 * @return	User
 	 */
-	protected function getUser($username) {
+	protected function getUser($username, $password) {
 		$user		= $this->getUserTable()->getByUsername($username);
 		$xServer	= $this->getXServer();
 
-		list($firstname, $lastname)	= explode(',', $xServer->getName());
+		list($lastname, $firstname)	= explode(',', $xServer->getName());
 
 		$user->username 	= $username;
 		$user->firstname	= trim($firstname);
 		$user->lastname		= trim($lastname);
 		$user->email		= $xServer->getEmail();
 
-		$user->save();
+		$user->saveCredentials($username, $password);
+
+//		$user->save();
 
 		return $user;
 	}

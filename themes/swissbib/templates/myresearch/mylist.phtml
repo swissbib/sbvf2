@@ -24,7 +24,7 @@
 	<div id="col1_content" class="clearfix">
 		<!-- begin: sidebar -->
 		<div id="sidebar">
-			<?=$this->render('myresearch/sidebar/sidebar.phtml')?>
+			<?=$this->context($this)->renderInContext("myresearch/sidebar/sidebar.phtml", array('active' => isset($list) ? $list : 'favorites'))?>
 		</div>
 		<!-- end: sidebar -->
 	</div>
