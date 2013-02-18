@@ -1,2 +1,10 @@
-<?=$this->render('search/tabs/base.phtml')?>
-<?=$this->render('search/tabs/external.phtml')?>
+<? foreach ($tabHeadConfigs as $tabKey => $tabConfig): ?>
+    <? if($tabConfig['selected']): ?>
+        <?= $this->render($tabConfig['templates']['tab']) ?>
+    <? else: // Render placeholder for lazy-loaded inactive tab ?>
+        <div class="tabbed tabbed_hidden tabbed_<?=$tabKey?>">
+            <h1>Lade <?=$this->escapeHtml($tabConfig['label'])?><h1>
+            <div class="ajax_loading_spinner_transp" style="width:32px; height:32px;"></div>
+        </div>
+    <? endif; ?>
+<? endforeach; ?>

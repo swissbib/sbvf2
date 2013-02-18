@@ -1,10 +1,10 @@
 <?
         // Set up page title:
-    $lookfor = $this->params->getDisplayQuery();
+    $lookFor = $params->getDisplayQuery();
     if (isset($this->overrideTitle)) {
         $this->headTitle($this->overrideTitle);
     } else {
-        $this->headTitle($this->translate('Search Results') . (empty($lookfor) ? '' : " - {$lookfor}"));
+        $this->headTitle($this->translate('Search Results') . (empty($lookFor) ? '' : " - {$lookFor}"));
     }
 
 //    // Set up breadcrumbs:
@@ -14,8 +14,8 @@
 //        $this->layout()->breadcrumbs = '<em>' . $this->transEsc('Search') . ': ' .
 //            $this->escapeHtml($lookfor) . '</em>';
 //    }
-
 ?>
+
 <!-- begin: col1 (sidebar)  -->
 <div id="col1" class="sidebar">
 	<div id="col1_content" class="clearfix">

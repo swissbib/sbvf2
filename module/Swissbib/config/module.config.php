@@ -62,8 +62,8 @@ return array(
             // pluggable components:
         'plugin_managers' => array(
             'db_table' => array(
-                'abstract_factories' => array('Swissbib\Db\Table\SbPluginFactory'),
-                'invokables' => array(
+                'abstract_factories'    => array('Swissbib\Db\Table\SbPluginFactory'),
+                'invokables'            => array(
                     'holdingsitems' => 'Swissbib\Db\Table\SbHoldingsItems',
                 ),
             ),
@@ -73,16 +73,32 @@ return array(
         ),
             // Search result tabs
         'result_tabs' => array(
+                // Primary tab: swissbib
             'swissbib' => array(
                 'model'     => '\Swissbib\ResultTab\SbResultTabSolr',
+                'templates'  => array(  // templates for tab content and sidebar (=filters)
+                        'tab'       => 'search/tabs/base.phtml',    // default
+                        'sidebar'   => array( // sidebar partial(s)
+                            'filters'       => 'global/sidebar/search/filters.phtml',
+                            'facets'        => 'global/sidebar/search/facets.phtml',
+                            'morefacets'    => 'global/sidebar/search/facets.more.phtml'
+                        )
+                ),
                 'params'    => array(
                     'id'        => 'swissbib',
                     'label'     => 'Bücher & mehr',
                     'selected'  => true
                 )
             ),
-            'ext' => array(
+                // Secondary tab
+            'external' => array(
                 'model'     => '\Swissbib\ResultTab\SbResultTab',
+                'templates' => array(
+                        'tab'   => 'search/tabs/external.phtml',
+                        'sidebar'   => array( // sidebar partial(s)
+                            'facetsexternal'    => 'global/sidebar/search/facets.external.phtml',
+                        )
+                ),
                 'params'    => array(
                     'id'        => 'external',
                     'label'     => 'Artikel & mehr'

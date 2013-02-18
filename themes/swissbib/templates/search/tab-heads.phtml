@@ -1,7 +1,7 @@
 <div id="tabbed" rel="catalog">
 	<ul>
-		<?php foreach($tabs as $tab): ?>
-		<li id="tabbed_<?=$tab['id']?>" class="<?=(isset($tab['selected'])?'selected':'')?>">
+		<?php foreach($tabs as $tabKey => $tab): ?>
+		<li id="tabbed_<?=$tab['id']?>" class="<?=(isset($tab['selected']) ? 'selected' : '')?>">
 			<a href="javascript:void(0)">
                 <span><?=$this->escapeHtml($tab['label'])?> <em>(<?=$this->number($tab['count'])?>)</em></span>
             </a>

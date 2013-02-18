@@ -1,91 +1,108 @@
 /**
- * swissbib Javascript Stuff.
- * @author NOSE
- * @version 1.0.0 initial version
+ * swissbib VuFind Javascript
+ *
  * @requires jquery, jquery.debug, jquery.cookie, jquery.bgIframe, jquery.hoverIntent, jquery.easing,
  *           jquery.toggler, jquery.menu, jquery.nyroModal, jquery.autocomplete, jquery.dropdown,
  *			 jquery.ui, jquery.ui.tabs
+ *
+ * initial version by NOSE
  */
 var swissbib = {
+
+	/** @var	{Boolean}	ie */
+	ie:	false,
+
+	/** @var	{Boolean}	ie6 */
+	ie6:	false,
+
+	/** @var	{Object}	Log of "tabbed" tabs with already AJAXed / loaded content */
+	tabbedLoadedContent: {},
+
+
+
     /**
      * Initialize on ready.
      */
     initOnReady: function(){
-        // debug flag
-        window.DEBUG = false;
-        console.log("swissbib: initOnReady");
+        window.DEBUG = false;	// debug flag
 
+        	// Context
+        var contextHeader	= jQuery("#header");
+        var contextSearch	= jQuery("#search");
+        var contextMain		= jQuery("#main");
+        var contextContent	= jQuery("#content");
+        var contextAll		= jQuery("#header, #search, #main");
 
-        // context
-        var ctxHeader = jQuery("#header");
-        var ctxSearch = jQuery("#search");
-        var ctxMain = jQuery("#main");
-        var ctxContent = jQuery("#content");
-        var ctxAll = jQuery("#header, #search, #main");
-
-        // init
+        	// Init interface
         swissbib.initBrowserFlags();
-        swissbib.initNavigation(ctxHeader);
-        //swissbib.initAutocomplete(ctxAll);
-        swissbib.initToggler(ctxMain);
-        swissbib.initTabs(ctxContent);
-        swissbib.initForms(ctxAll);
-        swissbib.initModal(ctxMain);
-        swissbib.initLinks(ctxMain);
-        swissbib.initModalNBImages(ctxMain);
-        swissbib.initTabbed(ctxMain);
-        swissbib.initHints(ctxMain);
+        swissbib.initNavigation(contextHeader);
+//        swissbib.initAutocomplete(ctxAll);
+        swissbib.initToggler(contextMain);
+        swissbib.initTabs(contextContent);
+        swissbib.initForms(contextAll);
+        swissbib.initModal(contextMain);
+        swissbib.initLinks(contextMain);
+        swissbib.initModalNBImages(contextMain);
 
+			// "tabbed" = tab containers e.g. search result tabs
+        swissbib.initTabbed(contextMain);
+
+        swissbib.initHints(contextMain);
     },
+
+
+
     /**
      * Initialize on load.
      */
     initOnLoad: function(){
-        console.log("swissbib: initOnLoad");
+
     },
 
-    /**
-     * Initializes the browser flags.
-     */
-    ie:false,
-    ie6:false,
+
+
+	/**
+	 * Initializes the browser flags.
+	 */
     initBrowserFlags: function() {
-        // browser
         var tag = "notdetected";
+
         if (jQuery.browser.msie) {
             tag = "ie";
             swissbib.ie = true;
             if (jQuery.browser.version.substr(0,1)<7) {
                 swissbib.ie6 = true;
             }
-        }
-        else if (jQuery.browser.mozilla) {
+        } else if (jQuery.browser.mozilla) {
             tag = "mozilla";
-        }
-        else if (jQuery.browser.safari){
+        } else if (jQuery.browser.safari){
             tag = "safari";
-        }
-        else if (jQuery.browser.opera){
+        } else if (jQuery.browser.opera){
             tag = "opera";
         }
-        // tag
+
         jQuery("body").addClass(tag);
     },
 
 
+
     /**
      * Initializes the navigation.
+	 *
+	 * @param	{Element}	ctx		Selector context
      */
     initNavigation: function(ctx){
-        console.log("swissbib: initNavigation");
-        jQuery("#navigation",ctx).menunav();
+        jQuery("#navigation", ctx).menunav();
     },
+
+
 
     /**
      * Initializes the toggler.
+	 *
+	 * @param	{Element}	ctx		Selector context
      */
     initToggler: function(ctx){
-        console.log("swissbib: initToggler");
         var animate = true;
         if (swissbib.ie6) {
             animate = false;
@@ -100,6 +117,7 @@ var swissbib = {
             if (jQuery(el).hasClass("expanded")) {
                 expanded = true;
             }
+
             if (title != null && title.indexOf("$") >= 0) {
                 var msgs = title.split("$");
                 msgCollapsed = msgs[0];
@@ -112,70 +130,140 @@ var swissbib = {
         });
     },
 
+
+
     /**
      * Initializes the tabs.
+	 *
+	  @param	{Element}	ctx		Selector context
      */
     initTabs: function(ctx) {
-        console.log("swissbib: initTabs");
         jQuery(".tabs").tabs({cookie:{expires:30}});
     },
 
+
+
     /**
-     * Initializes the tabbed.
+     * Initialize "tabbed" elements
      */
     initTabbed: function(ctx) {
-        console.log("swissbib: initTabbed");
+			// Register tabs with content already loaded
+		this.tabbedLoadedContent = {};
+		this.tabbedLoadedContent[this.getIdSelectedTab()] = true;
 
-        // tabbed
-        jQuery("#tabbed").each(function(i,tabbed){
+			// Init "tabbed" containers
+        jQuery("#tabbed").each(function(i, tabbed){
             jQuery(tabbed).tabbed({"animate":!swissbib.ie});
         });
     },
 
 
+
+	/**
+	 * Get currently selected tab
+	 *
+	 * @param	{String}	baseClassname	Default: 'tabbed'
+	 * @return	{Element}
+	 */
+	getSelectedTab: function(baseClassname) {
+		baseClassname	= baseClassname ? baseClassname : 'tabbed';
+
+		return jQuery("#" + baseClassname + " ul li.selected")[0];
+	},
+
+
+
+	/**
+	 * Get id of selected tab
+	 *
+	 * @param	{String}			classnamePrefix
+	 * @return	{String|Boolean}	Selected tab ID (w/o "tabbed_" prefix)
+	 */
+	getIdSelectedTab: function(classnamePrefix) {
+		classnamePrefix	= classnamePrefix ? classnamePrefix : "tabbed";
+
+		var element	= this.getSelectedTab(classnamePrefix);
+
+		return element ? element.id : false;
+	},
+
+
+
+//	/**
+//	 * Get key from (prefixed) tab ID (e.g. 'tabbed_swissbib' -> 'swissbib')
+//	 *
+//	 * @param	{String}	tabID
+//	 * @param	{String}	classnamePrefix
+//	 * @return	{String|Boolean}
+//	 */
+//	getTabKeyFromTabID: function(tabID, classnamePrefix) {
+//		classnamePrefix	= classnamePrefix ? classnamePrefix : "tabbed";
+//
+//		return tabID ? tabID.split(classnamePrefix + "_")[1] : false;
+//	},
+
+
+
+	/**
+	 * @param	{String}	tabId
+	 */
+	registerTabContentLoaded: function(tabId) {
+		this.tabbedLoadedContent[tabId]	= true;
+	},
+
+
+
+	/**
+	 * @param	{String}	tabId
+	 * @return	{Boolean}
+	 */
+	isTabContentLoaded: function(tabId) {
+		return !!this.tabbedLoadedContent[tabId];
+	},
+
+
+
     /**
      * Initializes the hints.
+	 *
+	 * @param	{Element}	ctx		Selector context
      */
     initHints: function(ctx) {
-        console.log("swissbib: initHints");
-
-        // tabbed
-        jQuery(".hint").each(function(i,hint){
+        jQuery(".hint").each(function(i, hint){
             jQuery(hint).hint();
         });
     },
 
 
+
     /**
      * Initializes the forms.
+	 *
+	 * @param	{Element}	ctx		Selector context
      */
     initForms: function(ctx) {
-        console.log("swissbib: initForms");
+        var zIndex = 100;
 
-        // info
-        var z = 100;
-        jQuery(".info.rollover",ctx).each(function(i,el){
+        jQuery(".info.rollover", ctx).each(function(i, el){
             jQuery(el).rollover();
-            jQuery(el).css("z-index",z--)
+            jQuery(el).css("z-index", zIndex--)
         });
 
-        jQuery(".info.tooltip",ctx).each(function(i,el){
+        jQuery(".info.tooltip", ctx).each(function(i, el){
             jQuery(el).info();
         });
 
 
-        // styled dropdowns
-        jQuery(".dropdown",ctx).each(function(i,el){
+        	// Styled dropdowns
+        jQuery(".dropdown", ctx).each(function(i, el){
             jQuery(el).dropdown(i);
         });
 
-
-        // slider
-        jQuery("input.slider",ctx).each(function(i,el){
-            // hide input
+        	// Slider
+        jQuery("input.slider", ctx).each(function(i, el){
             jQuery(el).hide();
 
-            // control
+            	// Control
             jQuery(el).after("<div id='slider_"+i+"'></div>");
             var slidecontrol = jQuery("#slider_"+i);
             var slidetitel = jQuery(el).attr("title");
@@ -184,11 +272,11 @@ var swissbib = {
                 slidevalue = parseInt(jQuery(el).attr("value"));
             }
 
-
-            // create slider
+            	// Create slider
             vmin = 0;
             vmax = 1000;
             vstep = 100;
+
             if (jQuery(el).attr("rel") != null) {
                 var params = jQuery(el).attr("rel").split(";");
                 for (var i = 0; i < params.length; i++) {
@@ -200,67 +288,73 @@ var swissbib = {
                     }
                 }
             }
+
             jQuery(slidecontrol).slider({"value":slidevalue,"min":vmin,"max":vmax,"step":vstep});
 
-            // init
+            	// Init
             slidecontrol.attr("title",slidetitel + ": " + slidevalue + " / " + vmax);
 
-            // events
+            	// Events
             jQuery(slidecontrol).bind("slidechange", function(e, ui) {
-                jQuery(el).attr("value",ui.value);
-                slidecontrol.attr("title",slidetitel + ": " + ui.value + " / " + vmax);
+                jQuery(el).attr("value", ui.value);
+                slidecontrol.attr("title", slidetitel + ": " + ui.value + " / " + vmax);
             });
             jQuery(slidecontrol).bind("slide", function(e, ui) {
-                slidecontrol.attr("title",slidetitel + ": " + ui.value + " / " + vmax);
+                slidecontrol.attr("title", slidetitel + ": " + ui.value + " / " + vmax);
             });
-
-
         });
 
 
-        // checker
-        jQuery(".checker").each(function(i,checker){
+        	// Checker
+        jQuery(".checker").each(function(i, checker){
             jQuery(checker).checker();
         });
-
-
     },
+
 
 
     /**
      * Initialize the modal.
+	 *
+	 * @param	{Element}	ctx		Selector context
      */
     initModal: function(ctx){
-        console.log("swissbib: initModal");
-        //jQuery(".modal",ctx).nyroModal({
-
-        //});
-
+//        jQuery(".modal", ctx).nyroModal({
+//
+//      });
     },
 
+
+
+	/**
+	 * Init modal NB images
+	 *
+	 * @param	{Element}	ctx		Selector context
+	 */
     initModalNBImages: function(ctx){
-        console.log("swissbib: initModalNBImages");
-        //jQuery(".modalNB",ctx).nyroModal({
-        //    bgColor:'#4F545F',
-        //    closeSelector:'.modal_close',
-        //    type: 'image',
-        //    hideContent:function hideModal(elts, settings, callback) {
-        //      elts.wrapper.hide().animate({opacity: 0}, {complete: callback, duration: 80});
-        //    },
-        //    showBackground:function showBackground(elts, settings, callback) {
-        //        elts.bg.css({opacity:0}).fadeTo(300, 0.75, callback);
-        //    }
-        //});
+//        jQuery(".modalNB", ctx).nyroModal({
+//            bgColor:'#4F545F',
+//            closeSelector:'.modal_close',
+//            type: 'image',
+//            hideContent:function hideModal(elts, settings, callback) {
+//              elts.wrapper.hide().animate({opacity: 0}, {complete: callback, duration: 80});
+//            },
+//            showBackground:function showBackground(elts, settings, callback) {
+//                elts.bg.css({opacity:0}).fadeTo(300, 0.75, callback);
+//            }
+//        });
     },
+
+
 
     /**
-     * Initialize the links.
+     * Initialize the (external-, back- , print-) links
+	 *
+	 * @param	{Element}	ctx		Selector context
      */
     initLinks: function(ctx){
-        console.log("swissbib: initLinks");
-
-        // external links
-        jQuery(".externallink",ctx).each(function(i,el){
+        	// External links
+        jQuery(".externallink", ctx).each(function(i, el){
             jQuery(this).attr("target","_blank");
             try {
                 var t = jQuery(el).attr("title");
@@ -270,19 +364,26 @@ var swissbib = {
             }
         });
 
-        // backlinks
-        jQuery(".back",ctx).bind("click",function() {
+        	// Back links
+        jQuery(".back", ctx).bind("click", function() {
             history.back();
             return false;
         });
 
-        // print links
-        jQuery(".print",ctx).click(function(){window.print();});
+        	// Print links
+        jQuery(".print", ctx).click(function(){window.print();});
     }
-}
+};
+
+
+
+/**
+ * Init swissbib on ready & load
+ */
 jQuery(document).ready(function(){
     swissbib.initOnReady();
 });
-jQuery(window).bind("load",function() {
+
+jQuery(window).bind("load", function() {
     swissbib.initOnLoad();
 });
