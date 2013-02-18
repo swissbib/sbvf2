@@ -32,6 +32,7 @@ class SearchController extends VFSearchController {
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function resultsAction() {
+        /** @var    $resultView    \Zend\View\Model\ViewModel */
 		$resultView = parent::resultsAction();
 
             // Initialize tab(s) config
@@ -39,11 +40,13 @@ class SearchController extends VFSearchController {
         $resultTabsConfig   = $config['swissbib']['result_tabs'];
             // Init all tabs
         foreach($resultTabsConfig as $idTab => $tabConfig) {
+            /** @var $tabModel \Swissbib\ResultTab\SbResultTab */
             $tabModel   = $tabConfig['model'];
             $tabParams  = $tabConfig['params'];
+            $templates  = array_key_exists('templates', $tabConfig) ? $tabConfig['templates'] : array();
 
             /** @var    \Swissbib\ResultTab\SbResultTab     $tab  */
-            $tab   = new $tabModel($resultView, $tabParams);
+            $tab   = new $tabModel($resultView, $tabParams, $templates);
             $resultTabsConfig[$idTab]   = $tab->getConfig();
         }
 

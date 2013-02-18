@@ -1,127 +1,142 @@
 /**
  * Toggles tab areas.
+ *
  * @author NOSE
  * @version 1.0.0	initial version			
  */
+var sbTabbedSettings = {
+	selectorTab:		"ul li",
+	selectorTabbed:		".tabbed",
+	classTabSelected:	"selected",
+	classTabbedSelected:"tabbed_selected",
+	classTabbedHidden:	"tabbed_hidden",
+	animate:			true,
+	timeAnimate:		600,
+	easingAnimate:		"easeOutQuad",
+	cookie:				"tabbed_",
+	persist:			true,
+	debug:				true
+};
+
 jQuery.fn.tabbed = function(op) {
-		
-	// settings
-	var settings =  {
-		selectorTab:"ul li",
-		selectorTabbed:".tabbed",
-		classTabSelected:"selected",
-		classTabbedSelected:"tabbed_selected",
-		classTabbedHidden:"tabbed_hidden",
-		animate:true,
-		timeAnimate:600,
-		easingAnimate:"easeOutQuad",
-		cookie:"tabbed_",
-		persist:true,
-		debug:false
-	};
-	jQuery.extend(settings, op);
+	jQuery.extend(sbTabbedSettings, op);
 	
-	// elements
+		// Elements
 	var elContainer = jQuery(this);
-	var elsTabs = jQuery(settings.selectorTab,elContainer);
-	var elsTabbed = jQuery(settings.selectorTabbed);
+	var elsTabs = jQuery(sbTabbedSettings.selectorTab, elContainer);
+	var elsTabbed = jQuery(sbTabbedSettings.selectorTabbed);
 	
-	// events
-	jQuery(elsTabs).bind("click",actionTabbed);
+		// Events
+	jQuery(elsTabs).bind("click", actionTabbed);
 	
-	// initialize
+		// Initialize
 	initialize();
-	
-	
+
+
+
 	/**
-	* Initializes the tabbed.
-	*/
+	 * Initializes the tabbed.
+	 */
 	function initialize() {
 		dlog("initialize");
 		
-		// restore from cookie
-		if (settings.persist) {
+			// Restore from cookie
+		if (sbTabbedSettings.persist) {
+				// ID
+			var tabID = jQuery("." + sbTabbedSettings.classTabSelected, elContainer).attr("id");
+			dlog("tabID: " + tabID);
 			
-			// id
-			var tid = jQuery("."+settings.classTabSelected,elContainer).attr("id");
-			dlog("tid: " + tid);
-			
-			// cookie
-			var cname = encodeURI(settings.cookie+jQuery(elContainer).attr("rel"));
-			if (jQuery.cookie(cname)) {
-				var tid = jQuery.cookie(cname);
-				dlog("cookie: " + tid);
+				// Cookie
+			var cookieName = encodeURI(sbTabbedSettings.cookie + jQuery(elContainer).attr("rel"));
+			if (jQuery.cookie(cookieName)) {
+				var tid = jQuery.cookie(cookieName);
+				dlog("cookie: " + tabID);
 			}
-			
-			// change
-			if (tid) {
-				changeTabbed(tid);
+				// Change
+			if (tabID) {
+				changeTabbed(tabID);
 			}
 		}
 	}
-	
+
+
+
 	/**
-	* Changes the tabs.
-	*/
+	 * Changes the tabs.
+	 *
+	 * @param	{Event}	e
+	 */
 	function actionTabbed(e) {
-		dlog("actionTabbed");
-		
-		// prevent
+			// Prevent
 		var evt = jQuery.Event(e);
 		evt.preventDefault();
 		evt.stopPropagation();	
 		
-		// id
-		var tid = jQuery(this).attr("id");
-		
-		// persist
-		if (settings.persist) {
-			// write cookie
-			var cname = encodeURI(settings.cookie+jQuery(elContainer).attr("rel"));
-			var v = tid;
-			jQuery.cookie(cname,v,{path: '/'});
+		var tabId = jQuery(this).attr("id");
+		dlog("actionTabbed - tab: " + tabId + " activated");
+
+		if( swissbib.isTabContentLoaded(tabId) ) {
+			// @todo	add content loading via AJAX
+			alert("Tab " + tabId + " content is already present.");
+		} else {
+			alert("AJAX load tab " + tabId + " content...");
+			swissbib.registerTabContentLoaded(tabId);
+		}
+
+			// Persist active tab preference?
+		if (sbTabbedSettings.persist) {
+				// Write cookie
+			var cookieName = encodeURI(sbTabbedSettings.cookie + jQuery(elContainer).attr("rel"));
+			var cookieValue= tabId;
+			jQuery.cookie(cookieName, cookieValue, {path: '/'});
 		}
 		
-		// change
-		changeTabbed(tid,settings.animate);	
+			// Change active tab
+		changeTabbed(tabId, sbTabbedSettings.animate);
 	}
-	function changeTabbed(tid,animate) {
-		dlog("changeTabbed: " + tid);
+
+
+
+	/**
+	 * @param	{String}	tabID
+	 * @param	{Boolean}	animate
+	 */
+	function changeTabbed(tabID, animate) {
+		dlog("changeTabbed: " + tabID);
 		
-		// selected
-		jQuery(elsTabs).removeClass(settings.classTabSelected);
-		jQuery("#"+tid,elContainer).addClass(settings.classTabSelected);
+			// Selected
+		jQuery(elsTabs).removeClass(sbTabbedSettings.classTabSelected);
+		jQuery("#" + tabID, elContainer).addClass(sbTabbedSettings.classTabSelected);
+
+		var elsTabbedSelected = jQuery("." + tabID);
 		
-		// selected
-		var elsTabbedSelected = jQuery("."+tid);
+			// Change
+		jQuery(elsTabbed).addClass(sbTabbedSettings.classTabbedHidden);
+		jQuery(elsTabbed).removeClass(sbTabbedSettings.classTabbedSelected);
+		jQuery(elsTabbedSelected).removeClass(sbTabbedSettings.classTabbedHidden);
+		jQuery(elsTabbedSelected).addClass(sbTabbedSettings.classTabbedSelected);
 		
-		// change
-		jQuery(elsTabbed).addClass(settings.classTabbedHidden);
-		jQuery(elsTabbed).removeClass(settings.classTabbedSelected);
-		jQuery(elsTabbedSelected).removeClass(settings.classTabbedHidden);
-		jQuery(elsTabbedSelected).addClass(settings.classTabbedSelected);
-		
-		// animate
+			// Animate
 		if (animate) {
 			jQuery(elsTabbedSelected).css({"opacity":0});
-			jQuery(elsTabbedSelected).animate({"opacity":1},settings.timeAnimate,settings.easingAnimate,function() {
+			jQuery(elsTabbedSelected).animate({"opacity":1}, sbTabbedSettings.timeAnimate, sbTabbedSettings.easingAnimate, function() {
 				jQuery(elsTabbedSelected).css({"opacity":null});
 			});
 		}
-		
 	}
 	
 	
 	
 	/*
-	* Debug log.
-	*/
+	 * Debug log.
+	 *
+	 * @param	{String) msg
+	 */
 	function dlog(msg) {
-		if (settings.debug) {
+		if (sbTabbedSettings.debug) {
 			console.log("Tabbed: " + msg);
 		}
 	}
-  
-    // return
+
     return this;
 };

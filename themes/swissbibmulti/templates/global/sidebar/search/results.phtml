@@ -1,18 +1,19 @@
-<!-- begin: tabbed swissbib -->
-<div class="tabbed tabbed_selected tabbed_swissbib">
+<? foreach ($tabHeadConfigs as $tabKey => $tabHeadConfig): ?>
+<!-- begin: tabbed <?=$tabKey?> -->
+<div class="tabbed tabbed_selected tabbed_<?=$tabKey?>">
+    <? if($tabHeadConfig['selected']): ?>
+    <? foreach ($tabHeadConfig['templates']['sidebar'] as $templateKey => $sidebarTemplate): ?>
+        <!-- begin:<?=$templateKey?> -->
+        <?=$this->partial($sidebarTemplate)?>
+        <!-- end:<?=$templateKey?> -->
+    <? endforeach; ?>
+    <? else: // Render placeholder for lazy-loaded inactive tab ?>
+       <h3>Lade Filter</h3>
+       <div class="filters">
+            <div class="ajax_loading_spinner_transp" style="width:32px; height:32px;"></div>
+       </div>
 
-	<!-- begin: filters -->
-	<?=$this->partial('global/sidebar/search/filters.phtml')?>
-	<!-- end: filters -->
-	<?=$this->partial('global/sidebar/search/facets.phtml')?>
-	<!-- end: facets -->
-	<!-- begin: more facets -->
-	<?=$this->partial('global/sidebar/search/facets.more.phtml')?>
-	<!-- end: more facets -->
-
+    <? endif; ?>
+<!-- end: tabbed <?=$tabKey?> -->
 </div>
-<!-- end: tabbed swissbib -->
-
-<!-- begin: tabbed externe bibliothek -->
-<?=$this->partial('global/sidebar/search/facets.external.phtml')?>
-<!-- end: tabbed externe bibliothek -->
+<? endforeach; ?>
