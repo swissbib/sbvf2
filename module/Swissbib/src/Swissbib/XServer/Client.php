@@ -31,6 +31,27 @@ class Client extends HttpClient {
 	 */
 	protected $loaded = false;
 
+	/**
+	 * @var
+	 */
+	protected $loginException;
+
+
+
+	/**
+	 * @param null $uri
+	 * @param null $options
+	 * @param string $id
+	 * @param string $verification
+	 */
+	public function __construct($uri = null, $options = null, $id = '', $verification = '') {
+		parent::__construct($uri, $options);
+
+		if( $id ) {
+			$this->setCredentials($id, $verification);
+		}
+	}
+
 
 
 	/**
@@ -44,6 +65,9 @@ class Client extends HttpClient {
 			'id'			=> $id,
 			'verification'	=> $verification
 		);
+
+			// new credentials require a new fetch
+		$this->loaded = false;
 	}
 
 
@@ -55,6 +79,60 @@ class Client extends HttpClient {
 	 */
 	public function getUserID() {
 		return $this->getValue('z303', 'id');
+	}
+
+
+
+	/**
+	 * Get name
+	 *
+	 * @return	String
+	 */
+	public function getName() {
+		return $this->getValue('z303', 'name');
+	}
+
+
+
+	/**
+	 * Get email
+	 *
+	 * @return	String
+	 */
+	public function getEmail() {
+		return $this->getValue('z304', 'email-address');
+	}
+
+
+	public function getBasicData() {
+		return array(
+			'id'	=> $this->getUserID(),
+			'name'	=> $this->getName(),
+			'email'	=> $this->getEmail()
+		);
+	}
+
+
+	public function isValidLogin($username, $password) {
+		try {
+			return !!$this->getUserID();
+		} catch(xException $e) {
+			$this->loginException = $e;
+			return false;
+		} catch(\Exception $e) {
+			die($e->getMessage());
+		}
+	}
+
+
+
+	/**
+	 *
+	 *
+	 * @return	xException
+	 */
+	public function getLoginException() {
+		return $this->loginException;
 	}
 
 

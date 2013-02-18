@@ -11,7 +11,7 @@ class XserverController extends AbstractActionController {
 
 	public function testAction() {
 		$client	= new XServerClient('http://alephtest.unibas.ch:8991/X');
-		$client->setCredentials('BWWW49826', 'VUFIND');
+		$client->setCredentials('VUFIND', 'VUFIND');
 
 		try {
 			$userKey	= $client->getUserID();
