@@ -55,6 +55,15 @@ return array(
 				'invokables' => array(
 					'xserver'	=> 'Swissbib\Auth\XServer'
 				)
+			),
+			'ils_driver' => array(
+				'factories' => array(
+					'aleph' => function ($sm) {
+						return new \Swissbib\VuFind\ILS\Driver\Aleph(
+							$sm->getServiceLocator()->get('VuFind\CacheManager')
+						);
+					}
+				)
 			)
         )
     ),
