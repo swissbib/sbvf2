@@ -1,8 +1,26 @@
+<?php
+$isLoggedIn	= $this->auth()->isLoggedIn();
+
+if( $isLoggedIn ) {
+	/** @var VuFind\Db\Row\User $user  */
+	$user = $isLoggedIn;
+}
+
+?>
 <div id="service">
 	<h3 class="hidden">Servicenavigation</h3>
 	<ul>
-		<li class="nav_login">
-			<a href="#" title="Einloggen">Einloggen</a>
-		</li>
+		<?php if( $isLoggedIn ): ?>
+			<li class="nav_account">
+				<a href="<?=$this->url('myresearch-home');?>" title="Konto"><span>Eingeloggt als</span> <?=$this->escapeHtml($user->lastname . ', ' . $user->firstname)?> <span>(<?=$this->escapeHtml($user->email)?>)</span></a>
+			</li>
+			<li class="nav_logout">
+				<a href="<?=$this->url('myresearch-logout')?>" title="Ausloggen">Ausloggen</a>
+			</li>
+		<?php else: ?>
+			<li class="nav_login">
+				<a href="<?=$this->url('myresearch-home');?>" title="Einloggen">Einloggen</a>
+			</li>
+		<?php endif; ?>
 	</ul>
 </div>

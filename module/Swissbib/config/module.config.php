@@ -50,7 +50,12 @@ return array(
                         );
                     }
                 )
-            )
+            ),
+			'auth' => array(
+				'invokables' => array(
+					'xserver'	=> 'Swissbib\Auth\XServer'
+				)
+			)
         )
     ),
     'swissbib' => array(
