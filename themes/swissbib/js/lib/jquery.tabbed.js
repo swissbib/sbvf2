@@ -23,14 +23,15 @@ jQuery.fn.tabbed = function(op) {
 	
 		// Elements
 	var elContainer = jQuery(this);
-	var elsTabs = jQuery(sbTabbedSettings.selectorTab, elContainer);
-	var elsTabbed = jQuery(sbTabbedSettings.selectorTabbed);
+	var elsTabs		= jQuery(sbTabbedSettings.selectorTab, elContainer);
+	var elsTabbed	= jQuery(sbTabbedSettings.selectorTabbed);
 	
 		// Events
 	jQuery(elsTabs).bind("click", actionTabbed);
 	
 		// Initialize
 	initialize();
+
 
 
 
@@ -62,7 +63,8 @@ jQuery.fn.tabbed = function(op) {
 
 
 	/**
-	 * Changes the tabs.
+	 * Loads content of tab and rel. sidebar and changes the active tab.
+	 * Evoked on click event upon the observed tab items.
 	 *
 	 * @param	{Event}	e
 	 */
@@ -108,11 +110,29 @@ jQuery.fn.tabbed = function(op) {
 		controller	= controller ? controller : 'Search';
 		var tabKey		= tabId.substr(0, 7) != 'tabbed_' ? tabId : tabId.split('tabbed_')[1];
 
-		return	"http://localhost/vufind/"
+		return	window.location.protocol + "//" + window.location.host + "/vufind/"
 			+	controller + "/"
 			+	action
 			+	"?tab=" + tabKey
 			+ 	"&" + swissbib.getSearchQuery();
+	}
+
+
+
+	/**
+	 * @param	{String}	url
+	 * @param	{Boolean}	isCached
+	 * @param	{String}	type
+	 * @param	{String}	dataType
+	 * @return	{Object}
+	 */
+	function getAjaxOptions(url, isCached, type, dataType) {
+		return {
+			type:		type ? type : "GET",
+			url:		url,
+			cache:		!!isCached,
+			dataType:	dataType ? dataType : "html"
+		};
 	}
 
 
@@ -124,17 +144,14 @@ jQuery.fn.tabbed = function(op) {
 	 * @param	{String}	[searchQuery]
 	 */
 	function ajaxLoadTabContent(tabId, searchQuery) {
-		$.ajax({
-			type:		"GET",
-			url:		getTabbedSearchItemAjaxUrl(tabId, "Tabcontent"),
-			cache:		false,
-			dataType:	"html",
-			success: function(content) {
-				$('#content .tabbed_selected').html(content);
-				return false;
-			}
-		});
-			// Register the tab's content as loaded
+		var ajaxUrl			= getTabbedSearchItemAjaxUrl(tabId, "Tabcontent");
+		var ajaxOptions		= getAjaxOptions(ajaxUrl, false);
+		ajaxOptions.success = function(content) {
+			$('#content .tabbed_selected').html(content);
+			return false;
+		};
+
+		$.ajax(ajaxOptions);
 		swissbib.registerTabContentLoaded(tabId);
 	}
 
@@ -147,18 +164,15 @@ jQuery.fn.tabbed = function(op) {
 	 * @param	{String}	[searchQuery]
 	 */
 	function ajaxLoadTabSidebar(tabId, searchQuery) {
-		$.ajax({
-			type:		"GET",
-			url:		getTabbedSearchItemAjaxUrl(tabId, "Tabsidebar"),
-			cache:		false,
-			dataType:	"html",
-			success: function(content) {
-				$('#sidebar .' + tabId).replaceWith(content);
-				$('#sidebar .' + tabId).addClass('tabbed_selected');
-				return false;
-			}
-		});
-			// Register the tab's content as loaded
+		var ajaxUrl			= getTabbedSearchItemAjaxUrl(tabId, "Tabsidebar");
+		var ajaxOptions		= getAjaxOptions(ajaxUrl, false);
+		ajaxOptions.success = function(content) {
+			$('#sidebar .' + tabId).replaceWith(content);
+			$('#sidebar .' + tabId).addClass('tabbed_selected');
+			return false;
+		};
+
+		$.ajax(ajaxOptions);
 		swissbib.registerTabContentLoaded(tabId);
 	}
 
@@ -170,16 +184,19 @@ jQuery.fn.tabbed = function(op) {
 	 */
 	function changeTabbed(tabID, animate) {
 		dlog("changeTabbed: " + tabID);
-		
-			// Selected
+
+
+			// Set given tab(head) selected / others hidden
+		jQuery('.' + sbTabbedSettings.classTabbedSelected).removeClass(sbTabbedSettings.classTabbedSelected);
 		jQuery(elsTabs).removeClass(sbTabbedSettings.classTabSelected);
+
 		jQuery("#" + tabID, elContainer).addClass(sbTabbedSettings.classTabSelected);
 
+			// Fetch other classNames of that tabID
 		var elsTabbedSelected = jQuery("." + tabID);
-		
-			// Change
-		jQuery(elsTabbed).addClass(sbTabbedSettings.classTabbedHidden);
+			// Set other tabbed elements hidden/ derived of active tab selected
 		jQuery(elsTabbed).removeClass(sbTabbedSettings.classTabbedSelected);
+		jQuery(elsTabbed).addClass(sbTabbedSettings.classTabbedHidden);
 		jQuery(elsTabbedSelected).removeClass(sbTabbedSettings.classTabbedHidden);
 		jQuery(elsTabbedSelected).addClass(sbTabbedSettings.classTabbedSelected);
 		
