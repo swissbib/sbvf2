@@ -18,8 +18,8 @@ return array(
             'SortAndPrepareFacetList'	=> 'Swissbib\View\Helper\SortAndPrepareFacetList',
             'Authors'					=> 'Swissbib\View\Helper\Authors',
             'publicationDate'			=> 'Swissbib\View\Helper\YearFormatter',
-            'lastSearchWord'			=> 'Swissbib\View\Helper\LastSearchWord'
-// 'config' => 'Swissbib\View\Helper\Config'
+            'lastSearchWord'			=> 'Swissbib\View\Helper\LastSearchWord',
+            'myResearchSideBar'			=> 'Swissbib\View\Helper\MyResearchSideBar'
         )
     ),
     'vufind' => array(
