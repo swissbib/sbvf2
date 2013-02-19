@@ -2,24 +2,9 @@
 namespace Swissbib\Module\Config;
 
 return array(
-	'router' => array(
-		'routes' => array(
-			'xservertest' => array(
-				'type' => 'Zend\Mvc\Router\Http\Segment',
-				'options' => array(
-					'route' => '/xservertest',
-					'defaults' => array(
-						'controller' => 'xserver',
-						'action' => 'test'
-					)
-				)
-			)
-		)
-	),
     'controllers' => array(
         'invokables' => array(
-            'search'	=> 'Swissbib\Controller\SearchController',
-            'xserver'	=> 'Swissbib\Controller\XserverController'
+            'search'	=> 'Swissbib\Controller\SearchController'
         )
     ),
     'service_manager' => array(
@@ -51,11 +36,6 @@ return array(
                     }
                 )
             ),
-			'auth' => array(
-				'invokables' => array(
-					'xserver'	=> 'Swissbib\Auth\XServer'
-				)
-			),
 			'ils_driver' => array(
 				'factories' => array(
 					'aleph' => function ($sm) {
