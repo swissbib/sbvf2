@@ -2,6 +2,20 @@
 namespace Swissbib\Module\Config;
 
 return array(
+	'router' => array(
+		'routes' => array(
+			'xservertest' => array(
+				'type' => 'Zend\Mvc\Router\Http\Segment',
+				'options' => array(
+					'route' => '/xservertest',
+					'defaults' => array(
+						'controller' => 'xserver',
+						'action' => 'test'
+					)
+				)
+			)
+		)
+	),
     'controllers' => array(
         'invokables' => array(
             'search'	=> 'Swissbib\Controller\SearchController'
@@ -18,8 +32,7 @@ return array(
             'SortAndPrepareFacetList'	=> 'Swissbib\View\Helper\SortAndPrepareFacetList',
             'Authors'					=> 'Swissbib\View\Helper\Authors',
             'publicationDate'			=> 'Swissbib\View\Helper\YearFormatter',
-            'lastSearchWord'			=> 'Swissbib\View\Helper\LastSearchWord',
-            'myResearchSideBar'			=> 'Swissbib\View\Helper\MyResearchSideBar'
+            'lastSearchWord'			=> 'Swissbib\View\Helper\LastSearchWord'
         )
     ),
     'vufind' => array(

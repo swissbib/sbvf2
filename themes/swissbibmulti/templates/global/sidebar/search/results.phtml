@@ -1,19 +1,7 @@
-<? foreach ($tabHeadConfigs as $tabKey => $tabHeadConfig): ?>
+<? foreach($tabHeadConfigs as $tabKey => $tabHeadConfig): ?>
 <!-- begin: tabbed <?=$tabKey?> -->
-<div class="tabbed tabbed_selected tabbed_<?=$tabKey?>">
-    <? if($tabHeadConfig['selected']): ?>
-    <? foreach ($tabHeadConfig['templates']['sidebar'] as $templateKey => $sidebarTemplate): ?>
-        <!-- begin:<?=$templateKey?> -->
-        <?=$this->partial($sidebarTemplate)?>
-        <!-- end:<?=$templateKey?> -->
-    <? endforeach; ?>
-    <? else: // Render placeholder for lazy-loaded inactive tab ?>
-       <h3>Lade Filter</h3>
-       <div class="filters">
-            <div class="ajax_loading_spinner_transp" style="width:32px; height:32px;"></div>
-       </div>
-
-    <? endif; ?>
+<? $this->tabKey       = $tabKey;
+   $this->tabHeadConfig= $tabHeadConfig; ?>
+    <?=$this->render('global/sidebar/search/tabcontent.phtml')?>
 <!-- end: tabbed <?=$tabKey?> -->
-</div>
 <? endforeach; ?>
