@@ -71,16 +71,15 @@ jQuery.fn.tabbed = function(op) {
 		var evt = jQuery.Event(e);
 		evt.preventDefault();
 		evt.stopPropagation();	
-		
-		var tabId = jQuery(this).attr("id");
+
+		var tabId		= jQuery(this).attr("id");
+		var searchQuery	= swissbib.getSearchQuery();
 		dlog("actionTabbed - tab: " + tabId + " activated");
 
-		if( swissbib.isTabContentLoaded(tabId) ) {
-			// @todo	add content loading via AJAX
-			alert("Tab " + tabId + " content is already present.");
-		} else {
-			alert("AJAX load tab " + tabId + " content...");
-			swissbib.registerTabContentLoaded(tabId);
+		if (!swissbib.isTabContentLoaded(tabId)) {
+				// AJAX-load content of tab and respective sidebar
+			ajaxLoadTabContent(tabId, searchQuery);
+			ajaxLoadTabSidebar(tabId, searchQuery);
 		}
 
 			// Persist active tab preference?
@@ -93,6 +92,74 @@ jQuery.fn.tabbed = function(op) {
 		
 			// Change active tab
 		changeTabbed(tabId, sbTabbedSettings.animate);
+	}
+
+
+
+	/**
+	 * Get URL for AJAX request to item (content of tab or sidebar) of tabbed search
+	 *
+	 * @param	{String}	tabId
+	 * @param	{String}	action
+	 * @param	{String}	controller
+	 * @return	{String}
+	 */
+	function getTabbedSearchItemAjaxUrl(tabId, action, controller) {
+		controller	= controller ? controller : 'Search';
+		var tabKey		= tabId.substr(0, 7) != 'tabbed_' ? tabId : tabId.split('tabbed_')[1];
+
+		return	"http://localhost/vufind/"
+			+	controller + "/"
+			+	action
+			+	"?tab=" + tabKey
+			+ 	"&" + swissbib.getSearchQuery();
+	}
+
+
+
+	/**
+	 * Load result tab content via AJAX
+	 *
+	 * @param	{String}	tabId
+	 * @param	{String}	[searchQuery]
+	 */
+	function ajaxLoadTabContent(tabId, searchQuery) {
+		$.ajax({
+			type:		"GET",
+			url:		getTabbedSearchItemAjaxUrl(tabId, "Tabcontent"),
+			cache:		false,
+			dataType:	"html",
+			success: function(content) {
+				$('#content .tabbed_selected').html(content);
+				return false;
+			}
+		});
+			// Register the tab's content as loaded
+		swissbib.registerTabContentLoaded(tabId);
+	}
+
+
+
+	/**
+	 * Load result tab content via AJAX
+	 *
+	 * @param	{String}	tabId
+	 * @param	{String}	[searchQuery]
+	 */
+	function ajaxLoadTabSidebar(tabId, searchQuery) {
+		$.ajax({
+			type:		"GET",
+			url:		getTabbedSearchItemAjaxUrl(tabId, "Tabsidebar"),
+			cache:		false,
+			dataType:	"html",
+			success: function(content) {
+				$('#sidebar .' + tabId).replaceWith(content);
+				$('#sidebar .' + tabId).addClass('tabbed_selected');
+				return false;
+			}
+		});
+			// Register the tab's content as loaded
+		swissbib.registerTabContentLoaded(tabId);
 	}
 
 

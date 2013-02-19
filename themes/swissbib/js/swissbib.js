@@ -205,20 +205,36 @@ var swissbib = {
 
 
 	/**
+	 * (Un/)register the content of the given tab as loaded.
+	 *
 	 * @param	{String}	tabId
+	 * @param	{Boolean}	[isLoaded]		Default: true
 	 */
-	registerTabContentLoaded: function(tabId) {
-		this.tabbedLoadedContent[tabId]	= true;
+	registerTabContentLoaded: function(tabId, isLoaded) {
+		this.tabbedLoadedContent[tabId]	= isLoaded ? isLoaded : true;
 	},
 
 
 
 	/**
+	 * Is content of given tab loaded?
+	 *
 	 * @param	{String}	tabId
 	 * @return	{Boolean}
 	 */
 	isTabContentLoaded: function(tabId) {
 		return !!this.tabbedLoadedContent[tabId];
+	},
+
+
+
+	/**
+	 * Get current search query
+	 *
+	 * @return	{String}
+	 */
+	getSearchQuery: function() {
+		return $('div#meta ul li.selected a')[0].href.split('?')[1];
 	},
 
 
