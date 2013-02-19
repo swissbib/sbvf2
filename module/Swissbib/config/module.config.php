@@ -32,7 +32,8 @@ return array(
             'SortAndPrepareFacetList'	=> 'Swissbib\View\Helper\SortAndPrepareFacetList',
             'Authors'					=> 'Swissbib\View\Helper\Authors',
             'publicationDate'			=> 'Swissbib\View\Helper\YearFormatter',
-            'lastSearchWord'			=> 'Swissbib\View\Helper\LastSearchWord'
+            'lastSearchWord'			=> 'Swissbib\View\Helper\LastSearchWord',
+			'myResearchSideBar'			=> 'Swissbib\View\Helper\MyResearchSideBar'
         )
     ),
     'vufind' => array(
