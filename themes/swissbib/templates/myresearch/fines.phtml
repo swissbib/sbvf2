@@ -1,0 +1,31 @@
+<?
+    // Set up page title:
+    $this->headTitle($this->translate('My Fines'));
+
+    // Set up breadcrumbs:
+    $this->layout()->breadcrumbs = '<a href="' . $this->url('myresearch-home') . '">'
+        . $this->transEsc('Your Account') . '</a>' . '<span>&gt;</span><em>'
+        . $this->transEsc('Fines') . '</em>';
+?>
+<?=$this->myResearchSideBar('fines');?>
+<!-- begin: col3 (content) -->
+<div id="col3" class="content">
+	<div id="col3_content" class="clearfix">
+		<!-- begin: content -->
+		<div id="content">
+
+			<?php if( empty($this->fines) ): ?>
+				<?= $this->transEsc('You do not have any fines') ?>
+			<?php else: ?>
+				<h2><?=$this->transEsc('Your Fines')?></h2>
+				<?=$this->render('myresearch/fines/itemlist.phtml')?>
+			<?php endif; ?>
+
+		</div>
+		<!-- end: content -->
+	</div>
+	<div id="ie_clearing">
+		&nbsp;
+	</div>
+</div>
+<!-- end: col3 (content) -->

@@ -19,17 +19,7 @@
     $account = $this->auth()->getManager();
 
 ?>
-<!-- begin: col1 (sidebar)  -->
-<div id="col1" class="sidebar">
-	<div id="col1_content" class="clearfix">
-		<!-- begin: sidebar -->
-		<div id="sidebar">
-			<?=$this->context($this)->renderInContext("myresearch/sidebar/sidebar.phtml", array('active' => isset($list) ? $list : 'favorites'))?>
-		</div>
-		<!-- end: sidebar -->
-	</div>
-</div>
-<!-- end: col1 (sidebar) -->
+<?=$this->myResearchSideBar(isset($list) ? $list : 'favorites');?>
 <!-- begin: col3 (content) -->
 <div id="col3" class="content">
 	<div id="col3_content" class="clearfix">
