@@ -18,8 +18,8 @@ return array(
 	),
     'controllers' => array(
         'invokables' => array(
-            'search'	=> 'Swissbib\Controller\SearchController',
-            'xserver'	=> 'Swissbib\Controller\XserverController'
+            'search'	    => 'Swissbib\Controller\SearchController',
+            'xserver'	    => 'Swissbib\Controller\XserverController',
         )
     ),
     'service_manager' => array(
@@ -34,7 +34,7 @@ return array(
             'Authors'					=> 'Swissbib\View\Helper\Authors',
             'publicationDate'			=> 'Swissbib\View\Helper\YearFormatter',
             'lastSearchWord'			=> 'Swissbib\View\Helper\LastSearchWord'
-// 'config' => 'Swissbib\View\Helper\Config'
+//            'config' => 'Swissbib\View\Helper\Config'
         )
     ),
     'vufind' => array(
@@ -50,21 +50,7 @@ return array(
                         );
                     }
                 )
-            ),
-			'auth' => array(
-				'invokables' => array(
-					'xserver'	=> 'Swissbib\Auth\XServer'
-				)
-			),
-			'ils_driver' => array(
-				'factories' => array(
-					'aleph' => function ($sm) {
-						return new \Swissbib\VuFind\ILS\Driver\Aleph(
-							$sm->getServiceLocator()->get('VuFind\CacheManager')
-						);
-					}
-				)
-			)
+            )
         )
     ),
     'swissbib' => array(
