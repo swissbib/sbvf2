@@ -1,0 +1,5 @@
+<? foreach ($tabHeadConfig['templates']['sidebar'] as $templateKey => $sidebarTemplate): ?>
+    <!-- begin:<?=$templateKey?> -->
+    <?=$this->partial($sidebarTemplate)?>
+    <!-- end:<?=$templateKey?> -->
+<? endforeach; ?>
