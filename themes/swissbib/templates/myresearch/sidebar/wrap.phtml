@@ -3,7 +3,8 @@
 	<div id="col1_content" class="clearfix">
 		<!-- begin: sidebar -->
 		<div id="sidebar">
-			<?=$this->context($this)->renderInContext("myresearch/sidebar/sidebar.phtml", array('active' => $active))?>
+			<?php /*$this->context($this)->renderInContext("myresearch/sidebar/sidebar.phtml", array('active' => $active))*/ ?>
+			<?=$this->render("myresearch/sidebar/sidebar.phtml")?>
 		</div>
 		<!-- end: sidebar -->
 	</div>

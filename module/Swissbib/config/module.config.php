@@ -4,21 +4,27 @@ namespace Swissbib\Module\Config;
 return array(
 	'router' => array(
 		'routes' => array(
-			'xservertest' => array(
-				'type' => 'Zend\Mvc\Router\Http\Segment',
+			'accountWithLocation' => array(
+				'type' => 'segment',
 				'options' => array(
-					'route' => '/xservertest',
+					'route' => '/MyResearch/:action/:location',
 					'defaults' => array(
-						'controller' => 'xserver',
-						'action' => 'test'
-					)
+						'controller'=> 'my-research',
+						'action'	=> 'Profile',
+						'location'	=> 'baselbern'
+					),
+					'constraints' => array(
+						'action'	=> '[a-zA-Z][a-zA-Z0-9_-]*',
+						'location'	=> '[a-z]+',
+					),
 				)
 			)
 		)
 	),
     'controllers' => array(
         'invokables' => array(
-            'search'	=> 'Swissbib\Controller\SearchController'
+            'search'		=> 'Swissbib\Controller\SearchController',
+            'my-research'	=> 'Swissbib\Controller\MyResearchController'
         )
     ),
     'service_manager' => array(

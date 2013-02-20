@@ -1,37 +1,83 @@
 <?php
 
-$menuItems = array(
-//	'accounts'	=> array(
-//		'route'	=> 'myresearch-accounts',
-//		'label'	=> 'My Accounts',
-//		'sub'	=> array()
-//	),
+$staticItems = array(
 	'favorites'	=> array(
 		'route'	=> 'myresearch-favorites',
 		'label'	=> 'Favorites',
-		'sub'	=> array()
-	),
-	'checkedout'	=> array(
-		'route'	=> 'myresearch-checkedout',
-		'label'	=> 'Checked Out Items'
-	),
-	'holds'	=> array(
-		'route'	=> 'myresearch-holds',
-		'label'	=> 'Holds and Recalls'
-	),
-	'fines'	=> array(
-		'route'	=> 'myresearch-fines',
-		'label'	=> 'Fines'
-	),
-	'profile'	=> array(
-		'route'	=> 'myresearch-profile',
-		'label'	=> 'Profile'
+		'class'	=> ''
 	),
 	'history'	=> array(
 		'route'	=> 'search-history',
-		'label'	=> 'history_saved_searches'
+		'label'	=> 'history_saved_searches',
+		'class'	=> ''
+	),
+	'searchSettings' => array(
+		'route'	=> 'search-history', //settings',
+		'label'	=> 'Search Settings',
+		'class'	=> ''
 	)
 );
+if( isset($staticItems[$this->active]) ) {
+	$staticItems[$this->active]['selected'] = true;
+}
+
+
+$locationItems	= array();
+$activeLocation	= !isset($staticItems[$this->active]) && isset($this->location) ? $this->location : '';
+$locations	= array(
+	'baselbern'	=> 'Basel / Bern',
+	'luzern'	=> 'Luzern'
+);
+
+$locationSubItems = array(
+	'profile'	=> array(
+		'label'	=> 'Profile'
+	),
+	'checkedout'	=> array(
+		'label'	=> 'Checked Out Items'
+	),
+	'holds'	=> array(
+		'label'	=> 'Holds and Recalls'
+	),
+	'fines'	=> array(
+		'label'	=> 'Fines'
+	)
+);
+
+	// Build located based sub navigations
+foreach($locations as $locationKey => $locationLabel) {
+	$locationMenuItem = array(
+		'label'	=> $locationLabel,
+		'route'	=> 'accountWithLocation',
+		'class'	=> '',
+		'params'=> array(
+			'location'	=> $locationKey
+		)
+	);
+
+	if( $activeLocation === $locationKey ) {
+		$locationMenuItem['sub'] = array();
+
+		foreach($locationSubItems as $subKey => $subItem) {
+			$locationMenuItem['sub'][$subKey] = array_merge_recursive(array(
+				'route'		=> 'accountWithLocation',
+				'class'		=> '',
+				'params'	=> array(
+					'action'	=> $subKey,
+					'location'	=> $locationKey
+				)
+			), $subItem);
+
+			if( $subKey === $this->active ) {
+				$locationMenuItem['sub'][$subKey]['class'] .= 'selected';
+			}
+		}
+	}
+
+	$locationItems[$locationKey] = $locationMenuItem;
+}
+
+$menuItems = $staticItems + $locationItems;
 
 ?>
 <h3><?=$this->transEsc('Your Account')?></h3>
@@ -39,21 +85,15 @@ $menuItems = array(
 	<ul>
 
 		<?php foreach($menuItems as $key => $menuItem): ?>
-			<?php $activeClass = $this->active == $key ? 'selected' : ''; ?>
-
-			<li class="<?=$activeClass?>">
-				<a href="<?=$this->url($menuItem['route'])?>" title="<?=$this->transEsc($menuItem['label'])?>"><?=$this->transEsc($menuItem['label'])?></a>
+			<li class="<?=$menuItem['class']?>">
+				<a href="<?=$this->url($menuItem['route'], (isset($menuItem['params'])?$menuItem['params']:array()))?>" title="<?=$this->transEsc($menuItem['label'])?>"><?=$this->transEsc($menuItem['label'])?></a>
 				<?php if( isset($menuItem['sub']) && is_array($menuItem['sub']) ): ?>
 					<ul>
-
-						<?php foreach($menuItem['sub'] as $subMenuItem): ?>
-
-							<li>
-								<a href="<?=$this->url($subMenuItem['route'])?>" title="<?=$this->transEsc($subMenuItem['label'])?>"><?=$this->transEsc($subMenuItem['label'])?></a>
+						<?php foreach($menuItem['sub'] as $subKey => $subMenuItem): ?>
+							<li class="<?=$subMenuItem['class']?>">
+								<a href="<?=$this->url($subMenuItem['route'], (isset($menuItem['params'])?$menuItem['params']:array()))?>" title="<?=$this->transEsc($subMenuItem['label'])?>"><?=$this->transEsc($subMenuItem['label'])?></a>
 							</li>
-
 						<?php endforeach; ?>
-
 					</ul>
 				<?php endif; ?>
 			</li>
