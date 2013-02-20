@@ -18,9 +18,8 @@ $staticItems = array(
 	)
 );
 if( isset($staticItems[$this->active]) ) {
-	$staticItems[$this->active]['selected'] = true;
+	$staticItems[$this->active]['class'] = 'selected';
 }
-
 
 $locationItems	= array();
 $activeLocation	= !isset($staticItems[$this->active]) && isset($this->location) ? $this->location : '';
@@ -91,7 +90,7 @@ $menuItems = $staticItems + $locationItems;
 					<ul>
 						<?php foreach($menuItem['sub'] as $subKey => $subMenuItem): ?>
 							<li class="<?=$subMenuItem['class']?>">
-								<a href="<?=$this->url($subMenuItem['route'], (isset($menuItem['params'])?$menuItem['params']:array()))?>" title="<?=$this->transEsc($subMenuItem['label'])?>"><?=$this->transEsc($subMenuItem['label'])?></a>
+								<a href="<?=$this->url($subMenuItem['route'], (isset($subMenuItem['params'])?$subMenuItem['params']:array()))?>" title="<?=$this->transEsc($subMenuItem['label'])?>"><?=$this->transEsc($subMenuItem['label'])?></a>
 							</li>
 						<?php endforeach; ?>
 					</ul>
