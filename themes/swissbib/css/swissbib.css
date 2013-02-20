@@ -1,0 +1,19 @@
+#loginForm label {
+	width: 100px;
+}
+
+#loginForm input[type=text],
+#loginForm input[type=password] {
+	width: 200px;
+	margin-bottom: 20px;
+}
+
+#loginForm input[type=submit] {
+	margin-left: 250px;
+}
+
+#loginForm label.invalid {
+	color: red;
+	float: none;
+	margin-top: -20px;
+}

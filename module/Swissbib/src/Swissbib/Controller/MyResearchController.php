@@ -17,9 +17,6 @@ class MyResearchController extends VFMyResearchController {
 	}
 
 
-//	protected function injectLocation(ViewModel $viewModel)
-
-
 
 	/**
 	* Inject location from route
@@ -29,10 +26,7 @@ class MyResearchController extends VFMyResearchController {
 	protected function createViewModel($params = null) {
 		$viewModel	= parent::createViewModel($params);
 
-		$location	= $this->getLocationFromRoute();
-		$location	= $location ?: 'baselbern';
-
-		$viewModel->location = $location;
+		$viewModel->location = $this->getLocationFromRoute() ?: 'baselbern';
 
 		return $viewModel;
 	}

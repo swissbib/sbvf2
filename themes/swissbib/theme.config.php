@@ -8,7 +8,8 @@ return array(
 		'patches/patch_ie8.css:all:IE 8',
 		'patches/patch_ie7.css:all:IE 7',
 		//'patches/patch_ie6.css:all:IE 6', (we don't support IE6 in the future)
-		'blueprint-overrides.css'
+		'blueprint-overrides.css',
+		'swissbib.css'
     ),
     'js' => array(
         //'lib/jquery.js', (blueprint)

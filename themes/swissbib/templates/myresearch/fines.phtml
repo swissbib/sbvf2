@@ -7,7 +7,7 @@
         . $this->transEsc('Your Account') . '</a>' . '<span>&gt;</span><em>'
         . $this->transEsc('Fines') . '</em>';
 ?>
-<?=$this->myResearchSideBar('fines');?>
+<?=$this->myResearchSideBar('fines', $this->location);?>
 <!-- begin: col3 (content) -->
 <div id="col3" class="content">
 	<div id="col3_content" class="clearfix">
@@ -17,7 +17,7 @@
 			<?php if( empty($this->fines) ): ?>
 				<?= $this->transEsc('You do not have any fines') ?>
 			<?php else: ?>
-				<h2><?=$this->transEsc('Your Fines')?></h2>
+				<h1><?=$this->transEsc('Your Fines')?></h1>
 				<?=$this->render('myresearch/fines/itemlist.phtml')?>
 			<?php endif; ?>
 

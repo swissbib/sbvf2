@@ -12,7 +12,10 @@ $isLoggedIn	= !!$this->auth()->isLoggedIn();
 				<a href="<?=$this->url('myresearch-home');?>">My swissbib</a>
 				<ul class="subnavigation">
 					<li>
-						<a href="merklisten.html">Meine Merklisten</a>
+						<a href="<?=$this->url('myresearch-favorites');?>"><?=$this->transEsc('Favorites')?></a>
+					</li>
+					<li>
+						<a href="<?=$this->url('search-history')?>"><?=$this->transEsc('history_saved_searches')?></a>
 					</li>
 					<li>
 						<a href="#">Meine Suchdienste</a>
@@ -20,14 +23,11 @@ $isLoggedIn	= !!$this->auth()->isLoggedIn();
 					<li>
 						<a href="#">Meine Bibliotheken</a>
 					</li>
-					<li>
-						<a href="#">Und etwas mehr Text damit es umbricht</a>
-					</li>
 				</ul>
 			</li>
 		<?php endif; ?>
 		<li>
-			<a href="inhaltsseite.html">Über swissbib</a>
+			<a href="#">Über swissbib</a>
 		</li>
 		<li>
 			<a href="#">Feedback</a>
