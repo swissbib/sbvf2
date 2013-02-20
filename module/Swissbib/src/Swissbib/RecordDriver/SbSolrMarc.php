@@ -408,4 +408,22 @@ class SbSolrMarc extends VFSolrMarc {
         return $this->marcHoldings->getHoldings();
     }
 
+
+
+	/**
+	 * Get short title
+	 * Override base method to assure a string and not an array
+	 *
+	 * @return	String
+	 */
+	public function getShortTitle() {
+		$shortTitle	= parent::getShortTitle();
+
+		if( is_array($shortTitle) ) {
+			$shortTitle = reset($shortTitle);
+		}
+
+		return $shortTitle;
+	}
+
 }
