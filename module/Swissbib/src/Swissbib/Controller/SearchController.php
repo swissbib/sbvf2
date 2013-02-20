@@ -32,20 +32,25 @@ class SearchController extends VFSearchController {
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function resultsAction() {
-        /** @var    $view    \Zend\View\Model\ViewModel */
-		$view = parent::resultsAction();
-
             // Initialize tab(s) config
         $config             = $this->getServiceLocator()->get('Config');
         $resultTabsConfig   = $config['swissbib']['result_tabs'];
+
             // Init all tabs
+        $views  = array();
         foreach($resultTabsConfig as $idTab => $tabConfig) {
-            $resultTabsConfig[$idTab]   = $this->getTabConfig($tabConfig, $view);
+            $this->searchClassId= $tabConfig['searchClassId']; //'Solr'
+            $views[$idTab]      = parent::resultsAction();
+            if( array_key_exists('selected', $tabConfig['params']) && $tabConfig['params']['selected'] === true ) {
+                $view = $views[$idTab];
+            }
+
+            /** @var    $view    \Zend\View\Model\ViewModel */
+            $resultTabsConfig[$idTab]   = $this->getTabConfig($tabConfig, $views[$idTab]);
         }
 
+		    // Add view params
         $view->tabHeadConfigs = $resultTabsConfig;
-
-		    // Add view params to layout
         $this->layout()->resultViewParams = $view->params;
 
 		return $view;
@@ -62,6 +67,7 @@ class SearchController extends VFSearchController {
      */
     private function getTabConfig($tabConfig, $view = null) {
         if( is_null($view) ) {
+            $this->searchClassId    = $tabConfig['searchClassId'];
             $view = parent::resultsAction();
         }
 
@@ -96,6 +102,7 @@ class SearchController extends VFSearchController {
         $tabConfig   = $config['swissbib']['result_tabs'][$tabKey];
 
         /** @var    $view    \Zend\View\Model\ViewModel */
+        $this->searchClassId = $tabConfig['searchClassId'];
         $view = parent::resultsAction();
         $view->tabHeadConfig = $this->getTabConfig($tabConfig, $view);
 
@@ -128,6 +135,7 @@ class SearchController extends VFSearchController {
         $tabConfig   = $config['swissbib']['result_tabs'][$tabKey];
 
         /** @var    $view    \Zend\View\Model\ViewModel */
+        $this->searchClassId = $tabConfig['searchClassId'];
         $view = parent::resultsAction();
         $view->tabHeadConfig = $this->getTabConfig($tabConfig, $view);
 
