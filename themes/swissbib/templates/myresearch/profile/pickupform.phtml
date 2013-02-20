@@ -1,0 +1,17 @@
+<?php
+
+$selectedPickupLocation = (isset($this->profile['home_library']) && $this->profile['home_library'] != "") ? $this->profile['home_library'] : $this->defaultPickupLocation
+
+?>
+
+<form method="post" action="" id="profile_form">
+	<span class="span-3"><label for="home_library"><?=$this->transEsc('Preferred Library')?>:</label></span>
+	<select id="home_library" name="home_library">
+		<? foreach($this->pickup as $lib): ?>
+			<option value="<?=$this->escapeHtml($lib['locationID'])?>"<?=($selectedPickupLocation == $lib['locationID']) ? ' selected="selected"' : ''?>><?=$this->escapeHtml($lib['locationDisplay'])?></option>
+		<? endforeach; ?>
+	</select>
+	<br class="clear"/>
+
+	<input type="submit" value="<?=$this->transEsc('Save')?>"/>
+</form>
