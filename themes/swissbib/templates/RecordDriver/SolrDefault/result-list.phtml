@@ -6,7 +6,10 @@ $viewRecord		= $this->record($this->driver);
 $thumbnailUrl	= $resultItem->getThumbnail() ? $resultItem->getThumbnail() : $this->url('cover-unavailable');
 $detailLink		= $this->recordLink()->getUrl($resultItem);
 $title			= $resultItem->getShortTitle();
-$edition			= $resultItem->getEdition();
+if( is_array($title) ) {
+    $title  = implode(' ', $title);
+}
+$edition		= $resultItem->getEdition();
 
 ?>
 <tr>
