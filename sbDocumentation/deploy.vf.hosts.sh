@@ -6,6 +6,9 @@
 
 VUFIND_BASE=/usr/local/vufind
 VUFIND_DEPLOY=$VUFIND_BASE/httpd
+
+VUFIND_DEPLOY_1TARGET=$VUFIND_BASE/httpd1target
+
 VUFIND_DEPLOY_ARCHIVE=$VUFIND_BASE/deployed.archive
 VUFIND_TEMP=/usr/local/vufind/tmp
 
@@ -65,6 +68,21 @@ do
 
     scp   $VUFIND_DEPLOY/sbDocumentation/gh.local/httpd-vufind.vfsb.conf  vfsb@$hosttoprocess:$VUFIND_DEPLOY/local/httpd-vufind.conf
     scp   $VUFIND_DEPLOY/sbDocumentation/gh.local/config.vfsb.ini  vfsb@$hosttoprocess:$VUFIND_DEPLOY/local/config/vufind/config.ini
+
+
+    echo "now configure single target domain"
+    ssh root@$hosttoprocess "cd $VUFIND_DEPLOY_1TARGET; rm -rf * "
+    scp   $VUFIND_DEPLOY_ARCHIVE/vufind.deploy.$TIMESTAMP.tar.gz  vfsb@$hosttoprocess:$VUFIND_DEPLOY_1TARGET
+
+    echo "extracting vufind.deploy.$TIMESTAMP.tar.gz on $hosttoprocess single target"
+    ssh vfsb@$hosttoprocess "cd $VUFIND_DEPLOY_1TARGET; tar xfz vufind.deploy.$TIMESTAMP.tar.gz; rm vufind.deploy.$TIMESTAMP.tar.gz"
+    echo "changing permissions on $VUFIND_DEPLOY_1TARGET/local/config and $VUFIND_DEPLOY_1TARGET/local/cache"
+    ssh root@$hosttoprocess "chmod 777 $VUFIND_DEPLOY_1TARGET/local/config $VUFIND_DEPLOY_1TARGET/local/cache"
+
+    scp   $VUFIND_DEPLOY/sbDocumentation/gh.local/httpd-vufind.vfsbsingle.conf  vfsb@$hosttoprocess:$VUFIND_DEPLOY_1TARGET/local/httpd-vufind.conf
+    scp   $VUFIND_DEPLOY/sbDocumentation/gh.local/config.vfsbsingle.ini  vfsb@$hosttoprocess:$VUFIND_DEPLOY_1TARGET/local/config/vufind/config.ini
+
+
 
     echo "echo restart httpd"
     ssh root@$hosttoprocess "service httpd restart"
