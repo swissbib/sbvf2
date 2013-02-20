@@ -42,7 +42,7 @@ $groupID            = $resultItem->getGroup(true);
 
 		<?php if($publisher): ?>
 		<h4><?=$this->transEsc('Publication')?>:</h4>
-		<p><?=$this->escapeHtml($publisher)?>, <?=$this->publicationDate($resultItem->getPublicationDates())?></p>
+		<p><?=$this->escapeHtml($publisher)?>, <?=$this->publicationDateMarc($resultItem->getPublicationDates())?></p>
 		<?php endif; ?>
 
         <h4><?=$this->transEsc('Description')?>:</h4>
