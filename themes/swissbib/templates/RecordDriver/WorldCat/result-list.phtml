@@ -39,7 +39,7 @@ $edition		= $resultItem->getEdition();
             <span><?=$resultItem->getTitleStatement()?></span><br/>
 			<h6><?=$this->transEsc('Year')?>:</h6>
 
-            <span><?=$this->publicationDateMarc($resultItem->getPublicationDates())?></span><br />
+            <span><?=$this->publicationDateWorldCat($resultItem->getPublicationDates())?></span><br />
 <!--            <span>--><?//=$resultItem->getPublicationDatesFormatted()?><!--</span><br />-->
 
             <?php if($edition): ?>

@@ -37,7 +37,8 @@ return array(
             'number'					=> 'Swissbib\View\Helper\Number',
             'SortAndPrepareFacetList'	=> 'Swissbib\View\Helper\SortAndPrepareFacetList',
             'Authors'					=> 'Swissbib\View\Helper\Authors',
-            'publicationDate'			=> 'Swissbib\View\Helper\YearFormatter',
+            'publicationDateMarc'		=> 'Swissbib\View\Helper\YearFormatterMarc',
+            'publicationDateWorldCat'	=> 'Swissbib\View\Helper\YearFormatterWorldCat',
             'lastSearchWord'			=> 'Swissbib\View\Helper\LastSearchWord',
 			'myResearchSideBar'			=> 'Swissbib\View\Helper\MyResearchSideBar'
         )
@@ -50,10 +51,16 @@ return array(
                 'factories' => array(
                     'solrmarc' => function () {
                         return new \Swissbib\RecordDriver\SbSolrMarc(
-                            \VuFind\Config\Reader::getConfig(), null,
-                            \VuFind\Config\Reader::getConfig('searches')
+                            \VuFind\Config\Reader::getConfig(), null,   // main config
+                            \VuFind\Config\Reader::getConfig('searches')// record config
                         );
-                    }
+                    },
+                    'worldcat' => function () {
+                        return new \Swissbib\RecordDriver\SbWorldCat(
+                            \VuFind\Config\Reader::getConfig(),         // main config
+                            \VuFind\Config\Reader::getConfig('WorldCat')// record config
+                        );
+                    },
                 )
             ),
 			'ils_driver' => array(
@@ -89,6 +96,7 @@ return array(
         'result_tabs' => array(
                 // Primary tab: swissbib
             'swissbib' => array(
+                'searchClassId' =>  'Solr',
                 'model'     => '\Swissbib\ResultTab\SbResultTabSolr',
                 'templates'  => array(  // templates for tab content and sidebar (=filters)
                         'tab'       => 'search/tabs/base.phtml',    // default
@@ -106,6 +114,7 @@ return array(
             ),
                 // Secondary tab
             'external' => array(
+                'searchClassId' =>  'WorldCat',
                 'model'     => '\Swissbib\ResultTab\SbResultTab',
                 'templates' => array(
                         'tab'   => 'search/tabs/external.phtml',
