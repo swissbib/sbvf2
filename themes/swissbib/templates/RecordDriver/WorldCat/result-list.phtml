@@ -8,6 +8,7 @@ $detailLink		= $this->recordLink()->getUrl($resultItem);
 $title			= $resultItem->getShortTitle();
 $edition		= $resultItem->getEdition();
 
+$publicationDate    = $this->publicationDateWorldCat($resultItem->getPublicationDates());
 ?>
 <tr>
     <!-- col 1: Counter -->
@@ -39,8 +40,7 @@ $edition		= $resultItem->getEdition();
             <span><?=$resultItem->getTitleStatement()?></span><br/>
 			<h6><?=$this->transEsc('Year')?>:</h6>
 
-            <span><?=$this->publicationDateWorldCat($resultItem->getPublicationDates())?></span><br />
-<!--            <span>--><?//=$resultItem->getPublicationDatesFormatted()?><!--</span><br />-->
+            <span><?=$publicationDate?></span><br />
 
             <?php if($edition): ?>
                 <h6><?=$this->transEsc('Edition')?>:</h6>

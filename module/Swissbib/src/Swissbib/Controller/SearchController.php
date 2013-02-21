@@ -2,6 +2,8 @@
 namespace Swissbib\Controller;
 
 use VuFind\Controller\SearchController as VFSearchController;
+use Zend\Session\Container as SessionContainer;
+use VuFind\Search\Memory as VFMemory;
 
 /**
  * [Description]
@@ -12,7 +14,7 @@ use VuFind\Controller\SearchController as VFSearchController;
 class SearchController extends VFSearchController {
 
 	/**
-	 * Get model for home view
+	 * (Default Action) Get model for home view
 	 *
 	 * @return	\Zend\View\Model\ViewModel
 	 */
@@ -41,46 +43,21 @@ class SearchController extends VFSearchController {
         foreach($resultTabsConfig as $idTab => $tabConfig) {
             $this->searchClassId= $tabConfig['searchClassId']; //'Solr'
             $views[$idTab]      = parent::resultsAction();
+            $this->rememberTabbedSearchURI($idTab);
             if( array_key_exists('selected', $tabConfig['params']) && $tabConfig['params']['selected'] === true ) {
-                $view = $views[$idTab];
+                $selectedView = $views[$idTab];
             }
 
-            /** @var    $view    \Zend\View\Model\ViewModel */
+            /** @var    $selectedView    \Zend\View\Model\ViewModel */
             $resultTabsConfig[$idTab]   = $this->getTabConfig($tabConfig, $views[$idTab]);
         }
 
 		    // Add view params
-        $view->tabHeadConfigs = $resultTabsConfig;
-        $this->layout()->resultViewParams = $view->params;
+        $selectedView->tabHeadConfigs = $resultTabsConfig;
+        $this->layout()->resultViewParams = $selectedView->params;
 
-		return $view;
+		return $selectedView;
 	}
-
-
-
-    /**
-     * Get built SbResultsTab config
-     *
-     * @param   Array                       $tabConfig
-     * @param   \Zend\View\Model\ViewModel  $view
-     * @return  Array
-     */
-    private function getTabConfig($tabConfig, $view = null) {
-        if( is_null($view) ) {
-            $this->searchClassId    = $tabConfig['searchClassId'];
-            $view = parent::resultsAction();
-        }
-
-        /** @var $tabModel \Swissbib\ResultTab\SbResultTab */
-        $tabModel   = $tabConfig['model'];
-        $tabParams  = $tabConfig['params'];
-        $templates  = array_key_exists('templates', $tabConfig) ? $tabConfig['templates'] : array();
-
-        /** @var    \Swissbib\ResultTab\SbResultTab     $tab  */
-        $tab   = new $tabModel($view, $tabParams, $templates);
-
-        return $tab->getConfig();
-    }
 
 
 
@@ -118,7 +95,7 @@ class SearchController extends VFSearchController {
 
 
     /**
-     * Returns results content of single tab (called via AJAX)
+     * Returns sidebar content of single tab (called via AJAX)
      *
      * @return \Zend\View\Model\ViewModel
      * @throws  \Exception
@@ -148,4 +125,41 @@ class SearchController extends VFSearchController {
         return $view;
     }
 
+
+
+    /**
+     * Get built SbResultsTab config
+     *
+     * @param   Array                       $tabConfig
+     * @param   \Zend\View\Model\ViewModel  $view
+     * @return  Array
+     */
+    private function getTabConfig($tabConfig, $view = null) {
+        if( is_null($view) ) {
+            $this->searchClassId    = $tabConfig['searchClassId'];
+            $view = parent::resultsAction();
+        }
+
+        /** @var $tabModel \Swissbib\ResultTab\SbResultTab */
+        $tabModel   = $tabConfig['model'];
+        $tabParams  = $tabConfig['params'];
+        $templates  = array_key_exists('templates', $tabConfig) ? $tabConfig['templates'] : array();
+
+        /** @var    \Swissbib\ResultTab\SbResultTab     $tab  */
+        $tab   = new $tabModel($view, $tabParams, $templates);
+
+        return $tab->getConfig();
+    }
+
+
+
+    /**
+     * Store selected tab's search query Uri to session container
+     */
+    private function rememberTabbedSearchURI($idTab) {
+        $requestUri  = $this->request->getRequestUri();
+
+        $session = new SessionContainer('SbTabbedSearch_' . $idTab);
+        $session->last = $requestUri;
+    }
 }

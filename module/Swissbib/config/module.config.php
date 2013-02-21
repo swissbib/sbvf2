@@ -25,11 +25,12 @@ return array(
         'invokables' => array(
             'search'		=> 'Swissbib\Controller\SearchController',
             'my-research'	=> 'Swissbib\Controller\MyResearchController'
+//            'record'		=> 'Swissbib\Controller\RecordController'
         )
     ),
     'service_manager' => array(
         'invokables' => array(
-            'VuFindTheme\ResourceContainer' => 'Swissbib\VuFind\ResourceContainer'
+            'VuFindTheme\ResourceContainer' => 'Swissbib\VuFind\ResourceContainer',
         )
     ),
     'view_helpers' => array(
@@ -40,6 +41,7 @@ return array(
             'publicationDateMarc'		=> 'Swissbib\View\Helper\YearFormatterMarc',
             'publicationDateWorldCat'	=> 'Swissbib\View\Helper\YearFormatterWorldCat',
             'lastSearchWord'			=> 'Swissbib\View\Helper\LastSearchWord',
+            'lastTabbedSearchUri'		=> 'Swissbib\View\Helper\LastTabbedSearchUri',
 			'myResearchSideBar'			=> 'Swissbib\View\Helper\MyResearchSideBar'
         )
     ),
