@@ -15,26 +15,31 @@
 		<div id="content">
 
 			<h1><?=$this->transEsc('Your Checked Out Items')?></h1>
-			  <?=$this->flashmessages()?>
 
-			  <? if (!empty($this->transactions)): ?>
-				<? if ($this->renewForm): ?>
-				<form name="renewals" action="" method="post" id="renewals">
-				  <div class="toolbar">
-					<ul>
-					  <li><input type="submit" class="button renew" name="renewSelected" value="<?=$this->transEsc("renew_selected")?>" /></li>
-					  <li><input type="submit" class="button renewAll" name="renewAll" value="<?=$this->transEsc('renew_all')?>" /></li>
-					</ul>
-				  </div>
-				  <br />
+			<?=$this->flashmessages()?>
+
+			<? if( !empty($this->transactions) ): ?>
+
+				<? if( $this->renewForm ): ?>
+					<form name="renewals" action="" method="post" id="renewals">
+					<div class="toolbar">
+						<ul>
+							<li><input type="submit" class="button renew" name="renewSelected" value="<?=$this->transEsc("renew_selected")?>"/></li>
+							<li><input type="submit" class="button renewAll" name="renewAll" value="<?=$this->transEsc('renew_all')?>"/></li>
+						</ul>
+					</div>
+					<br/>
 				<? endif; ?>
 
-				<?=$this->render('myresearch/checkedout/itemlist.phtml')?>
+				<?= $this->render('myresearch/checkedout/itemlist.phtml') ?>
 
-				<? if ($this->renewForm): ?></form><? endif; ?>
-			  <? else: ?>
-				<?=$this->transEsc('You do not have any items checked out')?>.
-			  <? endif; ?>
+				<? if( $this->renewForm ): ?>
+					</form>
+				<? endif; ?>
+
+			<? else: ?>
+				<?=$this->transEsc('You do not have any items checked out') ?>.
+			<? endif; ?>
 
 		</div>
 		<!-- end: content -->
