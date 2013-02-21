@@ -95,11 +95,17 @@ return array(
             'Swissbib\HoldingsHelper' => 'Swissbib\RecordDriver\Helper\HoldingsHelper',
         ),
             // Search result tabs
+        'preload_result_tabs_counts'   => false,  // Fetch(+display) results-count of non-selected tab(s) initially?
         'result_tabs' => array(
                 // Primary tab: swissbib
             'swissbib' => array(
                 'searchClassId' =>  'Solr',
-                'model'     => '\Swissbib\ResultTab\SbResultTabSolr',
+                'model'         => '\Swissbib\ResultTab\SbResultTabSolr',
+                'params'        => array(
+                    'id'            => 'swissbib',
+                    'label'         => 'Bücher & mehr',
+                    'selected'      => true
+                ),
                 'templates'  => array(  // templates for tab content and sidebar (=filters)
                         'tab'       => 'search/tabs/base.phtml',    // default
                         'sidebar'   => array( // sidebar partial(s)
@@ -107,26 +113,21 @@ return array(
                             'facets'        => 'global/sidebar/search/facets.phtml',
                             'morefacets'    => 'global/sidebar/search/facets.more.phtml'
                         )
-                ),
-                'params'    => array(
-                    'id'        => 'swissbib',
-                    'label'     => 'Bücher & mehr',
-                    'selected'  => true
                 )
             ),
                 // Secondary tab
             'external' => array(
                 'searchClassId' =>  'WorldCat',
-                'model'     => '\Swissbib\ResultTab\SbResultTab',
+                'model'         => '\Swissbib\ResultTab\SbResultTab',
+                'params'        => array(
+                        'id'        => 'external',
+                        'label'     => 'Artikel & mehr'
+                ),
                 'templates' => array(
                         'tab'   => 'search/tabs/external.phtml',
                         'sidebar'   => array( // sidebar partial(s)
                             'facetsexternal'    => 'global/sidebar/search/facets.external.phtml',
                         )
-                ),
-                'params'    => array(
-                    'id'        => 'external',
-                    'label'     => 'Artikel & mehr'
                 )
             ),
         )
