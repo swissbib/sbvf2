@@ -11,8 +11,7 @@
     $showHomeLibForm = (isset($this->pickup) && count($this->pickup) > 1);
 
     // Template for use by the renderArray helper:
-    $userDataTemplate	= '<span class="span-3"><strong>%%LABEL%%:</strong></span> %%VALUE%%<br class="clear"/>';
-	$userData			= array(
+	$userDataMapping = array(
 		$this->transEsc('First Name') => 'firstname',
 		$this->transEsc('Last Name') => 'lastname',
 		$this->transEsc('Address') . ' 1' => 'address1',
@@ -34,7 +33,16 @@
 
 			<?=$this->flashmessages()?>
 
-			<?=$this->renderArray($userDataTemplate, $this->profile, $userData)?>
+			<table>
+				<tbody>
+					<?php foreach($userDataMapping as $label => $key): ?>
+						<tr>
+							<th width="100"><?=$this->escapeHtml($label)?></th>
+							<td><?=$this->escapeHtml($this->profile[$key])?></td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
 
 			<?php
 				if( $showHomeLibForm ) {

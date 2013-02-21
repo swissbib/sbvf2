@@ -43,6 +43,7 @@ class Aleph extends AlephDriver {
 		$photoCopyRequests	= $xmlResponse->xpath('//photocopy-request');
 		$dataMap	= array(
 			'title'			=> 'z13-title',
+			'title2'		=> 'z38-title',
 			'dateOpen'		=> 'z38-open-date',
 			'dateUpdate'	=> 'z30-update-date',
 			'author'		=> 'z38-author',
