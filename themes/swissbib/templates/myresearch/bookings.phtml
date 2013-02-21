@@ -1,0 +1,37 @@
+<?
+    // Set up page title:
+    $this->headTitle($this->translate('Bookings'));
+
+
+?>
+<?=$this->myResearchSideBar('bookings', $this->location);?>
+<!-- begin: col3 (content) -->
+<div id="col3" class="content">
+	<div id="col3_content" class="clearfix">
+		<!-- begin: content -->
+		<div id="content">
+
+			<h1><?=$this->transEsc('Bookings')?></h1>
+
+			<?=$this->flashmessages()?>
+
+			<?php if( sizeof($this->bookings) ): ?>
+
+				<p>Ihre Buchungen</p>
+
+				<?=$this->render('myresearch/bookings/itemlist.phtml')?>
+
+			<?php else: ?>
+
+				<p>Sie haben aktuell keine Buchungen</p>
+
+			<?php endif; ?>
+
+		</div>
+		<!-- end: content -->
+	</div>
+	<div id="ie_clearing">
+		&nbsp;
+	</div>
+</div>
+<!-- end: col3 (content) -->
