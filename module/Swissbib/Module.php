@@ -41,8 +41,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, In
 
 	public function onBootstrap(MvcEvent $e) {
 			// Temporary disabled because it crashes (on my machine, ferni)
-//		$b = new SbBootstrapper($e);
-//		$b->bootstrap();
+		$b = new SbBootstrapper($e);
+		$b->bootstrap();
 
 	}
 
