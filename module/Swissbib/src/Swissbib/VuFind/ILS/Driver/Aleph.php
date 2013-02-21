@@ -9,38 +9,14 @@ use DateTime;
 class Aleph extends AlephDriver {
 
 	/**
-	 * Extract a list of values out of the XML response
-	 *
-	 * @param	\SimpleXMLElement $xmlResponse
-	 * @param	Array		$map
-	 * @return	Array
-	 */
-	protected function extractResponseData(SimpleXMLElement $xmlResponse, array $map) {
-		$data	= array();
-
-		foreach($map as $resultField => $path) {
-			list($group, $field) = explode('-', $path);
-
-			$data[$resultField] = (string)$xmlResponse->$group->$path;
-		}
-
-		return $data;
-	}
-
-
-
-	/**
 	 * Get data for photo copies
 	 *
-	 * @param	Array		$patron
+	 * @param	Integer		$idPatron
 	 * @return	Array
 	 */
-	public function getPhotocopies(array $patron) {
-		$xmlResponse = $this->doRestDLFRequest(
-			array('patron', $patron['id'], 'circulationActions', 'requests', 'photocopies'),
-			array('view' => 'full')
-		);
-		$photoCopyRequests	= $xmlResponse->xpath('//photocopy-request');
+	public function getPhotocopies($idPatron) {
+		$photoCopyRequests	= $this->getPhotoCopyRequests($idPatron);
+
 		$dataMap	= array(
 			'title'			=> 'z13-title',
 			'title2'		=> 'z38-title',
@@ -79,6 +55,106 @@ class Aleph extends AlephDriver {
 		}
 
 		return $photoCopiesData;
+	}
+
+
+
+	/**
+	 *
+	 *
+	 * @param	Integer		$idPatron
+	 * @return	Array
+	 */
+	public function getBookings($idPatron) {
+		$bookingRequests	= $this->getBookingRequests($idPatron);
+		$dataMap	= array(
+			'sequence'			=> 'z37-sequence',
+			'title'				=> 'z13-title',
+			'author'			=> 'z13-author',
+			'dateStart'			=> 'z37-booking-orig-start-time',
+			'dateEnd'			=> 'z37-booking-orig-end-time',
+			'pickupLocation'	=> 'z37-pickup-location',
+			'pickupSubLocation'	=> 'z37-delivery-sub-location',
+			'itemStatus'		=> 'z30-item-status',
+			'callNumber'		=> 'z30-call-no',
+			'library'			=> 'z30-sub-library',
+			'note1'				=> 'z37-note-1',
+			'note2'				=> 'z37-note-2',
+			'barcode'			=> 'z30-barcode',
+			'collection'		=> 'z30-collection',
+			'description'		=> 'z30-description'
+		);
+
+		$bookingsData = array();
+
+		foreach($bookingRequests as $bookingRequest) {
+			$bookingData	= $this->extractResponseData($bookingRequest, $dataMap);
+
+				// Process data
+			$bookingData['dateStart']	= DateTime::createFromFormat('YmdHi', $bookingData['dateStart'])->getTimestamp();
+			$bookingData['dateEnd']		= DateTime::createFromFormat('YmdHi', $bookingData['dateEnd'])->getTimestamp();
+
+			$bookingsData[]	= $bookingData;
+		}
+
+		return $bookingsData;
+	}
+
+
+
+	/**
+	 * Get booking requests
+	 *
+	 * @param	Integer		$idPatron
+	 * @return	\SimpleXMLElement[]
+	 */
+	protected function getBookingRequests($idPatron) {
+		$xmlResponse	= $this->doRestDLFRequest(
+			array('patron', $idPatron, 'circulationActions', 'requests', 'bookings'),
+			array('view' => 'full')
+		);
+
+		return $xmlResponse->xpath('//booking-request');
+	}
+
+
+
+	/**
+	 * Get photo copy requests
+	 *
+	 * @param	Integer		$idPatron
+	 * @return	\SimpleXMLElement[]
+	 */
+	protected function getPhotoCopyRequests($idPatron) {
+		$xmlResponse	= $this->doRestDLFRequest(
+			array('patron', $idPatron, 'circulationActions', 'requests', 'photocopies'),
+			array('view' => 'full')
+		);
+
+		return $xmlResponse->xpath('//photocopy-request');
+	}
+
+
+
+
+
+	/**
+	 * Extract a list of values out of the XML response
+	 *
+	 * @param	\SimpleXMLElement $xmlResponse
+	 * @param	Array		$map
+	 * @return	Array
+	 */
+	protected function extractResponseData(SimpleXMLElement $xmlResponse, array $map) {
+		$data	= array();
+
+		foreach($map as $resultField => $path) {
+			list($group, $field) = explode('-', $path);
+
+			$data[$resultField] = (string)$xmlResponse->$group->$path;
+		}
+
+		return $data;
 	}
 
 
