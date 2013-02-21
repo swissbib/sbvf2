@@ -13,6 +13,10 @@ use VuFind\Search\Memory as VFMemory;
  */
 class SearchController extends VFSearchController {
 
+    const COOKIENAME_SELECTED_TAB   = 'tabbed_catalog';
+
+
+
 	/**
 	 * (Default Action) Get model for home view
 	 *
@@ -36,7 +40,8 @@ class SearchController extends VFSearchController {
 	public function resultsAction() {
             // Initialize tab(s) config
         $preloadNonSelectedTabResultCounts  = !!$this->getModuleConfigParam('preload_result_tabs_counts');
-        $resultTabsConfig                   = $this->getModuleConfigParam('result_tabs');
+        $idSelectedTab      = $this->getIdSelectedTab();
+        $resultTabsConfig   = $this->getModuleConfigParam('result_tabs');
 
             // Init all tabs
         $views  = array();
@@ -44,12 +49,13 @@ class SearchController extends VFSearchController {
             $this->searchClassId= $tabConfig['searchClassId']; //'Solr'
             $this->rememberTabbedSearchURI($idTab);
 
-            if( array_key_exists('selected', $tabConfig['params']) &&  $tabConfig['params']['selected'] === true ) {
-                    // selected tab
+            if( $idTab === $idSelectedTab ) {
+                    // Selected tab
                 $views[$idTab]  = parent::resultsAction();
                 $selectedView   = $views[$idTab];
+                $tabConfig['params']['selected']    = true;
             } else {
-                    // non-selected tabs (preload results optionally)
+                    // Non-selected tabs (preload results optionally)
                 if( $preloadNonSelectedTabResultCounts ) {
                     $views[$idTab]      = parent::resultsAction();
                 } else {
@@ -57,11 +63,11 @@ class SearchController extends VFSearchController {
                 }
             }
 
-            /** @var    $selectedView    \Zend\View\Model\ViewModel */
             $resultTabsConfig[$idTab]   = $this->getTabConfig($tabConfig, $views[$idTab]);
         }
 
 		    // Add view params
+        /** @var    $selectedView    \Zend\View\Model\ViewModel */
         $selectedView->tabHeadConfigs       = $resultTabsConfig;
         $this->layout()->resultViewParams   = $selectedView->params;
 
@@ -121,6 +127,27 @@ class SearchController extends VFSearchController {
 
 
     /**
+     * Get ID of selected tab
+     * User pref: lastly selected tab (cookie set in jquery.tabbed.js)
+     * Or module config: default tab (if no user pref stored yet)
+     *
+     * @return  String
+     */
+    private function getIdSelectedTab() {
+            // Get selected tab from cookie if set
+        $idTab  = str_replace('tabbed_', '', $_COOKIE[self::COOKIENAME_SELECTED_TAB]);
+
+        if( empty($idTab) ) {
+                // Get default tab from module config
+            $idTab   = $this->getModuleConfigParam('default_result_tab');
+        }
+
+        return $idTab;
+    }
+
+
+
+    /**
      * Get built SbResultsTab config
      *
      * @param   Array                       $tabConfig
@@ -136,6 +163,7 @@ class SearchController extends VFSearchController {
         /** @var $tabModel \Swissbib\ResultTab\SbResultTab */
         $tabModel   = $tabConfig['model'];
         $tabParams  = $tabConfig['params'];
+
         $templates  = array_key_exists('templates', $tabConfig) ? $tabConfig['templates'] : array();
 
         /** @var    \Swissbib\ResultTab\SbResultTab     $tab  */
@@ -148,12 +176,40 @@ class SearchController extends VFSearchController {
 
     /**
      * Store selected tab's search query Uri to session container
+     *
+     * @param   String  $idTab
      */
     private function rememberTabbedSearchURI($idTab) {
-        $requestUri  = $this->request->getRequestUri();
+        $this->storeInSessionContainer('SbTabbedSearch_' . $idTab, 'last', $this->request->getRequestUri());
+    }
 
-        $session = new SessionContainer('SbTabbedSearch_' . $idTab);
-        $session->last = $requestUri;
+
+
+    /**
+     * Store given parameter to given key of given session container
+     *
+     * @param   String  $containerName
+     * @param   String  $parameterKey
+     * @param   String  $value
+     */
+    private function storeInSessionContainer($containerName, $parameterKey, $value) {
+        $session = new SessionContainer($containerName);
+        $session->$parameterKey = $value;
+    }
+
+
+
+    /**
+     * Retrieve value of given parameter from given session container
+     *
+     * @param   String      $containerName
+     * @param   String      $parameterKey
+     * @return  Mixed|null
+     */
+    private function retrieveFromSessionContainer($containerName, $parameterKey) {
+        $session = new SessionContainer($containerName);
+
+        return isset($session->$parameterKey) ? $session->$parameterKey : null;
     }
 
 
