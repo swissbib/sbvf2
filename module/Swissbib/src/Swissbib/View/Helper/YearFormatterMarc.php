@@ -15,10 +15,16 @@ use Zend\View\Helper\AbstractHelper;
 
 class YearFormatterMarc extends AbstractHelper {
 
+    /**
+     * @param   Array   $publicationDate
+     * @return  String
+     */
     public function __invoke($publicationDate) {
         if( !is_array($publicationDate) || sizeof($publicationDate) == 0 ) {
             return '';
         }
+
+        $retVal     = '';
 
         $dateType   = $publicationDate[0];
         $year1      = $publicationDate[1];
@@ -29,44 +35,40 @@ class YearFormatterMarc extends AbstractHelper {
             case 's':
             case 'n':
             case 'e':
-                $retVal = str_replace('u', '?', $year1);
-                return $retVal;
-            break;
+                $retVal = $year1;
+                break;
 
             case 'c':
             case 'u':
-                $retVal = str_replace('u', '?', $year1) . '-';
-                return $retVal;
-            break;
+                $retVal = $year1 . '-';
+                break;
 
             case 'd':
-                $retVal = str_replace('u', '?', $year1) . '-' . str_replace('u', '?', $year2);
-                return $retVal;
-            break;
+                $retVal = $year1 . '-' . $year2;
+                break;
 
             case 'p':
             case 'r':
-                $retVal = str_replace('u', '?', $year1) . ' [' . str_replace('u', '?', $year2) . ']';
-                return $retVal;
-            break;
+                $retVal = $year1 . ' [' . $year2;
+                break;
 
             case 'q':
-                if ($year2 === '9999'):
-                    $retVal = str_replace('u', '?', $year1);
-                elseif ($year2 != '9999'):
-                    $retVal = str_replace('u', '?', $year1) . ' / ' . str_replace('u', '?', $year2);
-                endif;
-                return $retVal;
-            break;
+                if ($year2 === '9999') {
+                    $retVal = $year1;
+                } elseif ($year2 != '9999') {
+                    $retVal = $year1 . ' / ' . $year2;
+                }
+                break;
 
             case 'm':
-                if ($year2 === '9999'):
-                    $retVal = str_replace('u', '?', $year1) . '-';
-                elseif ($year2 != '9999'):
-                    $retVal = str_replace('u', '?', $year1) . '-' . str_replace('u', '?', $year2);
-                endif;
-                return $retVal;
-            break;
+                if ($year2 === '9999') {
+                    $retVal = $year1 . '-';
+                } elseif ($year2 != '9999') {
+                    $retVal = $year1 . '-' . $year2;
+                }
+                break;
         }
+
+        return str_replace('u', '?', $retVal);
     }
 }

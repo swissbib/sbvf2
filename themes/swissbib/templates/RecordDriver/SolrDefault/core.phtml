@@ -18,7 +18,9 @@ $edition			= $resultItem->getEdition();
 $summary			= trim(implode($resultItem->getSummary()));
 $groupID            = $resultItem->getGroup(true);
 
+$publicationDate    = $this->publicationDateMarc($resultItem->getPublicationDates());
 ?>
+<?/* Common parts of recordDriver's core.phtml templates*/?>
 <!-- col -->
 <div class="c25l">
 	<a title="Zur Merkliste hinzufügen" class="icon_notepad_add_link" href="#">
@@ -42,7 +44,7 @@ $groupID            = $resultItem->getGroup(true);
 
 		<?php if($publisher): ?>
 		<h4><?=$this->transEsc('Publication')?>:</h4>
-		<p><?=$this->escapeHtml($publisher)?>, <?=$this->publicationDateMarc($resultItem->getPublicationDates())?></p>
+		<p><?=$this->escapeHtml($publisher)?>, <?=$publicationDate?></p>
 		<?php endif; ?>
 
         <h4><?=$this->transEsc('Description')?>:</h4>
