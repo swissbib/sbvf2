@@ -15,10 +15,14 @@
 		<div id="content">
 
 			<?php if( empty($this->fines) ): ?>
+
 				<?= $this->transEsc('You do not have any fines') ?>
+
 			<?php else: ?>
+
 				<h1><?=$this->transEsc('Your Fines')?></h1>
 				<?=$this->render('myresearch/fines/itemlist.phtml')?>
+
 			<?php endif; ?>
 
 		</div>
