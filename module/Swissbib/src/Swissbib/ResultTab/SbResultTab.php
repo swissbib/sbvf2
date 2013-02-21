@@ -38,16 +38,12 @@ class SbResultTab {
     /**
      * Constructor
      *
-     * @param   \Zend\View\Model\ViewModel  $viewModel
+     * @param   \Zend\View\Model\ViewModel  $viewModel (or null)
      * @param   Array                       $config
      * @param   Array                       $templates
      * @throws  \Exception
      */
     function __construct($viewModel, array $config = array(), array $templates = array()) {
-            // Init view model and general config
-        if( !is_object($viewModel) ) {
-            throw new \Exception('Result tab view model is a non-object.');
-        }
         $this->viewModel    = $viewModel;
 
             // Init view template as given / default
@@ -168,9 +164,13 @@ class SbResultTab {
     /**
      * Get amount of results
      *
-     * @return  Integer
+     * @return  Integer|Boolean
      */
     public function getResultTotal() {
+        if( !$this->viewModel ) {
+            return false;
+        }
+
         /** @var $results \VuFind\Search\Base\Results */
         $results            = $this->viewModel->results;
         $this->resultTotal  = $results->getResultTotal();
@@ -187,11 +187,11 @@ class SbResultTab {
      */
     public function getConfig() {
         return array(
-            'templates'  => $this->getTemplates(),
             'id'		=> $this->id,
             'label'		=> $this->getLabel(),
-            'count'		=> $this->getResultTotal(),
             'selected'	=> $this->isSelected,
+            'templates' => $this->getTemplates(),
+            'count'		=> $this->getResultTotal(),
         );
     }
 

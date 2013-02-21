@@ -14,12 +14,15 @@ $subTitle           = $resultItem->getSubtitle(true);
 $titleStatement		= $resultItem->getTitleStatement(true);
 $secondaryAuthors	= $resultItem->getSecondaryAuthors();
 $publishers			= $resultItem->getPublishers();
+$publisher  = (is_array($publishers) && count($publishers)>0) ? str_replace(', , ', ', ', implode(', ', $publishers)) : $publisher;
 $edition			= $resultItem->getEdition();
 $summary			= trim(implode($resultItem->getSummary()));
 
 $groupID            = 'dummy'; //$resultItem->getGroup(true);
 
+$publicationDate    = $this->publicationDateWorldCat($resultItem->getPublicationDates());
 ?>
+<?/* Common parts of recordDriver's core.phtml templates*/?>
 <!-- col -->
 <div class="c25l">
 	<a title="Zur Merkliste hinzufügen" class="icon_notepad_add_link" href="#">
@@ -41,9 +44,9 @@ $groupID            = 'dummy'; //$resultItem->getGroup(true);
 		<p><?=$this->escapeHtml($titleStatement)?></p>
 		<?php endif; ?>
 
-		<?php if($publishers): ?>
+		<?php if($publisher): ?>
 		<h4><?=$this->transEsc('Publication')?>:</h4>
-		<p><?=$this->escapeHtml(implode(', ', $publishers))?>, <?=$this->publicationDateWorldCat($resultItem->getPublicationDates())?></p>
+		<p><?=$this->escapeHtml($publisher)?>, <?=$publicationDate?></p>
 		<?php endif; ?>
 
         <h4><?=$this->transEsc('Description')?>:</h4>

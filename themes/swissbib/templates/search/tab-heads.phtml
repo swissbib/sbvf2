@@ -3,7 +3,12 @@
 		<?php foreach($tabs as $tabKey => $tab): ?>
 		<li id="tabbed_<?=$tab['id']?>" class="<?=(isset($tab['selected']) ? 'selected' : '')?>">
 			<a href="javascript:void(0)">
-                <span><?=$this->escapeHtml($tab['label'])?> <em>(<?=$this->number($tab['count'])?>)</em></span>
+                <span>
+                    <?=$this->escapeHtml($tab['label'])?>
+                    <? if($tab['count'] !== false): /* Prefetch results count enabled? */ ?>
+                        <em>(<?=$this->number($tab['count'])?>)</em>
+                    <? endif; ?>
+                </span>
             </a>
 		</li>
 		<?php endforeach; ?>
