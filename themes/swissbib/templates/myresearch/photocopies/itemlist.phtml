@@ -1,0 +1,108 @@
+<table id="photocopies-table">
+	<thead>
+		<tr>
+			<th>Nr.</th>
+			<th>Titel</th>
+			<th>bestellt am</th>
+			<th>Bibliothek</th>
+			<th>Signatur</th>
+			<th>Weitere Info</th>
+			<th>Besteller Name</th>
+		</tr>
+	</thead>
+	<tbody>
+		<?php foreach($this->photoCopies as $index => $photoCopy): ?>
+			<tr id="photocopy-<?=intval($photoCopy['sequence'])?>" class="link">
+				<td><?=intval($photoCopy['sequence'])?></td>
+				<td><?=$this->escapeHtml($photoCopy['title'])?></td>
+				<td><?=date('d/m/y', $photoCopy['dateOpen'])?></td>
+				<td><?=$this->escapeHtml($photoCopy['library'])?></td>
+				<td><?=$this->escapeHtml($photoCopy['callNumber'])?></td>
+				<td></td>
+				<td></td>
+			</tr>
+		<?php endforeach; ?>
+	</tbody>
+</table>
+
+<?php foreach($this->photoCopies as $photoCopy): ?>
+	<div class="photoCopyDetail" id="photocopy-<?=intval($photoCopy['sequence'])?>-detail" style="display: none">
+		<table>
+			<tbody>
+				<tr>
+					<th width="100">Author</th>
+					<td><?=$this->escapeHtml($photoCopy['author'])?></td>
+				</tr>
+				<tr>
+					<th>Titel</th>
+					<td><?=$this->escapeHtml($photoCopy['title2'])?></td>
+				</tr>
+				<tr>
+					<th>Seiten</th>
+					<td><?=$this->escapeHtml($photoCopy['pages'])?></td>
+				</tr>
+				<tr>
+					<th>Notiz</th>
+					<td><?=$this->escapeHtml($photoCopy['note1'] . ' ' . $photoCopy['note2'])?></td>
+				</tr>
+				<tr>
+					<th>Status</th>
+					<td><?=$this->escapeHtml($photoCopy['status'])?></td>
+				</tr>
+				<tr>
+					<th>Datum</th>
+					<td><?=date('d/m/y', $photoCopy['dateOpen'])?></td>
+				</tr>
+				<tr>
+					<th>Abholort</th>
+					<td><?=$this->escapeHtml($photoCopy['pickup'])?></td>
+				</tr>
+				<tr>
+					<th>Bibliothek</th>
+					<td><?=$this->escapeHtml($photoCopy['library'])?></td>
+				</tr>
+				<tr>
+					<th>Exemplarbeschreibung</th>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<th>Signatur 1</th>
+					<td><?=$this->escapeHtml($photoCopy['callNumber'])?></td>
+				</tr>
+				<tr>
+					<th>Signatur 2</th>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<th>Zusatz Information</th>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<th>Besteller Name</th>
+					<td>&nbsp;</td>
+				</tr>
+			</tbody>
+		</table>
+
+	</div>
+<?php endforeach; ?>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#photocopies-table').find('tbody tr').click(function(){
+			var detail = $('#' + this.id + '-detail');
+
+			if( detail.is(':visible') ) {
+				detail.hide();
+			} else {
+				$('.photoCopyDetail').hide();
+
+				detail.show();
+
+				 $('html, body').animate({
+					 scrollTop: detail.offset().top
+				 }, 2000);
+			}
+		});
+	});
+</script>

@@ -14,7 +14,18 @@ $this->headTitle($this->translate('Copy Jobs'));
 
 			<?=$this->flashmessages()?>
 
-			<?php var_dump($this->photoCopies); ?>
+			<?php if( sizeof($this->photoCopies) ): ?>
+
+				<p>Ihre ausstehenden Kopieraufträge</p>
+
+				<?=$this->render('myresearch/photocopies/itemlist.phtml')?>
+
+
+			<?php else: ?>
+
+				<p>Sie haben aktuell keine ausstehenden Kopieraufträge</p>
+
+			<?php endif; ?>
 
 		</div>
 		<!-- end: content -->

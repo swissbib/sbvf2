@@ -17,3 +17,12 @@
 	float: none;
 	margin-top: -20px;
 }
+
+#content table th,
+#content table td {
+	font-size: 12px;
+}
+
+#content table tr.link td {
+	cursor: pointer;
+}
