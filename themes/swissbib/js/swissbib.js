@@ -223,7 +223,10 @@ var swissbib = {
 	 * @return	{Boolean}
 	 */
 	isTabContentLoaded: function(tabId) {
-		return !!this.tabbedLoadedContent[tabId];
+//		return !!this.tabbedLoadedContent[tabId];
+
+// temporary workaround check for ajax spinner to detect tabs that aren't loaded yet
+		return $('#content .' + tabId)[0].innerHTML.indexOf('ajax_loading_spinner') == -1;
 	},
 
 
@@ -231,10 +234,15 @@ var swissbib = {
 	/**
 	 * Get current search query
 	 *
+	 * @param	{Boolean}	withoutFilters
 	 * @return	{String}
 	 */
-	getSearchQuery: function() {
-		return $('div#meta ul li.selected a')[0].href.split('?')[1];
+	getSearchQuery: function(withoutFilters) {
+		withoutFilters	= withoutFilters ? withoutFilters : true;
+
+		var query	= $('div#meta ul li.selected a')[0].href.split('?')[1];
+
+		return withoutFilters ? (query.split('&filter')[0]) : query;
 	},
 
 

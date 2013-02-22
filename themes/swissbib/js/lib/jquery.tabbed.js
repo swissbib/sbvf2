@@ -36,24 +36,18 @@ jQuery.fn.tabbed = function(op) {
 
 
 	/**
-	 * Initializes the tabbed.
+	 * Initializes the tabs (items classname: "tabbed")
 	 */
 	function initialize() {
-		dlog("initialize");
-		
 			// Restore from cookie
 		if (sbTabbedSettings.persist) {
-				// ID
-			var tabID = jQuery("." + sbTabbedSettings.classTabSelected, elContainer).attr("id");
-			dlog("tabID: " + tabID);
-			
-				// Cookie
-			var cookieName = encodeURI(sbTabbedSettings.cookie + jQuery(elContainer).attr("rel"));
+			var tabID		= jQuery("." + sbTabbedSettings.classTabSelected, elContainer).attr("id");
+			var cookieName	= encodeURI(sbTabbedSettings.cookie + jQuery(elContainer).attr("rel"));
+
 			if (jQuery.cookie(cookieName)) {
-				var tid = jQuery.cookie(cookieName);
-				dlog("cookie: " + tabID);
+				tabID = jQuery.cookie(cookieName);
 			}
-				// Change
+				// (Re)activate last active tab
 			if (tabID) {
 				changeTabbed(tabID);
 			}
@@ -78,7 +72,7 @@ jQuery.fn.tabbed = function(op) {
 		var searchQuery	= swissbib.getSearchQuery();
 		dlog("actionTabbed - tab: " + tabId + " activated");
 
-		if (!swissbib.isTabContentLoaded(tabId)) {
+		if ( swissbib.isTabContentLoaded(tabId) == false ) {
 				// AJAX-load content of tab and respective sidebar
 			ajaxLoadTabContent(tabId, searchQuery);
 			ajaxLoadTabSidebar(tabId, searchQuery);
