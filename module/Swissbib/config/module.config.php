@@ -95,7 +95,8 @@ return array(
             'Swissbib\HoldingsHelper' => 'Swissbib\RecordDriver\Helper\HoldingsHelper',
         ),
             // Search result tabs
-        'preload_result_tabs_counts'   => false,  // Fetch(+display) results-count of non-selected tab(s) initially?
+        'preload_result_tabs_counts'=> false,  // Fetch(+display) results-count of non-selected tab(s) initially?
+        'default_result_tab'        => 'swissbib',  // ID of default selected tab
         'result_tabs' => array(
                 // Primary tab: swissbib
             'swissbib' => array(
@@ -104,7 +105,6 @@ return array(
                 'params'        => array(
                     'id'            => 'swissbib',
                     'label'         => 'Bücher & mehr',
-                    'selected'      => true
                 ),
                 'templates'  => array(  // templates for tab content and sidebar (=filters)
                         'tab'       => 'search/tabs/base.phtml',    // default
