@@ -42,14 +42,11 @@
 						<div>
 							<strong><?=$this->transEsc("hold_required_by")?>: </strong>
 							<?php
-
+								$requiredByDate = isset($this->gatheredDetails['requiredBy']) && !empty($this->gatheredDetails['requiredBy']) ? $this->gatheredDetails['requiredBy'] : $this->defaultRequiredDate
 							?>
 
 							<div id="requiredByHolder">
-								<input id="requiredByDate" type="text"
-															  name="gatheredDetails[requiredBy]"
-															  value="<?=(isset($this->gatheredDetails['requiredBy']) && !empty($this->gatheredDetails['requiredBy'])) ? $this->escapeHtml($this->gatheredDetails['requiredBy']) : $this->escapeHtml($this->defaultRequiredDate)?>"
-															  size="8"/>
+								<input id="requiredByDate" type="text" name="gatheredDetails[requiredBy]" value="<?=$this->escapeHtml($requiredByDate)?>" size="8"/>
 								<strong>(<?=$this->dateTime()->getDisplayDateFormat()?>)</strong></div>
 						</div>
 					<?php endif; ?>
@@ -71,14 +68,13 @@
 							<strong><?=$this->transEsc("pick_up_location")?>:</strong><br/>
 							<select name="gatheredDetails[pickUpLocation]">
 								<?php foreach($this->pickup as $lib): ?>
-								<option value="<?=$this->escapeHtml($lib['locationID'])?>"<?=($selected == $lib['locationID']) ? ' selected="selected"' : ''?>>
-									<?=$this->escapeHtml($lib['locationDisplay'])?>
-								</option>
+									<option value="<?=$this->escapeHtml($lib['locationID'])?>"<?=($selected == $lib['locationID']) ? ' selected="selected"' : ''?>>
+										<?=$this->escapeHtml($lib['locationDisplay'])?>
+									</option>
 								<?php endforeach; ?>
 							</select>
 							<?php else: ?>
-							<input type="hidden" name="gatheredDetails[pickUpLocation]"
-								   value="<?=$this->escapeHtml($this->defaultPickup)?>"/>
+							<input type="hidden" name="gatheredDetails[pickUpLocation]" value="<?=$this->escapeHtml($this->defaultPickup)?>"/>
 							<?php endif; ?>
 						</div>
 					<?php endif; ?>
