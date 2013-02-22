@@ -42,7 +42,7 @@ return array(
             'publicationDateWorldCat'	=> 'Swissbib\View\Helper\YearFormatterWorldCat',
             'lastSearchWord'			=> 'Swissbib\View\Helper\LastSearchWord',
             'lastTabbedSearchUri'		=> 'Swissbib\View\Helper\LastTabbedSearchUri',
-			'myResearchSideBar'			=> 'Swissbib\View\Helper\MyResearchSideBar'
+			'myResearchSideBar'			=> 'Swissbib\View\Helper\MyResearchSideBar',
         )
     ),
     'vufind' => array(
@@ -52,17 +52,22 @@ return array(
             'recorddriver' => array(
                 'factories' => array(
                     'solrmarc' => function () {
-                        return new \Swissbib\RecordDriver\SbSolrMarc(
+                        return new \Swissbib\RecordDriver\SolrMarc(
                             \VuFind\Config\Reader::getConfig(), null,   // main config
                             \VuFind\Config\Reader::getConfig('searches')// record config
                         );
                     },
                     'worldcat' => function () {
-                        return new \Swissbib\RecordDriver\SbWorldCat(
+                        return new \Swissbib\RecordDriver\WorldCat(
                             \VuFind\Config\Reader::getConfig(),         // main config
                             \VuFind\Config\Reader::getConfig('WorldCat')// record config
                         );
                     },
+					'missing' => function () {
+						return new \Swissbib\RecordDriver\Missing(
+							\VuFind\Config\Reader::getConfig()
+						);
+					}
                 )
             ),
 			'ils_driver' => array(

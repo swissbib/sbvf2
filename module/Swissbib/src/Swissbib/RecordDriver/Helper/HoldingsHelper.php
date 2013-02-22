@@ -1,42 +1,53 @@
 <?php
 
+/**
+ * swissbib / VuFind <<full descriptive name of the class>>
+ *
+ * PHP version 5
+ *
+ * Copyright (C) project swissbib, University Library Basel, Switzerland
+ * http://www.swissbib.org  / http://www.swissbib.ch / http://www.ub.unibas.ch
+ *
+ * Date: 2/7/13
+ * Time: 9:02 PM
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @category swissbib_VuFind2
+ * @package  <<name of package>>
+ * @author   Guenter Hipler  <guenter.hipler@unibas.ch>
+ * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ * @link     << link to further documentation related to this resource type (Wiki, tracker ...)
+ */
+
 namespace Swissbib\RecordDriver\Helper;
 
-	/**
-	 * swissbib / VuFind <<full descriptive name of the class>>
-	 *
-	 * PHP version 5
-	 *
-	 * Copyright (C) project swissbib, University Library Basel, Switzerland
-	 * http://www.swissbib.org  / http://www.swissbib.ch / http://www.ub.unibas.ch
-	 *
-	 * Date: 2/7/13
-	 * Time: 9:02 PM
-	 * This program is free software; you can redistribute it and/or modify
-	 * it under the terms of the GNU General Public License version 2,
-	 * as published by the Free Software Foundation.
-	 *
-	 * This program is distributed in the hope that it will be useful,
-	 * but WITHOUT ANY WARRANTY; without even the implied warranty of
-	 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	 * GNU General Public License for more details.
-	 *
-	 * You should have received a copy of the GNU General Public License
-	 * along with this program; if not, write to the Free Software
-	 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-	 *
-	 * @category swissbib_VuFind2
-	 * @package  <<name of package>>
-	 * @author   Guenter Hipler  <guenter.hipler@unibas.ch>
-	 * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
-	 * @link     << link to further documentation related to this resource type (Wiki, tracker ...)
-	 */
+use Swissbib\RecordDriver\SolrMarc;
+use VuFind\Crypt\HMAC;
+
+
+
 
 /**
  * probably HoldingsHelper should be a subtype of ZF2 AbstractHelper
  *at first I need a better understanding how things are wired up in this case using means of ZF2
  */
 class HoldingsHelper implements HoldingsAwareInterface {
+
+	/**
+	 * @var	SolrMarc
+	 */
+	protected $solrMarcDriver;
 
 	/**
 	 * @var	\File_MARC_Record
@@ -63,7 +74,19 @@ class HoldingsHelper implements HoldingsAwareInterface {
 	/**
 	 * @var	Array[]|Boolean
 	 */
-	protected $extracted = false;
+	protected $extractedHoldings = false;
+
+
+
+	/**
+	 * Initialize with parent solr marc driver
+	 *
+	 * @param	SolrMarc	$solrMarcDriver
+	 */
+	public function __construct(SolrMarc $solrMarcDriver) {
+		$this->solrMarcDriver = $solrMarcDriver;
+	}
+
 
 
 	/**
@@ -84,10 +107,9 @@ class HoldingsHelper implements HoldingsAwareInterface {
 			$this->holdings = $marcData;
 		} else {
 				// Invalid input data. Currently just ignore it
-			$this->extracted	= array();
+			$this->extractedHoldings	= array();
 		}
 	}
-
 
 
 
@@ -97,13 +119,13 @@ class HoldingsHelper implements HoldingsAwareInterface {
 	 * @return	Array[]
 	 */
 	public function  getHoldings() {
-		if( $this->extracted === false ) {
-			$t949 	= $this->getFieldValues("949");
-			$t852 	= $this->getFieldValues("852");
-			$this->extracted = array_merge($t949, $t852);
+		if( $this->extractedHoldings === false ) {
+			$holdingsField949 		= $this->getHoldingDataFromField("949");
+			$holdingsField852 		= $this->getHoldingDataFromField("852");
+			$this->extractedHoldings= array_merge($holdingsField949, $holdingsField852);
 		}
 
-		return $this->extracted;
+		return $this->extractedHoldings;
 	}
 
 
@@ -114,9 +136,11 @@ class HoldingsHelper implements HoldingsAwareInterface {
 	 * @param	String	$fieldName		The MARC field number to read
 	 * @return	Array	array[networkid][institutioncode] = array() of values for the current item
 	 */
-	protected function getFieldValues($fieldName) {
-		$data	= array();
-		$fields	= $this->holdings->getFields($fieldName);
+	protected function getHoldingDataFromField($fieldName) {
+		$data		= array();
+		$fields		= $this->holdings->getFields($fieldName);
+		$response	= $this->solrMarcDriver->getILS()->checkFunction('Holds');
+		$id			= $this->getRecordId();
 
 		if( is_array($fields) ) {
 			foreach($fields as $field) {
@@ -124,6 +148,7 @@ class HoldingsHelper implements HoldingsAwareInterface {
 				$network	= $item['network'];
 				$institution= $item['institution'];
 
+					// Make sure network is present
 				if( !isset($data[$network]) ) {
 					$data[$network] = array(
 						'label'			=> 'Label: ' . $network,
@@ -131,6 +156,7 @@ class HoldingsHelper implements HoldingsAwareInterface {
 					);
 				}
 
+					// Make sure institution is present
 				if( !isset($data[$network]['institutions'][$institution]) ) {
 					$data[$network]['institutions'][$institution] = array(
 						'label'	=> 'Label: ' . $institution,
@@ -138,11 +164,53 @@ class HoldingsHelper implements HoldingsAwareInterface {
 					);
 				}
 
+					// Add holding link infos
+				$item['holdingLink'] = $this->getHoldActionLink($item, $id, $response['HMACKeys']);
+
 				$data[$network]['institutions'][$institution]['copies'][] = $item;
 			}
 		}
 
 		return $data;
+	}
+
+
+
+	/**
+	 * Get unique record id
+	 *
+	 * @return	String
+	 */
+	protected function getRecordId() {
+		return $this->solrMarcDriver->getUniqueID();
+	}
+
+
+
+	/**
+	 * Get link for holding action
+	 *
+	 * @param	Array	$holdingItem
+	 * @param	String	$id
+	 * @param	Array	$HMACKeys
+	 * @return	Array
+	 */
+	protected function getHoldActionLink(array $holdingItem, $id, $HMACKeys) {
+		$itemId	= 'DSV51000387967000010'; // wrong / static
+
+		$linkValues	= array(
+			'id'		=> $id,
+			'item_id'	=> $itemId
+		);
+
+		return array(
+			'action'	=> 'Hold',
+			'record'	=> $id,
+			'anchor'	=> '#tabnav',
+			'query'		=> http_build_query($linkValues + array(
+				'hashKey'	=> HMAC::generate($HMACKeys, $linkValues)
+			))
+		);
 	}
 
 

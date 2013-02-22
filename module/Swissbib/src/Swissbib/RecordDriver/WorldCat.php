@@ -33,10 +33,10 @@
 namespace Swissbib\RecordDriver;
 
 use VuFind\RecordDriver\WorldCat as VFWorldCat;
-use Swissbib\RecordDriver\Helper\HoldingsHelper;
+//use Swissbib\RecordDriver\Helper\HoldingsHelper;
 
 
-class SbWorldCat extends VFWorldCat {
+class WorldCat extends VFWorldCat {
 
 
 
