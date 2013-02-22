@@ -1,13 +1,13 @@
 <?php
 
 /** @var	 VuFind\Auth\Manager	$account  */
-$account		= $this->auth()->getManager();
+//$account		= $this->auth()->getManager();
 /** @var	Boolean|Object			$user  */
-$user			= $account->isLoggedIn();
-$holdings		= $this->driver->getRealTimeHoldings($account);
+//$user			= $account->isLoggedIn();
+//$holdings		= $this->driver->getRealTimeHoldings($account);
 /** @var	VuFind\ILS\Connection	$ilsConnection  */
-$ilsConnection	= $this->ils();
-/** @var	Swissbib\RecordDriver\SbSolrMarc	$recordDriver  */
+//$ilsConnection	= $this->ils();
+/** @var	Swissbib\RecordDriver\SolrMarc	$recordDriver  */
 $recordDriver	= $this->driver;
 $holdings		= $recordDriver->getHoldings();
 
@@ -73,7 +73,6 @@ $holdings		= $recordDriver->getHoldings();
 		<h3 class="toggler persist collapsed" id="library_toggler_<?=$networkCode?>"><?=$this->escapeHtml($network['label'])?><?php /*IDS Basel / Bern*/ ?></h3>
 		<div class="library_toggler_<?=$networkCode?>">
 
-			<!-- begin: innerbox: <?=$institutionCode?> -->
 			<div class="innerbox">
 
 				<?php foreach($network['institutions'] as $institutionCode => $institution): ?>
@@ -107,6 +106,7 @@ $holdings		= $recordDriver->getHoldings();
 									<th>Exemplarstatus</th>
 									<th>Ausleihstatus</th>
 									<th>Bechreibung</th>
+									<th>&nbsp;</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -119,6 +119,7 @@ $holdings		= $recordDriver->getHoldings();
 										<td>ausleihbar</td>
 										<td>erhältlich</td>
 										<td><?=$this->escapeHtml($copy['opac_note'])?></td>
+										<td><a href="<?=$this->recordLink()->getHoldUrl($copy['holdingLink'])?>">H</a></td>
 									</tr>
 
 								<?php endforeach; ?>
@@ -130,8 +131,6 @@ $holdings		= $recordDriver->getHoldings();
 				<?php endforeach; ?>
 
 			</div>
-			<!-- end: innerbox: <?=$institutionCode?> -->
-
 		</div>
 	</div>
 	<!-- end: innerbox <?=$networkCode?> -->

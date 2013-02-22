@@ -1,4 +1,5 @@
 <?php
+/** @var  VuFind\View\Helper\Root\Record $viewRecord  */
 $viewRecord	= $this->record($this->driver);
 ?>
 <div class="tabs">
@@ -6,7 +7,7 @@ $viewRecord	= $this->record($this->driver);
 
 	<ul>
 		<?php foreach($this->tabs as $tabKey => $tabObject): ?>
-			<?php /** @var	VuFind\RecordTab\AbstractBase $tabObject */ ?>
+			<?php /** @var	\VuFind\RecordTab\TabInterface $tabObject */ ?>
 			<li>
 				<a href="#tab-<?=strtolower($tabKey)?>"><?=$this->transEsc($tabObject->getDescription())?></a>
 			</li>

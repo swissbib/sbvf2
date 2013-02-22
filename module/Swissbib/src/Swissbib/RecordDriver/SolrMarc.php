@@ -45,7 +45,7 @@ use Swissbib\RecordDriver\Helper\HoldingsHelper;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://www.swissbib.org
  */
-class SbSolrMarc extends VFSolrMarc {
+class SolrMarc extends VFSolrMarc {
 
 
 	protected $personFieldMap = array(
@@ -62,6 +62,10 @@ class SbSolrMarc extends VFSolrMarc {
 	 */
 	protected $marcHoldings;
 
+	public function getILS() {
+		return parent::getILS();
+	}
+
 
 
 	public function setRawData($data) {
@@ -72,7 +76,8 @@ class SbSolrMarc extends VFSolrMarc {
 		//todo: I'm looking for a possibility to wire up the HoldingsHelper using
         //ServiceLocator and configuration -> tbd later
 
-		$this->marcHoldings = new HoldingsHelper();
+		$this->marcHoldings = new HoldingsHelper($this);
+
         //$holdings = $this->marcHoldings->getTestData();
         $this->marcHoldings->setHoldingsContent($data['holdings']);
 	}
@@ -389,11 +394,14 @@ class SbSolrMarc extends VFSolrMarc {
 	public function getShortTitle() {
 		$shortTitle	= parent::getShortTitle();
 
-		if( is_array($shortTitle) ) {
-			$shortTitle = reset($shortTitle);
-		}
+		return is_array($shortTitle) ? reset($shortTitle) : $shortTitle;
+	}
 
-		return $shortTitle;
+
+	public function getTitle() {
+		$title	= parent::getTitle();
+
+		return is_array($title) ? reset($title) : $title;
 	}
 
 }
