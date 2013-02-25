@@ -143,10 +143,11 @@ class HoldingsHelper implements HoldingsAwareInterface {
 		$id			= $this->getRecordId();
 
 		if( is_array($fields) ) {
-			foreach($fields as $field) {
+			foreach($fields as $index => $field) {
 				$item		= $this->extractFieldData($field);
 				$network	= $item['network'];
 				$institution= $item['institution'];
+				$testItemId	= $this->getItemId(10*($index+1));
 
 					// Make sure network is present
 				if( !isset($data[$network]) ) {
@@ -165,7 +166,7 @@ class HoldingsHelper implements HoldingsAwareInterface {
 				}
 
 					// Add holding link infos
-				$item['holdingLink'] = $this->getHoldActionLink($item, $id, $response['HMACKeys']);
+				$item['holdingLink'] = $this->getHoldActionLink($item, $id, $testItemId, $response['HMACKeys']);
 
 				$data[$network]['institutions'][$institution]['copies'][] = $item;
 			}
@@ -186,17 +187,26 @@ class HoldingsHelper implements HoldingsAwareInterface {
 	}
 
 
+	protected function getItemId($counter) {
+		$adm	= 'DSV51'; // @todo temporary static - change this!
+		$id		= $this->getRecordId();
+		$count	= sprintf('%05d', $counter);
+
+		return $adm . $id . $count;
+	}
+
 
 	/**
 	 * Get link for holding action
 	 *
 	 * @param	Array	$holdingItem
 	 * @param	String	$id
+	 * @param	String	$itemId
 	 * @param	Array	$HMACKeys
 	 * @return	Array
 	 */
-	protected function getHoldActionLink(array $holdingItem, $id, $HMACKeys) {
-		$itemId	= 'DSV51000387967000010'; // wrong / static
+	protected function getHoldActionLink(array $holdingItem, $id, $itemId, $HMACKeys) {
+//		$itemId	= 'DSV51000387967000010'; // wrong / static
 
 		$linkValues	= array(
 			'id'		=> $id,
