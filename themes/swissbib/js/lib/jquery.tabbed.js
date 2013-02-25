@@ -19,12 +19,12 @@ jQuery.fn.tabbed = function(op) {
 	jQuery.extend(sbTabbedSettings, op);
 	
 		// Elements
-	var elContainer = jQuery(this);
-	var elsTabs		= jQuery(sbTabbedSettings.selectorTab, elContainer);
-	var elsTabbed	= jQuery(sbTabbedSettings.selectorTabbed);
+	var elContainer = $(this);
+	var elsTabs		= $(sbTabbedSettings.selectorTab, elContainer);
+	var elsTabbed	= $(sbTabbedSettings.selectorTabbed);
 	
 		// Events
-	jQuery(elsTabs).bind("click", actionTabbed);
+	$(elsTabs).bind("click", actionTabbed);
 	
 		// Initialize
 	initialize();
@@ -35,8 +35,8 @@ jQuery.fn.tabbed = function(op) {
 	function initialize() {
 			// Restore from cookie
 		if( sbTabbedSettings.persist ) {
-			var tabID		= jQuery("." + sbTabbedSettings.classTabSelected, elContainer).attr("id");
-			var cookieName	= encodeURI(sbTabbedSettings.cookie + jQuery(elContainer).attr("rel"));
+			var tabID		= $("." + sbTabbedSettings.classTabSelected, elContainer).attr("id");
+			var cookieName	= encodeURI(sbTabbedSettings.cookie + $(elContainer).attr("rel"));
 
 			if (jQuery.cookie(cookieName)) {
 				tabID = jQuery.cookie(cookieName);
@@ -61,7 +61,7 @@ jQuery.fn.tabbed = function(op) {
 		evt.preventDefault();
 		evt.stopPropagation();	
 
-		var tabId		= jQuery(this).attr("id");
+		var tabId		= $(this).attr("id");
 		var searchQuery	= swissbib.getSearchQuery();
 
 		if ( swissbib.isTabContentLoaded(tabId) == false ) {
@@ -73,7 +73,7 @@ jQuery.fn.tabbed = function(op) {
 			// Persist active tab preference?
 		if (sbTabbedSettings.persist) {
 				// Write cookie
-			var cookieName = encodeURI(sbTabbedSettings.cookie + jQuery(elContainer).attr("rel"));
+			var cookieName = encodeURI(sbTabbedSettings.cookie + $(elContainer).attr("rel"));
 			var cookieValue= tabId;
 			jQuery.cookie(cookieName, cookieValue, {path: '/'});
 		}
@@ -87,24 +87,6 @@ jQuery.fn.tabbed = function(op) {
 
 
 	/**
-	 * @param	{String}	url
-	 * @param	{Boolean}	isCached
-	 * @param	{String}	type
-	 * @param	{String}	dataType
-	 * @return	{Object}
-	 */
-	function getAjaxOptions(url, isCached, type, dataType) {
-		return {
-			type:		type ? type : "GET",
-			url:		url,
-			cache:		!!isCached,
-			dataType:	dataType ? dataType : "html"
-		};
-	}
-
-
-
-	/**
 	 * Load result tab content via AJAX
 	 *
 	 * @param	{String}	tabId
@@ -113,8 +95,8 @@ jQuery.fn.tabbed = function(op) {
 	function ajaxLoadTabContent(tabId, searchQuery) {
 		var containerId	= 'content';
 			// Setup request
-		var ajaxUrl			= swissbib.getTabbedAjaxUrl(tabId, "Tabcontent");
-		var ajaxOptions		= getAjaxOptions(ajaxUrl, false);
+		var ajaxUrl			= sbAjax.getTabbedUrl(tabId, "Tabcontent");
+		var ajaxOptions		= sbAjax.setupRequestOptions(ajaxUrl, false);
 		ajaxOptions.success = function(content) {
 			$('#' + containerId + ' .' + tabId).html(content);
 			$('#' + containerId + ' .' + tabId).append(
@@ -124,7 +106,7 @@ jQuery.fn.tabbed = function(op) {
 		};
 			// Add AJAX spinner to indicate loading process
 		$('#' + containerId + ' .' + tabId).append(
-			createSpinnerElement(ajaxUrl, tabId, containerId)
+			sbAjax.createSpinnerElement(ajaxUrl, tabId, containerId)
 		);
 			// Evoke request
 		$.ajax(ajaxOptions);
@@ -141,8 +123,8 @@ jQuery.fn.tabbed = function(op) {
 	function ajaxLoadTabSidebar(tabId, searchQuery) {
 		var containerId	= 'sidebar';
 			// Setup request
-		var ajaxUrl			= swissbib.getTabbedAjaxUrl(tabId, "Tabsidebar");
-		var ajaxOptions		= getAjaxOptions(ajaxUrl, false);
+		var ajaxUrl			= sbAjax.getTabbedUrl(tabId, "Tabsidebar");
+		var ajaxOptions		= sbAjax.setupRequestOptions(ajaxUrl, false);
 		ajaxOptions.success = function(content) {
 			$('#' + containerId + ' .' + tabId).replaceWith(content);
 			$('#' + containerId + ' .' + tabId).addClass('tabbed_selected');
@@ -153,35 +135,10 @@ jQuery.fn.tabbed = function(op) {
 		};
 			// Add AJAX spinner to indicate loading process
 		$('#' + containerId + ' .' + tabId).append(
-			createSpinnerElement(ajaxUrl, tabId, containerId, 'filters')
+			sbAjax.createSpinnerElement(ajaxUrl, tabId, containerId, 'filters')
 		);
 			// Evoke request
 		$.ajax(ajaxOptions);
-	}
-
-
-
-	/**
-	 * Create AJAX spinner element, containing hidden value of requested AJAX uri
-	 *
-	 * @param	{String}	ajaxUrl
-	 * @param	{String}	tabId				Actual tab ID, e.g. "external", "swissbib", ...
-	 * @param	{String}	containerId			Container, e.g. 'content' or 'sidebar'
-	 * @param	{String}	[wrapperDivClass]	e.g. 'filters'
-	 * @return	{Element}
-	 */
-	function createSpinnerElement(ajaxUrl, tabId, containerId, wrapperDivClass) {
-		var spinner	= jQuery('<div/>', {
-			class:	'ajax_loading_spinner_transp',
-			style:	'width:32px;height:32px;'
-		}).append(swissbib.createHiddenField('ajaxuri_' + tabId + '_' + containerId, ajaxUrl));
-
-			// Wrap spinner (if class given)
-		if( typeof wrapperDivClass == 'string') {
-			spinner	= jQuery('<div/>', {class:	wrapperDivClass }).append(spinner);
-		}
-
-		return spinner;
 	}
 
 
@@ -192,24 +149,24 @@ jQuery.fn.tabbed = function(op) {
 	 */
 	function changeTabbed(tabID, animate) {
 			// Set given tab(head) selected / others hidden
-		jQuery('.' + sbTabbedSettings.classTabbedSelected).removeClass(sbTabbedSettings.classTabbedSelected);
-		jQuery(elsTabs).removeClass(sbTabbedSettings.classTabSelected);
+		$('.' + sbTabbedSettings.classTabbedSelected).removeClass(sbTabbedSettings.classTabbedSelected);
+		$(elsTabs).removeClass(sbTabbedSettings.classTabSelected);
 
-		jQuery("#" + tabID, elContainer).addClass(sbTabbedSettings.classTabSelected);
+		$("#" + tabID, elContainer).addClass(sbTabbedSettings.classTabSelected);
 
 			// Fetch other classNames of that tabID
-		var elsTabbedSelected = jQuery("." + tabID);
+		var elsTabbedSelected = $("." + tabID);
 			// Set other tabbed elements hidden/ derived of active tab selected
-		jQuery(elsTabbed).removeClass(sbTabbedSettings.classTabbedSelected);
-		jQuery(elsTabbed).addClass(sbTabbedSettings.classTabbedHidden);
-		jQuery(elsTabbedSelected).removeClass(sbTabbedSettings.classTabbedHidden);
-		jQuery(elsTabbedSelected).addClass(sbTabbedSettings.classTabbedSelected);
+		$(elsTabbed).removeClass(sbTabbedSettings.classTabbedSelected);
+		$(elsTabbed).addClass(sbTabbedSettings.classTabbedHidden);
+		$(elsTabbedSelected).removeClass(sbTabbedSettings.classTabbedHidden);
+		$(elsTabbedSelected).addClass(sbTabbedSettings.classTabbedSelected);
 		
 			// Animate
 		if (animate) {
-			jQuery(elsTabbedSelected).css({"opacity":0});
-			jQuery(elsTabbedSelected).animate({"opacity":1}, sbTabbedSettings.timeAnimate, sbTabbedSettings.easingAnimate, function() {
-				jQuery(elsTabbedSelected).css({"opacity":null});
+			$(elsTabbedSelected).css({"opacity":0});
+			$(elsTabbedSelected).animate({"opacity":1}, sbTabbedSettings.timeAnimate, sbTabbedSettings.easingAnimate, function() {
+				$(elsTabbedSelected).css({"opacity":null});
 			});
 		}
 	}
