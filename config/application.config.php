@@ -1,5 +1,8 @@
 <?php
 
+require __DIR__ . '/../vendor/zendframework/zendframework/library/Zend/Stdlib/compatibility/autoload.php';
+require __DIR__ . '/../vendor/zendframework/zendframework/library/Zend/Session/compatibility/autoload.php';
+
 $config = array(
     'modules' => array(
         'VuFindHttp', 'VuFindTheme', 'VuFind', 'Swissbib'
