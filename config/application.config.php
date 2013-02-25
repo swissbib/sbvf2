@@ -1,7 +1,7 @@
 <?php
 
-require __DIR__ . '/../vendor/ZF2/library/Zend/Stdlib/compatibility/autoload.php';
-require __DIR__ . '/../vendor/ZF2/library/Zend/Session/compatibility/autoload.php';
+require __DIR__ . '/../vendor/zendframework/zendframework/library/Zend/Stdlib/compatibility/autoload.php';
+require __DIR__ . '/../vendor/zendframework/zendframework/library/Zend/Session/compatibility/autoload.php';
 
 $config = array(
     'modules' => array(
