@@ -39,7 +39,11 @@ return array(
         'lib/colorbox/jquery.colorbox.js', //popup dialog solution
         'lib/jquery.enhancedsearch.js',
         'autocomplete.base.js', //used for current highlighting based on java servlet, probably replaced by default VuFind mechanism
+
+        'swissbib.ajax.js',
         'swissbib.js',
+        'swissbib.pagination.js',
+
         'jstorage.min.js', //used for favorites - there is still some amount of JS code inline of the page -> Todo: Refactoring in upcoming Sprints
 
         'autocomplete.initialize.swissbib.js',

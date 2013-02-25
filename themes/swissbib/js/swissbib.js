@@ -151,7 +151,7 @@ var swissbib = {
 
 		$.each(containerIDs, function(index, containerId) {
 			var tabId	= swissbib.getIdSelectedTab();
-			var url		= swissbib.getTabbedAjaxUrl(tabId, "Tab" + containerId);
+			var url		= sbAjax.getTabbedUrl(tabId, "Tab" + containerId);
 
 			var fieldId	= 'ajaxuri_' + tabId + '_' + containerId;
 			$('#' + containerId + ' .' + tabId).append(
@@ -188,30 +188,6 @@ var swissbib = {
 
 
 	/**
-	 * Get URL for AJAX request to item (content of tab or sidebar) of tabbed search
-	 *
-	 * @param	{String}	tabId
-	 * @param	{String}	[action]
-	 * @param	{String}	[controller]
-	 * @return	{String}
-	 */
-	getTabbedAjaxUrl: function(tabId, action, controller) {
-		controller	= controller ? controller : 'Search';
-		action		= action	 ? action : 'Tabcontent';
-
-			// Remove 'tabbed_' prefix if left
-		var tabKey	= tabId.substr(0, 7) != 'tabbed_' ? tabId : tabId.split('tabbed_')[1];
-
-		return window.location.protocol + "//" + window.location.host + "/vufind/"
-			+	controller + "/"
-			+	action
-			+ 	"?" + swissbib.getSearchQuery()
-			+	"&tab=" + tabKey;
-	},
-
-
-
-	/**
 	 * Get id of selected tab
 	 *
 	 * @param	{String}			classnamePrefix
@@ -241,7 +217,7 @@ var swissbib = {
 		}
 			// Compare URL
 		var loadedUrl	= el[0].value;
-		return loadedUrl == this.getTabbedAjaxUrl(tabId);
+		return loadedUrl == sbAjax.getTabbedUrl(tabId);
 	},
 
 
@@ -266,15 +242,26 @@ var swissbib = {
 	/**
 	 * Get current search query
 	 *
-	 * @param	{Boolean}	withoutFilters
+	 * @param	{Boolean}	[withoutFilters]	default: true
+	 * @param	{Boolean}	[withoutPageNum]	default: true
 	 * @return	{String}
 	 */
-	getSearchQuery: function(withoutFilters) {
+	getSearchQuery: function(withoutFilters, withoutPageNum) {
 		withoutFilters	= withoutFilters ? withoutFilters : true;
+		withoutPageNum	= withoutPageNum ? withoutPageNum : true;
 
 		var query	= $('div#meta ul li.selected a')[0].href.split('?')[1];
 
-		return withoutFilters ? (query.split('&filter')[0]) : query;
+		if( withoutFilters ) {
+			query = query.split('&filter')[0];
+		}
+
+		if( withoutPageNum ) {
+				// Remove page num from query (e.g. '&page=1')
+			query = query.replace(/\&page\=(\d)+/, '')
+		}
+
+		return query;
 	},
 
 
