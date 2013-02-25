@@ -25,7 +25,6 @@ return array(
         'invokables' => array(
             'search'		=> 'Swissbib\Controller\SearchController',
             'my-research'	=> 'Swissbib\Controller\MyResearchController'
-//            'record'		=> 'Swissbib\Controller\RecordController'
         )
     ),
     'service_manager' => array(
