@@ -131,6 +131,11 @@ $config = array(
                     $sm->get('VuFind\RecordLoader'), $size, $active
                 );
             },
+            'VuFind\DateConverter' => function ($sm) {
+                return new \VuFind\Date\Converter(
+                    \VuFind\Config\Reader::getConfig()
+                );
+            },
             'VuFind\DbAdapter' => function ($sm) {
                 return \VuFind\Db\AdapterFactory::getAdapter();
             },
@@ -295,10 +300,16 @@ $config = array(
             ),
             'db_table' => array(
                 'abstract_factories' => array('VuFind\Db\Table\PluginFactory'),
+                'factories' => array(
+                    'resource' => function ($sm) {
+                        return new \VuFind\Db\Table\Resource(
+                            $sm->getServiceLocator()->get('VuFind\DateConverter')
+                        );
+                    },
+                ),
                 'invokables' => array(
                     'changetracker' => 'VuFind\Db\Table\ChangeTracker',
                     'comments' => 'VuFind\Db\Table\Comments',
-                    'resource' => 'VuFind\Db\Table\Resource',
                     'resourcetags' => 'VuFind\Db\Table\ResourceTags',
                     'search' => 'VuFind\Db\Table\Search',
                     'session' => 'VuFind\Db\Table\Session',
@@ -348,14 +359,41 @@ $config = array(
                             $sm->getServiceLocator()->get('VuFind\CacheManager')
                         );
                     },
+                    'demo' => function ($sm) {
+                        return new \VuFind\ILS\Driver\Demo(
+                            $sm->getServiceLocator()->get('VuFind\DateConverter')
+                        );
+                    },
+                    'horizon' => function ($sm) {
+                        return new \VuFind\ILS\Driver\Horizon(
+                            $sm->getServiceLocator()->get('VuFind\DateConverter')
+                        );
+                    },
+                    'horizonxmlapi' => function ($sm) {
+                        return new \VuFind\ILS\Driver\HorizonXMLAPI(
+                            $sm->getServiceLocator()->get('VuFind\DateConverter')
+                        );
+                    },
+                    'unicorn' => function ($sm) {
+                        return new \VuFind\ILS\Driver\Unicorn(
+                            $sm->getServiceLocator()->get('VuFind\DateConverter')
+                        );
+                    },
+                    'voyager' => function ($sm) {
+                        return new \VuFind\ILS\Driver\Voyager(
+                            $sm->getServiceLocator()->get('VuFind\DateConverter')
+                        );
+                    },
+                    'voyagerrestful' => function ($sm) {
+                        return new \VuFind\ILS\Driver\VoyagerRestful(
+                            $sm->getServiceLocator()->get('VuFind\DateConverter')
+                        );
+                    },
                 ),
                 'invokables' => array(
                     'amicus' => 'VuFind\ILS\Driver\Amicus',
                     'daia' => 'VuFind\ILS\Driver\DAIA',
-                    'demo' => 'VuFind\ILS\Driver\Demo',
                     'evergreen' => 'VuFind\ILS\Driver\Evergreen',
-                    'horizon' => 'VuFind\ILS\Driver\Horizon',
-                    'horizonxmlapi' => 'VuFind\ILS\Driver\HorizonXMLAPI',
                     'innovative' => 'VuFind\ILS\Driver\Innovative',
                     'koha' => 'VuFind\ILS\Driver\Koha',
                     'newgenlib' => 'VuFind\ILS\Driver\NewGenLib',
@@ -363,10 +401,7 @@ $config = array(
                     'pica' => 'VuFind\ILS\Driver\PICA',
                     'sample' => 'VuFind\ILS\Driver\Sample',
                     'symphony' => 'VuFind\ILS\Driver\Symphony',
-                    'unicorn' => 'VuFind\ILS\Driver\Unicorn',
                     'virtua' => 'VuFind\ILS\Driver\Virtua',
-                    'voyager' => 'VuFind\ILS\Driver\Voyager',
-                    'voyagerrestful' => 'VuFind\ILS\Driver\VoyagerRestful',
                     'xcncip' => 'VuFind\ILS\Driver\XCNCIP',
                     'xcncip2' => 'VuFind\ILS\Driver\XCNCIP2',
                 ),
@@ -450,11 +485,15 @@ $config = array(
                             \VuFind\Config\Reader::getConfig('searches')
                         );
                     },
-                    'summon' => function () {
+                    'summon' => function ($sm) {
                         $summon = \VuFind\Config\Reader::getConfig('Summon');
-                        return new \VuFind\RecordDriver\Summon(
+                        $driver = new \VuFind\RecordDriver\Summon(
                             \VuFind\Config\Reader::getConfig(), $summon, $summon
                         );
+                        $driver->setDateConverter(
+                            $sm->getServiceLocator()->get('VuFind\DateConverter')
+                        );
+                        return $driver;
                     },
                     'worldcat' => function () {
                         return new \VuFind\RecordDriver\WorldCat(
