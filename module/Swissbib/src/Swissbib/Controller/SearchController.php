@@ -134,8 +134,13 @@ class SearchController extends VFSearchController {
      * @return  String
      */
     private function getIdSelectedTab() {
+        $idTab  = null;
+
             // Get selected tab from cookie if set
-        $idTab  = str_replace('tabbed_', '', $_COOKIE[self::COOKIENAME_SELECTED_TAB]);
+        if( isset($HTTP_cookie_VARS[self::COOKIENAME_SELECTED_TAB]) ) {
+            $cookieContent  = $_COOKIE[self::COOKIENAME_SELECTED_TAB];
+            $idTab  = str_replace('tabbed_', '', $cookieContent);
+        }
 
         if( empty($idTab) ) {
                 // Get default tab from module config
