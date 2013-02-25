@@ -1,8 +1,5 @@
 /**
- * Toggles tab areas.
- *
- * @author NOSE
- * @version 1.0.0	initial version			
+ * Toggles search result tabs, with resp. content and sidebar content
  */
 var sbTabbedSettings = {
 	selectorTab:		"ul li",
@@ -14,7 +11,7 @@ var sbTabbedSettings = {
 	timeAnimate:		600,
 	easingAnimate:		"easeOutQuad",
 	cookie:				"tabbed_",
-	persist:			true,
+	persist:			true,		// Persist activated tab to reload? (cookie)
 	debug:				true
 };
 
@@ -32,15 +29,12 @@ jQuery.fn.tabbed = function(op) {
 		// Initialize
 	initialize();
 
-
-
-
 	/**
 	 * Initializes the tabs (items classname: "tabbed")
 	 */
 	function initialize() {
 			// Restore from cookie
-		if (sbTabbedSettings.persist) {
+		if( sbTabbedSettings.persist ) {
 			var tabID		= jQuery("." + sbTabbedSettings.classTabSelected, elContainer).attr("id");
 			var cookieName	= encodeURI(sbTabbedSettings.cookie + jQuery(elContainer).attr("rel"));
 
@@ -63,14 +57,12 @@ jQuery.fn.tabbed = function(op) {
 	 * @param	{Event}	e
 	 */
 	function actionTabbed(e) {
-			// Prevent
 		var evt = jQuery.Event(e);
 		evt.preventDefault();
 		evt.stopPropagation();	
 
 		var tabId		= jQuery(this).attr("id");
 		var searchQuery	= swissbib.getSearchQuery();
-		dlog("actionTabbed - tab: " + tabId + " activated");
 
 		if ( swissbib.isTabContentLoaded(tabId) == false ) {
 				// AJAX-load content of tab and respective sidebar
@@ -87,28 +79,9 @@ jQuery.fn.tabbed = function(op) {
 		}
 		
 			// Change active tab
-		changeTabbed(tabId, sbTabbedSettings.animate);
-	}
-
-
-
-	/**
-	 * Get URL for AJAX request to item (content of tab or sidebar) of tabbed search
-	 *
-	 * @param	{String}	tabId
-	 * @param	{String}	action
-	 * @param	{String}	controller
-	 * @return	{String}
-	 */
-	function getTabbedSearchItemAjaxUrl(tabId, action, controller) {
-		controller	= controller ? controller : 'Search';
-		var tabKey		= tabId.substr(0, 7) != 'tabbed_' ? tabId : tabId.split('tabbed_')[1];
-
-		return	window.location.protocol + "//" + window.location.host + "/vufind/"
-			+	controller + "/"
-			+	action
-			+	"?tab=" + tabKey
-			+ 	"&" + swissbib.getSearchQuery();
+		if( tabId != swissbib.getIdSelectedTab() ) {
+			changeTabbed(tabId, sbTabbedSettings.animate);
+		}
 	}
 
 
@@ -138,15 +111,23 @@ jQuery.fn.tabbed = function(op) {
 	 * @param	{String}	[searchQuery]
 	 */
 	function ajaxLoadTabContent(tabId, searchQuery) {
-		var ajaxUrl			= getTabbedSearchItemAjaxUrl(tabId, "Tabcontent");
+		var containerId	= 'content';
+			// Setup request
+		var ajaxUrl			= swissbib.getTabbedAjaxUrl(tabId, "Tabcontent");
 		var ajaxOptions		= getAjaxOptions(ajaxUrl, false);
 		ajaxOptions.success = function(content) {
-			$('#content .tabbed_selected').html(content);
+			$('#' + containerId + ' .' + tabId).html(content);
+			$('#' + containerId + ' .' + tabId).append(
+				swissbib.createHiddenField('ajaxuri_' + tabId + '_content', ajaxUrl)
+			);
 			return false;
 		};
-
+			// Add AJAX spinner to indicate loading process
+		$('#' + containerId + ' .' + tabId).append(
+			createSpinnerElement(ajaxUrl, tabId, containerId)
+		);
+			// Evoke request
 		$.ajax(ajaxOptions);
-		swissbib.registerTabContentLoaded(tabId);
 	}
 
 
@@ -158,16 +139,49 @@ jQuery.fn.tabbed = function(op) {
 	 * @param	{String}	[searchQuery]
 	 */
 	function ajaxLoadTabSidebar(tabId, searchQuery) {
-		var ajaxUrl			= getTabbedSearchItemAjaxUrl(tabId, "Tabsidebar");
+		var containerId	= 'sidebar';
+			// Setup request
+		var ajaxUrl			= swissbib.getTabbedAjaxUrl(tabId, "Tabsidebar");
 		var ajaxOptions		= getAjaxOptions(ajaxUrl, false);
 		ajaxOptions.success = function(content) {
-			$('#sidebar .' + tabId).replaceWith(content);
-			$('#sidebar .' + tabId).addClass('tabbed_selected');
+			$('#' + containerId + ' .' + tabId).replaceWith(content);
+			$('#' + containerId + ' .' + tabId).addClass('tabbed_selected');
+			$('#' + containerId + ' .' + tabId).append(
+				swissbib.createHiddenField('ajaxuri_' + tabId + '_sidebar', ajaxUrl)
+			);
 			return false;
 		};
-
+			// Add AJAX spinner to indicate loading process
+		$('#' + containerId + ' .' + tabId).append(
+			createSpinnerElement(ajaxUrl, tabId, containerId, 'filters')
+		);
+			// Evoke request
 		$.ajax(ajaxOptions);
-		swissbib.registerTabContentLoaded(tabId);
+	}
+
+
+
+	/**
+	 * Create AJAX spinner element, containing hidden value of requested AJAX uri
+	 *
+	 * @param	{String}	ajaxUrl
+	 * @param	{String}	tabId				Actual tab ID, e.g. "external", "swissbib", ...
+	 * @param	{String}	containerId			Container, e.g. 'content' or 'sidebar'
+	 * @param	{String}	[wrapperDivClass]	e.g. 'filters'
+	 * @return	{Element}
+	 */
+	function createSpinnerElement(ajaxUrl, tabId, containerId, wrapperDivClass) {
+		var spinner	= jQuery('<div/>', {
+			class:	'ajax_loading_spinner_transp',
+			style:	'width:32px;height:32px;'
+		}).append(swissbib.createHiddenField('ajaxuri_' + tabId + '_' + containerId, ajaxUrl));
+
+			// Wrap spinner (if class given)
+		if( typeof wrapperDivClass == 'string') {
+			spinner	= jQuery('<div/>', {class:	wrapperDivClass }).append(spinner);
+		}
+
+		return spinner;
 	}
 
 
@@ -177,9 +191,6 @@ jQuery.fn.tabbed = function(op) {
 	 * @param	{Boolean}	animate
 	 */
 	function changeTabbed(tabID, animate) {
-		dlog("changeTabbed: " + tabID);
-
-
 			// Set given tab(head) selected / others hidden
 		jQuery('.' + sbTabbedSettings.classTabbedSelected).removeClass(sbTabbedSettings.classTabbedSelected);
 		jQuery(elsTabs).removeClass(sbTabbedSettings.classTabSelected);
@@ -203,7 +214,7 @@ jQuery.fn.tabbed = function(op) {
 		}
 	}
 	
-	
+
 	
 	/*
 	 * Debug log.
