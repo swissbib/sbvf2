@@ -118,6 +118,9 @@ $config = array(
     ),
     'service_manager' => array(
         'factories' => array(
+            'VuFind\AuthManager' => function ($sm) {
+                return new \VuFind\Auth\Manager(\VuFind\Config\Reader::getConfig());
+            },
             'VuFind\Cart' => function ($sm) {
                 $config = \VuFind\Config\Reader::getConfig();
                 $active = isset($config->Site->showBookBag)
@@ -165,9 +168,19 @@ $config = array(
             'VuFind\RecordRouter' => function ($sm) {
                 return new \VuFind\Record\Router($sm->get('VuFind\RecordLoader'));
             },
+            'VuFind\RecordStats' => function ($sm) {
+                return new \VuFind\Statistics\Record(
+                    \VuFind\Config\Reader::getConfig()
+                );
+            },
             'VuFind\SearchSpecsReader' => function ($sm) {
                 return new \VuFind\Config\SearchSpecsReader(
                     $sm->get('VuFind\CacheManager')
+                );
+            },
+            'VuFind\SearchStats' => function ($sm) {
+                return new \VuFind\Statistics\Search(
+                    \VuFind\Config\Reader::getConfig()
                 );
             },
             'VuFind\SMS' => 'VuFind\SMS\Factory',
@@ -204,7 +217,6 @@ $config = array(
             },
         ),
         'invokables' => array(
-            'VuFind\AuthManager' => 'VuFind\Auth\Manager',
             'VuFind\CacheManager' => 'VuFind\Cache\Manager',
             'VuFind\Mailer' => 'VuFind\Mailer',
             'VuFind\RecordLoader' => 'VuFind\Record\Loader',
@@ -530,9 +542,16 @@ $config = array(
             ),
             'statistics_driver' => array(
                 'abstract_factories' => array('VuFind\Statistics\Driver\PluginFactory'),
+                'factories' => array(
+                    'file' => function ($sm) {
+                        $config = \VuFind\Config\Reader::getConfig();
+                        $folder = isset($config->Statistics->file)
+                            ? $config->Statistics->file : sys_get_temp_dir();
+                        return new \VuFind\Statistics\Driver\File($folder);
+                    },
+                ),
                 'invokables' => array(
                     'db' => 'VuFind\Statistics\Driver\Db',
-                    'file' => 'VuFind\Statistics\Driver\File',
                     'solr' => 'VuFind\Statistics\Driver\Solr',
                 ),
                 'aliases' => array(
