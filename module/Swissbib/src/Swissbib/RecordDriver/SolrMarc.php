@@ -33,7 +33,7 @@
 namespace Swissbib\RecordDriver;
 
 use VuFind\RecordDriver\SolrMarc as VFSolrMarc;
-use Swissbib\RecordDriver\Helper\HoldingsHelper;
+use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
 
 /**
  * enhancement for swissbib MARC records in Solr.
@@ -62,24 +62,47 @@ class SolrMarc extends VFSolrMarc {
 	 */
 	protected $marcHoldings;
 
+
+
+	/**
+	 * Initialize holdings
+	 *
+	 * @inheritDoc
+	 */
+	public function __construct($mainConfig = null, $recordConfig = null, $searchSettings = null) {
+		parent::__construct($mainConfig, $recordConfig, $searchSettings);
+
+		// remove parent dependency first
+		//todo: I'm looking for a possibility to wire up the Holdings using
+		//ServiceLocator and configuration -> tbd later
+//		$holdingsHelper = $this->getServiceLocator()->get('Swissbib\RecordDriverHoldingsHelper');
+
+		$this->marcHoldings = new HoldingsHelper($this);
+	}
+
+
+
+	/**
+	 *
+	 * @inheritDoc
+	 */
 	public function getILS() {
 		return parent::getILS();
 	}
 
 
 
+	/**
+	 * Set raw data and initialize holdings helper
+	 *
+	 */
 	public function setRawData($data) {
-		//only for test purposes within this type to see if the type is correct instantiated
-		//Call the parent's set method...
 		parent::setRawData($data);
 
-		//todo: I'm looking for a possibility to wire up the HoldingsHelper using
-        //ServiceLocator and configuration -> tbd later
-
-		$this->marcHoldings = new HoldingsHelper($this);
-
-        //$holdings = $this->marcHoldings->getTestData();
-        $this->marcHoldings->setHoldingsContent($data['holdings']);
+		 //$holdings = $this->marcHoldings->getTestData();
+		if( isset($data['holdings']) ) {
+			$this->marcHoldings->setHoldingsContent($data['holdings']);
+		}
 	}
 
 

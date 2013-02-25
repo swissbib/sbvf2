@@ -39,10 +39,10 @@ use VuFind\Crypt\HMAC;
 
 
 /**
- * probably HoldingsHelper should be a subtype of ZF2 AbstractHelper
+ * probably Holdings should be a subtype of ZF2 AbstractHelper
  *at first I need a better understanding how things are wired up in this case using means of ZF2
  */
-class HoldingsHelper implements HoldingsAwareInterface {
+class Holdings implements HoldingsAwareInterface {
 
 	/**
 	 * @var	SolrMarc
@@ -148,6 +148,8 @@ class HoldingsHelper implements HoldingsAwareInterface {
 				$network	= $item['network'];
 				$institution= $item['institution'];
 				$testItemId	= $this->getItemId(10*($index+1));
+
+//				var_dump($item);
 
 					// Make sure network is present
 				if( !isset($data[$network]) ) {
