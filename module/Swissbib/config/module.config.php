@@ -30,6 +30,7 @@ return array(
     'service_manager' => array(
         'invokables' => array(
             'VuFindTheme\ResourceContainer' => 'Swissbib\VuFind\ResourceContainer',
+			'Swissbib\RecordDriverHoldingsHelper' => 'Swissbib\RecordDriver\Helper\Holdings'
         )
     ),
     'view_helpers' => array(
@@ -95,9 +96,7 @@ return array(
                 ),
             ),
         ),
-        'invokables' => array(
-            'Swissbib\HoldingsHelper' => 'Swissbib\RecordDriver\Helper\HoldingsHelper',
-        ),
+
             // Search result tabs
         'preload_result_tabs_counts'=> false,  // Fetch(+display) results-count of non-selected tab(s) initially?
         'default_result_tab'        => 'swissbib',  // ID of default selected tab
