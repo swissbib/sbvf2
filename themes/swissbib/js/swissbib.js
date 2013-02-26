@@ -4,8 +4,6 @@
  * @requires jquery, jquery.debug, jquery.cookie, jquery.bgIframe, jquery.hoverIntent, jquery.easing,
  *           jquery.toggler, jquery.menu, jquery.nyroModal, jquery.autocomplete, jquery.dropdown,
  *			 jquery.ui, jquery.ui.tabs
- *
- * initial version by NOSE
  */
 var swissbib = {
 
@@ -15,9 +13,6 @@ var swissbib = {
 	/** @var	{Boolean}	ie6 */
 	ie6:	false,
 
-	/** @var	{Object}	Log of "tabbed" tabs with already AJAXed / loaded content */
-	tabbedLoadedContent: {},
-
 
 
     /**
@@ -26,12 +21,12 @@ var swissbib = {
     initOnReady: function(){
         window.DEBUG = false;	// debug flag
 
-        	// Context
-        var contextHeader	= jQuery("#header");
-        var contextSearch	= jQuery("#search");
-        var contextMain		= jQuery("#main");
-        var contextContent	= jQuery("#content");
-        var contextAll		= jQuery("#header, #search, #main");
+        	// Context elements
+        var contextHeader	= $("#header");
+//        var contextSearch	= $("#search");
+        var contextMain		= $("#main");
+        var contextContent	= $("#content");
+        var contextAll		= $("#header, #search, #main");
 
         	// Init interface
         swissbib.initBrowserFlags();
@@ -44,8 +39,10 @@ var swissbib = {
         swissbib.initLinks(contextMain);
         swissbib.initModalNBImages(contextMain);
 
-			// "tabbed" = tab containers e.g. search result tabs
-        swissbib.initTabbed(contextMain);
+		if( $('#tabbed').is('*') ) {
+				// Init tabs (if present =after search)
+        	swissbib.initTabbed(contextMain);
+		}
 
         swissbib.initHints(contextMain);
     },
@@ -81,7 +78,7 @@ var swissbib = {
             tag = "opera";
         }
 
-        jQuery("body").addClass(tag);
+        $("body").addClass(tag);
     },
 
 
@@ -92,7 +89,7 @@ var swissbib = {
 	 * @param	{Element}	ctx		Selector context
      */
     initNavigation: function(ctx){
-        jQuery("#navigation", ctx).menunav();
+        $("#navigation", ctx).menunav();
     },
 
 
@@ -107,14 +104,14 @@ var swissbib = {
         if (swissbib.ie6) {
             animate = false;
         }
-        jQuery(".toggler",ctx).each(function(ind,el) {
+        $(".toggler",ctx).each(function(ind,el) {
             // vars
-            var id = jQuery(el).attr("id");
+            var id = $(el).attr("id");
             var msgExpanded = null;
             var msgCollapsed = null;
             var expanded = false;
-            var title = jQuery(this).attr("title");
-            if (jQuery(el).hasClass("expanded")) {
+            var title = $(this).attr("title");
+            if ($(el).hasClass("expanded")) {
                 expanded = true;
             }
 
@@ -125,7 +122,7 @@ var swissbib = {
             }
 
             // toggle
-            jQuery(el).toggler("."+id,{expanded:expanded,msgCollapsed:msgCollapsed,msgExpanded:msgExpanded,animate:animate});
+            $(el).toggler("."+id,{expanded:expanded,msgCollapsed:msgCollapsed,msgExpanded:msgExpanded,animate:animate});
 
         });
     },
@@ -138,22 +135,32 @@ var swissbib = {
 	  @param	{Element}	ctx		Selector context
      */
     initTabs: function(ctx) {
-        jQuery(".tabs").tabs({cookie:{expires:30}});
+        $(".tabs").tabs({cookie:{expires:30}});
     },
 
 
 
     /**
      * Initialize "tabbed" elements
+	 *
+	 * @param	{Element}	ctx
      */
     initTabbed: function(ctx) {
-			// Register tabs with content already loaded
-		this.tabbedLoadedContent = {};
-		this.tabbedLoadedContent[this.getIdSelectedTab()] = true;
+			// Register already loaded tab: store it's AJAX URL (content, sidebar)
+		var containerIDs= ['content', 'sidebar'];
 
+		$.each(containerIDs, function(index, containerId) {
+			var tabId	= swissbib.getIdSelectedTab();
+			var url		= sbAjax.getTabbedUrl(tabId, "Tab" + containerId);
+
+			var fieldId	= 'ajaxuri_' + tabId + '_' + containerId;
+			$('#' + containerId + ' .' + tabId).append(
+				swissbib.createHiddenField(fieldId, url)
+			);
+		});
 			// Init "tabbed" containers
-        jQuery("#tabbed").each(function(i, tabbed){
-            jQuery(tabbed).tabbed({"animate":!swissbib.ie});
+        $("#tabbed").each(function(i, tabbed){
+            $(tabbed).tabbed({"animate":!swissbib.ie});
         });
     },
 
@@ -167,8 +174,15 @@ var swissbib = {
 	 */
 	getSelectedTab: function(baseClassname) {
 		baseClassname	= baseClassname ? baseClassname : 'tabbed';
+			// Get selected tab
+		var tab = $("#" + baseClassname + " ul li.selected")[0];
 
-		return jQuery("#" + baseClassname + " ul li.selected")[0];
+		if( typeof tab == "undefined" ) {
+			// Fallback: first tab
+			tab	= $("#" + baseClassname + " ul li")[0];
+		}
+
+		return tab;
 	},
 
 
@@ -189,33 +203,6 @@ var swissbib = {
 
 
 
-//	/**
-//	 * Get key from (prefixed) tab ID (e.g. 'tabbed_swissbib' -> 'swissbib')
-//	 *
-//	 * @param	{String}	tabID
-//	 * @param	{String}	classnamePrefix
-//	 * @return	{String|Boolean}
-//	 */
-//	getTabKeyFromTabID: function(tabID, classnamePrefix) {
-//		classnamePrefix	= classnamePrefix ? classnamePrefix : "tabbed";
-//
-//		return tabID ? tabID.split(classnamePrefix + "_")[1] : false;
-//	},
-
-
-
-	/**
-	 * (Un/)register the content of the given tab as loaded.
-	 *
-	 * @param	{String}	tabId
-	 * @param	{Boolean}	[isLoaded]		Default: true
-	 */
-	registerTabContentLoaded: function(tabId, isLoaded) {
-		this.tabbedLoadedContent[tabId]	= isLoaded ? isLoaded : true;
-	},
-
-
-
 	/**
 	 * Is content of given tab loaded?
 	 *
@@ -223,10 +210,31 @@ var swissbib = {
 	 * @return	{Boolean}
 	 */
 	isTabContentLoaded: function(tabId) {
-//		return !!this.tabbedLoadedContent[tabId];
+		var el	= $('input#ajaxuri_' + tabId + '_content');
+		if( el.is('*') == false ) {
+				// No AJAX URL stored in tab? = not loaded
+			return false;
+		}
+			// Compare URL
+		var loadedUrl	= el[0].value;
+		return loadedUrl == sbAjax.getTabbedUrl(tabId);
+	},
 
-// temporary workaround check for ajax spinner to detect tabs that aren't loaded yet
-		return $('#content .' + tabId)[0].innerHTML.indexOf('ajax_loading_spinner') == -1;
+
+
+	/**
+	 * @param	{String}	fieldId
+	 * @param	{String}	fieldValue
+	 * @return	{Element}
+	 */
+	createHiddenField: function(fieldId, fieldValue) {
+		var el= $('<input/>', {
+			type:	'hidden',
+			id:		fieldId,
+			value:	fieldValue
+		});
+
+		return el;
 	},
 
 
@@ -234,15 +242,26 @@ var swissbib = {
 	/**
 	 * Get current search query
 	 *
-	 * @param	{Boolean}	withoutFilters
+	 * @param	{Boolean}	[withoutFilters]	default: true
+	 * @param	{Boolean}	[withoutPageNum]	default: true
 	 * @return	{String}
 	 */
-	getSearchQuery: function(withoutFilters) {
+	getSearchQuery: function(withoutFilters, withoutPageNum) {
 		withoutFilters	= withoutFilters ? withoutFilters : true;
+		withoutPageNum	= withoutPageNum ? withoutPageNum : true;
 
 		var query	= $('div#meta ul li.selected a')[0].href.split('?')[1];
 
-		return withoutFilters ? (query.split('&filter')[0]) : query;
+		if( withoutFilters ) {
+			query = query.split('&filter')[0];
+		}
+
+		if( withoutPageNum ) {
+				// Remove page num from query (e.g. '&page=1')
+			query = query.replace(/\&page\=(\d)+/, '')
+		}
+
+		return query;
 	},
 
 
@@ -253,8 +272,8 @@ var swissbib = {
 	 * @param	{Element}	ctx		Selector context
      */
     initHints: function(ctx) {
-        jQuery(".hint").each(function(i, hint){
-            jQuery(hint).hint();
+        $(".hint").each(function(i, hint){
+            $(hint).hint();
         });
     },
 
@@ -268,32 +287,32 @@ var swissbib = {
     initForms: function(ctx) {
         var zIndex = 100;
 
-        jQuery(".info.rollover", ctx).each(function(i, el){
-            jQuery(el).rollover();
-            jQuery(el).css("z-index", zIndex--)
+        $(".info.rollover", ctx).each(function(i, el){
+            $(el).rollover();
+            $(el).css("z-index", zIndex--)
         });
 
-        jQuery(".info.tooltip", ctx).each(function(i, el){
-            jQuery(el).info();
+        $(".info.tooltip", ctx).each(function(i, el){
+            $(el).info();
         });
 
 
         	// Styled dropdowns
-        jQuery(".dropdown", ctx).each(function(i, el){
-            jQuery(el).dropdown(i);
+        $(".dropdown", ctx).each(function(i, el){
+            $(el).dropdown(i);
         });
 
         	// Slider
-        jQuery("input.slider", ctx).each(function(i, el){
-            jQuery(el).hide();
+        $("input.slider", ctx).each(function(i, el){
+            $(el).hide();
 
             	// Control
-            jQuery(el).after("<div id='slider_"+i+"'></div>");
-            var slidecontrol = jQuery("#slider_"+i);
-            var slidetitel = jQuery(el).attr("title");
+            $(el).after("<div id='slider_"+i+"'></div>");
+            var slidecontrol = $("#slider_"+i);
+            var slidetitel = $(el).attr("title");
             var slidevalue = 0;
-            if (jQuery(el).attr("value") != null && jQuery(el).attr("value") != "") {
-                slidevalue = parseInt(jQuery(el).attr("value"));
+            if ($(el).attr("value") != null && $(el).attr("value") != "") {
+                slidevalue = parseInt($(el).attr("value"));
             }
 
             	// Create slider
@@ -301,8 +320,8 @@ var swissbib = {
             vmax = 1000;
             vstep = 100;
 
-            if (jQuery(el).attr("rel") != null) {
-                var params = jQuery(el).attr("rel").split(";");
+            if ($(el).attr("rel") != null) {
+                var params = $(el).attr("rel").split(";");
                 for (var i = 0; i < params.length; i++) {
                     var p = params[i].split(":");
                     switch(p[0]) {
@@ -313,25 +332,25 @@ var swissbib = {
                 }
             }
 
-            jQuery(slidecontrol).slider({"value":slidevalue,"min":vmin,"max":vmax,"step":vstep});
+            $(slidecontrol).slider({"value":slidevalue,"min":vmin,"max":vmax,"step":vstep});
 
             	// Init
             slidecontrol.attr("title",slidetitel + ": " + slidevalue + " / " + vmax);
 
             	// Events
-            jQuery(slidecontrol).bind("slidechange", function(e, ui) {
-                jQuery(el).attr("value", ui.value);
+            $(slidecontrol).bind("slidechange", function(e, ui) {
+                $(el).attr("value", ui.value);
                 slidecontrol.attr("title", slidetitel + ": " + ui.value + " / " + vmax);
             });
-            jQuery(slidecontrol).bind("slide", function(e, ui) {
+            $(slidecontrol).bind("slide", function(e, ui) {
                 slidecontrol.attr("title", slidetitel + ": " + ui.value + " / " + vmax);
             });
         });
 
 
         	// Checker
-        jQuery(".checker").each(function(i, checker){
-            jQuery(checker).checker();
+        $(".checker").each(function(i, checker){
+            $(checker).checker();
         });
     },
 
@@ -343,7 +362,7 @@ var swissbib = {
 	 * @param	{Element}	ctx		Selector context
      */
     initModal: function(ctx){
-//        jQuery(".modal", ctx).nyroModal({
+//        $(".modal", ctx).nyroModal({
 //
 //      });
     },
@@ -356,7 +375,7 @@ var swissbib = {
 	 * @param	{Element}	ctx		Selector context
 	 */
     initModalNBImages: function(ctx){
-//        jQuery(".modalNB", ctx).nyroModal({
+//        $(".modalNB", ctx).nyroModal({
 //            bgColor:'#4F545F',
 //            closeSelector:'.modal_close',
 //            type: 'image',
@@ -378,24 +397,24 @@ var swissbib = {
      */
     initLinks: function(ctx){
         	// External links
-        jQuery(".externallink", ctx).each(function(i, el){
-            jQuery(this).attr("target","_blank");
+        $(".externallink", ctx).each(function(i, el){
+            $(this).attr("target","_blank");
             try {
-                var t = jQuery(el).attr("title");
-                jQuery(el).attr("title","Externer Link: " + t);
+                var t = $(el).attr("title");
+                $(el).attr("title","Externer Link: " + t);
             }
             catch (ex) {
             }
         });
 
         	// Back links
-        jQuery(".back", ctx).bind("click", function() {
+        $(".back", ctx).bind("click", function() {
             history.back();
             return false;
         });
 
         	// Print links
-        jQuery(".print", ctx).click(function(){window.print();});
+        $(".print", ctx).click(function(){window.print();});
     }
 };
 
@@ -404,10 +423,10 @@ var swissbib = {
 /**
  * Init swissbib on ready & load
  */
-jQuery(document).ready(function(){
+$(document).ready(function(){
     swissbib.initOnReady();
 });
 
-jQuery(window).bind("load", function() {
+$(window).bind("load", function() {
     swissbib.initOnLoad();
 });

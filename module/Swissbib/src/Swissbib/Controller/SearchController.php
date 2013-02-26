@@ -131,22 +131,18 @@ class SearchController extends VFSearchController {
      * User pref: lastly selected tab (cookie set in jquery.tabbed.js)
      * Or module config: default tab (if no user pref stored yet)
      *
-     * @return  String
+     * @return  String  ID of the previously selected / default tab
      */
     private function getIdSelectedTab() {
-		$idTab	= '';
+        $idTab  = null;
 
             // Get selected tab from cookie if set
-		if( isset($_COOKIE[self::COOKIENAME_SELECTED_TAB]) ) {
-			$idTab  = trim(str_replace('tabbed_', '', $_COOKIE[self::COOKIENAME_SELECTED_TAB]));
-		}
-
-        if( empty($idTab) ) {
-                // Get default tab from module config
-            $idTab   = $this->getModuleConfigParam('default_result_tab');
+        if( isset($_COOKIE[self::COOKIENAME_SELECTED_TAB]) ) {
+            $cookieContent  = $_COOKIE[self::COOKIENAME_SELECTED_TAB];
+            $idTab  = str_replace('tabbed_', '', $cookieContent);
         }
 
-        return $idTab;
+        return !empty($idTab) ? $idTab : $this->getModuleConfigParam('default_result_tab');
     }
 
 
