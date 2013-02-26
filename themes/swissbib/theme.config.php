@@ -43,8 +43,7 @@ return array(
         'swissbib.ajax.js', // general AJAX helpers
         'swissbib.js',
         'swissbib.pagination.js', // AJAX pagination
-        'swissbib.sorting.js',  // Deactivate default sorting selector observer, add AJAX sorting
-        'swissbib.limiting.js',  // Deactivate default sorting selector observer, add AJAX sorting
+        'swissbib.jumpmenu.js',
 
         'jstorage.min.js', //used for favorites - there is still some amount of JS code inline of the page -> Todo: Refactoring in upcoming Sprints
 

@@ -1,62 +1,28 @@
 /**
- * Swissbib AJAX pagination
+ * Swissbib pagination
  */
 var sbPagination = {
 
 	/**
-	 * @param	{Number}	numPage
+	 * Prevent default paging HREF triggering and reroute to AJAX request
 	 */
-	paginate: function(numPage) {
-		var ajaxUrl	= this.getPaginationUrl(numPage);
-		var idTab	= swissbib.getIdSelectedTab();
+	init: function() {
+		var pager	= $('#content div.paging a');
 
-		var containerId	= 'content';
-			// Setup request
-		var ajaxOptions		= sbAjax.setupRequestOptions(ajaxUrl, false);
-		ajaxOptions.success = function(content) {
-			$('#' + containerId + ' .' + idTab).html(content);
-			$('#' + containerId + ' .' + idTab).append(
-				swissbib.createHiddenField('ajaxuri_' + idTab + '_content', ajaxUrl)
-			);
+		pager.click(function(event) {
+			event.stopPropagation();
+			event.preventDefault();
 
-			sbSorting.init();
-			return false;
-		};
-			// Show AJAX spinner to indicate loading process
-		$('#' + containerId + ' .' + idTab).prepend(
-			sbAjax.createSpinnerElement(ajaxUrl, idTab, containerId)
-		);
-			// Evoke request
-		$.ajax(ajaxOptions);
-	},
+			var url	= this.href.replace('/Results?', '/Tabcontent?');
 
-
-
-	/**
-	 * @param	{Number}	numPage
-	 */
-	getPaginationUrl: function(numPage) {
-		numPage		= numPage	? parseInt(numPage, 10) : 0;
-		var idTab	= swissbib.getIdSelectedTab();
-
-		return sbAjax.getTabbedUrl(idTab, 'Tabcontent', 'Search', numPage)
-	},
-
-
-
-	/**
- 	 * @param	{String}	idTab
-	 * @return {Number}
-	 */
-	getNumCurrentPage: function(idTab) {
-		var activePageEl	= $('#content div.' + idTab + ' div.paging_pages li span');
-
-		if( activePageEl.is('*') ) {
-			return parseInt( activePageEl[0].innerHTML, 10)
-		}
-			// Default
-		return 0;
+			sbAjax.ajaxLoadTabContent(url);
+		});
 	}
 };
 
-// No on-DOM-ready init here (paging-links are inline JS w/o observer)
+	// Init on DOM-ready
+$(document).ready(function(){
+	if( $('#content div.paging a').is('*') ) {
+		sbPagination.init();
+	}
+});
