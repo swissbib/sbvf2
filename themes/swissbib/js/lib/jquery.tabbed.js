@@ -62,12 +62,12 @@ jQuery.fn.tabbed = function(op) {
 		evt.stopPropagation();	
 
 		var tabId		= $(this).attr("id");
-		var searchQuery	= swissbib.getSearchQuery();
+//		var searchQuery	= swissbib.getSearchQuery();
 
 		if ( swissbib.isTabContentLoaded(tabId) == false ) {
-				// AJAX-load content of tab and respective sidebar
-			ajaxLoadTabContent(tabId, searchQuery);
-			ajaxLoadTabSidebar(tabId, searchQuery);
+				// AJAX-load content + sidebar of tab
+			sbAjax.ajaxLoadTabContent('', tabId);
+			sbAjax.ajaxLoadSidebarContent('', tabId);
 		}
 
 			// Persist active tab preference?
@@ -82,63 +82,6 @@ jQuery.fn.tabbed = function(op) {
 		if( tabId != swissbib.getIdSelectedTab() ) {
 			changeTabbed(tabId, sbTabbedSettings.animate);
 		}
-	}
-
-
-
-	/**
-	 * Load result tab content via AJAX
-	 *
-	 * @param	{String}	tabId
-	 * @param	{String}	[searchQuery]
-	 */
-	function ajaxLoadTabContent(tabId, searchQuery) {
-		var containerId	= 'content';
-			// Setup request
-		var ajaxUrl			= sbAjax.getTabbedUrl(tabId, "Tabcontent");
-		var ajaxOptions		= sbAjax.setupRequestOptions(ajaxUrl, false);
-		ajaxOptions.success = function(content) {
-			$('#' + containerId + ' .' + tabId).html(content);
-			$('#' + containerId + ' .' + tabId).append(
-				swissbib.createHiddenField('ajaxuri_' + tabId + '_content', ajaxUrl)
-			);
-			return false;
-		};
-			// Add AJAX spinner to indicate loading process
-		$('#' + containerId + ' .' + tabId).append(
-			sbAjax.createSpinnerElement(ajaxUrl, tabId, containerId)
-		);
-			// Evoke request
-		$.ajax(ajaxOptions);
-	}
-
-
-
-	/**
-	 * Load result tab content via AJAX
-	 *
-	 * @param	{String}	tabId
-	 * @param	{String}	[searchQuery]
-	 */
-	function ajaxLoadTabSidebar(tabId, searchQuery) {
-		var containerId	= 'sidebar';
-			// Setup request
-		var ajaxUrl			= sbAjax.getTabbedUrl(tabId, "Tabsidebar");
-		var ajaxOptions		= sbAjax.setupRequestOptions(ajaxUrl, false);
-		ajaxOptions.success = function(content) {
-			$('#' + containerId + ' .' + tabId).replaceWith(content);
-			$('#' + containerId + ' .' + tabId).addClass('tabbed_selected');
-			$('#' + containerId + ' .' + tabId).append(
-				swissbib.createHiddenField('ajaxuri_' + tabId + '_sidebar', ajaxUrl)
-			);
-			return false;
-		};
-			// Add AJAX spinner to indicate loading process
-		$('#' + containerId + ' .' + tabId).append(
-			sbAjax.createSpinnerElement(ajaxUrl, tabId, containerId, 'filters')
-		);
-			// Evoke request
-		$.ajax(ajaxOptions);
 	}
 
 
