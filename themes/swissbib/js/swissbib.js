@@ -205,13 +205,13 @@ var swissbib = {
 
 	/**
 	 * Is content of given tab loaded?
+	 * Check presence of data table as first level child
 	 *
 	 * @param	{String}	tabId
 	 * @return	{Boolean}
 	 */
 	isTabContentLoaded: function(tabId) {
-			//@todo implement clean!
-		return $('#content .' + tabId + ' img').length > 2;
+		return $('.' + tabId).children('table.data').length === 1;
 	},
 
 
