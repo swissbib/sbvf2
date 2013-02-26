@@ -4,6 +4,17 @@
 var sbAjax = {
 
 	/**
+	 * Init all elements with AJAX rerouting
+	 */
+	initAjaxElements: function() {
+		sbPagination.init();
+		sbJumpMenu.init();
+		sbFacets.init();
+	},
+
+
+
+	/**
 	 * Add AJAX spinner into active given/content tab
 	 */
 	addSpinner:function(containerId, tabId) {
@@ -30,9 +41,9 @@ var sbAjax = {
 			// Setup request
 		var ajaxUrl;
 		if( searchQuery == '' ) {
-			ajaxUrl			= sbAjax.getTabbedUrl(tabId, "Tabcontent", "Search");
+			ajaxUrl	= sbAjax.getTabbedUrl(tabId, "Tabcontent", "Search");
 		} else {
-			ajaxUrl= searchQuery + '&tab=' + tabId.replace('tabbed_', '');
+			ajaxUrl	= searchQuery + '&tab=' + tabId.replace('tabbed_', '');
 		}
 
 		var ajaxOptions		= sbAjax.setupRequestOptions(ajaxUrl, false);
@@ -41,11 +52,7 @@ var sbAjax = {
 			$('#' + containerId + ' .' + tabId).append(
 				swissbib.createHiddenField('ajaxuri_' + tabId + '_sidebar', searchQuery)
 			);
-
-			sbPagination.init();
-			sbJumpMenu.init();
-			sbFacets.init()
-
+			sbAjax.initAjaxElements();
 			return false;
 		};
 
@@ -81,11 +88,7 @@ var sbAjax = {
 			$('#' + containerId + ' .' + tabId).append(
 				swissbib.createHiddenField('ajaxuri_' + tabId + '_sidebar', ajaxUrl)
 			);
-
-			sbPagination.init();
-			sbJumpMenu.init();
-			sbFacets.init();
-
+			sbAjax.initAjaxElements();
 			return false;
 		};
 
