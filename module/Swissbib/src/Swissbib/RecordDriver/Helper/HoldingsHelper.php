@@ -68,7 +68,8 @@ class HoldingsHelper implements HoldingsAwareInterface {
 		'a'		=> 'holding_information',
 		'B'		=> 'network',
 		'b'		=> 'institution',
-		'q'		=> 'localid'
+		'q'		=> 'localid',
+        'r'     => 'sequencenumber'
 	);
 
 	/**
