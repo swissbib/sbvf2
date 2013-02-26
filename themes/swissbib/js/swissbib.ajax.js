@@ -44,6 +44,7 @@ var sbAjax = {
 
 			sbPagination.init();
 			sbJumpMenu.init();
+			sbFacets.init()
 
 			return false;
 		};
@@ -83,6 +84,7 @@ var sbAjax = {
 
 			sbPagination.init();
 			sbJumpMenu.init();
+			sbFacets.init();
 
 			return false;
 		};
@@ -156,12 +158,14 @@ var sbAjax = {
 			// Remove 'tabbed_' prefix if left
 		var tabKey	= tabId.substr(0, 7) != 'tabbed_' ? tabId : tabId.split('tabbed_')[1];
 
-		return window.location.protocol + "//" + window.location.host + "/vufind/"
+		var url = window.location.protocol + "//" + window.location.host + "/vufind/"
 			+	controller + "/"
 			+	action
 			+ 	"?" + swissbib.getSearchQuery()
 			+	"&tab=" + tabKey
 			+ (page > 0 ? ('&page=' + page) : '')
 			;
+
+		return url;
 	}
 };

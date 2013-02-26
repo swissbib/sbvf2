@@ -7,9 +7,7 @@ var sbPagination = {
 	 * Prevent default paging HREF triggering and reroute to AJAX request
 	 */
 	init: function() {
-		var pager	= $('#content div.paging a');
-
-		pager.click(function(event) {
+		$('#content div.paging a').click(function(event) {
 			event.stopPropagation();
 			event.preventDefault();
 
@@ -22,7 +20,7 @@ var sbPagination = {
 
 	// Init on DOM-ready
 $(document).ready(function(){
-	if( $('#content div.paging a').is('*') ) {
+	if ( $('#content div.paging a').is('*') ) {
 		sbPagination.init();
 	}
 });

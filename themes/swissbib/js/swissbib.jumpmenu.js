@@ -18,20 +18,8 @@ var sbJumpMenu = {
 				// Build URL from parent form + selected value
 			var parentForm	= $(this).parent('form')[0];
 			var url	= parentForm.action;
-
-			var paramName, paramValue;
-
-
-			if( this.value.indexOf('_') == -1 ) {
-					// "Simple" param
-				paramName	= this.id;
-				paramValue	= this.value;
-			} else {
-					// Value is tupel of parameter value + key, e.g. 'author_sort'
-				var valParts	= this.value.split('_');
-				paramName	= valParts[1];
-				paramValue	= valParts[0];
-			}
+			var paramName	= this.name;
+			var paramValue	= this.value;
 
 			url	= url + ('&' + paramName + '=' + paramValue);
 			url	= url.replace('/Results?', '/Tabcontent?');
