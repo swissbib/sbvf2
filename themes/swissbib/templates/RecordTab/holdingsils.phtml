@@ -122,7 +122,7 @@ $holdings		= $recordDriver->getHoldings();
 										<td>ausleihbar</td>
 										<td>erhältlich</td>
 										<td><?=$this->escapeHtml($copy['opac_note'])?></td>
-										<td><a href="<?=$this->recordLink()->getHoldUrl($copy['holdingLink'])?>">H</a></td>
+										<td><a href="<?=$this->recordLink()->getHoldUrl($copy['holdingLink'])?>">ausleihen</a></td>
 									</tr>
 
 								<?php endforeach; ?>
