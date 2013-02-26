@@ -77,17 +77,7 @@ class SolrMarc extends VFSolrMarc {
 		//ServiceLocator and configuration -> tbd later
 //		$holdingsHelper = $this->getServiceLocator()->get('Swissbib\RecordDriverHoldingsHelper');
 
-		$this->marcHoldings = new HoldingsHelper($this);
-	}
-
-
-
-	/**
-	 *
-	 * @inheritDoc
-	 */
-	public function getILS() {
-		return parent::getILS();
+		$this->marcHoldings = new HoldingsHelper();
 	}
 
 
@@ -101,7 +91,9 @@ class SolrMarc extends VFSolrMarc {
 
 		 //$holdings = $this->marcHoldings->getTestData();
 		if( isset($data['holdings']) ) {
-			$this->marcHoldings->setHoldingsContent($data['holdings']);
+			$holdsIlsConfig = $this->getILS()->checkFunction('Holds');
+
+			$this->marcHoldings->init($this->getUniqueID(), $holdsIlsConfig['HMACKeys'], $data['holdings']);
 		}
 	}
 

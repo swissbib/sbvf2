@@ -45,14 +45,19 @@ use VuFind\Crypt\HMAC;
 class Holdings implements HoldingsAwareInterface {
 
 	/**
-	 * @var	SolrMarc
-	 */
-	protected $solrMarcDriver;
-
-	/**
 	 * @var	\File_MARC_Record
 	 */
 	protected $holdings;
+
+	/**
+	 * @var	String		Parent item od
+	 */
+	protected $idItem;
+
+	/**
+	 * @var	Array	HMAC keys for ILS
+	 */
+	protected $hmacKeys = array();
 
 	/**
 	 * @var	Array	Map of fields to named params
@@ -80,12 +85,17 @@ class Holdings implements HoldingsAwareInterface {
 
 
 	/**
-	 * Initialize with parent solr marc driver
+	 * Initialize for item
 	 *
-	 * @param	SolrMarc	$solrMarcDriver
+	 * @param	String		$idItem
+	 * @param	Array		$hmacKeys
+	 * @param	String		$holdingsXml
 	 */
-	public function __construct(SolrMarc $solrMarcDriver) {
-		$this->solrMarcDriver = $solrMarcDriver;
+	public function init($idItem, array $hmacKeys, $holdingsXml) {
+		$this->idItem	= $idItem;
+		$this->hmacKeys	= $hmacKeys;
+
+		$this->setHoldingsContent($holdingsXml);
 	}
 
 
@@ -93,7 +103,7 @@ class Holdings implements HoldingsAwareInterface {
 	/**
 	 * Set holdings structure
 	 *
-	 * @param    String    $holdingsXml
+	 * @param	String		$holdingsXml
 	 * @throws	\File_MARC_Exception
 	 */
 	public function setHoldingsContent($holdingsXml) {
@@ -140,17 +150,12 @@ class Holdings implements HoldingsAwareInterface {
 	protected function getHoldingDataFromField($fieldName) {
 		$data		= array();
 		$fields		= $this->holdings->getFields($fieldName);
-		$response	= $this->solrMarcDriver->getILS()->checkFunction('Holds');
-		$id			= $this->getRecordId();
 
 		if( is_array($fields) ) {
 			foreach($fields as $index => $field) {
-				$item		= $this->extractFieldData($field);
-				$network	= $item['network'];
-				$institution= $item['institution'];
-				$testItemId	= $this->getItemId(10*($index+1));
-
-//				var_dump($item);
+				$holdingItem= $this->extractFieldData($field);
+				$network	= $holdingItem['network'];
+				$institution= $holdingItem['institution'];
 
 					// Make sure network is present
 				if( !isset($data[$network]) ) {
@@ -169,9 +174,9 @@ class Holdings implements HoldingsAwareInterface {
 				}
 
 					// Add holding link infos
-				$item['holdingLink'] = $this->getHoldActionLink($item, $id, $testItemId, $response['HMACKeys']);
+				$holdingItem['holdingLink'] = $this->buildHoldActionLink($holdingItem);
 
-				$data[$network]['institutions'][$institution]['copies'][] = $item;
+				$data[$network]['institutions'][$institution]['copies'][] = $holdingItem;
 			}
 		}
 
@@ -181,47 +186,41 @@ class Holdings implements HoldingsAwareInterface {
 
 
 	/**
-	 * Get unique record id
+	 * Build itemId from item properties and the id of the item
+	 * ItemId is not the id of the item, it's a combination of sub fields
 	 *
+	 * @param	Array		$holdingItem
 	 * @return	String
+	 * @todo	How to handle missing information. Throw exception, ignore?
 	 */
-	protected function getRecordId() {
-		return $this->solrMarcDriver->getUniqueID();
+	protected function buildItemId(array $holdingItem) {
+		if( isset($holdingItem['adm_code']) && isset($holdingItem['sequencenumber']) ) {
+			return $holdingItem['adm_code'] . $this->idItem . $holdingItem['sequencenumber'];
+		}
+
+		return 'incompleteItemData';
 	}
 
-
-	protected function getItemId($counter) {
-		$adm	= 'DSV51'; // @todo temporary static - change this!
-		$id		= $this->getRecordId();
-		$count	= sprintf('%05d', $counter);
-
-		return $adm . $id . $count;
-	}
 
 
 	/**
 	 * Get link for holding action
 	 *
 	 * @param	Array	$holdingItem
-	 * @param	String	$id
-	 * @param	String	$itemId
-	 * @param	Array	$HMACKeys
 	 * @return	Array
 	 */
-	protected function getHoldActionLink(array $holdingItem, $id, $itemId, $HMACKeys) {
-//		$itemId	= 'DSV51000387967000010'; // wrong / static
-
+	protected function buildHoldActionLink(array $holdingItem) {
 		$linkValues	= array(
-			'id'		=> $id,
-			'item_id'	=> $itemId
+			'id'		=> $this->idItem,
+			'item_id'	=> $this->buildItemId($holdingItem)
 		);
 
 		return array(
 			'action'	=> 'Hold',
-			'record'	=> $id,
+			'record'	=> $this->idItem,
 			'anchor'	=> '#tabnav',
 			'query'		=> http_build_query($linkValues + array(
-				'hashKey'	=> HMAC::generate($HMACKeys, $linkValues)
+				'hashKey'	=> HMAC::generate($this->hmacKeys, $linkValues)
 			))
 		);
 	}

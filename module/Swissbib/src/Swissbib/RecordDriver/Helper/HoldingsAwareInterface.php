@@ -32,15 +32,14 @@ namespace Swissbib\RecordDriver\Helper;
  * @link     << link to further documentation related to this resource type (Wiki, tracker ...)
  */
 
-
-interface HoldingsAwareInterface
-{
+interface HoldingsAwareInterface {
 
 
-    /**
-     * Set holdings structure
-     * @param $holdingsXml
-     */
-    public function setHoldingsContent($holdingsXml);
+	/**
+	 * Set holdings structure
+	 *
+	 * @param    String        $holdingsXml
+	 */
+	public function setHoldingsContent($holdingsXml);
 
 }
