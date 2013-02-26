@@ -151,7 +151,7 @@ var swissbib = {
 
 		$.each(containerIDs, function(index, containerId) {
 			var tabId	= swissbib.getIdSelectedTab();
-			var url		= sbAjax.getTabbedUrl(tabId, "Tab" + containerId);
+			var url		= ''; //sbAjax.getTabbedUrl(tabId, "Tab" + containerId);
 
 			var fieldId	= 'ajaxuri_' + tabId + '_' + containerId;
 			$('#' + containerId + ' .' + tabId).append(
@@ -210,14 +210,8 @@ var swissbib = {
 	 * @return	{Boolean}
 	 */
 	isTabContentLoaded: function(tabId) {
-		var el	= $('input#ajaxuri_' + tabId + '_content');
-		if( el.is('*') == false ) {
-				// No AJAX URL stored in tab? = not loaded
-			return false;
-		}
-			// Compare URL
-		var loadedUrl	= el[0].value;
-		return loadedUrl == sbAjax.getTabbedUrl(tabId);
+			//@todo implement clean!
+		return $('#content .' + tabId + ' img').length > 2;
 	},
 
 
