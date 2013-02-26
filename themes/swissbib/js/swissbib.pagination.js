@@ -18,6 +18,8 @@ var sbPagination = {
 			$('#' + containerId + ' .' + idTab).append(
 				swissbib.createHiddenField('ajaxuri_' + idTab + '_content', ajaxUrl)
 			);
+
+			sbSorting.init();
 			return false;
 		};
 			// Show AJAX spinner to indicate loading process
@@ -35,17 +37,26 @@ var sbPagination = {
 	 */
 	getPaginationUrl: function(numPage) {
 		numPage		= numPage	? parseInt(numPage, 10) : 0;
-
 		var idTab	= swissbib.getIdSelectedTab();
 
-		var ajaxUrl;
-		if( numPage > 0 ) {
-			ajaxUrl	= sbAjax.getTabbedUrl(idTab, 'Tabcontent', 'Search', numPage)
-		} else {
-			ajaxUrl	= sbAjax.getTabbedUrl(idTab, 'Tabcontent', 'Search')
+		return sbAjax.getTabbedUrl(idTab, 'Tabcontent', 'Search', numPage)
+	},
+
+
+
+	/**
+ 	 * @param	{String}	idTab
+	 * @return {Number}
+	 */
+	getNumCurrentPage: function(idTab) {
+		var activePageEl	= $('#content div.' + idTab + ' div.paging_pages li span');
+
+		if( activePageEl.is('*') ) {
+			return parseInt( activePageEl[0].innerHTML, 10)
 		}
-
-		return ajaxUrl;
+			// Default
+		return 0;
 	}
-
 };
+
+// No on-DOM-ready init here (paging-links are inline JS w/o observer)

@@ -37,7 +37,8 @@ var sbAjax = {
 	 * @param	{Number}	[page]
 	 * @return	{String}
 	 */
-	getTabbedUrl: function(tabId, action, controller, page) {
+	getTabbedUrl: function(tabId, action, controller, page/*, sorting*/) {
+//		sorting		= sorting 		? sorting : false;
 		page		= page 		? parseInt(page, 10) : 0;
 		controller	= controller? controller : 'Search';
 		action		= action	? action : 'Tabcontent';
@@ -51,7 +52,22 @@ var sbAjax = {
 			+ 	"?" + swissbib.getSearchQuery()
 			+	"&tab=" + tabKey
 			+ (page > 0 ? ('&page=' + page) : '')
+//			+ (sorting != false ? ('&sort=' + sorting) : '')
 			;
+	},
+
+
+
+	/**
+	 * Get URL of last request to tabbed content of given/active tab
+	 *
+	 * @return	{Element|jQuery}
+	 */
+	getLastTabbedContentUrl: function() {
+		var idTab	= swissbib.getIdSelectedTab();
+		var content	= $('ajaxuri_' + idTab + '_content');
+
+		return $(content).is('*') ? content[0].value : null;
 	},
 
 
