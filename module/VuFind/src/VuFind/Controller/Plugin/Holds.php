@@ -212,7 +212,8 @@ class Holds extends AbstractPlugin
         $gatheredDetails['id'] = $params->fromRoute('id');
 
         // Get Values Passed from holdings.php
-        $gatheredDetails += $keyValueArray;
+//        $gatheredDetails += $keyValueArray;
+		$gatheredDetails = array_merge($gatheredDetails, $keyValueArray); // fix by ferni@snowflake.ch (pulled: https://github.com/dmj/vf2/pull/5)
 
         return $gatheredDetails;
     }
