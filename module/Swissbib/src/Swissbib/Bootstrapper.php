@@ -38,7 +38,7 @@ use VuFind\Config\Reader as ConfigReader,
  */
 
 
-class SbBootstrapper
+class Bootstrapper
 {
 
     protected $config;
