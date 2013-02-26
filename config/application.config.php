@@ -5,7 +5,7 @@ require __DIR__ . '/../vendor/zendframework/zendframework/library/Zend/Session/c
 
 $config = array(
     'modules' => array(
-        'VuFindHttp', 'VuFindTheme', 'VuFind', 'swissbib'
+        'VuFindHttp', 'VuFindTheme', 'VuFind', 'Swissbib'
     ),
     'module_listener_options' => array( 
         'config_glob_paths'    => array(
