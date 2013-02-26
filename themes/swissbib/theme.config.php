@@ -44,6 +44,7 @@ return array(
         'swissbib.js',
         'swissbib.pagination.js', // AJAX pagination
         'swissbib.jumpmenu.js',
+        'swissbib.facets.js',
 
         'jstorage.min.js', //used for favorites - there is still some amount of JS code inline of the page -> Todo: Refactoring in upcoming Sprints
 
