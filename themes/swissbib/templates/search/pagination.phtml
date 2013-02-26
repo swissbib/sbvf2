@@ -2,8 +2,8 @@
 	<?php if( $this->pageCount ): ?>
 
 		<? if (isset($this->previous)): ?>
-			<a href="<?=$this->currentPath() . $this->results->getUrlQuery()->setPage(1)?>" title="zum Anfang" class="paging_first">zum Anfang</a>
-			<a href="<?=$this->currentPath() . $this->results->getUrlQuery()->setPage($this->previous)?>" title="<?=$this->transEsc('Prev')?>" class="paging_back"><?=$this->transEsc('Prev')?></a>
+        	<a href="#" onclick="sbPagination.paginate(0)" title="zum Anfang" class="paging_first">zum Anfang</a>
+			<a href="#" onclick="sbPagination.paginate(<?=$this->previous?>)" title="<?=$this->transEsc('Prev')?>" class="paging_back"><?=$this->transEsc('Prev')?></a>
 		<?php endif; ?>
 
 		<?php if (count($this->pagesInRange) > 1): ?>
@@ -14,7 +14,7 @@
 						<?php if( $page == $this->current): ?>
 							<span><?=$page?></span>
 						<?php else: ?>
-							<a href="<?=$this->currentPath() . $this->results->getUrlQuery()->setPage($page)?>" title="Seite <?=$page?>"><?=$page?></a>
+							<a href="#" onclick="sbPagination.paginate(<?=$page?>)" title="Seite <?=$page?>"><?=$page?></a>
 						<?php endif; ?>
 					</li>
 				<?php endforeach; ?>
@@ -23,8 +23,8 @@
 		<?php endif; ?>
 
 		<?php if(isset($this->next)): ?>
-			<a href="<?=$this->currentPath() . $this->results->getUrlQuery()->setPage($this->next)?>" title="<?=$this->transEsc('Next');?>" class="paging_forward"><?=$this->transEsc('Next');?></a>
-			<a href="<?=$this->currentPath() . $this->results->getUrlQuery()->setPage($this->pageCount)?>" title="zum Ende" class="paging_last">zum Ende</a>
+			<a href="#" onclick="sbPagination.paginate(<?=$this->next?>)" title="<?=$this->transEsc('Next');?>" class="paging_forward"><?=$this->transEsc('Next');?></a>
+			<a href="#" onclick="sbPagination.paginate(<?=$this->pageCount?>)" title="zum Ende" class="paging_last">zum Ende</a>
 		<?php endif; ?>
 
 	<?php endif; ?>
