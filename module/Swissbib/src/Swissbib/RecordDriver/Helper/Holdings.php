@@ -194,8 +194,8 @@ class Holdings implements HoldingsAwareInterface {
 	 * @todo	How to handle missing information. Throw exception, ignore?
 	 */
 	protected function buildItemId(array $holdingItem) {
-		if( isset($holdingItem['adm_code']) && isset($holdingItem['sequencenumber']) ) {
-			return $holdingItem['adm_code'] . $this->idItem . $holdingItem['sequencenumber'];
+		if( isset($holdingItem['adm_code']) && isset($holdingItem['localid']) && isset($holdingItem['sequencenumber']) ) {
+			return $holdingItem['adm_code'] . $holdingItem['localid'] . $holdingItem['sequencenumber'];
 		}
 
 		return 'incompleteItemData';
@@ -211,7 +211,7 @@ class Holdings implements HoldingsAwareInterface {
 	 */
 	protected function buildHoldActionLink(array $holdingItem) {
 		$linkValues	= array(
-			'id'		=> $this->idItem,
+			'id'		=> $holdingItem['localid'], // $this->idItem,
 			'item_id'	=> $this->buildItemId($holdingItem)
 		);
 
