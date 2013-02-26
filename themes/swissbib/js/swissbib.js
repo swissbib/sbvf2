@@ -18,7 +18,7 @@ var swissbib = {
     /**
      * Initialize on ready.
      */
-    initOnReady: function(){
+    initOnReady: function() {
         window.DEBUG = false;	// debug flag
 
         	// Context elements
