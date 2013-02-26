@@ -4,12 +4,22 @@
 var sbAjax = {
 
 	/**
+	 * Active AJAX requests
+	 */
+	loadsContent: false,
+	loadsSidebar: false,
+
+	/**
 	 * Init all elements with AJAX rerouting
 	 */
 	initAjaxElements: function() {
 		sbPagination.init();
 		sbJumpMenu.init();
+		sbFilters.init();
 		sbFacets.init();
+
+		this.loadsContent	= false;
+		this.loadsSidebar	= false;
 	},
 
 
@@ -34,31 +44,34 @@ var sbAjax = {
 	 * @param	{String}	[containerId]
 	 */
 	ajaxLoadTabContent: function(searchQuery, tabId, containerId) {
-		containerId	= containerId ? containerId : 'content';
-		tabId = tabId ? tabId : swissbib.getIdSelectedTab();
-		searchQuery	= searchQuery ? searchQuery : '';
+		if( this.loadsContent == false ) {
+			containerId	= containerId ? containerId : 'content';
+			tabId = tabId ? tabId : swissbib.getIdSelectedTab();
+			searchQuery	= searchQuery ? searchQuery : '';
 
-			// Setup request
-		var ajaxUrl;
-		if( searchQuery == '' ) {
-			ajaxUrl	= sbAjax.getTabbedUrl(tabId, "Tabcontent", "Search");
-		} else {
-			ajaxUrl	= searchQuery + '&tab=' + tabId.replace('tabbed_', '');
+				// Setup request
+			var ajaxUrl;
+			if( searchQuery == '' ) {
+				ajaxUrl	= sbAjax.getTabbedUrl(tabId, "Tabcontent", "Search");
+			} else {
+				ajaxUrl	= searchQuery + '&tab=' + tabId.replace('tabbed_', '');
+			}
+
+			var ajaxOptions		= sbAjax.setupRequestOptions(ajaxUrl, false);
+			ajaxOptions.success = function(content) {
+				$('#' + containerId + ' .' + tabId).html(content);
+				$('#' + containerId + ' .' + tabId).append(
+					swissbib.createHiddenField('ajaxuri_' + tabId + '_sidebar', searchQuery)
+				);
+				sbAjax.initAjaxElements();
+				return false;
+			};
+
+				// Show spinner, evoke request
+			sbAjax.addSpinner('content', tabId);
+			this.loadsContent	= true;
+			$.ajax(ajaxOptions);
 		}
-
-		var ajaxOptions		= sbAjax.setupRequestOptions(ajaxUrl, false);
-		ajaxOptions.success = function(content) {
-			$('#' + containerId + ' .' + tabId).html(content);
-			$('#' + containerId + ' .' + tabId).append(
-				swissbib.createHiddenField('ajaxuri_' + tabId + '_sidebar', searchQuery)
-			);
-			sbAjax.initAjaxElements();
-			return false;
-		};
-
-			// Show spinner, evoke request
-		sbAjax.addSpinner('content', tabId);
-		$.ajax(ajaxOptions);
 	},
 
 
@@ -70,31 +83,33 @@ var sbAjax = {
 	 * @param	{String}	[tabId]
 	 */
 	ajaxLoadSidebarContent: function(searchQuery, tabId) {
-		var containerId	= 'sidebar';
-		tabId = tabId ? tabId : swissbib.getIdSelectedTab();
+		if( this.loadsSidebar == false ) {
+			var containerId	= 'sidebar';
+			tabId = tabId ? tabId : swissbib.getIdSelectedTab();
 
-			// Setup request
-		var ajaxUrl;
-		if( searchQuery == '' ) {
-			ajaxUrl			= sbAjax.getTabbedUrl(tabId, "Tabsidebar", "Search");
-		} else {
-			ajaxUrl= searchQuery + '&tab=' + tabId.replace('tabbed_', '');
+				// Setup request
+			var ajaxUrl;
+			if( searchQuery == '' ) {
+				ajaxUrl			= sbAjax.getTabbedUrl(tabId, "Tabsidebar", "Search");
+			} else {
+				ajaxUrl= searchQuery + '&tab=' + tabId.replace('tabbed_', '');
+			}
+			var ajaxOptions		= sbAjax.setupRequestOptions(ajaxUrl, false);
+
+			ajaxOptions.success = function(content) {
+				$('#' + containerId + ' .' + tabId).replaceWith(content);
+				$('#' + containerId + ' .' + tabId).addClass('tabbed_selected');
+				$('#' + containerId + ' .' + tabId).append(
+					swissbib.createHiddenField('ajaxuri_' + tabId + '_sidebar', ajaxUrl)
+				);
+				sbAjax.initAjaxElements();
+				return false;
+			};
+
+			this.addSpinner('sidebar', tabId);
+			this.loadsSidebar	= true;
+			$.ajax(ajaxOptions);
 		}
-		var ajaxOptions		= sbAjax.setupRequestOptions(ajaxUrl, false);
-
-		ajaxOptions.success = function(content) {
-			$('#' + containerId + ' .' + tabId).replaceWith(content);
-			$('#' + containerId + ' .' + tabId).addClass('tabbed_selected');
-			$('#' + containerId + ' .' + tabId).append(
-				swissbib.createHiddenField('ajaxuri_' + tabId + '_sidebar', ajaxUrl)
-			);
-			sbAjax.initAjaxElements();
-			return false;
-		};
-
-		this.addSpinner('sidebar', tabId);
-
-		$.ajax(ajaxOptions);
 	},
 
 
@@ -115,7 +130,7 @@ var sbAjax = {
 		});
 
 			// Wrap spinner (if class given)
-		if( typeof wrapperDivClass == 'string') {
+		if( typeof wrapperDivClass == 'string' ) {
 			spinner	= $('<div/>', {class:	wrapperDivClass }).append(spinner);
 		}
 
