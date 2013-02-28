@@ -9,8 +9,8 @@ var sbFacets = {
 	init: function() {
 		var facets	= $('#sidebar div.facets a');
 			// Exclude facets own options
-		facets	= facets.not('facet_more');	//@todo "AJAXify" factes options
-
+		facets	= facets.not('facet_more');
+			// Setup re-routing
 		facets.click(function(event) {
 			event.stopPropagation();
 			event.preventDefault();
