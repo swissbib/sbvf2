@@ -111,11 +111,8 @@ return array(
                 ),
                 'templates'  => array(  // templates for tab content and sidebar (=filters)
                         'tab'       => 'search/tabs/base.phtml',    // default
-                        'sidebar'   => array( // sidebar partial(s)
-                            'filters'       => 'global/sidebar/search/filters.phtml',
-                            'facets'        => 'global/sidebar/search/facets.phtml',
-                            'morefacets'    => 'global/sidebar/search/facets.more.phtml'
-                        )
+                        'sidebar'   => 'global/sidebar/search/facets.swissbib.phtml'
+
                 )
             ),
                 // Secondary tab
@@ -128,9 +125,8 @@ return array(
                 ),
                 'templates' => array(
                         'tab'   => 'search/tabs/external.phtml',
-                        'sidebar'   => array( // sidebar partial(s)
-                            'facetsexternal'    => 'global/sidebar/search/facets.external.phtml',
-                        )
+                        'sidebar'=> 'global/sidebar/search/facets.external.phtml',
+
                 )
             ),
         )
