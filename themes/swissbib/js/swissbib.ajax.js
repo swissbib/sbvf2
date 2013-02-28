@@ -9,6 +9,8 @@ var sbAjax = {
 	loadsContent: false,
 	loadsSidebar: false,
 
+
+
 	/**
 	 * Init all elements with AJAX rerouting
 	 */
@@ -90,12 +92,11 @@ var sbAjax = {
 				// Setup request
 			var ajaxUrl;
 			if( searchQuery == '' ) {
-				ajaxUrl			= sbAjax.getTabbedUrl(tabId, "Tabsidebar", "Search");
+				ajaxUrl	= sbAjax.getTabbedUrl(tabId, "Tabsidebar", "Search");
 			} else {
-				ajaxUrl= searchQuery + '&tab=' + tabId.replace('tabbed_', '');
+				ajaxUrl	= searchQuery + '&tab=' + tabId.replace('tabbed_', '');
 			}
 			var ajaxOptions		= sbAjax.setupRequestOptions(ajaxUrl, false);
-
 			ajaxOptions.success = function(content) {
 				$('#' + containerId + ' .' + tabId).replaceWith(content);
 				$('#' + containerId + ' .' + tabId).addClass('tabbed_selected');
