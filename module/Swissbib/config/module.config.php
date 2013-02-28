@@ -43,6 +43,7 @@ return array(
             'lastSearchWord'			=> 'Swissbib\View\Helper\LastSearchWord',
             'lastTabbedSearchUri'		=> 'Swissbib\View\Helper\LastTabbedSearchUri',
 			'myResearchSideBar'			=> 'Swissbib\View\Helper\MyResearchSideBar',
+			'pageFunctions'				=> 'Swissbib\View\Helper\PageFunctions'
         )
     ),
     'vufind' => array(
