@@ -28,14 +28,82 @@ var sbAjax = {
 
 	/**
 	 * Add AJAX spinner into active given/content tab
+	 *
+	 * @param	{String}	[containerId]
+	 * @param	{String}	[tabId]
 	 */
 	addSpinner:function(containerId, tabId) {
 		containerId	= containerId ? containerId : 'content';
 		tabId = tabId ? tabId : swissbib.getIdSelectedTab();
 
-		var spinner	= this.createSpinnerElement();
+		var element	= $('#' + containerId + ' .' + tabId);
+		if( element.length <= 1 ) {
+			element.prepend( this.createSpinnerElement() );
+		}
+	},
 
-		$('#' + containerId + ' .' + tabId ).prepend(spinner);
+
+
+	/**
+	 * @param	{String}	searchQuery
+	 * @param	{String}	tabId			e.g. 'content' or 'sidebar'
+	 * @param	{String}	containerId
+	 * @param	{Boolean}	replace			replace destination element? (else: update)
+	 * @return	{Object}
+	 */
+	getAjaxOptions: function(searchQuery, tabId, containerId, replace) {
+		containerId	= containerId ? containerId : 'content';
+		tabId		= tabId ? tabId : swissbib.getIdSelectedTab();
+		searchQuery	= searchQuery ? searchQuery : '';
+		replace		= replace ? replace : false;
+
+			// Setup request
+		var action	= "Tab" + containerId;
+		var ajaxUrl = (searchQuery == '') ? sbAjax.getTabbedUrl(tabId, action, "Search") : searchQuery;
+			ajaxUrl	= ajaxUrl.replace('?lookfor=', '?tab=' + tabId.replace('tabbed_', '') + '&lookfor=')
+
+		var options	= sbAjax.setupRequestOptions(ajaxUrl, false);
+
+		if(replace== true) {
+				// Update (content of) element from response
+			options.success = function(content) {
+				$('#' + containerId + ' .' + tabId).html(content);
+				$('#' + containerId + ' .' + tabId).append(swissbib.createHiddenField('ajaxuri_' + tabId + '_sidebar', ajaxUrl));
+				sbAjax.initAjaxElements();
+				return false;
+			};
+		} else {
+				// Replace element from response
+			options.success	= function(content) {
+				$('#' + containerId + ' .' + tabId).replaceWith(content);
+				$('#' + containerId + ' .' + tabId).addClass('tabbed_selected');
+				$('#' + containerId + ' .' + tabId).append(swissbib.createHiddenField('ajaxuri_' + tabId + '_sidebar', ajaxUrl));
+				sbAjax.initAjaxElements();
+				return false;
+			}
+		}
+
+		return options;
+	},
+
+
+
+	/**
+	 * Create options object for jQuery AJAX request
+	 *
+	 * @param	{String}	url
+	 * @param	{Boolean}	isCached
+	 * @param	{String}	type
+	 * @param	{String}	dataType
+	 * @return	{Object}
+	 */
+	setupRequestOptions: function(url, isCached, type, dataType) {
+		return {
+			type:		type ? type : "GET",
+			url:		url,
+			cache:		!!isCached,
+			dataType:	dataType ? dataType : "html"
+		};
 	},
 
 
@@ -48,30 +116,10 @@ var sbAjax = {
 	ajaxLoadTabContent: function(searchQuery, tabId, containerId) {
 		if( this.loadsContent == false ) {
 			containerId	= containerId ? containerId : 'content';
-			tabId = tabId ? tabId : swissbib.getIdSelectedTab();
-			searchQuery	= searchQuery ? searchQuery : '';
+            var ajaxOptions	= this.getAjaxOptions(searchQuery, tabId, containerId, true);
 
-				// Setup request
-			var ajaxUrl;
-			if( searchQuery == '' ) {
-				ajaxUrl	= sbAjax.getTabbedUrl(tabId, "Tabcontent", "Search");
-			} else {
-				ajaxUrl	= searchQuery + '&tab=' + tabId.replace('tabbed_', '');
-			}
-
-			var ajaxOptions		= sbAjax.setupRequestOptions(ajaxUrl, false);
-			ajaxOptions.success = function(content) {
-				$('#' + containerId + ' .' + tabId).html(content);
-				$('#' + containerId + ' .' + tabId).append(
-					swissbib.createHiddenField('ajaxuri_' + tabId + '_sidebar', searchQuery)
-				);
-				sbAjax.initAjaxElements();
-				return false;
-			};
-
-				// Show spinner, evoke request
-			sbAjax.addSpinner('content', tabId);
 			this.loadsContent	= true;
+			this.addSpinner(containerId, tabId);
 			$.ajax(ajaxOptions);
 		}
 	},
@@ -83,32 +131,15 @@ var sbAjax = {
 	 *
 	 * @param	{String}	searchQuery
 	 * @param	{String}	[tabId]
+	 * @param	{String}	[containerId]
 	 */
-	ajaxLoadSidebarContent: function(searchQuery, tabId) {
+	ajaxLoadSidebarContent: function(searchQuery, tabId, containerId) {
 		if( this.loadsSidebar == false ) {
-			var containerId	= 'sidebar';
-			tabId = tabId ? tabId : swissbib.getIdSelectedTab();
+			containerId	= containerId ? containerId : 'sidebar';
+    		var ajaxOptions	= this.getAjaxOptions(searchQuery, tabId, containerId, false);
 
-				// Setup request
-			var ajaxUrl;
-			if( searchQuery == '' ) {
-				ajaxUrl	= sbAjax.getTabbedUrl(tabId, "Tabsidebar", "Search");
-			} else {
-				ajaxUrl	= searchQuery + '&tab=' + tabId.replace('tabbed_', '');
-			}
-			var ajaxOptions		= sbAjax.setupRequestOptions(ajaxUrl, false);
-			ajaxOptions.success = function(content) {
-				$('#' + containerId + ' .' + tabId).replaceWith(content);
-				$('#' + containerId + ' .' + tabId).addClass('tabbed_selected');
-				$('#' + containerId + ' .' + tabId).append(
-					swissbib.createHiddenField('ajaxuri_' + tabId + '_sidebar', ajaxUrl)
-				);
-				sbAjax.initAjaxElements();
-				return false;
-			};
-
-			this.addSpinner('sidebar', tabId);
 			this.loadsSidebar	= true;
+			this.addSpinner(containerId, tabId);
 			$.ajax(ajaxOptions);
 		}
 	},
@@ -141,26 +172,6 @@ var sbAjax = {
 
 
 	/**
-	 * Create options object for jQuery AJAX request
-	 *
-	 * @param	{String}	url
-	 * @param	{Boolean}	isCached
-	 * @param	{String}	type
-	 * @param	{String}	dataType
-	 * @return	{Object}
-	 */
-	setupRequestOptions: function(url, isCached, type, dataType) {
-		return {
-			type:		type ? type : "GET",
-			url:		url,
-			cache:		!!isCached,
-			dataType:	dataType ? dataType : "html"
-		};
-	},
-
-
-
-	/**
 	 * Get AJAX request URL for "tabbed" search result item (content of tab or sidebar)
 	 *
 	 * @param	{String}	tabId
@@ -177,14 +188,11 @@ var sbAjax = {
 			// Remove 'tabbed_' prefix if left
 		var tabKey	= tabId.substr(0, 7) != 'tabbed_' ? tabId : tabId.split('tabbed_')[1];
 
-		var url = window.location.protocol + "//" + window.location.host + "/vufind/"
+		return window.location.protocol + "//" + window.location.host + "/vufind/"
 			+	controller + "/"
 			+	action
-			+ 	"?" + swissbib.getSearchQuery()
-			+	"&tab=" + tabKey
+			+ 	"?tab=" + tabKey
 			+ (page > 0 ? ('&page=' + page) : '')
-			;
-
-		return url;
+			+ "&" + swissbib.getSearchQuery();	// must be last part as it might end on #
 	}
 };
