@@ -1,67 +1,124 @@
+<?php
+
+$counter 		= 0;
+$facetGroups	= array();
+
+foreach($this->facetList as $field => $list) {
+	$index	= floor($counter/2);
+
+	if( !isset($facetGroups[$index]) ) {
+		$facetGroups[$index] = array();
+	}
+
+	$facetGroups[$index][] = array(
+		'field'	=> $field,
+		'list'	=> $list
+	);
+
+	$counter++;
+}
+
+if( isset($this->dateRangeLimit) ) {
+	$this->headScript()->appendFile('pubdate_slider.js');
+}
+
+?>
 <fieldset>
 
 	<h3 class="toggler persist collapsed" id="searchoption_toggler_refine"><?=$this->transEsc('Limit To')?></h3>
 
 	<div class="searchoption_toggler_refine">
 
-		<?php if( !empty($this->facetList) ): ?>
+		<?php foreach($facetGroups as $facetGroup): ?>
+			<div class="fieldbox">
 
-			<?php foreach($this->facetList as $field => $list): ?>
-				<div class="<?=($field == 'callnumber-first') ? 'span-7' : 'span-4'?>">
-					<label class="displayBlock"  for="limit_<?=$this->escapeHtml(str_replace(' ', '', $field))?>"><?=$this->transEsc($list['label'])?>:</label>
-					<select id="limit_<?=$this->escapeHtml(str_replace(' ', '', $field))?>" name="filter[]" multiple="multiple"	size="10">
-						<?
-						// Sort the current facet list alphabetically; we'll use this data
-						// along with the foreach below to display facet options in the
-						// correct order.
-						$sorted = array();
-						foreach($list['list'] as $i => $value) {
-							$sorted[$i] = $value['displayText'];
-						}
-						natcasesort($sorted);
+				<?php foreach($facetGroup as $facet): ?>
+					<?php
+						$fieldKey	= str_replace(' ', '', $facet['field']);
+					?>
+
+					<label for="limit_<?=$this->escapeHtml($fieldKey)?>" class="label"><?=$this->transEsc($facet['list']['label'])?></label>
+					<select id="limit_<?=$this->escapeHtml($fieldKey)?>" name="filter[]" class="select multiple" multiple="multiple">
+
+						<?php
+							// Sort the current facet list alphabetically; we'll use this data
+							// along with the foreach below to display facet options in the
+							// correct order.
+							$sorted = array();
+							foreach($facet['list']['list'] as $index => $value) {
+								$sorted[$index] = $value['displayText'];
+							}
+							natcasesort($sorted);
 						?>
-						<?php foreach($sorted as $i => $display): ?>
-						<?php $value = $list['list'][$i]; ?>
-						<option value="<?=$this->escapeHtml($field . ':"' . $value['value'] . '"')?>"<?=(isset($value['selected']) && $value['selected']) ? ' selected="selected"' : ''?>><?=$this->escapeHtml($display)?></option>
+						<?php foreach($sorted as $index => $display): ?>
+							<?php $value = $facet['list']['list'][$index]; ?>
+							<option value='<?=$this->escapeHtml($facet['field'] . ':"' . $value['value'] . '"')?>' <?=(isset($value['selected']) && $value['selected']) ? ' selected="selected"' : ''?>><?=$this->escapeHtml($display)?></option>
 						<?php endforeach; ?>
-					</select>
-				</div>
-			<?php endforeach; ?>
 
-		<?php endif; ?>
+					</select>
+				<?php endforeach; ?>
+
+			</div>
+		<?php endforeach; ?>
+
+
+
 
 		<?php if( isset($this->illustratedLimit) ): ?>
 
-			<fieldset class="span-4">
-				<legend><?=$this->transEsc("Illustrated")?>:</legend>
-				<?php foreach($this->illustratedLimit as $current): ?>
-				<input id="illustrated_<?=$this->escapeHtml($current['value'])?>" type="radio" name="illustration"
-					   value="<?=$this->escapeHtml($current['value'])?>"<?=$current['selected'] ? ' checked="checked"' : ''?>/>
-				<label for="illustrated_<?=$this->escapeHtml($current['value'])?>"><?=$this->transEsc($current['text'])?></label>
-				<br/>
-				<?php endforeach; ?>
-			</fieldset>
+			<div class="fieldbox">
+				<label class="label"><?=$this->transEsc("Illustrated")?></label>
+
+				<div class="vertical">
+					<?php foreach($this->illustratedLimit as $illustration): ?>
+						<input type="radio" <?=$illustration['selected'] ? 'checked="checked"':''?> value="<?=$this->escapeHtml($illustration['value'])?>" class="radio" name="illustration" id="illustrated_<?=$this->escapeHtml($illustration['value'])?>">
+						<label class="radiolabel" for="illustrated_<?=$this->escapeHtml($illustration['value'])?>"><?=$this->transEsc($illustration['text'])?></label>
+						<br>
+					<?php endforeach; ?>
+				</div>
+			</div>
 
 		<?php endif; ?>
 
-		<?= $this->render('search/advanced/limit.phtml') ?>
+
+
+		<?php
+		    $limitList		= $this->options->getLimitOptions();
+		    $lastLimit		= $this->options->getLastLimit();
+		    $selectedLimit	= empty($lastLimit) ? $this->options->getDefaultLimit() : $lastLimit;
+		?>
+		<?php if( count($limitList) > 1 ): ?>
+			<div class="fieldgroup">
+				<div class="fieldbox">
+					<label class="label" for="limit"><?=$this->transEsc('Results per page')?></label>
+					<select class="select tiny" name="limit" id="limit">
+						<?php foreach($limitList as $limitVal): ?>
+							<option value="<?=$this->escapeHtml($limitVal)?>"<?=($limitVal == $selectedLimit) ? 'selected="selected"' : ''?>><?=$this->escapeHtml($limitVal)?></option>
+						<?php endforeach; ?>
+					</select>
+				</div>
+			</div>
+		<? endif; ?>
+
+
 
 		<?php if( isset($this->dateRangeLimit) ): ?>
 
-			<?php /* Load the publication date slider UI widget */
-				$this->headScript()->appendFile('pubdate_slider.js'); ?>
-			<input type="hidden" name="daterange[]" value="publishDate"/>
-			<fieldset class="publishDateLimit span-5" id="publishDate">
-				<legend><?=$this->transEsc('adv_search_year')?></legend>
-				<label for="publishDatefrom"><?=$this->transEsc('date_from')?>:</label>
-				<input type="text" size="4" maxlength="4" class="yearbox" name="publishDatefrom" id="publishDatefrom"
-					   value="<?=$this->escapeHtml($this->dateRangeLimit[0])?>"/>
-				<label for="publishDateto"><?=$this->transEsc('date_to')?>:</label>
-				<input type="text" size="4" maxlength="4" class="yearbox" name="publishDateto" id="publishDateto"
-					   value="<?=$this->escapeHtml($this->dateRangeLimit[1])?>"/>
+			<div class="fieldbox">
+				<label class="label"><?=$this->transEsc('adv_search_year')?></label>
+				<div class="vertical yearSliderBox">
+					<input type="hidden" name="daterange[]" value="publishDate"/>
 
-				<div id="publishDateSlider" class="dateSlider"></div>
-			</fieldset>
+					<label for="publishDatefrom"><?=$this->transEsc('date_from')?>:</label>
+					<input type="text" size="4" maxlength="4" class="yearbox text" name="publishDatefrom" id="publishDatefrom" value="<?=$this->escapeHtml($this->dateRangeLimit[0])?>"/>
+
+					<label for="publishDateto"><?=$this->transEsc('date_to')?>:</label>
+					<input type="text" size="4" maxlength="4" class="yearbox text" name="publishDateto" id="publishDateto" value="<?=$this->escapeHtml($this->dateRangeLimit[1])?>"/>
+
+					<br>
+					<div id="publishDateSlider" class="dateSlider"></div>
+				</div>
+			</div>
 
 		<?php endif; ?>
 

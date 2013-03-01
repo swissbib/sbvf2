@@ -39,23 +39,23 @@ swissbib.AdvancedSearch = {
 	 *
 	 */
 	initFromSearchDetails: function() {
-		var groupIndex, newField, firstGroup,
+		var firstGroupIndex, newField, firstGroup,
 			that = this;
 
 		if( this.searchDetails ) {
 			jQuery.each(this.searchDetails, function(groupIndex, searchGroup) {
 				jQuery.each(searchGroup.group, function(searchIndex, search) {
 					if( searchIndex == 0 ) {
-						groupIndex	= that.addGroup(search.lookfor, search.field, searchGroup.join);
+						groupIndex	= that.addGroup(search.lookfor, search.field, search.bool);
 					} else {
 						newField	= that.addField(groupIndex, search.lookfor, search.field);
 					}
 				})
 			});
 		} else {
-			firstGroup = this.addGroup();
-			this.addField(firstGroup);
-			this.addField(firstGroup);
+			firstGroupIndex = this.addGroup();
+			this.addField(firstGroupIndex);
+			this.addField(firstGroupIndex);
 		}
 	},
 

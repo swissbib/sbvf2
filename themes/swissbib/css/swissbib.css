@@ -66,14 +66,14 @@
 }
 
 #advSearchForm .fieldbox .text.large {
-	width: 400px;
+	width: 470px;
 }
 
 #advSearchForm .groupSearchDetails {
 	float: right;
 	border: 1px solid #ccc;
 	padding: 5px;
-	margin: -25px -20px 15px;
+	margin: -20px -20px 15px;
 	background-color: #EEE;
 }
 
@@ -86,4 +86,19 @@
 	margin-right: 5px;;
 	padding: 5px;
 	padding-left: 18px;
+}
+
+#advSearchForm input.yearbox {
+	clear: none;
+	width: 30px;
+}
+
+#advSearchForm .yearSliderBox {
+	width: 480px;
+}
+
+#advSearchForm #publishDateSlider {
+	margin-top: 5px;
+	width: 450px;
+	background-repeat: repeat-x;
 }
