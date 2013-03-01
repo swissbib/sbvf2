@@ -42,8 +42,9 @@ $facetItemsLimitDefault = $facetResultsSettings->get('facet_limit_default');    
                 <?= $this->facetItem($facet) ?>
             <?php endforeach; ?>
             <? if($amountItems > $amountItemsShown): /* Show "more facets" link if there are more */ ?>
+                <?php $amountMore = $amountItems - $amountItemsShown ?>
                     <li id="more<?=$facetId?>" class="facet_more">
-                        <a href="#" onclick="moreFacets('<?=$facetId?>'); return false" title="Mehr anzeigen">Mehr anzeigen</a>
+                        <a href="#" onclick="moreFacets('<?=$facetId?>'); return false" title="Mehr anzeigen">Mehr anzeigen (<?= $amountMore ?>)</a>
                     </li>
             <div id="narrowGroupHidden_<?=$facetId?>" class="offscreen">
                 <?php while($itemsCount < $amountItems) {
@@ -53,7 +54,7 @@ $facetItemsLimitDefault = $facetResultsSettings->get('facet_limit_default');    
                     <?php $itemsCount++; ?>
                 <?php } ?>
                 <li id="less<?=$facetId?>" class="facet_more">
-                    <a href="#" onclick="lessFacets('<?=$facetId?>'); return false" title="Weniger anzeigen">Weniger anzeigen</a>
+                    <a href="#" onclick="lessFacets('<?=$facetId?>'); return false" title="Weniger anzeigen">Weniger anzeigen (<?= $amountMore ?>)</a>
                 </li>
             </div>
             <? endif; ?>
