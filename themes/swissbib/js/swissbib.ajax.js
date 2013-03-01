@@ -29,17 +29,18 @@ var sbAjax = {
 	/**
 	 * Add AJAX spinner into active given/content tab
 	 *
-	 * @param	{String}	[containerId]
-	 * @param	{String}	[tabId]
+	 * @param	{String}	[idContainer]
+	 * @param	{String}	[idTab]
 	 */
-	addSpinner:function(containerId, tabId) {
-		containerId	= containerId ? containerId : 'content';
-		tabId = tabId ? tabId : swissbib.getIdSelectedTab();
+	addSpinner:function(idContainer, idTab) {
+		idContainer	= idContainer ? idContainer : 'content';
+		idTab		= idTab ? idTab : swissbib.getIdSelectedTab();
 
-		var element	= $('#' + containerId + ' .' + tabId);
-		if( element.length <= 1 ) {
-			element.prepend( this.createSpinnerElement() );
+		var destinationEl	= $('#' + idContainer + ' .' + idTab);
+		if( destinationEl.length > 1 ) {
+			destinationEl	= $('#' + idContainer + ' .' + idTab + ':first');
 		}
+		destinationEl.prepend( this.createSpinnerElement() );
 	},
 
 
@@ -60,7 +61,7 @@ var sbAjax = {
 			// Setup request
 		var action	= "Tab" + containerId;
 		var ajaxUrl = (searchQuery == '') ? sbAjax.getTabbedUrl(tabId, action, "Search") : searchQuery;
-			ajaxUrl	= ajaxUrl.replace('?lookfor=', '?tab=' + tabId.replace('tabbed_', '') + '&lookfor=')
+			ajaxUrl	= ajaxUrl.replace('?', '?tab=' + tabId.replace('tabbed_', '') + '&')
 
 		var options	= sbAjax.setupRequestOptions(ajaxUrl, false);
 
@@ -149,24 +150,13 @@ var sbAjax = {
 	/**
 	 * Create AJAX spinner element, containing hidden value of requested AJAX uri
 	 *
-	 * @param	{String}	containerId			Container, e.g. 'content' or 'sidebar'
-	 * @param	{String}	[wrapperDivClass]	e.g. 'filters'
 	 * @return	{Element}
 	 */
-	createSpinnerElement: function(containerId, wrapperDivClass) {
-		var tabId	= swissbib.getIdSelectedTab();
-
-		var spinner	= $('<div/>', {
+	createSpinnerElement: function() {
+		return $('<div/>', {
 			class:	'ajax_loading_spinner_transp',
 			style:	'width:32px;height:32px;'
 		});
-
-			// Wrap spinner (if class given)
-		if( typeof wrapperDivClass == 'string' ) {
-			spinner	= $('<div/>', {class:	wrapperDivClass }).append(spinner);
-		}
-
-		return spinner;
 	},
 
 
