@@ -29,6 +29,7 @@ printf "starting update process for VuFind $HOST at  <%s> ...\n" ${CURRENT_TIMES
 cd $VUFIND_DEPLOY
 
 git checkout development
+git pull origin development
 
 
 setTimestamp
