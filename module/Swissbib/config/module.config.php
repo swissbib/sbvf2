@@ -40,6 +40,8 @@ return array(
             'Authors'					=> 'Swissbib\View\Helper\Authors',
             'publicationDateMarc'		=> 'Swissbib\View\Helper\YearFormatterMarc',
             'publicationDateWorldCat'	=> 'Swissbib\View\Helper\YearFormatterWorldCat',
+            'facetItemLabel'			=> 'Swissbib\View\Helper\FacetItemLabel',
+            'facetItem'			        => 'Swissbib\View\Helper\FacetItem',
             'lastSearchWord'			=> 'Swissbib\View\Helper\LastSearchWord',
             'lastTabbedSearchUri'		=> 'Swissbib\View\Helper\LastTabbedSearchUri',
 			'myResearchSideBar'			=> 'Swissbib\View\Helper\MyResearchSideBar',
@@ -99,7 +101,7 @@ return array(
         ),
 
             // Search result tabs
-        'preload_result_tabs_counts'=> false,  // Fetch(+display) results-count of non-selected tab(s) initially?
+        'preload_result_tabs_counts'=> false,       // Fetch(+display) results-count of non-selected tab(s) initially?
         'default_result_tab'        => 'swissbib',  // ID of default selected tab
         'result_tabs' => array(
                 // Primary tab: swissbib
@@ -127,7 +129,6 @@ return array(
                 'templates' => array(
                         'tab'   => 'search/tabs/external.phtml',
                         'sidebar'=> 'global/sidebar/search/facets.external.phtml',
-
                 )
             ),
         )
