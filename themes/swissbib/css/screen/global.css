@@ -29,6 +29,7 @@ body {
 	line-height:0;
 	font-size:0;
 }
+.offscreen,
 thead.hidden {
 	display:none;
 }

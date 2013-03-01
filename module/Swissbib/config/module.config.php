@@ -40,6 +40,8 @@ return array(
             'Authors'					=> 'Swissbib\View\Helper\Authors',
             'publicationDateMarc'		=> 'Swissbib\View\Helper\YearFormatterMarc',
             'publicationDateWorldCat'	=> 'Swissbib\View\Helper\YearFormatterWorldCat',
+            'facetItemLabel'			=> 'Swissbib\View\Helper\FacetItemLabel',
+            'facetItem'			        => 'Swissbib\View\Helper\FacetItem',
             'lastSearchWord'			=> 'Swissbib\View\Helper\LastSearchWord',
             'lastTabbedSearchUri'		=> 'Swissbib\View\Helper\LastTabbedSearchUri',
 			'myResearchSideBar'			=> 'Swissbib\View\Helper\MyResearchSideBar',
