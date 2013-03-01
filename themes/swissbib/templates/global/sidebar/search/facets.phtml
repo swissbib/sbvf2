@@ -10,7 +10,8 @@ $basicSearch= $options->getSearchAction();
     // Facet results settings: settings for items limit per facet
 $configReader           = new \VuFind\Config\Reader();
 $facetResultsSettings   = $configReader->getConfig('facets')->get('Results_Settings');
-$facetItemsLimitDefault = $facetResultsSettings->get('facet_limit');
+$facetItemsMaxAmount = $facetResultsSettings->get('facet_limit');               // full
+$facetItemsLimitDefault = $facetResultsSettings->get('facet_limit_default');    // initially shown
 ?>
 
 <h3>Treffer eingrenzen</h3>
@@ -31,25 +32,32 @@ $facetItemsLimitDefault = $facetResultsSettings->get('facet_limit');
         // Get limit of initially shown items per facet
     $amountItems        = count($facetGroupItems);
     $amountItemsShown   = intval($facetResultsSettings->get('facet_limit_' . $facetGroup));
-    if( $amountItemsShown == 0 ) {
+    if( $amountItemsShown === 0 ) {
         $amountItemsShown = $facetItemsLimitDefault;
     }
-
     $itemsCount = 0;
-?>			    <?php foreach($facetGroupItems as $facet): ?>
+?>		    <?php foreach($facetGroupItems as $facet): ?>
+                <?php $itemsCount++; ?>
+                <?php if($itemsCount > $amountItemsShown) break; /* Limit initially shown items per facet*/ ?>
+                <?= $this->facetItem($facet) ?>
+            <?php endforeach; ?>
+            <? if($amountItems > $amountItemsShown): /* Show "more facets" link if there are more */ ?>
+                    <li id="more<?=$facetId?>" class="facet_more">
+                        <a href="#" onclick="moreFacets('<?=$facetId?>'); return false" title="Mehr anzeigen">Mehr anzeigen</a>
+                    </li>
+            <div id="narrowGroupHidden_<?=$facetId?>" class="offscreen">
+                <?php while($itemsCount < $amountItems) {
+                    $facet  = $facetGroupItems[$itemsCount];
+                ?>
+                    <?= $this->facetItem($facet) ?>
                     <?php $itemsCount++; ?>
-                    <?php if($itemsCount > $amountItemsShown) break; /* Limit initially shown items per facet*/ ?>
-					<?php $facetLabel = $this->escapeHtml($facet['displayText']) . '&nbsp;(' . $facet['count'] . ')'; ?>
-					<li>
-						<a href="<?=$facet['url']?>" title="<?=$facetLabel?>"><?=$facetLabel?>&nbsp;&raquo;</a>
-					</li>
-				<?php endforeach; ?>
-                <? if($amountItems > $amountItemsShown): /* Show "more facets" link if there are more */ ?>
-				<li class="facet_more">
-					<a href="#" onclick="moreFacets('callnumber-first'); return false" title="Mehr anzeigen">Mehr anzeigen</a>
-				</li>
-                <? endif; ?>
-			</ul>
+                <?php } ?>
+                <li id="less<?=$facetId?>" class="facet_more">
+                    <a href="#" onclick="lessFacets('<?=$facetId?>'); return false" title="Weniger anzeigen">Weniger anzeigen</a>
+                </li>
+            </div>
+            <? endif; ?>
+            </ul>
 		</div>
 		<!-- facet -->
 	<?php endforeach; ?>
