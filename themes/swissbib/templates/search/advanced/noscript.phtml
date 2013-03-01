@@ -1,0 +1,67 @@
+<?php
+
+if( $searchDetails !== false ) {
+	$numGroups = count($searchDetails);
+}
+if( !isset($numGroups) || $numGroups < 3 ) {
+	$numGroups = 3;
+}
+
+?>
+<?php for($i = 0; $i < $numGroups; $i++): ?>
+	<div class="group group<?=$i % 2?>" id="group<?=$i?>">
+		<div class="groupSearchDetails">
+			<div class="join">
+				<label for="search_bool<?=$i?>"><?=$this->transEsc("search_match")?>
+					:</label>
+				<select id="search_bool<?=$i?>" name="bool<?=$i?>[]">
+					<?
+					$options = array('AND', 'OR', 'NOT');
+					foreach($options as $option) {
+						echo '<option value="' . $this->escapeHtml($option) . '"';
+						if( $searchDetails && isset($searchDetails[$i]['group'][0]['bool'])
+								&& $searchDetails[$i]['group'][0]['bool'] == $option
+						) {
+							echo ' selected="selected"';
+						}
+						echo '>' . $this->transEsc('search_' . $option) . '</option>';
+					}
+					?>
+				</select>
+			</div>
+		</div>
+		<div class="groupSearchHolder" id="group<?=$i?>SearchHolder">
+			<?
+			if( isset($searchDetails[$i]['group']) ) {
+				$numRows = count($searchDetails[$i]['group']);
+			}
+			if( !isset($numRows) || $numRows < 3 ) {
+				$numRows = 3;
+			}
+			?>
+			<?php for($j = 0; $j < $numRows; $j++): ?>
+			<?php $currRow = isset($searchDetails[$i]['group'][$j]) ? $searchDetails[$i]['group'][$j] : false; ?>
+			<div class="advRow">
+				<div class="label">
+					<label <?=($j > 0) ? 'class="offscreen" ' : ''?>for="search_lookfor<?=$i?>_<?=$j?>"><?=$this->transEsc("adv_search_label")?>
+						:</label>&nbsp;
+				</div>
+				<div class="terms">
+					<input id="search_lookfor<?=$i?>_<?=$j?>" type="text"
+						   value="<?=isset($currRow['lookfor']) ? $this->escapeHtml($currRow['lookfor']) : ''?>"
+						   size="50" name="lookfor<?=$i?>[]"/>
+				</div>
+				<div class="field">
+					<label for="search_type<?=$i?>_<?=$j?>"><?=$this->transEsc("in")?></label>
+					<select id="search_type<?=$i?>_<?=$j?>" name="type<?=$i?>[]">
+						<?php foreach($this->options->getAdvancedHandlers() as $searchVal => $searchDesc): ?>
+						<option value="<?=$this->escapeHtml($searchVal)?>"<?=(isset($currRow['field']) && $currRow['field'] == $searchVal) ? ' selected="selected"' : ''?>><?=$this->transEsc($searchDesc)?></option>
+						<?php endforeach; ?>
+					</select>
+				</div>
+				<span class="clearer"></span>
+			</div>
+			<?php endfor; ?>
+		</div>
+	</div>
+<?php endfor; ?>

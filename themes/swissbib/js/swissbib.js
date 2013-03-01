@@ -29,22 +29,22 @@ var swissbib = {
         var contextAll		= $("#header, #search, #main");
 
         	// Init interface
-        swissbib.initBrowserFlags();
-        swissbib.initNavigation(contextHeader);
+        this.initBrowserFlags();
+		this.initNavigation(contextHeader);
 //        swissbib.initAutocomplete(ctxAll);
-        swissbib.initToggler(contextMain);
-        swissbib.initTabs(contextContent);
-        swissbib.initForms(contextAll);
-        swissbib.initModal(contextMain);
-        swissbib.initLinks(contextMain);
-        swissbib.initModalNBImages(contextMain);
+		this.initToggler(contextMain);
+		this.initTabs(contextContent);
+		this.initForms(contextAll);
+		this.initModal(contextMain);
+		this.initLinks(contextMain);
+		this.initModalNBImages(contextMain);
+		this.initAdvancedSearch();
 
-		if( $('#tabbed').is('*') ) {
-				// Init tabs (if present =after search)
-        	swissbib.initTabbed(contextMain);
-		}
 
-        swissbib.initHints(contextMain);
+			// Init tabs (if present =after search)
+		this.initTabbed(contextMain);
+
+		this.initHints(contextMain);
     },
 
 
@@ -146,6 +146,10 @@ var swissbib = {
 	 * @param	{Element}	ctx
      */
     initTabbed: function(ctx) {
+		if( !$('#tabbed').is('*') ) {
+			return;
+		}
+
 			// Register already loaded tab: store it's AJAX URL (content, sidebar)
 		var containerIDs= ['content', 'sidebar'];
 
@@ -409,7 +413,12 @@ var swissbib = {
 
         	// Print links
         $(".print", ctx).click(function(){window.print();});
-    }
+    },
+
+
+	initAdvancedSearch: function() {
+		this.AdvancedSearch.init();
+	}
 };
 
 

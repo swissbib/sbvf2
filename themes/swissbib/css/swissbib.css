@@ -26,3 +26,64 @@
 #content table tr.link td {
 	cursor: pointer;
 }
+
+
+/** Advanced search */
+
+#advSearchForm .group {
+	border: 1px solid #CCC;
+	margin-bottom: 20px;
+	padding: 10px;
+}
+
+#advSearchForm  #groupJoin {
+	background-color: #efefef;
+	margin-bottom: 30px;
+	padding: 10px;
+}
+
+#advSearchForm #groupJoin .searchGroupDetails {
+	float: right;
+}
+
+#advSearchForm #searchHolder .addSearch {
+	margin-top: 20px;
+}
+
+#advSearchForm #searchHolder .addSearch a {
+	font-size: 12px;
+	background: url(../images/icon_add.gif) no-repeat 0 4px;
+	padding: 3px;
+	padding-left: 16px;
+}
+
+#advSearchForm .advRow {
+	clear: both;
+}
+
+#advSearchForm .advRow > .label {
+	display: none;
+}
+
+#advSearchForm .fieldbox .text.large {
+	width: 400px;
+}
+
+#advSearchForm .groupSearchDetails {
+	float: right;
+	border: 1px solid #ccc;
+	padding: 5px;
+	margin: -25px -20px 15px;
+	background-color: #EEE;
+}
+
+#advSearchForm .groupSearchDetails .join {
+	float: right;
+}
+
+#advSearchForm .groupSearchDetails .delete {
+	background: url(../images/avail_stop_16.16.png) no-repeat 0 3px;
+	margin-right: 5px;;
+	padding: 5px;
+	padding-left: 18px;
+}

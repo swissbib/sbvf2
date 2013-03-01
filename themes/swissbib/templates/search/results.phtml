@@ -7,6 +7,20 @@
         $this->headTitle($this->translate('Search Results') . (empty($lookFor) ? '' : " - {$lookFor}"));
     }
 
+	    // Set up search box:
+    $this->layout()->searchboxParams = array(
+		'lookfor' 	=> $lookFor,
+		'searchIndex' => $this->params->getSearchHandler(),
+		'searchType' => $this->params->getSearchType(),
+		'searchId' => $this->results->getSearchId(),
+		'searchClassId' => $this->params->getsearchClassId(),
+		'checkboxFilters' => $this->params->getCheckboxFacets(),
+		'filterList' => $this->params->getFilters(),
+		'selectedShards' => $this->params->getSelectedShards()
+    );
+
+
+
 //    // Set up breadcrumbs:
 //    if (isset($this->overrideTitle)) {
 //        $this->layout()->breadcrumbs = '<em>' . $this->escapeHtml($this->overrideTitle) . '</em>';
