@@ -9,7 +9,7 @@ var sbFacets = {
 	init: function() {
 		var facets	= $('#sidebar div.facets a');
 			// Exclude facets own options
-		facets	= facets.not('facet_more');
+		facets	= facets.not('li.facet_more a');
 			// Setup re-routing
 		facets.click(function(event) {
 			event.stopPropagation();
