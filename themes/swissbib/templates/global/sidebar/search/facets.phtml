@@ -37,8 +37,8 @@ $facetItemsLimitDefault = $facetResultsSettings->get('facet_limit_default');    
     }
     $itemsCount = 0;
 ?>		    <?php foreach($facetGroupItems as $facet): ?>
+                <?php if($itemsCount >= $amountItemsShown) break; /* Limit initially shown items per facet*/ ?>
                 <?php $itemsCount++; ?>
-                <?php if($itemsCount > $amountItemsShown) break; /* Limit initially shown items per facet*/ ?>
                 <?= $this->facetItem($facet) ?>
             <?php endforeach; ?>
             <? if($amountItems > $amountItemsShown): /* Show "more facets" link if there are more */ ?>

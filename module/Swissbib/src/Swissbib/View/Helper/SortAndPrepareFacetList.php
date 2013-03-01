@@ -31,7 +31,6 @@ class SortAndPrepareFacetList extends AbstractHelper {
 			$facet['url']	= $baseRout . $results->getUrlQuery()->addFacet($field, $facet['value']);
 			$facets[$facet['displayText']] = $facet;
 		}
-
 //		ksort($facets, SORT_NATURAL);
 
 		return array_values($facets);
