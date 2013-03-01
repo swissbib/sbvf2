@@ -25,6 +25,8 @@ return array(
         'lib/ui/jquery.ui.tabs.js',
         'lib/ui/jquery.ui.autocomplete.js',
         'lib/jquery.debug.js',
+//        'lib/jquery.1.9.js',
+//        'lib/jquery-migrate-1.1.1.js',
         'lib/jquery.cookie.js',
         'lib/jquery.easing.js',
         'lib/jquery.hoverintent.js',
@@ -46,6 +48,7 @@ return array(
         'swissbib.jumpmenu.js',
         'swissbib.filters.js',
         'swissbib.facets.js',
+        'swissbib.AdvancedSearch.js',
 
         'jstorage.min.js', //used for favorites - there is still some amount of JS code inline of the page -> Todo: Refactoring in upcoming Sprints
 

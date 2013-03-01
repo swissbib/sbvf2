@@ -1,0 +1,17 @@
+<?
+    $limitList		= $this->options->getLimitOptions();
+    $lastLimit		= $this->options->getLastLimit();
+    $selectedLimit	= empty($lastLimit) ? $this->options->getDefaultLimit() : $lastLimit;
+?>
+<? if( count($limitList) > 1 ): ?>
+	<div class="fieldgroup">
+		<div class="fieldbox">
+			<label class="label" for="limit"><?=$this->transEsc('Results per page')?></label>
+			<select class="select tiny" name="limit" id="limit">
+				<?php foreach($limitList as $limitVal): ?>
+					<option value="<?=$this->escapeHtml($limitVal)?>"<?=($limitVal == $selectedLimit) ? 'selected="selected"' : ''?>><?=$this->escapeHtml($limitVal)?></option>
+				<?php endforeach; ?>
+			</select>
+		</div>
+	</div>
+<? endif; ?>

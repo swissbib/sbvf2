@@ -1,11 +1,16 @@
 <?php
 
 /** @var VuFind\Search\Solr\Options	 $options  */
-$options 	= $this->searchOptions();
-$lastSort	= $options->getLastSort();
-$lastLimit	= $options->getLastLimit();
+$options 		= $this->searchOptions();
+$lastSort		= $options->getLastSort();
+$lastLimit		= $options->getLastLimit();
+$basicSearch	= $options->getSearchAction();
+$searchHome		= $options->getSearchHomeAction();
+$advSearch		= $options->getAdvancedSearchAction();
+
 /** @var VuFind\Search\Base\Params $resultViewParams  */
-$resultViewParams  = $this->layout()->resultViewParams;
+$resultViewParams	= $this->layout()->resultViewParams;
+$searchBoxParams	= isset($this->layout()->searchboxParams) ? $this->layout()->searchboxParams : false;
 
 if( $resultViewParams ) {
 	$lookFor	= $resultViewParams->getDisplayQuery();
@@ -13,25 +18,39 @@ if( $resultViewParams ) {
 	$lookFor	= $this->lastSearchWord();
 }
 
+$isAdvancedSearch	= $searchBoxParams && $searchBoxParams['searchType'] == 'advanced';
+
 ?>
-<div id="search">
-	<form id="form_search" name="form_search" action="<?=$this->url('search-results')?>" method="get">
-		<h3><label for="lookfor">Suchen nach</label></h3>
-		<input type="text" class="text" name="lookfor" id="lookfor" autocomplete="off" value="<?=$this->escapeHtml($lookFor)?>" />
-		<label for="search_submit" class="hidden">Suchanfrage senden</label>
-		<input type="submit" class="submit primary" id="search_submit" name="search_submit" value="Suchen"/>
-		<label for="search_favorites" class="checker">Nur in Favoriten</label>
-		<input type="checkbox" class="hidden" id="search_favorites" name="search_favorites" />
-		<a href="<?=$this->url('search-advanced')?>" title="Erweiterte Suche" id="search_extended">Erweiterte&nbsp;Suche</a>
+<div id="search" class="<?=$isAdvancedSearch?'advSearch':''?>">
+	<?php if( $isAdvancedSearch ): ?>
+		<div id="advancedSearchJumpNavi">
+			<a href="<?=$this->url($advSearch)?>?edit=<?=$this->escapeHtml($searchBoxParams['searchId'])?>"><?=$this->transEsc("Edit this Advanced Search")?></a> |
+			<a href="<?=$this->url($advSearch)?>"><?=$this->transEsc("Start a new Advanced Search")?></a> |
+			<a href="<?=$this->url($searchHome)?>"><?=$this->transEsc("Start a new Basic Search")?></a>
 
-		<?php /* Load hidden limit preference from Session */ ?>
-		<?php if( !empty($lastLimit)): ?>
-			<input type="hidden" name="limit" value="<?=$this->escapeHtml($lastLimit)?>" />
-		<?php endif; ?>
+			<div class="advSearchQuery">
+				<?=$this->transEsc("Your search terms")?> : "<strong><?=$this->escapeHtml($lookFor)?></strong>"
+			</div>
+		</div>
+	<?php else: ?>
+		<form id="form_search" name="form_search" action="<?=$this->url('search-results')?>" method="get">
+			<h3><label for="lookfor">Suchen nach</label></h3>
+			<input type="text" class="text" name="lookfor" id="lookfor" autocomplete="off" value="<?=$this->escapeHtml($lookFor)?>" />
+			<label for="search_submit" class="hidden">Suchanfrage senden</label>
+			<input type="submit" class="submit primary" id="search_submit" name="search_submit" value="Suchen"/>
+			<label for="search_favorites" class="checker">Nur in Favoriten</label>
+			<input type="checkbox" class="hidden" id="search_favorites" name="search_favorites" />
+			<a href="<?=$this->url('search-advanced')?>" title="Erweiterte Suche" id="search_extended">Erweiterte&nbsp;Suche</a>
 
-		<?php if( !empty($lastSort)): ?>
-			<input type="hidden" name="sort" value="<?=$this->escapeHtml($lastSort)?>" />
-		<?php endif; ?>
+			<?php /* Load hidden limit preference from Session */ ?>
+			<?php if( !empty($lastLimit)): ?>
+				<input type="hidden" name="limit" value="<?=$this->escapeHtml($lastLimit)?>" />
+			<?php endif; ?>
 
-	</form>
+			<?php if( !empty($lastSort)): ?>
+				<input type="hidden" name="sort" value="<?=$this->escapeHtml($lastSort)?>" />
+			<?php endif; ?>
+
+		</form>
+	<?php endif; ?>
 </div>
