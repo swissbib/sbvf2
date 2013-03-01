@@ -1,0 +1,24 @@
+<?php
+
+$searchFieldLabels = array();
+foreach($this->options->getAdvancedHandlers() as $name => $label) {
+	$searchFieldLabels[$name] = $this->translate($label);
+}
+
+?>
+swissbib.AdvancedSearch.searchFields = <?=json_encode($searchFieldLabels); ?>;
+
+swissbib.AdvancedSearch.searchJoins = {
+	AND:	'<?=$this->transEsc("search_AND")?>',
+	OR:		'<?=$this->transEsc("search_OR")?>',
+	NOT:	'<?=$this->transEsc("search_NOT")?>'
+};
+
+swissbib.AdvancedSearch.searchLabels = {
+	addSearchString:		"<?=$this->transEsc("add_search")?>",
+	searchLabel:			"<?=$this->transEsc("adv_search_label")?>",
+	searchFieldLabel:		"<?=$this->transEsc("in")?>",
+	deleteSearchGroupString: "<?=$this->transEsc("del_search")?>",
+	searchMatch:			"<?=$this->transEsc("search_match")?>",
+	searchFormId: 			'advSearchForm'
+};

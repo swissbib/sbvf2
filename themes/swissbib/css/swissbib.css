@@ -26,3 +26,102 @@
 #content table tr.link td {
 	cursor: pointer;
 }
+
+
+/** Advanced search */
+
+#advSearchForm .group {
+	border: 1px solid #CCC;
+	margin-bottom: 20px;
+	padding: 10px;
+}
+
+#advSearchForm  #groupJoin {
+	background-color: #efefef;
+	margin-bottom: 30px;
+	padding: 10px;
+}
+
+#advSearchForm #groupJoin .searchGroupDetails {
+	float: right;
+}
+
+#advSearchForm #searchHolder .addSearch {
+
+}
+
+#advSearchForm #searchHolder .addSearch a,
+#advSearchForm #addGroupLink {
+	font-size: 12px;
+	background: url(../images/icon_add.gif) no-repeat 0 4px;
+	padding: 3px;
+	padding-left: 16px;
+}
+
+#advSearchForm #addGroupLink {
+	display: inline-block;
+	margin: -10px 0 20px -10px;
+}
+
+
+#advSearchForm .advRow {
+	clear: both;
+}
+
+#advSearchForm .advRow > .label {
+	display: none;
+}
+
+#advSearchForm .fieldbox .text.large {
+	width: 470px;
+}
+
+#advSearchForm .groupSearchDetails {
+	float: right;
+	border: 1px solid #ccc;
+	padding: 5px;
+	margin: -20px -20px 15px;
+	background-color: #EEE;
+}
+
+#advSearchForm .groupSearchDetails .join {
+	float: right;
+}
+
+#advSearchForm .groupSearchDetails .delete {
+	background: url(../images/avail_stop_16.16.png) no-repeat 0 3px;
+	margin-right: 5px;;
+	padding: 5px;
+	padding-left: 18px;
+}
+
+#advSearchForm input.yearbox {
+	clear: none;
+	width: 30px;
+}
+
+#advSearchForm .yearSliderBox {
+	width: 480px;
+}
+
+#advSearchForm #publishDateSlider {
+	margin-top: 5px;
+	width: 450px;
+	background-repeat: repeat-x;
+}
+
+
+#advancedSearchJumpNavi {
+	background-color: #E8E8E8;
+	border: 1px solid #2A2D33;
+	border-radius: 5px;
+	padding: 5px;
+}
+
+#advancedSearchJumpNavi .advSearchQuery {
+	margin-top: 5px;
+}
+
+#search.advSearch {
+	height: auto;
+}
