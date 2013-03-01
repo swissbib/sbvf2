@@ -21,12 +21,17 @@ if( $resultViewParams ) {
 $isAdvancedSearch	= $searchBoxParams && $searchBoxParams['searchType'] == 'advanced';
 
 ?>
-<div id="search">
+<div id="search" class="<?=$isAdvancedSearch?'advSearch':''?>">
 	<?php if( $isAdvancedSearch ): ?>
-		<a href="<?=$this->url($advSearch)?>?edit=<?=$this->escapeHtml($searchBoxParams['searchId'])?>" class="small"><?=$this->transEsc("Edit this Advanced Search")?></a> |
-		<a href="<?=$this->url($advSearch)?>" class="small"><?=$this->transEsc("Start a new Advanced Search")?></a> |
-		<a href="<?=$this->url($searchHome)?>" class="small"><?=$this->transEsc("Start a new Basic Search")?></a>
-		<br/><?=$this->transEsc("Your search terms")?> : "<strong><?=$this->escapeHtml($lookFor)?></strong>"
+		<div id="advancedSearchJumpNavi">
+			<a href="<?=$this->url($advSearch)?>?edit=<?=$this->escapeHtml($searchBoxParams['searchId'])?>"><?=$this->transEsc("Edit this Advanced Search")?></a> |
+			<a href="<?=$this->url($advSearch)?>"><?=$this->transEsc("Start a new Advanced Search")?></a> |
+			<a href="<?=$this->url($searchHome)?>"><?=$this->transEsc("Start a new Basic Search")?></a>
+
+			<div class="advSearchQuery">
+				<?=$this->transEsc("Your search terms")?> : "<strong><?=$this->escapeHtml($lookFor)?></strong>"
+			</div>
+		</div>
 	<?php else: ?>
 		<form id="form_search" name="form_search" action="<?=$this->url('search-results')?>" method="get">
 			<h3><label for="lookfor">Suchen nach</label></h3>
