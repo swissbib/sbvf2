@@ -1,39 +1,56 @@
 <?php
+/** @var $results VuFind\Search\Solr\Results */
+$results    = $this->results;
+$facetList	= $results->getFacetList();
 
-$facetList	= $this->results->getFacetList();
+/** @var $options VuFind\Search\Solr\Options  */
 $options	= $this->searchOptions($this->searchClassId);
 $basicSearch= $options->getSearchAction();
 
-
+    // Facet results settings: settings for items limit per facet
+$configReader           = new \VuFind\Config\Reader();
+$facetResultsSettings   = $configReader->getConfig('facets')->get('Results_Settings');
+$facetItemsLimitDefault = $facetResultsSettings->get('facet_limit');
 ?>
+
 <h3>Treffer eingrenzen</h3>
 
 <div class="facets">
-
 	<?php foreach($facetList as $facetGroup => $facetGroupData): ?>
 		<?php
 			$facetId		= strtolower($facetGroup);
 			$facetGroupLabel= $facetGroupData['label'];
-			$facetGroupItems= $this->SortAndPrepareFacetList($this->results, $facetGroup, $facetGroupData['list'], $basicSearch);
+			$facetGroupItems= $this->SortAndPrepareFacetList($results, $facetGroup, $facetGroupData['list'], $basicSearch);
 		?>
 		<!-- facet start: <?=$facetGroup?> -->
 		<div class="facet" id="facet_<?=$facetId?>">
 			<h5 class="toggler persist expanded" id="facet_toggler_<?=$facetId?>"><?=$this->escapeHtml($facetGroupLabel)?></h5>
 			<ul class="facet_toggler_<?=$facetId?>">
 
-				<?php foreach($facetGroupItems as $facet): ?>
+<?php
+        // Get limit of initially shown items per facet
+    $amountItems        = count($facetGroupItems);
+    $amountItemsShown   = intval($facetResultsSettings->get('facet_limit_' . $facetGroup));
+    if( $amountItemsShown == 0 ) {
+        $amountItemsShown = $facetItemsLimitDefault;
+    }
+
+    $itemsCount = 0;
+?>			    <?php foreach($facetGroupItems as $facet): ?>
+                    <?php $itemsCount++; ?>
+                    <?php if($itemsCount > $amountItemsShown) break; /* Limit initially shown items per facet*/ ?>
 					<?php $facetLabel = $this->escapeHtml($facet['displayText']) . '&nbsp;(' . $facet['count'] . ')'; ?>
 					<li>
 						<a href="<?=$facet['url']?>" title="<?=$facetLabel?>"><?=$facetLabel?>&nbsp;&raquo;</a>
 					</li>
 				<?php endforeach; ?>
-
+                <? if($amountItems > $amountItemsShown): /* Show "more facets" link if there are more */ ?>
 				<li class="facet_more">
-					<a href="#" title="Mehr anzeigen">Mehr anzeigen</a>
+					<a href="#" onclick="moreFacets('callnumber-first'); return false" title="Mehr anzeigen">Mehr anzeigen</a>
 				</li>
+                <? endif; ?>
 			</ul>
 		</div>
 		<!-- facet -->
 	<?php endforeach; ?>
-
 </div>
