@@ -8,7 +8,6 @@ use Vufind\Search\Base\Results;
 /**
  * Improved version of VuFind\View\Helper\Root\SortFacetList
  * Add url and sort, but keep all data
- *
  */
 class SortAndPrepareFacetList extends AbstractHelper {
 
@@ -19,11 +18,11 @@ class SortAndPrepareFacetList extends AbstractHelper {
 	 * @param	String		$field
 	 * @param	Array		$list
 	 * @param	String		$searchRoute
-	 * return	Array
-	 */
+     * @return array
+     */
 	public function __invoke(Results $results, $field, array $list, $searchRoute) {
 		$facets = array();
-		// avoid limit on URL
+		    // Avoid limit on URL
 //		$results->getParams()->setLimit($results->getOptions()->getDefaultLimit());
 		$urlHelper	= $this->getView()->plugin('url');
 		$baseRout	= $urlHelper($searchRoute);
@@ -33,7 +32,7 @@ class SortAndPrepareFacetList extends AbstractHelper {
 			$facets[$facet['displayText']] = $facet;
 		}
 
-		ksort($facets, SORT_NATURAL);
+//		ksort($facets, SORT_NATURAL);
 
 		return array_values($facets);
 	}
