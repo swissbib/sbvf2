@@ -47,15 +47,22 @@
 }
 
 #advSearchForm #searchHolder .addSearch {
-	margin-top: 20px;
+
 }
 
-#advSearchForm #searchHolder .addSearch a {
+#advSearchForm #searchHolder .addSearch a,
+#advSearchForm #addGroupLink {
 	font-size: 12px;
 	background: url(../images/icon_add.gif) no-repeat 0 4px;
 	padding: 3px;
 	padding-left: 16px;
 }
+
+#advSearchForm #addGroupLink {
+	display: inline-block;
+	margin: -10px 0 20px -10px;
+}
+
 
 #advSearchForm .advRow {
 	clear: both;
@@ -101,4 +108,20 @@
 	margin-top: 5px;
 	width: 450px;
 	background-repeat: repeat-x;
+}
+
+
+#advancedSearchJumpNavi {
+	background-color: #E8E8E8;
+	border: 1px solid #2A2D33;
+	border-radius: 5px;
+	padding: 5px;
+}
+
+#advancedSearchJumpNavi .advSearchQuery {
+	margin-top: 5px;
+}
+
+#search.advSearch {
+	height: auto;
 }
