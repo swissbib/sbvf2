@@ -64,10 +64,10 @@ class MyResearchController extends VFMyResearchController {
 
 
 	/**
-	* Inject location from route
-	*
-	* @inheritDoc
-	*/
+	 * Inject location from route
+	 *
+	 * @inheritDoc
+	 */
 	protected function createViewModel($params = null) {
 		$viewModel	= parent::createViewModel($params);
 
@@ -76,5 +76,58 @@ class MyResearchController extends VFMyResearchController {
 		return $viewModel;
 	}
 
+
+    /**
+     * EXPLORATION (prove of concept)
+     * Extend profile action with render param of local user attribute: sb_nickname
+     *
+     * @return mixed
+     */
+    public function profileAction()
+    {
+        $view   = parent::profileAction();
+
+        /** @var $user  \VuFind\Db\Row\User */
+        $user = $this->getUser();
+
+        if( is_object($user) && get_class($user) === 'VuFind\Db\Row\User' ) {
+            $userData   = $user->toArray();
+            $nickname   = $userData['sb_nickname'];
+        } else {
+            $nickname   = '';
+        }
+
+        $view->nickname = $nickname;
+
+        return $view;
+    }
+
+
+
+    /**
+     * EXPLORATION (prove of concept)
+     * Store user data sb_nickname to local VF database
+     *
+     * @return  mixed
+     */
+    protected function saveaccountlocalAction() {
+        $view = $this->createViewModel();
+        $view->setTerminal(true);
+        $this->layout()->setTemplate('myresearch/profile');
+
+        /** @var $user  \VuFind\Db\Row\User */
+        $user = $this->getUser();
+        if( is_object($user) && get_class($user) === 'VuFind\Db\Row\User' ) {
+            $nickname   = array_key_exists('nickname', $_GET) ? $_GET['nickname'] : '';
+            $user->sb_nickname  = $nickname;
+            $user->save();
+
+            $this->layout()->nickname   = $nickname;
+        } else {
+            $this->layout()->nickname   = '';
+        }
+
+        return parent::profileAction();
+    }
 
 }

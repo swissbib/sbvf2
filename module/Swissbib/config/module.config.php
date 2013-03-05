@@ -24,13 +24,13 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'search'		=> 'Swissbib\Controller\SearchController',
-            'my-research'	=> 'Swissbib\Controller\MyResearchController'
+            'my-research'	=> 'Swissbib\Controller\MyResearchController',
         )
     ),
     'service_manager' => array(
         'invokables' => array(
-            'VuFindTheme\ResourceContainer' => 'Swissbib\VuFind\ResourceContainer',
-			'Swissbib\RecordDriverHoldingsHelper' => 'Swissbib\RecordDriver\Helper\Holdings'
+            'VuFindTheme\ResourceContainer'         => 'Swissbib\VuFind\ResourceContainer',
+			'Swissbib\RecordDriverHoldingsHelper'   => 'Swissbib\RecordDriver\Helper\Holdings'
         )
     ),
     'view_helpers' => array(

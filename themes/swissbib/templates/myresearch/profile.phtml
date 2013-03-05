@@ -44,6 +44,26 @@
 				</tbody>
 			</table>
 
+
+
+            <form name="form_useraccount" action="/vufind/MyResearch/Saveaccountlocal" method="get" id="save_account_submit">
+                Test-Formular zur lokalen Account-Daten Speicherung<br/>
+                <label for"nickname"=""><strong>Spitzname</strong></label>
+                <input type="text" value="<?= $this->nickname ?>" id="nickname">
+                <input type="button" name="useraccount_submit" value="Speichern" onclick="
+                    $('#content').prepend(sbAjax.createSpinnerElement());
+                    $.ajax({
+                        url:		    document.location.href.split('/vufind')[0] + '/vufind/MyResearch/Saveaccountlocal' + '?&nickname=' + $('#nickname')[0].value,
+                        type:		    'GET',
+                        cache:		    false,
+                        dataType:	    'html',
+                        //success: function(data) { $('#content').html(data); return false; },
+                        error: function(data) { $('#main').html(data.responseText); return false; }
+                    });" id="account_submit">
+            </form>
+
+
+
 			<?php
 				if( $showHomeLibForm ) {
 					echo $this->render('myresearch/profile/pickupform.phtml', array(
