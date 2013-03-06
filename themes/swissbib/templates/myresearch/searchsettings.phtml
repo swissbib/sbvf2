@@ -1,9 +1,9 @@
 <?
         // Set up page title:
     $this->headTitle($this->translate('My_Search_Settings'));
-    // Only display home library form if we have multiple pickup locations:
-    $showHomeLibForm = (isset($this->pickup) && count($this->pickup) > 1);
 
+        // Only display home library form if we have multiple pickup locations:
+    $showHomeLibForm = (isset($this->pickup) && count($this->pickup) > 1);
     $active = $helper->getCurrent()->getTemplate() !== 'myresearch/searchsettings' ? 'profile' : 'searchsettings';
 ?>
 <?=$this->myResearchSideBar($active, $this->location);?>
@@ -15,35 +15,40 @@
 			<h1><?=$this->transEsc('My_Search_Settings')?></h1>
 			<?=$this->flashmessages()?>
 
+
+
             <form name="form_useraccount" action="/vufind/MyResearch/Saveaccountlocal" method="get" id="save_account_submit">
-                Test-Formular zur lokalen Account-Daten Speicherung<br/>
-                <label for"nickname"=""><strong>Spitzname</strong></label>
-                <input type="text" value="<?= $this->nickname ?>" id="nickname">
-                <input type="button" name="useraccount_submit" value="Speichern" onclick="
-                    $('#content').prepend(sbAjax.createSpinnerElement());
-                    $.ajax({
-                        url:		    document.location.href.split('/vufind')[0] + '/vufind/MyResearch/Saveaccountlocal' + '?&nickname=' + $('#nickname')[0].value,
-                        type:		    'GET',
-                        cache:		    false,
-                        dataType:	    'html',
-                        //success: function(data) { $('#content').html(data); return false; },
-                        error: function(data) { $('#main').html(data.responseText); return false; }
-                    });" id="account_submit">
+
+                <label for="language"><?=$this->transEsc('Language')?></label>
+                <select id="language">
+                    <? foreach ($this->optsLanguage as $languageKey => $languageLabel): ?>
+                        <option value="<?= $languageKey ?>"><?= $languageLabel ?></option>
+                    <? endforeach; ?>
+                </select>
+
+                <br/><br/>
+
+                <label for="maxHits"><?=$this->transEsc('Max_Amount_Hits')?></label>
+                <select id="maxHits">
+                    <? foreach ($this->optsMaxHits as $maxHits): ?>
+                        <option value="<?= $maxHits ?>"><?= $maxHits ?></option>
+                    <? endforeach; ?>
+                </select>
+
+<!--                <label for"nickname"=""><strong>Spitzname</strong></label>-->
+<!--                <input type="text" value="--><?//= $this->nickname ?><!--" id="nickname">-->
+<!--                <input type="button" name="useraccount_submit" value="Speichern" onclick="-->
+<!--                    $('#content').prepend(sbAjax.createSpinnerElement());-->
+<!--                    $.ajax({-->
+<!--                        url:		    document.location.href.split('/vufind')[0] + '/vufind/MyResearch/Saveaccountlocal' + '?&nickname=' + $('#nickname')[0].value,-->
+<!--                        type:		    'GET',-->
+<!--                        cache:		    false,-->
+<!--                        dataType:	    'html',-->
+<!--                        //success: function(data) { $('#content').html(data); return false; },-->
+<!--                        error: function(data) { $('#main').html(data.responseText); return false; }-->
+<!--                    });" id="account_submit">-->
+
             </form>
-
-
-
-
-			<?php
-				if( $showHomeLibForm ) {
-					echo $this->render('myresearch/profile/pickupform.phtml', array(
-						'pickup'				=> $this->pickup,
-						'profile'				=> $this->profile,
-						'defaultPickupLocation'	=> $this->defaultPickupLocation
-					));
-				}
-			?>
-
 		</div>
 		<!-- end: content -->
 	</div>
