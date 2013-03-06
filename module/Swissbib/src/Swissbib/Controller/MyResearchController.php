@@ -102,10 +102,43 @@ class MyResearchController extends VFMyResearchController {
         }
 
         $view->nickname = $nickname;
+        $view->optsLanguage = $this->getOptionsLanguage();
+        $view->optsMaxHits  = $this->getOptionsMaximumHits();
 
         return $view;
     }
 
+
+
+    /**
+     * Get key-label tupels of languages.
+     * Labels are each in the resp. language, not to be localized.
+     *
+     * @return  Array
+     */
+    public function getOptionsLanguage() {
+        return array(
+            'de'    => 'Deutsch',
+            'en'    => 'English',
+            'fr'    => 'Francais',
+            'it'    => 'Italiano'
+        );
+    }
+
+
+
+    /**
+     * @return array
+     */
+    public function getOptionsMaximumHits() {
+        return array(
+            10,
+            50,
+            250,
+            1250,
+            5000
+        );
+    }
 
 
     /**
