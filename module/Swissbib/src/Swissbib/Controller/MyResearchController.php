@@ -77,19 +77,23 @@ class MyResearchController extends VFMyResearchController {
 	}
 
 
+
+
+
+
+
+
     /**
-     * EXPLORATION (prove of concept)
-     * Extend profile action with render param of local user attribute: sb_nickname
+     * (local) Search User Settings
      *
      * @return mixed
      */
-    public function profileAction()
+    public function searchsettingsAction()
     {
         $view   = parent::profileAction();
 
         /** @var $user  \VuFind\Db\Row\User */
         $user = $this->getUser();
-
         if( is_object($user) && get_class($user) === 'VuFind\Db\Row\User' ) {
             $userData   = $user->toArray();
             $nickname   = $userData['sb_nickname'];
@@ -113,6 +117,7 @@ class MyResearchController extends VFMyResearchController {
     protected function saveaccountlocalAction() {
         $view = $this->createViewModel();
         $view->setTerminal(true);
+
         $this->layout()->setTemplate('myresearch/profile');
 
         /** @var $user  \VuFind\Db\Row\User */
