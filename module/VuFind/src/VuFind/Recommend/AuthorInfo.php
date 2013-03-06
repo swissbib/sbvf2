@@ -26,8 +26,7 @@
  * @link     http://vufind.org/wiki/vufind2:recommendation_modules Wiki
  */
 namespace VuFind\Recommend;
-use VuFind\Config\Reader as ConfigReader,
-    VuFind\I18n\Translator\TranslatorAwareInterface;
+use VuFind\I18n\Translator\TranslatorAwareInterface;
 
 /**
  * AuthorInfo Recommendations Module
@@ -94,16 +93,27 @@ class AuthorInfo implements RecommendInterface, TranslatorAwareInterface
     protected $pagesRetrieved = array();
 
     /**
+     * Sources of author data that may be used (comma-delimited string; currently
+     * only 'wikipedia' is supported).
+     *
+     * @var string
+     */
+    protected $sources;
+
+    /**
      * Constructor
      *
      * @param \VuFind\Search\Manager $searchManager Search manager
      * @param \Zend\Http\Client      $client        HTTP client
+     * @param string                 $sources       Source identifiers (currently,
+     * only 'wikipedia' is supported)
      */
     public function __construct(\VuFind\Search\Manager $searchManager,
-        \Zend\Http\Client $client
+        \Zend\Http\Client $client, $sources = 'wikipedia'
     ) {
         $this->searchManager = $searchManager;
         $this->client = $client;
+        $this->sources = $sources;
     }
 
     /**
@@ -220,14 +230,8 @@ class AuthorInfo implements RecommendInterface, TranslatorAwareInterface
     public function getAuthorInfo()
     {
         // Don't load Wikipedia content if Wikipedia is disabled:
-        $config = ConfigReader::getConfig();
-        if (!isset($config->Content->authors)
-            || !stristr($config->Content->authors, 'wikipedia')
-        ) {
-            return null;
-        }
-
-        return $this->getWikipedia($this->getAuthor());
+        return stristr($this->sources, 'wikipedia')
+            ? $this->getWikipedia($this->getAuthor()) : null;
     }
 
     /**
@@ -477,6 +481,7 @@ class AuthorInfo implements RecommendInterface, TranslatorAwareInterface
             }
         }
         $info['description'] = $body;
+        $info['wiki_lang'] = $this->lang;
 
         return $info;
     }
