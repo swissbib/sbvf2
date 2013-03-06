@@ -25,8 +25,7 @@
  * @link     http://code.google.com/p/vufind-unicorn/ vufind-unicorn project
  */
 namespace VuFind\ILS\Driver;
-use File_MARC, VuFind\Config\Reader as ConfigReader,
-    VuFind\Exception\ILS as ILSException;
+use File_MARC, VuFind\Exception\ILS as ILSException;
 
 /**
  * SirsiDynix Unicorn ILS Driver (VuFind side)
@@ -45,12 +44,33 @@ use File_MARC, VuFind\Config\Reader as ConfigReader,
  **/
 class Unicorn extends AbstractBase implements \VuFindHttp\HttpServiceAwareInterface
 {
+    /**
+     * Host
+     *
+     * @var string
+     */
     protected $host;
-    protected $port;
-    protected $search_prog;
-    protected $url;
 
-    protected $db;
+    /**
+     * Port
+     *
+     * @var string
+     */
+    protected $port;
+
+    /**
+     * Name of API program
+     *
+     * @var string
+     */
+    protected $search_prog;
+
+    /**
+     * Full URL to API (alternative to host/port/search_prog)
+     *
+     * @var string
+     */
+    protected $url;
 
     /**
      * HTTP service
@@ -115,8 +135,6 @@ class Unicorn extends AbstractBase implements \VuFindHttp\HttpServiceAwareInterf
             $this->port = $this->config['Catalog']['port'];
             $this->search_prog = $this->config['Catalog']['search_prog'];
         }
-
-        $this->db = \VuFind\Connection\Manager::connectToIndex();
     }
 
     /**

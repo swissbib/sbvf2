@@ -27,8 +27,7 @@
  */
 namespace VuFind\Controller;
 
-use VuFind\Config\Reader as ConfigReader,
-    VuFind\Exception\Auth as AuthException,
+use VuFind\Exception\Auth as AuthException,
     VuFind\Exception\ListPermission as ListPermissionException,
     VuFind\Exception\RecordMissing as RecordMissingException,
     Zend\Stdlib\Parameters;
@@ -65,10 +64,10 @@ class MyResearchController extends AbstractBase
 
         // Not logged in?  Force user to log in:
         if (!$this->getAuthManager()->isLoggedIn()) {
-            $this->followup()->store(
-                array(),
-                $this->getRequest()->getServer()->get('HTTP_REFERER')
-            );
+            $referer = $this->getRequest()->getServer()->get('HTTP_REFERER');
+            if (!empty($referer)) {
+                $this->followup()->store(array(), $referer);
+            }
             return $this->forwardTo('MyResearch', 'Login');
         }
 
@@ -81,7 +80,7 @@ class MyResearchController extends AbstractBase
             return $this->redirect()->toUrl($url);
         }
 
-        $config = ConfigReader::getConfig();
+        $config = $this->getConfig();
         $page = isset($config->Site->defaultAccountPage)
             ? $config->Site->defaultAccountPage : 'Favorites';
         return $this->forwardTo('MyResearch', $page);
