@@ -5,22 +5,24 @@ if( $isLoggedIn ) {
 	/** @var VuFind\Db\Row\User $user  */
 	$user = $isLoggedIn;
 }
-
 ?>
+<!-- swissbib/templates/global/serviceNavi.phtml -->
 <div id="service">
 	<h3 class="hidden">Servicenavigation</h3>
 	<ul>
-		<?php if( $isLoggedIn ): ?>
-			<li class="nav_account">
-				<a href="<?=$this->url('myresearch-home');?>" title="Konto"><span>Eingeloggt als</span> <?=$this->escapeHtml($user->lastname . ', ' . $user->firstname)?> <span>(<?=$this->escapeHtml($user->email)?>)</span></a>
-			</li>
-			<li class="nav_logout">
-				<a href="<?=$this->url('myresearch-logout')?>" title="Ausloggen">Ausloggen</a>
-			</li>
-		<?php else: ?>
-			<li class="nav_login">
-				<a href="<?=$this->url('myresearch-home');?>" title="Einloggen">Einloggen</a>
-			</li>
-		<?php endif; ?>
+        <?php if( $isLoggedIn ): ?>
+            <li class="nav_account">
+                <a href="<?=$this->url('myresearch-home');?>" title="<?=$this->transEsc('Your Account')?>">
+                    <span><?=$this->transEsc('Username')?></span>: <?=$this->escapeHtml($user->firstname . ' ' . $user->lastname)?>
+                </a>
+            </li>
+            <li class="nav_logout">
+                <a href="<?=$this->url('myresearch-logout')?>" title="<?=$this->transEsc('Log Out')?>"><?=$this->transEsc('Log Out')?></a>
+            </li>
+        <?php else: ?>
+            <li class="nav_login">
+                <a href="<?=$this->url('myresearch-home');?>" title="<?=$this->transEsc('Login')?>"><?=$this->transEsc('Login')?></a>
+            </li>
+        <?php endif; ?>
 	</ul>
 </div>
