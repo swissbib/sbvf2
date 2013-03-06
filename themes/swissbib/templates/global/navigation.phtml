@@ -12,6 +12,9 @@ $isLoggedIn	= !!$this->auth()->isLoggedIn();
 			<li>
 				<a href="<?=$this->url('myresearch-home');?>">My swissbib</a>
 				<ul class="subnavigation">
+                    <li>
+                        <a href="<?=$this->url('search-settings');?>"><?=$this->transEsc('My_Search_Settings')?></a>
+                    </li>
 					<li>
 						<a href="<?=$this->url('myresearch-favorites');?>"><?=$this->transEsc('Favorites')?></a>
 					</li>
