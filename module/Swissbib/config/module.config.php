@@ -67,22 +67,43 @@ return array(
         'plugin_managers' => array(
             'recorddriver' => array(
                 'factories' => array(
-                    'solrmarc' => function () {
-                        return new \Swissbib\RecordDriver\SolrMarc(
-                            \VuFind\Config\Reader::getConfig(), null,   // main config
-                            \VuFind\Config\Reader::getConfig('searches')// record config
-                        );
-                    },
-                    'worldcat' => function () {
-                        return new \Swissbib\RecordDriver\WorldCat(
-                            \VuFind\Config\Reader::getConfig(),         // main config
-                            \VuFind\Config\Reader::getConfig('WorldCat')// record config
-                        );
-                    },
-					'missing' => function () {
-						return new \Swissbib\RecordDriver\Missing(
-							\VuFind\Config\Reader::getConfig()
+                    'solrmarc' => function ($sm) {
+						$driver = new \Swissbib\RecordDriver\SolrMarc(
+							$sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+							null,
+							$sm->getServiceLocator()->get('VuFind\Config')->get('searches')
 						);
+						$driver->attachILS(
+							$sm->getServiceLocator()->get('VuFind\ILSConnection'),
+							$sm->getServiceLocator()->get('VuFind\ILSHoldLogic'),
+							$sm->getServiceLocator()->get('VuFind\ILSTitleHoldLogic')
+						);
+						return $driver;
+//
+//
+//
+//						$baseConfig		= $sm->getServiceLocator()->get('VuFind\Config')->get('config');
+//						$searchConfig	= $sm->getServiceLocator()->get('VuFind\Config')->get('searches');
+//
+//                        return new \Swissbib\RecordDriver\SolrMarc(
+//							$baseConfig, // main config
+//							null,
+//							$searchConfig// record config
+//                        );
+                    },
+                    'worldcat' => function ($sm) {
+						$baseConfig		= $sm->getServiceLocator()->get('VuFind\Config')->get('config');
+						$worldcatConfig	= $sm->getServiceLocator()->get('VuFind\Config')->get('WorldCat');
+
+                        return new \Swissbib\RecordDriver\WorldCat(
+							$baseConfig,     // main config
+							$worldcatConfig // record config
+                        );
+                    },
+					'missing' => function ($sm) {
+						$baseConfig		= $sm->getServiceLocator()->get('VuFind\Config')->get('config');
+
+						return new \Swissbib\RecordDriver\Missing($baseConfig);
 					}
                 )
             ),

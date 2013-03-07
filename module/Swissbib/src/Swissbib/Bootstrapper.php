@@ -46,8 +46,7 @@ class Bootstrapper
     protected $events;
 
     public function __construct(MvcEvent $event) {
-
-        $this->config = ConfigReader::getConfig();
+        $this->config = $event->getApplication()->getServiceManager()->get('VuFind\Config')->get('config');
         $this->event = $event;
         $this->events = $event->getApplication()->getEventManager();
 

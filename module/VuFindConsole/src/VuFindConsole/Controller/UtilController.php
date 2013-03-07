@@ -204,7 +204,10 @@ class UtilController extends AbstractBase
     public function sitemapAction()
     {
         // Build sitemap and display appropriate warnings if needed:
-        $generator = new Sitemap();
+        $configLoader = $this->getServiceLocator()->get('VuFind\Config');
+        $generator = new Sitemap(
+            $configLoader->get('config')->Site->url, $configLoader->get('sitemap')
+        );
         $generator->generate();
         foreach ($generator->getWarnings() as $warning) {
             Console::writeLine("$warning");
@@ -293,8 +296,6 @@ class UtilController extends AbstractBase
         // Delete, Commit and Optimize if necessary:
         if (!empty($ids)) {
             $solr->deleteRecords($ids);
-            $solr->commit();
-            $solr->optimize();
         }
         return $this->getSuccessResponse();
     }

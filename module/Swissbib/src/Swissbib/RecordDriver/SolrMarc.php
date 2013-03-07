@@ -91,7 +91,7 @@ class SolrMarc extends VFSolrMarc {
 
 		 //$holdings = $this->marcHoldings->getTestData();
 		if( isset($data['holdings']) ) {
-			$holdsIlsConfig = $this->getILS()->checkFunction('Holds');
+			$holdsIlsConfig = $this->ils->checkFunction('Holds');
 
 			$this->marcHoldings->init($this->getUniqueID(), $holdsIlsConfig['HMACKeys'], $data['holdings']);
 		}
