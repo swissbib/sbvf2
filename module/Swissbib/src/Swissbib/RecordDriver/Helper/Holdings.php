@@ -45,6 +45,16 @@ use VuFind\Crypt\HMAC;
 class Holdings implements HoldingsAwareInterface {
 
 	/**
+	 * @var	\VuFind\ILS\Connection
+	 */
+	protected $ils;
+
+	/**
+	 * @var	\VuFind\Auth\Manager
+	 */
+	protected $authManager;
+
+	/**
 	 * @var	\File_MARC_Record
 	 */
 	protected $holdings;
@@ -60,40 +70,54 @@ class Holdings implements HoldingsAwareInterface {
 	protected $hmacKeys = array();
 
 	/**
+	 * @var \Zend\ServiceManager\ServiceManager
+	 */
+	protected $serviceLocator;
+
+	/**
 	 * @var	Array	Map of fields to named params
 	 */
 	protected $fieldMapping	= array(
-		'E'		=> 'bibsysnumber',
-		'p'		=> 'barcode',
-		'1'		=> 'location_expanded',
 		'0'		=> 'local_branch_expanded',
-		's'		=> 'signature2',
-		'C'		=> 'adm_code',
-		'y'		=> 'opac_note',
+		'1'		=> 'location_expanded',
 		'a'		=> 'holding_information',
 		'B'		=> 'network',
 		'b'		=> 'institution',
+		'C'		=> 'adm_code',
+		'E'		=> 'bibsysnumber',
+		'j'		=> 'signature',
+		'o'		=> 'staff_note',
+		'p'		=> 'barcode',
 		'q'		=> 'localid',
-        'r'     => 'sequencenumber'
+		'r'     => 'sequencenumber',
+		's'		=> 'signature2',
+		'y'		=> 'opac_note'
 	);
 
 	/**
 	 * @var	Array[]|Boolean
 	 */
-	protected $extractedHoldings = false;
+	protected $extractedData = false;
+
+
+	protected $availabilities = array();
+
+
 
 
 
 	/**
 	 * Initialize for item
 	 *
+	 * @param	Object		$serviceLocator
 	 * @param	String		$idItem
 	 * @param	Array		$hmacKeys
 	 * @param	String		$holdingsXml
 	 */
-	public function init($idItem, array $hmacKeys, $holdingsXml) {
-		$this->idItem	= $idItem;
-		$this->hmacKeys	= $hmacKeys;
+	public function initRecord($serviceLocator, $idItem, array $hmacKeys, $holdingsXml) {
+		$this->serviceLocator	= $serviceLocator->getServiceLocator();
+		$this->idItem			= $idItem;
+		$this->hmacKeys			= $hmacKeys;
 
 		$this->setHoldingsContent($holdingsXml);
 	}
@@ -118,7 +142,7 @@ class Holdings implements HoldingsAwareInterface {
 			$this->holdings = $marcData;
 		} else {
 				// Invalid input data. Currently just ignore it
-			$this->extractedHoldings	= array();
+			$this->extractedData	= array();
 		}
 	}
 
@@ -127,16 +151,22 @@ class Holdings implements HoldingsAwareInterface {
 	/**
 	 * Get holdings data
 	 *
-	 * @return	Array[]
+	 * @return	Array[]		Contains lists for items and holdings {items=>[],holdings=>[]}
 	 */
-	public function  getHoldings() {
-		if( $this->extractedHoldings === false ) {
-			$holdingsField949 		= $this->getHoldingDataFromField("949");
-			$holdingsField852 		= $this->getHoldingDataFromField("852");
-			$this->extractedHoldings= array_merge($holdingsField949, $holdingsField852);
+	public function getHoldings($authManager, $ils) {
+		$this->authManager	= $authManager;
+		$this->ils			= $ils;
+
+		if( $this->extractedData === false ) {
+			$holdingsData	= $this->getHoldingData();
+			$itemsData		= $this->getItemData();
+
+				// Merge items and holding into the same network/institution structure
+				// (stays separated by items/holdings key at lowest level)
+			$this->extractedData = array_merge_recursive($holdingsData, $itemsData);
 		}
 
-		return $this->extractedHoldings;
+		return $this->extractedData;
 	}
 
 
@@ -144,18 +174,129 @@ class Holdings implements HoldingsAwareInterface {
 	/**
 	 * Get values of field
 	 *
-	 * @param	String	$fieldName		The MARC field number to read
 	 * @return	Array	array[networkid][institutioncode] = array() of values for the current item
 	 */
-	protected function getHoldingDataFromField($fieldName) {
+	protected function getItemData() {
+		$fieldName			= 949; // Field code for item information in holdings xml
+		$structuredElements	= $this->getStructuredFieldElements($fieldName, $this->fieldMapping, 'items');
+		/** @var \Swissbib\VuFind\ILS\Driver\Aleph $alephDriver */
+
+			// Add hold link and availability for all items
+		foreach($structuredElements as $networkCode => $network) {
+			if( $this->isSupportedNetwork($networkCode) ) { // Only add links for supported networks
+				foreach($network['institutions'] as $institutionCode => $institution) {
+					foreach($institution['items'] as $index => $item) {
+							// Add extra information for item
+						$structuredElements[$networkCode]['institutions'][$institutionCode]['items'][$index] = $this->extendWithActionLinks($item);
+					}
+				}
+			}
+		}
+
+		return $structuredElements;
+	}
+
+
+
+	/**
+	 * Check whether network is supported
+	 *
+	 * @todo	Implement real check / move to config file
+	 * @param	String		$network
+	 * @return	Boolean
+	 */
+	protected function isSupportedNetwork($network) {
+		return $network === 'IDSBB';
+	}
+
+
+
+	/**
+	 * Add action links for item
+	 *
+	 * @param	Array	$item
+	 * @return	Array
+	 */
+	protected function extendWithActionLinks(array $item) {
+			// Add hold link for item
+		$item['holdingLink'] = $this->buildHoldActionLink($item);
+
+			// Add availability if supported by network
+		$item['available'] = $this->getAvailabilityInfos($item['bibsysnumber'], $item['barcode']);
+
+		return $item;
+	}
+
+
+
+	/**
+	 * Get availability infos for item element
+	 *
+	 * @param	String		$sysNumber
+	 * @param	String		$barcode
+	 * @return	Array|Boolean
+	 */
+	protected function getAvailabilityInfos($sysNumber, $barcode) {
+		if( !isset($this->availabilities[$sysNumber]) ) {
+			$this->availabilities[$sysNumber] = $this->getItemCirculationStatuses($sysNumber);
+		}
+
+		if( !isset($this->availabilities[$sysNumber][$barcode]) ) {
+			$this->availabilities[$sysNumber][$barcode] = false;
+		}
+
+		return $this->availabilities[$sysNumber][$barcode];
+	}
+
+
+
+	/**
+	 * Get circulation statuses for all elements of the item
+	 *
+	 * @param	String		$sysNumber
+	 * @return	Array[]
+	 */
+	protected function getItemCirculationStatuses($sysNumber) {
+		$circulationStatuses= $this->ils->getDriver()->getCirculationStatus($sysNumber);
+		$data				= array();
+
+		foreach($circulationStatuses as $circulationStatus) {
+			$data[$circulationStatus['barcode']] = $circulationStatus;
+		}
+
+		return $data;
+	}
+
+
+
+	/**
+	 * Get structured data for holdings
+	 *
+	 * @return	Array[]
+	 */
+	protected function getHoldingData() {
+		return $this->getStructuredFieldElements(852, $this->fieldMapping, 'holdings');
+	}
+
+
+
+	/**
+	 * Get structured elements (grouped by network and institution)
+	 *
+	 * @param	String		$fieldName
+	 * @param	Array		$mapping
+	 * @param	String		$elementKey
+	 * @return	Array
+	 */
+	protected function getStructuredFieldElements($fieldName, array $mapping, $elementKey) {
 		$data		= array();
 		$fields		= $this->holdings->getFields($fieldName);
 
 		if( is_array($fields) ) {
 			foreach($fields as $index => $field) {
-				$holdingItem= $this->extractFieldData($field);
-				$network	= $holdingItem['network'];
-				$institution= $holdingItem['institution'];
+				$item		= $this->extractFieldData($field, $mapping);
+				$network	= $item['network'];
+				$institution= $item['institution'];
 
 					// Make sure network is present
 				if( !isset($data[$network]) ) {
@@ -168,15 +309,12 @@ class Holdings implements HoldingsAwareInterface {
 					// Make sure institution is present
 				if( !isset($data[$network]['institutions'][$institution]) ) {
 					$data[$network]['institutions'][$institution] = array(
-						'label'	=> 'Label: ' . $institution,
-						'copies'=> array()
+						'label'		=> 'Label: ' . $institution,
+						$elementKey	=> array()
 					);
 				}
 
-					// Add holding link infos
-				$holdingItem['holdingLink'] = $this->buildHoldActionLink($holdingItem);
-
-				$data[$network]['institutions'][$institution]['copies'][] = $holdingItem;
+				$data[$network]['institutions'][$institution][$elementKey][] = $item;
 			}
 		}
 
@@ -215,12 +353,17 @@ class Holdings implements HoldingsAwareInterface {
 			'item_id'	=> $this->buildItemId($holdingItem)
 		);
 
+		/**
+		 * @var	\VuFind\Crypt\HMAC	$hmac
+		 */
+		$hmac	= $this->serviceLocator->get('VuFind\HMAC');
+
 		return array(
 			'action'	=> 'Hold',
 			'record'	=> $this->idItem,
 			'anchor'	=> '#tabnav',
 			'query'		=> http_build_query($linkValues + array(
-				'hashKey'	=> HMAC::generate($this->hmacKeys, $linkValues)
+				'hashKey'	=> $hmac->generate($this->hmacKeys, $linkValues)
 			))
 		);
 	}
@@ -231,9 +374,10 @@ class Holdings implements HoldingsAwareInterface {
 	 * Extract field data
 	 *
 	 * @param	\File_MARC_Data_Field	$field
+	 * @param	Array		$fieldMapping	Field code=>name mapping
 	 * @return	Array
 	 */
-	protected function extractFieldData(\File_MARC_Data_Field $field) {
+	protected function extractFieldData(\File_MARC_Data_Field $field, array $fieldMapping) {
 		$subFields	= $field->getSubfields();
 		$rawData	= array();
 		$data		= array();
@@ -243,7 +387,7 @@ class Holdings implements HoldingsAwareInterface {
 			$rawData[$code] = $subdata->getData();
 		}
 
-		foreach($this->fieldMapping as $code => $name) {
+		foreach($fieldMapping as $code => $name) {
 			$data[$name]	= isset($rawData[$code]) ? $rawData[$code] : '';
 		}
 

@@ -1,7 +1,7 @@
 <?php
 
 /** @var	 VuFind\Auth\Manager	$account  */
-//$account		= $this->auth()->getManager();
+$account		= $this->auth()->getManager();
 /** @var	Boolean|Object			$user  */
 //$user			= $account->isLoggedIn();
 //$holdings		= $this->driver->getRealTimeHoldings($account);
@@ -9,10 +9,7 @@
 //$ilsConnection	= $this->ils();
 /** @var	Swissbib\RecordDriver\SolrMarc	$recordDriver  */
 $recordDriver	= $this->driver;
-$holdings		= $recordDriver->getHoldings();
-
-//print_r($holdings);
-//exit();
+$holdings		= $recordDriver->getHoldings($account);
 
 ?>
 <!-- begin: innerbox meine bibliotheken -->
@@ -108,25 +105,32 @@ $holdings		= $recordDriver->getHoldings();
 									<th>Signatur</th>
 									<th>Exemplarstatus</th>
 									<th>Ausleihstatus</th>
-									<th>Bechreibung</th>
+									<th>Beschreibung</th>
 									<th>&nbsp;</th>
 								</tr>
 							</thead>
 							<tbody>
+								<?php
 
-								<?php foreach($institution['copies'] as $copy): ?>
+										// Items
+									if( isset($institution['items'])) {
+										foreach($institution['items'] as $item) {
+											echo $this->render('record/holdingsils_item.phtml', array(
+												'item'	=> $item
+											));
+										}
+									}
 
-									<tr>
-										<td><?=$this->escapeHtml($copy['location_expanded'])?></td>
-										<td><?=$this->escapeHtml($copy['signature2'])?></td>
-										<td>ausleihbar</td>
-										<td>erhältlich</td>
-										<td><?=$this->escapeHtml($copy['opac_note'])?></td>
-										<td><a href="<?=$this->recordLink()->getHoldUrl($copy['holdingLink'])?>">ausleihen</a></td>
-									</tr>
+										// Holdings
+									if( isset($institution['holdings'])) {
+										foreach($institution['holdings'] as $holding) {
+											echo $this->render('record/holdingsils_holding.phtml', array(
+												'holding'	=> $holding
+											));
+										}
+									}
 
-								<?php endforeach; ?>
-
+								?>
 							</tbody>
 						</table>
 					</div>
