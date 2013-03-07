@@ -105,6 +105,13 @@ class MyResearchController extends VFMyResearchController {
         $view->optsLanguage = $this->getOptionsLanguage();
         $view->optsMaxHits  = $this->getOptionsMaximumHits();
 
+
+        //...Prove of concept...
+        //@todo implement actual values storing
+/** @var $userLocalData \Swissbib\Db\Table\UserLocalData */
+$userLocalData  = $this->getServiceLocator()->get('Swissbib\DbTablePluginManager')->get('userlocaldata');
+$userLocalData->createOrUpdateLanguage('duetsch', 1);
+
         return $view;
     }
 
