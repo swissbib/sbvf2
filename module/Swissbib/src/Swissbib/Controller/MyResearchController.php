@@ -96,7 +96,7 @@ class MyResearchController extends VFMyResearchController {
         $user = $this->getUser();
         if( is_object($user) && get_class($user) === 'VuFind\Db\Row\User' ) {
             $userData   = $user->toArray();
-            $nickname   = $userData['sb_nickname'];
+            $nickname   = 'test'; //$userData['sb_nickname'];
         } else {
             $nickname   = '';
         }

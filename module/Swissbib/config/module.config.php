@@ -79,17 +79,6 @@ return array(
 							$sm->getServiceLocator()->get('VuFind\ILSTitleHoldLogic')
 						);
 						return $driver;
-//
-//
-//
-//						$baseConfig		= $sm->getServiceLocator()->get('VuFind\Config')->get('config');
-//						$searchConfig	= $sm->getServiceLocator()->get('VuFind\Config')->get('searches');
-//
-//                        return new \Swissbib\RecordDriver\SolrMarc(
-//							$baseConfig, // main config
-//							null,
-//							$searchConfig// record config
-//                        );
                     },
                     'worldcat' => function ($sm) {
 						$baseConfig		= $sm->getServiceLocator()->get('VuFind\Config')->get('config');
@@ -115,6 +104,7 @@ return array(
 						);
 					}
 				)
+			)
         )
     ),
     'swissbib' => array(
