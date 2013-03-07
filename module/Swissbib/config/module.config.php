@@ -115,7 +115,6 @@ return array(
 						);
 					}
 				)
-			)
         )
     ),
     'swissbib' => array(
@@ -127,9 +126,14 @@ return array(
             // pluggable components:
         'plugin_managers' => array(
             'db_table' => array(
-                'abstract_factories'    => array('Swissbib\Db\Table\SbPluginFactory'),
+                'factories' => array(
+                    'userlocaldata' => function ($sm) {
+                        return new \Swissbib\Db\Table\UserLocalData();
+                    },
+                ),
                 'invokables'            => array(
                     'holdingsitems' => 'Swissbib\Db\Table\SbHoldingsItems',
+                    'userlocaldata' => 'Swissbib\Db\Table\UserLocalData',
                 ),
             ),
         ),

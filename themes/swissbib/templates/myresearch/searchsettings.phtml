@@ -19,6 +19,8 @@
 
             <form name="form_useraccount" action="/vufind/MyResearch/Saveaccountlocal" method="get" id="save_account_submit">
 
+                <h3>Sucheinstellungen und Oberfläche</h3>
+
                 <label for="language"><?=$this->transEsc('Language')?></label>
                 <select id="language">
                     <? foreach ($this->optsLanguage as $languageKey => $languageLabel): ?>
@@ -26,7 +28,8 @@
                     <? endforeach; ?>
                 </select>
 
-                <br/><br/>
+                <br/><br/><br/>
+                <h3>Trefferliste und Ausgabeformate</h3>
 
                 <label for="maxHits"><?=$this->transEsc('Max_Amount_Hits')?></label>
                 <select id="maxHits">
