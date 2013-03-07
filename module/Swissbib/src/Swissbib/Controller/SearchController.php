@@ -69,6 +69,7 @@ class SearchController extends VFSearchController {
 		    // Add view params
         /** @var    $selectedView    \Zend\View\Model\ViewModel */
         $selectedView->tabHeadConfigs       = $resultTabsConfig;
+		$selectedView->facetsConfig			= $this->getServiceLocator()->get('VuFind\Config')->get('facets');
         $this->layout()->resultViewParams   = $selectedView->params;
 
 		return $selectedView;
@@ -113,7 +114,8 @@ class SearchController extends VFSearchController {
         $this->searchClassId = $tabConfig['searchClassId'];
 
         $view = parent::resultsAction();
-        $view->tabHeadConfig = $this->getTabConfig($tabConfig, $view);
+        $view->tabHeadConfig= $this->getTabConfig($tabConfig, $view);
+		$view->facetsConfig	= $this->getServiceLocator()->get('VuFind\Config')->get('facets');
 
             // Add view params to layout
         $this->layout()->resultViewParams = $view->params;

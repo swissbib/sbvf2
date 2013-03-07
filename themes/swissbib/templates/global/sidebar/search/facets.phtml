@@ -8,9 +8,9 @@ $options	= $this->searchOptions($this->searchClassId);
 $basicSearch= $options->getSearchAction();
 
     // Facet results settings: settings for items limit per facet
-$configReader           = new \VuFind\Config\Reader();
-$facetResultsSettings   = $configReader->getConfig('facets')->get('Results_Settings');
-$facetItemsMaxAmount = $facetResultsSettings->get('facet_limit');               // full
+
+$facetResultsSettings   = $this->facetsConfig->get('Results_Settings');
+$facetItemsMaxAmount	= $facetResultsSettings->get('facet_limit');               // full
 $facetItemsLimitDefault = $facetResultsSettings->get('facet_limit_default');    // initially shown
 ?>
 

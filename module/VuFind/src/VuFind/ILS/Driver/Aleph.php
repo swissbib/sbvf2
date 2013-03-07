@@ -36,7 +36,7 @@
  * @link     http://vufind.org/wiki/vufind2:building_an_ils_driver Wiki
  */
 namespace VuFind\ILS\Driver;
-use VuFind\Config\Reader as ConfigReader, VuFind\Exception\ILS as ILSException;
+use VuFind\Exception\ILS as ILSException;
 
 /**
  * Aleph Translator Class
@@ -1458,14 +1458,14 @@ class Aleph extends AbstractBase
                 . substr($date, 0, 4);
         } else {
             list($day, $month, $year) = explode("/", $date, 3);
-			if( !is_numeric($month) ) {
-				$translate_month = array(
-					'jan' => 1, 'feb' => 2, 'mar' => 3, 'apr' => 4, 'may' => 5,
-					'jun' => 6, 'jul' => 7, 'aug' => 8, 'sep' => 9, 'oct' => 10,
-					'nov' => 11, 'dec' => 12
-				);
-				$month	= $translate_month[strtolower($month)];
-			}
+            if (!is_numeric($month)) {
+                $translate_month = array(
+                    'jan' => 1, 'feb' => 2, 'mar' => 3, 'apr' => 4, 'may' => 5,
+                    'jun' => 6, 'jul' => 7, 'aug' => 8, 'sep' => 9, 'oct' => 10,
+                    'nov' => 11, 'dec' => 12
+                );
+                $month = $translate_month[strtolower($month)];
+            }
             return $day . "." . $month . "." . $year;
         }
     }
