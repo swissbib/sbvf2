@@ -64,10 +64,10 @@ class MyResearchController extends VFMyResearchController {
 
 
 	/**
-	* Inject location from route
-	*
-	* @inheritDoc
-	*/
+	 * Inject location from route
+	 *
+	 * @inheritDoc
+	 */
 	protected function createViewModel($params = null) {
 		$viewModel	= parent::createViewModel($params);
 
@@ -76,5 +76,96 @@ class MyResearchController extends VFMyResearchController {
 		return $viewModel;
 	}
 
+
+
+
+
+
+
+
+    /**
+     * (local) Search User Settings
+     *
+     * @return mixed
+     */
+    public function searchsettingsAction()
+    {
+        $view   = parent::profileAction();
+
+        /** @var $user  \VuFind\Db\Row\User */
+        $user = $this->getUser();
+        if( is_object($user) && get_class($user) === 'VuFind\Db\Row\User' ) {
+            $userData   = $user->toArray();
+            $nickname   = $userData['sb_nickname'];
+        } else {
+            $nickname   = '';
+        }
+
+        $view->nickname = $nickname;
+        $view->optsLanguage = $this->getOptionsLanguage();
+        $view->optsMaxHits  = $this->getOptionsMaximumHits();
+
+        return $view;
+    }
+
+
+
+    /**
+     * Get key-label tupels of languages.
+     * Labels are each in the resp. language, not to be localized.
+     *
+     * @return  Array
+     */
+    public function getOptionsLanguage() {
+        return array(
+            'de'    => 'Deutsch',
+            'en'    => 'English',
+            'fr'    => 'Francais',
+            'it'    => 'Italiano'
+        );
+    }
+
+
+
+    /**
+     * @return array
+     */
+    public function getOptionsMaximumHits() {
+        return array(
+            10,
+            50,
+            250,
+            1250,
+            5000
+        );
+    }
+
+
+    /**
+     * EXPLORATION (prove of concept)
+     * Store user data sb_nickname to local VF database
+     *
+     * @return  mixed
+     */
+    protected function saveaccountlocalAction() {
+        $view = $this->createViewModel();
+        $view->setTerminal(true);
+
+        $this->layout()->setTemplate('myresearch/profile');
+
+        /** @var $user  \VuFind\Db\Row\User */
+        $user = $this->getUser();
+        if( is_object($user) && get_class($user) === 'VuFind\Db\Row\User' ) {
+            $nickname   = array_key_exists('nickname', $_GET) ? $_GET['nickname'] : '';
+            $user->sb_nickname  = $nickname;
+            $user->save();
+
+            $this->layout()->nickname   = $nickname;
+        } else {
+            $this->layout()->nickname   = '';
+        }
+
+        return parent::profileAction();
+    }
 
 }

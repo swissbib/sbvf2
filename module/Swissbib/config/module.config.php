@@ -4,6 +4,7 @@ namespace Swissbib\Module\Config;
 return array(
 	'router' => array(
 		'routes' => array(
+                // ILS location, e.g. baselbern
 			'accountWithLocation' => array(
 				'type' => 'segment',
 				'options' => array(
@@ -18,19 +19,31 @@ return array(
 						'location'	=> '[a-z]+',
 					),
 				)
-			)
+			),
+                // (local) Search User Settings
+            'search-settings' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route'    => '/MyResearch/Profile/Searchsettings',
+                    'defaults' => array(
+                        'controller' => 'MyResearch',
+                        'action'     => 'Searchsettings',
+                    )
+                )
+            )
+
 		)
 	),
     'controllers' => array(
         'invokables' => array(
             'search'		=> 'Swissbib\Controller\SearchController',
-            'my-research'	=> 'Swissbib\Controller\MyResearchController'
+            'my-research'	=> 'Swissbib\Controller\MyResearchController',
         )
     ),
     'service_manager' => array(
         'invokables' => array(
-            'VuFindTheme\ResourceContainer' => 'Swissbib\VuFind\ResourceContainer',
-			'Swissbib\RecordDriverHoldingsHelper' => 'Swissbib\RecordDriver\Helper\Holdings'
+            'VuFindTheme\ResourceContainer'         => 'Swissbib\VuFind\ResourceContainer',
+			'Swissbib\RecordDriverHoldingsHelper'   => 'Swissbib\RecordDriver\Helper\Holdings'
         )
     ),
     'view_helpers' => array(

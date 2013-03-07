@@ -1,26 +1,18 @@
 <?
-    // Set up page title:
+        // Set up page title:
     $this->headTitle($this->translate('My Profile'));
-
-//    // Set up breadcrumbs:
-//    $this->layout()->breadcrumbs = '<a href="' . $this->url('myresearch-home') . '">'
-//        . $this->transEsc('Your Account') . '</a>' . '<span>&gt;</span><em>'
-//        . $this->transEsc('Profile') . '</em>';
-
-    // Only display home library form if we have multiple pickup locations:
+        // Only display home library form if we have multiple pickup locations:
     $showHomeLibForm = (isset($this->pickup) && count($this->pickup) > 1);
-
-    // Template for use by the renderArray helper:
+        // Template for use by the renderArray helper:
 	$userDataMapping = array(
-		$this->transEsc('First Name') => 'firstname',
-		$this->transEsc('Last Name') => 'lastname',
-		$this->transEsc('Address') . ' 1' => 'address1',
-		$this->transEsc('Address') . ' 2' => 'address2',
-		$this->transEsc('Zip') => 'zip',
-		$this->transEsc('Phone Number') => 'phone',
-		$this->transEsc('Group') => 'group'
+		$this->transEsc('First Name')       => 'firstname',
+		$this->transEsc('Last Name')        => 'lastname',
+		$this->transEsc('Address') . ' 1'   => 'address1',
+		$this->transEsc('Address') . ' 2'   => 'address2',
+		$this->transEsc('Zip')              => 'zip',
+		$this->transEsc('Phone Number')     => 'phone',
+		$this->transEsc('Group')            => 'group'
 	);
-
 ?>
 <?=$this->myResearchSideBar('profile', $this->location);?>
 <!-- begin: col3 (content) -->
@@ -28,9 +20,7 @@
 	<div id="col3_content" class="clearfix">
 		<!-- begin: content -->
 		<div id="content">
-
 			<h1><?=$this->transEsc('Your Profile')?></h1>
-
 			<?=$this->flashmessages()?>
 
 			<table>
@@ -52,7 +42,7 @@
 						'defaultPickupLocation'	=> $this->defaultPickupLocation
 					));
 				}
-			?>
+            ?>
 
 		</div>
 		<!-- end: content -->

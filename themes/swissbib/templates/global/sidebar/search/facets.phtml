@@ -17,7 +17,7 @@ $facetItemsLimitDefault = $facetResultsSettings->get('facet_limit_default');    
 <h3>Treffer eingrenzen</h3>
 
 <div class="facets">
-	<?php foreach($facetList as $facetGroup => $facetGroupData): ?>
+	<?php foreach($facetList as $facetGroup => $facetGroupData): /* Iterate over facet groups (topic, author, language, ... */ ?>
 		<?php
 			$facetId		= strtolower($facetGroup);
 			$facetGroupLabel= $facetGroupData['label'];
