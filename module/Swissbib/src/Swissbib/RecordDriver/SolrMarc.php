@@ -93,7 +93,7 @@ class SolrMarc extends VFSolrMarc {
 		if( isset($data['holdings']) ) {
 			$holdsIlsConfig = $this->ils->checkFunction('Holds');
 
-			$this->marcHoldings->init($this->getUniqueID(), $holdsIlsConfig['HMACKeys'], $data['holdings']);
+			$this->marcHoldings->initRecord($this->getServiceLocator(), $this->getUniqueID(), $holdsIlsConfig['HMACKeys'], $data['holdings']);
 		}
 	}
 
@@ -394,8 +394,8 @@ class SolrMarc extends VFSolrMarc {
 	 *
 	 * @return	Array[]
 	 */
-	public function getHoldings() {
-        return $this->marcHoldings->getHoldings();
+	public function getHoldings(\VuFind\Auth\Manager $authManager) {
+        return $this->marcHoldings->getHoldings($authManager, $this->ils);
     }
 
 

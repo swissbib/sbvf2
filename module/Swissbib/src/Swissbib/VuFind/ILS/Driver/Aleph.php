@@ -103,6 +103,37 @@ class Aleph extends AlephDriver {
 
 
 	/**
+	 * Get all circulation status infos for item
+	 *
+	 * @param	String		$sysNumber
+	 * @param	String		$library
+	 * @return	Array[]
+	 */
+	public function getCirculationStatus($sysNumber, $library = 'DSV01') {
+		$xml	= $this->doXRequest('circ-status', array(
+			'sys_no'	=> $sysNumber,
+			'library'	=> $library
+		));
+
+		$itemDataNodes	= $xml->xpath('item-data');
+		$data			= array();
+
+		foreach($itemDataNodes as $itemDataNode) {
+			$itemData	= array();
+
+			foreach($itemDataNode as $fieldName => $fieldValue) {
+				$itemData[$fieldName] = (string)$fieldValue;
+			}
+
+			$data[] = $itemData;
+		}
+
+		return $data;
+	}
+
+
+
+	/**
 	 * Get booking requests
 	 *
 	 * @param	Integer		$idPatron

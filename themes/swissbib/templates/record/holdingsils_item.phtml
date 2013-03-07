@@ -1,0 +1,17 @@
+<tr>
+	<td><?=$this->escapeHtml($item['location_expanded'])?></td>
+	<td><?=$this->escapeHtml($item['signature2'])?></td>
+	<td>ausleihbar</td>
+	<td>erhältlich</td>
+	<td><?=$this->escapeHtml($item['opac_note'])?></td>
+	<td>
+		<ul>
+			<?php if( isset($item['holdingLink']) ): ?>
+				<li><a href="<?=$this->recordLink()->getHoldUrl($item['holdingLink'])?>">ausleihen</a></li>
+			<?php endif; ?>
+			<?php if( isset($item['available']) ): ?>
+				Ist verfügbar
+			<?php endif; ?>
+		</ul>
+	</td>
+</tr>
