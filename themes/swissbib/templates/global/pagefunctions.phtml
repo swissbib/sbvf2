@@ -1,20 +1,21 @@
+<!-- swissbib/templates/global/pagefunctions.phtml -->
 <div id="pagefunctions" class="<?=$this->boxClass?>">
 	<h3 class="hidden">Seitenfunktionen</h3>
 	<ul>
 		<li id="pagefunction_rss">
-			<a href="#" title="RSS Feed abonnieren">RSS Feed</a>
+			<a href="#" title="<?=$this->transEsc('Get RSS Feed')?>"><?=$this->transEsc('Get RSS Feed')?></a>
 		</li>
 		<li id="pagefunction_link">
 			<a title="Permanenter Link zu diesem/n Treffer(n)" class="modal" href="#display_permalink">permalink</a>
 		</li>
 		<li id="pagefunction_print">
-			<a href="#" title="Seite drucken">Seite drucken</a>
+			<a href="#" title="<?=$this->transEsc('Print')?>"><?=$this->transEsc('Print')?></a>
 		</li>
 		<li id="pagefunction_send">
-			<a href="#" title="Link per Email senden">Link per Email senden</a>
+			<a href="#" title="<?=$this->transEsc('Email this')?>"><?=$this->transEsc('Email this')?></a>
 		</li>
 		<li id="pagefunction_save">
-			<a href="#" title="Seite speichern">Seite speichern</a>
+			<a href="#" title="<?=$this->transEsc('Save')?>"><?=$this->transEsc('Save')?></a>
 		</li>
 	</ul>
 </div>

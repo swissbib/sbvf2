@@ -1,6 +1,7 @@
 <?php
 $isLoggedIn	= !!$this->auth()->isLoggedIn();
 ?>
+<!-- swissbib/templates/global.navigation.phtml -->
 <div id="navigation">
 	<h3 class="hidden">Hauptnavigation</h3>
 	<ul>
@@ -11,6 +12,9 @@ $isLoggedIn	= !!$this->auth()->isLoggedIn();
 			<li>
 				<a href="<?=$this->url('myresearch-home');?>">My swissbib</a>
 				<ul class="subnavigation">
+                    <li>
+                        <a href="<?=$this->url('search-settings');?>"><?=$this->transEsc('My_Search_Settings')?></a>
+                    </li>
 					<li>
 						<a href="<?=$this->url('myresearch-favorites');?>"><?=$this->transEsc('Favorites')?></a>
 					</li>
@@ -30,7 +34,7 @@ $isLoggedIn	= !!$this->auth()->isLoggedIn();
 			<a href="#">Über swissbib</a>
 		</li>
 		<li>
-			<a href="#">Feedback</a>
+			<a title="Feedback" href="#">Feedback</a>
 		</li>
 		<li class="nav_help">
 			<a href="#">Hilfe</a>
