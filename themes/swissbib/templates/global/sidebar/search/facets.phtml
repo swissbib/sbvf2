@@ -13,8 +13,8 @@ $facetResultsSettings   = $this->facetsConfig->get('Results_Settings');
 $facetItemsMaxAmount	= $facetResultsSettings->get('facet_limit');               // full
 $facetItemsLimitDefault = $facetResultsSettings->get('facet_limit_default');    // initially shown
 ?>
-
-<h3>Treffer eingrenzen</h3>
+<!-- /themes/swissbib/templates/global/sidebar/search/facets.phtml -->
+<h3><?=$this->transEsc('Narrow Search')?></h3>
 
 <div class="facets">
 	<?php foreach($facetList as $facetGroup => $facetGroupData): /* Iterate over facet groups (topic, author, language, ... */ ?>
@@ -44,7 +44,7 @@ $facetItemsLimitDefault = $facetResultsSettings->get('facet_limit_default');    
             <? if($amountItems > $amountItemsShown): /* Show "more facets" link if there are more */ ?>
                 <?php $amountMore = $amountItems - $amountItemsShown ?>
                     <li id="more<?=$facetId?>" class="facet_more">
-                        <a href="#" onclick="moreFacets('<?=$facetId?>'); return false" title="Mehr anzeigen">Mehr anzeigen (<?= $amountMore ?>)</a>
+                        <a href="#" onclick="moreFacets('<?=$facetId?>'); return false" title="<?=$this->transEsc('more_info_toggle')?>"><?=$this->transEsc('more_info_toggle')?> (<?= $amountMore ?>)</a>
                     </li>
             <div id="narrowGroupHidden_<?=$facetId?>" class="offscreen">
                 <?php while($itemsCount < $amountItems) {
@@ -54,7 +54,7 @@ $facetItemsLimitDefault = $facetResultsSettings->get('facet_limit_default');    
                     <?php $itemsCount++; ?>
                 <?php } ?>
                 <li id="less<?=$facetId?>" class="facet_more">
-                    <a href="#" onclick="lessFacets('<?=$facetId?>'); return false" title="Weniger anzeigen">Weniger anzeigen (<?= $amountMore ?>)</a>
+                    <a href="#" onclick="lessFacets('<?=$facetId?>'); return false" title="<?=$this->transEsc('more_info_toggle')?>"><?=$this->transEsc('more_info_toggle')?> (<?= $amountMore ?>)</a>
                 </li>
             </div>
             <? endif; ?>
