@@ -7,15 +7,16 @@ $urlQuery	= $results->getUrlQuery();
 
 
 ?>
-<h3>Ihre Suche</h3>
+<!-- /themes/swissbib/templates/global/sidebar/search/filters.phtml -->
+<h3><?=$this->transEsc('Your Search')?></h3>
 <div class="filters">
 	<p>
-		Freie Suche:<br/>
+		<?=$this->transEsc('All Fields')?> = <br/>
 		<cite><?=$this->escapeHtml($this->params->getDisplayQuery())?></cite>
 	</p>
 
 	<?php if( sizeof($filters) ): ?>
-		<h4 class="filters_indicator"><span>Suchfilter B&uuml;cher</span></h4>
+		<h4 class="filters_indicator"><span>B&uuml;cher & mehr</span></h4>
 
 		<?php foreach($filters as $filterLabel => $filterValues): ?>
 			<?php
@@ -29,7 +30,7 @@ $urlQuery	= $results->getUrlQuery();
 					<?php foreach($filterValues as $filter): ?>
 						<?php $removalUrl = $urlQuery->removeFacet($filter['field'], $filter['value']);	?>
 						<li>
-							<a href="<?=$removalUrl?>" title="Filter entfernen: <?=$this->escapeHtml($filter['displayText'])?>" class="filter_remove"><?=$this->escapeHtml($filter['displayText'])?></a>
+							<a href="<?=$removalUrl?>" title="<?=$this->transEsc('Remove Filters')?>: <?=$this->escapeHtml($filter['displayText'])?>" class="filter_remove"><?=$this->escapeHtml($filter['displayText'])?></a>
 						</li>
 					<?php endforeach; ?>
 				</ul>
