@@ -34,7 +34,7 @@ namespace Swissbib\RecordDriver\Helper;
 
 use Swissbib\RecordDriver\SolrMarc;
 use VuFind\Crypt\HMAC;
-
+use Zend\Config\Config;
 
 
 
@@ -99,8 +99,15 @@ class Holdings implements HoldingsAwareInterface {
 	 */
 	protected $extractedData = false;
 
-
+	/**
+	 * @var	Array[]	List of availabilities per item and barcode
+	 */
 	protected $availabilities = array();
+
+	/**
+	 * @var	Array[]	List of network domains and libs
+	 */
+	protected $networks = array();
 
 
 
@@ -120,6 +127,27 @@ class Holdings implements HoldingsAwareInterface {
 		$this->hmacKeys			= $hmacKeys;
 
 		$this->setHoldingsContent($holdingsXml);
+
+		$this->initNetworks();
+	}
+
+
+
+	/**
+	 * Initialize networks from config
+	 */
+	protected function initNetworks() {
+		/** @var Config $networkConfigs  */
+		$networkConfigs	= $this->serviceLocator->get('VuFind\Config')->get('Aleph')->Networks;
+
+		foreach($networkConfigs as $network => $networkConfig) {
+			list($domain, $library) = explode(',', $networkConfig, 2);
+
+			$this->networks[$network] = array(
+				'domain'	=> $domain,
+				'library'	=> $library
+			);
+		}
 	}
 
 
@@ -183,14 +211,21 @@ class Holdings implements HoldingsAwareInterface {
 
 			// Add hold link and availability for all items
 		foreach($structuredElements as $networkCode => $network) {
-			if( $this->isSupportedNetwork($networkCode) ) { // Only add links for supported networks
-				foreach($network['institutions'] as $institutionCode => $institution) {
-					foreach($institution['items'] as $index => $item) {
-							// Add extra information for item
-						$structuredElements[$networkCode]['institutions'][$institutionCode]['items'][$index] = $this->extendWithActionLinks($item);
-					}
+			$structuredElements[$networkCode]['link'] = $this->getAlephNetworkLink($networkCode);
+
+			foreach($network['institutions'] as $institutionCode => $institution) {
+					// Add backlink
+				if( isset($this->networks[$networkCode]) ) {
+					$firstItem	= reset($institution['items']);
+					$structuredElements[$networkCode]['institutions'][$institutionCode]['backlink'] = $this->getAlephBackLink($networkCode, $institutionCode, $firstItem['bibsysnumber']);
+				}
+
+				foreach($institution['items'] as $index => $item) {
+						// Add extra information for item
+					$structuredElements[$networkCode]['institutions'][$institutionCode]['items'][$index] = $this->extendWithActionLinks($item);
 				}
 			}
+
 		}
 
 		return $structuredElements;
@@ -205,7 +240,7 @@ class Holdings implements HoldingsAwareInterface {
 	 * @param	String		$network
 	 * @return	Boolean
 	 */
-	protected function isSupportedNetwork($network) {
+	protected function isSupportedRestNetwork($network) {
 		return $network === 'IDSBB';
 	}
 
@@ -218,13 +253,49 @@ class Holdings implements HoldingsAwareInterface {
 	 * @return	Array
 	 */
 	protected function extendWithActionLinks(array $item) {
-			// Add hold link for item
-		$item['holdingLink'] = $this->buildHoldActionLink($item);
+		if( $this->isSupportedRestNetwork($item['network']) ) { // Only add links for supported networks
+				// Add hold link for item
+			$item['holdingLink'] = $this->buildHoldActionLink($item);
 
-			// Add availability if supported by network
-		$item['available'] = $this->getAvailabilityInfos($item['bibsysnumber'], $item['barcode']);
+				// Add availability if supported by network
+			$item['available'] = $this->getAvailabilityInfos($item['bibsysnumber'], $item['barcode']);
+		}
 
 		return $item;
+	}
+
+
+
+	/**
+	 * Build a deep link to an Aleph system
+	 *
+	 * @param	String		$network
+	 * @param $institution
+	 * @param $itemSysNumber
+	 * @return mixed
+	 */
+	protected function getAlephBackLink($network, $institution, $itemSysNumber) {
+		$linkPattern= '{aleph-opac-server}/F?func=item-global&doc_library={aleph-bib-library-code}&doc_number={bib-system-number}&sub_library={aleph-sublibrary-code}';
+		$data		= array(
+			'{aleph-opac-server}'		=> $this->networks[$network]['domain'],
+			'{aleph-bib-library-code}'	=> $this->networks[$network]['library'],
+			'{bib-system-number}'		=> $itemSysNumber,
+			'{aleph-sublibrary-code}'	=> $institution
+		);
+
+		return str_replace(array_keys($data), array_values($data), $linkPattern);
+	}
+
+
+
+	/**
+	 * Get aleph domain link for network
+	 *
+	 * @param	String		$network
+	 * @return	String|Boolean
+	 */
+	protected function getAlephNetworkLink($network) {
+		return isset($this->networks[$network]['domain']) ? $this->networks[$network]['domain'] : false;
 	}
 
 

@@ -77,10 +77,10 @@ $holdings		= $recordDriver->getHoldings($account);
 
 				<?php foreach($network['institutions'] as $institutionCode => $institution): ?>
 
-					<h4><?=$this->escapeHtml($institution['label'])?><?php /*Historisches Seminar*/ ?></h4>
+					<h4><?=$this->escapeHtml($institution['label'])?></h4>
 					<ul class="actions">
 						<li>
-							<a href="#" class="linkbutton primary icon_link_primary" title="Zum Bestand"><span>Zum Bestand</span></a>
+							<a href="<?=$this->escapeHtml($institution['backlink'])?>" class="linkbutton primary icon_link_primary" title="Zum Bestand" target="_blank"><span>Zum Bestand</span></a>
 						</li>
 						<li>
 							<a href="#" class="linkbutton icon_show toggler collapsed" title="Informationen zum Bestand" id="stock_toggler_<?=$networkCode?>_<?=$institutionCode?>">
@@ -93,7 +93,7 @@ $holdings		= $recordDriver->getHoldings($account);
 							<a href="#" title="Bibliothek aus Favoriten entfernen">Bibliothek aus Favoriten entfernen</a>
 						</li>
 						<li class="miniaction_link">
-							<a href="http://aleph.unibas.ch" class="externallink" title="Bibliothek Historisches Seminar">http://aleph.unibas.ch</a>
+							<a href="<?=$this->escapeHtml($network['link'])?>" class="externallink" title="Bibliothek Historisches Seminar"><?=$this->escapeHtml($network['link'])?></a>
 						</li>
 					</ul>
 
