@@ -1,33 +1,33 @@
 <?php
-
-$languages	= array(
-	array(
-		'key'		=> 'de',
-		'label'		=> 'Deutsch',
-		'selected'	=> true
-	),
-    array(
-        'key'		=> 'en',
-        'label'		=> 'Englisch',
-    ),
-	array(
-		'key'		=> 'fr',
-		'label'		=> 'Français'
-	),
-	array(
-		'key'		=> 'it',
-		'label'		=> 'Italiano'
-	)
+$langConfig  = array(
+    'de'    => 'Deutsch',
+    'en'    => 'English',
+    'fr'    => 'Français',
+    'it'    => 'Italiano'
 );
 
+$languages = array();
+foreach($langConfig as $key => $label) {
+    $languages[] = array(
+        'key'       => $key,
+        'label'     => $label,
+        'selected'  => $_GET['lng'] == $key
+    );
+}
 ?>
 <!-- swissbib/templates/global/languages.phtml -->
 <div id="meta">
 	<h3 class="hidden">Metanavigation</h3>
 	<ul>
 		<?php foreach($languages as $lang): ?>
-		<li class="nav_<?=$lang['key']?><?=isset($lang['selected'])?' selected':''?>">
-			<a href="<?=$this->serverUrl(true)?>&lng=<?=$lang['key']?>" title="<?=$lang['label']?>"><?=$lang['key']?></a>
+		<li class="nav_<?=$lang['key']?><?= $lang['selected'] ? ' selected' : '' ?>">
+<?
+    $url = $this->serverUrl(true);
+    $pattern    = '/lng\=[a-z]+/';
+    $replace    = 'lng=' . $lang['key'];
+    $url        = preg_replace($pattern, $replace, $url);
+?>
+			<a href="<?=$url?>" title="<?=$lang['label']?>"><?=$lang['key']?></a>
 		</li>
 		<?php endforeach; ?>
 	</ul>
