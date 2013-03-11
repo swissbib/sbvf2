@@ -7,11 +7,12 @@ $langConfig  = array(
 );
 
 $languages = array();
+$setLang = array_key_exists('lng', $_GET) ? $_GET['lng'] : 'de';
 foreach($langConfig as $key => $label) {
     $languages[] = array(
         'key'       => $key,
         'label'     => $label,
-        'selected'  => $_GET['lng'] == $key
+        'selected'  => $setLang == $key
     );
 }
 ?>
