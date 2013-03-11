@@ -71,7 +71,8 @@ return array(
 						$driver = new \Swissbib\RecordDriver\SolrMarc(
 							$sm->getServiceLocator()->get('VuFind\Config')->get('config'),
 							null,
-							$sm->getServiceLocator()->get('VuFind\Config')->get('searches')
+							$sm->getServiceLocator()->get('VuFind\Config')->get('searches'),
+							$sm->getServiceLocator()
 						);
 						$driver->attachILS(
 							$sm->getServiceLocator()->get('VuFind\ILSConnection'),

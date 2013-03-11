@@ -34,6 +34,7 @@ namespace Swissbib\RecordDriver;
 
 use VuFind\RecordDriver\SolrMarc as VFSolrMarc;
 use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * enhancement for swissbib MARC records in Solr.
@@ -69,15 +70,10 @@ class SolrMarc extends VFSolrMarc {
 	 *
 	 * @inheritDoc
 	 */
-	public function __construct($mainConfig = null, $recordConfig = null, $searchSettings = null) {
+	public function __construct($mainConfig = null, $recordConfig = null, $searchSettings = null, ServiceLocatorInterface $serviceLocator) {
 		parent::__construct($mainConfig, $recordConfig, $searchSettings);
 
-		// remove parent dependency first
-		//todo: I'm looking for a possibility to wire up the Holdings using
-		//ServiceLocator and configuration -> tbd later
-//		$holdingsHelper = $this->getServiceLocator()->get('Swissbib\RecordDriverHoldingsHelper');
-
-		$this->marcHoldings = new HoldingsHelper();
+		$this->marcHoldings = new HoldingsHelper($serviceLocator);
 	}
 
 
@@ -93,7 +89,7 @@ class SolrMarc extends VFSolrMarc {
 		if( isset($data['holdings']) ) {
 			$holdsIlsConfig = $this->ils->checkFunction('Holds');
 
-			$this->marcHoldings->initRecord($this->getServiceLocator(), $this->getUniqueID(), $holdsIlsConfig['HMACKeys'], $data['holdings']);
+			$this->marcHoldings->initRecord($this->getUniqueID(), $holdsIlsConfig['HMACKeys'], $data['holdings']);
 		}
 	}
 

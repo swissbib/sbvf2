@@ -35,6 +35,8 @@ namespace Swissbib\RecordDriver\Helper;
 use Swissbib\RecordDriver\SolrMarc;
 use VuFind\Crypt\HMAC;
 use Zend\Config\Config;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use Swissbib\VuFind\ILS\Driver\Aleph;
 
 
 
@@ -109,26 +111,45 @@ class Holdings implements HoldingsAwareInterface {
 	 */
 	protected $networks = array();
 
+	/**
+	 * @var	Config
+	 */
+	protected $config;
 
+	/**
+	 * @var	\VuFind\Crypt\HMAC	$hmac
+	 */
+	protected $hmac;
+
+
+
+	/**
+	 * Initialize with service locator
+	 *
+	 * @param	ServiceLocatorInterface	$serviceLocator
+	 */
+	function __construct(ServiceLocatorInterface $serviceLocator) {
+		$this->serviceLocator	= $serviceLocator;
+		$this->config			= $this->serviceLocator->get('VuFind\Config')->get('Holdings');
+		$this->hmac				= $this->serviceLocator->get('VuFind\HMAC');
+
+		$this->initNetworks();
+	}
 
 
 
 	/**
 	 * Initialize for item
 	 *
-	 * @param	Object		$serviceLocator
 	 * @param	String		$idItem
 	 * @param	Array		$hmacKeys
 	 * @param	String		$holdingsXml
 	 */
-	public function initRecord($serviceLocator, $idItem, array $hmacKeys, $holdingsXml) {
-		$this->serviceLocator	= $serviceLocator->getServiceLocator();
+	public function initRecord($idItem, array $hmacKeys, $holdingsXml) {
 		$this->idItem			= $idItem;
-		$this->hmacKeys			= $hmacKeys;
+		$this->hmacKeys	= $hmacKeys;
 
 		$this->setHoldingsContent($holdingsXml);
-
-		$this->initNetworks();
 	}
 
 
@@ -137,16 +158,23 @@ class Holdings implements HoldingsAwareInterface {
 	 * Initialize networks from config
 	 */
 	protected function initNetworks() {
-		/** @var Config $networkConfigs  */
-		$networkConfigs	= $this->serviceLocator->get('VuFind\Config')->get('Aleph')->Networks;
+		$networkNames	= array('aleph', 'virtua');
 
-		foreach($networkConfigs as $network => $networkConfig) {
-			list($domain, $library) = explode(',', $networkConfig, 2);
+		foreach($networkNames as $networkName) {
+			$configName		= ucfirst($networkName) . 'Networks';
 
-			$this->networks[$network] = array(
-				'domain'	=> $domain,
-				'library'	=> $library
-			);
+			/** @var Config $networkConfigs  */
+			$networkConfigs	= $this->config->get($configName);
+
+			foreach($networkConfigs as $network => $networkConfig) {
+				list($domain, $library) = explode(',', $networkConfig, 2);
+
+				$this->networks[$network] = array(
+					'domain'	=> $domain,
+					'library'	=> $library,
+					'type'		=> $networkName
+				);
+			}
 		}
 	}
 
@@ -179,7 +207,9 @@ class Holdings implements HoldingsAwareInterface {
 	/**
 	 * Get holdings data
 	 *
-	 * @return	Array[]		Contains lists for items and holdings {items=>[],holdings=>[]}
+	 * @param	\VuFind\Auth\Manager	$authManager
+	 * @param	\VuFind\ILS\Connection	$ils
+	 * @return	Array[]|Boolean			Contains lists for items and holdings {items=>[],holdings=>[]}
 	 */
 	public function getHoldings($authManager, $ils) {
 		$this->authManager	= $authManager;
@@ -206,26 +236,21 @@ class Holdings implements HoldingsAwareInterface {
 	 */
 	protected function getItemData() {
 		$fieldName			= 949; // Field code for item information in holdings xml
-		$structuredElements	= $this->getStructuredFieldElements($fieldName, $this->fieldMapping, 'items');
-		/** @var \Swissbib\VuFind\ILS\Driver\Aleph $alephDriver */
+		$structuredElements	= $this->getStructuredHoldingData($fieldName, $this->fieldMapping, 'items');
 
 			// Add hold link and availability for all items
 		foreach($structuredElements as $networkCode => $network) {
-			$structuredElements[$networkCode]['link'] = $this->getAlephNetworkLink($networkCode);
+			$structuredElements[$networkCode]['link'] = $this->getNetworkLink($networkCode);
 
 			foreach($network['institutions'] as $institutionCode => $institution) {
 					// Add backlink
-				if( isset($this->networks[$networkCode]) ) {
-					$firstItem	= reset($institution['items']);
-					$structuredElements[$networkCode]['institutions'][$institutionCode]['backlink'] = $this->getAlephBackLink($networkCode, $institutionCode, $firstItem['bibsysnumber']);
-				}
+				$structuredElements[$networkCode]['institutions'][$institutionCode]['backlink'] = $this->getBackLink($networkCode, $institutionCode, $institution['items'][0]);
 
 				foreach($institution['items'] as $index => $item) {
 						// Add extra information for item
 					$structuredElements[$networkCode]['institutions'][$institutionCode]['items'][$index] = $this->extendWithActionLinks($item);
 				}
 			}
-
 		}
 
 		return $structuredElements;
@@ -236,12 +261,11 @@ class Holdings implements HoldingsAwareInterface {
 	/**
 	 * Check whether network is supported
 	 *
-	 * @todo	Implement real check / move to config file
 	 * @param	String		$network
 	 * @return	Boolean
 	 */
-	protected function isSupportedRestNetwork($network) {
-		return $network === 'IDSBB';
+	protected function isRestfulNetwork($network) {
+		return isset($this->config->Restful->{$network});
 	}
 
 
@@ -249,16 +273,22 @@ class Holdings implements HoldingsAwareInterface {
 	/**
 	 * Add action links for item
 	 *
+	 * @todo	Handle multi ILS system
 	 * @param	Array	$item
 	 * @return	Array
 	 */
 	protected function extendWithActionLinks(array $item) {
-		if( $this->isSupportedRestNetwork($item['network']) ) { // Only add links for supported networks
+		if( $this->isAlephNetwork($item['network']) && $this->isRestfulNetwork($item['network']) ) { // Only add links for supported networks
 				// Add hold link for item
-			$item['holdingLink'] = $this->buildHoldActionLink($item);
+			$item['holdLink'] = $this->getHoldLink($item);
 
 				// Add availability if supported by network
-			$item['available'] = $this->getAvailabilityInfos($item['bibsysnumber'], $item['barcode']);
+			$item['availability'] = $this->getAvailabilityInfos($item['bibsysnumber'], $item['barcode']);
+			$item['isAvailable']	= $this->isAvailable($item['bibsysnumber'], $item['barcode']);
+
+			if( $this->isLoggedIn() ) {
+				$item['userActions'] = $this->getAllowedUserActions($item);
+			}
 		}
 
 		return $item;
@@ -267,23 +297,262 @@ class Holdings implements HoldingsAwareInterface {
 
 
 	/**
-	 * Build a deep link to an Aleph system
+	 * Get list of allowed actions for the current user
+	 *
+	 * @param	Array		$item
+	 * @return	Array
+	 */
+	protected function getAllowedUserActions($item) {
+		/** @var Aleph $ilsDriver  */
+		$ilsDriver	= $this->ils->getDriver();
+		$patron		= $this->getPatron();
+
+		$itemId		= $item['localid'] . $item['sequencenumber'];
+		$groupId	= $this->buildItemId($item);
+
+		$allowedActions	= $ilsDriver->getAllowedActionsForItem($patron['id'], $itemId, $groupId);
+		$host			= $ilsDriver->host . ':8991'; // @todo make dev port dynamic
+
+		if( $allowedActions['photocopyRequest'] ) {
+			$allowedActions['photocopyRequestLink'] = $this->getPhotoCopyRequestLink($host, $item);;
+		}
+
+		return $allowedActions;
+	}
+
+
+
+	/**
+	 * Get link for external photocopy request
+	 *
+	 * @todo	refactor
+	 * @param	String		$host
+	 * @param	Array		$item
+	 * @return	String
+	 */
+	protected function getPhotoCopyRequestLink($host, array $item) {
+		return 'http://' . $host . '/F/?' . http_build_query(array(
+			'func'				=> 'item-photo-request',
+			'doc_library'		=> $item['adm_code'],
+			'adm_doc_number'	=> $item['localid'],
+			'item_sequence'		=> $item['sequencenumber'],
+			'bib_doc_num'		=> $item['bibsysnumber'],
+			'bib_library'		=> 'DSV01'
+		));
+	}
+
+
+
+	/**
+	 * Check whether user is logged in
+	 *
+	 * @return	Boolean
+	 */
+	protected function isLoggedIn() {
+		return $this->serviceLocator->get('VuFind\AuthManager')->isLoggedIn() !== false;
+	}
+
+
+
+	/**
+	 * Get patron (catalog login data)
+	 *
+	 * @return	Array
+	 */
+	protected function getPatron() {
+		return $this->serviceLocator->get('VuFind\AuthManager')->storedCatalogLogin();
+	}
+
+
+
+	/**
+	 * Check whether network uses aleph system
 	 *
 	 * @param	String		$network
-	 * @param $institution
-	 * @param $itemSysNumber
-	 * @return mixed
+	 * @return	Boolean
 	 */
-	protected function getAlephBackLink($network, $institution, $itemSysNumber) {
-		$linkPattern= '{aleph-opac-server}/F?func=item-global&doc_library={aleph-bib-library-code}&doc_number={bib-system-number}&sub_library={aleph-sublibrary-code}';
-		$data		= array(
-			'{aleph-opac-server}'		=> $this->networks[$network]['domain'],
-			'{aleph-bib-library-code}'	=> $this->networks[$network]['library'],
-			'{bib-system-number}'		=> $itemSysNumber,
-			'{aleph-sublibrary-code}'	=> $institution
+	protected function isAlephNetwork($network) {
+		return isset($this->networks[$network]) ? $this->networks[$network]['type'] === 'aleph' : false;
+	}
+
+
+
+	/**
+	 * Get a back link
+	 * Check first if a custom type is defined for this network
+	 * Fallback to network default
+	 *
+	 * @param	String		$networkCode
+	 * @param	String		$institutionCode
+	 * @param	Array		$item
+	 * @return	Boolean
+	 */
+	protected function getBackLink($networkCode, $institutionCode, $item) {
+		$method		= false;
+		$data		= array();
+
+
+		if( isset($this->config->Backlink->{$networkCode}) ) { // Has the network its own backlink type
+			$method		= 'getBackLink' . ucfirst($networkCode);
+			$data		= array(
+				'pattern' => $this->config->Backlink->{$networkCode}
+			);
+		} else { // no custom type
+			if( isset($this->networks[$networkCode]) ) { // is network even configured?
+				$type	= $this->networks[$networkCode]['type'];
+				$method	= 'getBackLink' . ucfirst($type);
+
+					// Has the network type (aleph, virtua, etc) a general link?
+				$typeNetwork	= ucfirst($type);
+				if( isset($this->config->Backlink->{$typeNetwork}) ) {
+					$data		= array(
+						'pattern' => $this->config->Backlink->{$typeNetwork}
+					);
+				}
+			}
+		}
+
+			// Merge in network data if available
+		if( isset($this->networks[$networkCode]) ) {
+			$data	= array_merge($this->networks[$networkCode], $data);
+		}
+
+			// Is a matching method available?
+		if( $method && method_exists($this, $method)) {
+			return $this->{$method}($networkCode, $institutionCode, $item, $data);
+		}
+
+		return false;
+	}
+
+
+
+	/**
+	 * Get back link for aleph
+	 *
+	 * @param	String		$networkCode
+	 * @param	String		$institutionCode
+	 * @param	Array		$item
+	 * @param	Array		$data
+	 * @return	String
+	 */
+	protected function getBackLinkAleph($networkCode, $institutionCode, $item, array $data) {
+		$values		= array(
+			'server'				=> $data['domain'],
+			'bib-library-code'		=> $data['library'],
+			'bib-system-number'		=> $item['bibsysnumber'],
+			'aleph-sublibrary-code'	=> $institutionCode
 		);
 
-		return str_replace(array_keys($data), array_values($data), $linkPattern);
+		return $this->compileString($data['pattern'], $values);
+	}
+
+
+
+	/**
+	 * Get back link for virtua
+	 *
+	 * @todo	Get user language
+	 * @param	String		$networkCode
+	 * @param	String		$institutionCode
+	 * @param	Array		$item
+	 * @param	Array		$data
+	 * @return	String
+	 */
+	protected function getBackLinkVirtua($networkCode, $institutionCode, $item, array $data) {
+		$values	= array(
+			'server'			=> $data['domain'],
+			'language-code'		=> 'de', // @todo fetch from user
+			'bib-system-number'	=> $this->getNumericString($item['bibsysnumber']) // remove characters from number string
+		);
+
+		return $this->compileString($data['pattern'], $values);
+	}
+
+
+
+	/**
+	 * Get back link for alexandria
+	 * Currently only a wrapper for virtua
+	 *
+	 * @param	String		$networkCode
+	 * @param	String		$institutionCode
+	 * @param	Array		$item
+	 * @param	Array		$data
+	 * @return	String
+	 */
+	protected function getBackLinkAlexandria($networkCode, $institutionCode, array $item, array $data) {
+		return $this->getBackLinkVirtua($networkCode, $institutionCode, $item, $data);
+	}
+
+
+
+	/**
+	 * Get back link for SNL
+	 * Currently only a wrapper for virtua
+	 *
+	 * @param	String		$networkCode
+	 * @param	String		$institutionCode
+	 * @param	Array		$item
+	 * @param	Array		$data
+	 * @return	String
+	 */
+	protected function getBackLinkSNL($networkCode, $institutionCode, $item, array $data) {
+		return $this->getBackLinkVirtua($networkCode, $institutionCode, $item, $data);
+	}
+
+
+
+	/**
+	 * Build rero backlink
+	 *
+	 * @param $networkCode
+	 * @param $institutionCode
+	 * @param $item
+	 * @param array $data
+	 * @return mixed
+	 */
+	protected function getBackLinkRERO($networkCode, $institutionCode, $item, array $data) {
+		$values	= array(
+			'server'			=> $data['domain'],
+			'language-code'		=> 'de', // @todo fetch from user,
+			'RERO-network-code'	=> substr($institutionCode, 0, 2), // first two characters should do it. not sure
+			'bib-system-number'	=> $this->getNumericString($item['bibsysnumber']), // remove characters from number string
+			'sub-library-code'	=> $institutionCode
+		);
+
+		return $this->compileString($data['pattern'], $values);
+	}
+
+
+
+	/**
+	 * Compile string. Replace {varName} pattern with names and data from array
+	 *
+	 * @param	String		$string
+	 * @param	Array		$keyValues
+	 * @return	String
+	 */
+	protected function compileString($string, array $keyValues) {
+		$newKeyValues = array();
+
+		foreach($keyValues as $key => $value) {
+			$newKeyValues['{' . $key . '}'] = $value;
+		}
+
+		return str_replace(array_keys($newKeyValues), array_values($newKeyValues), $string);
+	}
+
+
+
+	/**
+	 * Remove all not-numeric parts from string
+	 *
+	 * @param	String		$string
+	 * @return	String
+	 */
+	protected function getNumericString($string) {
+		return preg_replace('[\D]', '', $string);
 	}
 
 
@@ -294,7 +563,7 @@ class Holdings implements HoldingsAwareInterface {
 	 * @param	String		$network
 	 * @return	String|Boolean
 	 */
-	protected function getAlephNetworkLink($network) {
+	protected function getNetworkLink($network) {
 		return isset($this->networks[$network]['domain']) ? $this->networks[$network]['domain'] : false;
 	}
 
@@ -317,6 +586,27 @@ class Holdings implements HoldingsAwareInterface {
 		}
 
 		return $this->availabilities[$sysNumber][$barcode];
+	}
+
+
+
+	/**
+	 * Check whether item is avilable
+	 *
+	 * @todo	Improve checks!
+	 * @see		getAvailabilityInfos
+	 * @param	String		$sysNumber
+	 * @param	String		$barcode
+	 * @return	Boolean		bool
+	 */
+	protected function isAvailable($sysNumber, $barcode) {
+		$infos	= $this->getAvailabilityInfos($sysNumber, $barcode);
+
+		if( $infos ) {
+			return $infos['loan-status'] === 'Loan';
+		}
+
+		return false;
 	}
 
 
@@ -346,7 +636,7 @@ class Holdings implements HoldingsAwareInterface {
 	 * @return	Array[]
 	 */
 	protected function getHoldingData() {
-		return $this->getStructuredFieldElements(852, $this->fieldMapping, 'holdings');
+		return $this->getStructuredHoldingData(852, $this->fieldMapping, 'holdings');
 	}
 
 
@@ -359,7 +649,7 @@ class Holdings implements HoldingsAwareInterface {
 	 * @param	String		$elementKey
 	 * @return	Array
 	 */
-	protected function getStructuredFieldElements($fieldName, array $mapping, $elementKey) {
+	protected function getStructuredHoldingData($fieldName, array $mapping, $elementKey) {
 		$data		= array();
 		$fields		= $this->holdings->getFields($fieldName);
 
@@ -418,23 +708,18 @@ class Holdings implements HoldingsAwareInterface {
 	 * @param	Array	$holdingItem
 	 * @return	Array
 	 */
-	protected function buildHoldActionLink(array $holdingItem) {
+	protected function getHoldLink(array $holdingItem) {
 		$linkValues	= array(
 			'id'		=> $holdingItem['localid'], // $this->idItem,
 			'item_id'	=> $this->buildItemId($holdingItem)
 		);
-
-		/**
-		 * @var	\VuFind\Crypt\HMAC	$hmac
-		 */
-		$hmac	= $this->serviceLocator->get('VuFind\HMAC');
 
 		return array(
 			'action'	=> 'Hold',
 			'record'	=> $this->idItem,
 			'anchor'	=> '#tabnav',
 			'query'		=> http_build_query($linkValues + array(
-				'hashKey'	=> $hmac->generate($this->hmacKeys, $linkValues)
+				'hashKey'	=> $this->hmac->generate($this->hmacKeys, $linkValues)
 			))
 		);
 	}

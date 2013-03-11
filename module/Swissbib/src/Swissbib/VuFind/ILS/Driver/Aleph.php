@@ -103,6 +103,41 @@ class Aleph extends AlephDriver {
 
 
 	/**
+	 * Get allowed actions for current user for holding item
+	 * Actions: hold, shortLoan, photocopyRequest, bookingRequest
+	 *
+	 * @param	String		$patronId		Catalog user id
+	 * @param	String		$id				Item id
+	 * @param	String		$group			Group id
+	 * @return	Array		List with flags for actions
+	 */
+	public function getAllowedActionsForItem($patronId, $id, $group) {
+		list($bib, $sys_no) = $this->parseId($id);
+        $resource = $bib . $sys_no;
+        $xml = $this->doRestDLFRequest(
+            array('patron', $patronId, 'record', $resource, 'items', $group)
+        );
+
+		$result		= array();
+		$functions	= array(
+			'hold'				=> 'HoldRequest',
+			'shortLoan'			=> 'ShortLoan',
+			'photocopyRequest'	=> 'PhotocopyRequest',
+			'bookingRequest'	=> 'BookingRequest'
+		);
+
+			// Check flags for each info node
+		foreach($functions as $key => $type) {
+			$typeInfoNodes	= $xml->xpath('//info[@type="' . $type . '"]');
+			$result[$key]	= (string)$typeInfoNodes[0]['allowed'] === 'Y';
+		}
+
+		return $result;
+	}
+
+
+
+	/**
 	 * Get all circulation status infos for item
 	 *
 	 * @param	String		$sysNumber
