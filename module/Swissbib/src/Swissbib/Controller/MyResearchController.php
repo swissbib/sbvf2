@@ -78,11 +78,6 @@ class MyResearchController extends VFMyResearchController {
 
 
 
-
-
-
-
-
     /**
      * (local) Search User Settings
      *
