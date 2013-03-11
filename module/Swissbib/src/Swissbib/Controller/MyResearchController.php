@@ -93,26 +93,67 @@ class MyResearchController extends VFMyResearchController {
         $view   = parent::profileAction();
 
         /** @var $user  \VuFind\Db\Row\User */
-        $user = $this->getUser();
-        if( is_object($user) && get_class($user) === 'VuFind\Db\Row\User' ) {
-            $userData   = $user->toArray();
-            $nickname   = 'test'; //$userData['sb_nickname'];
-        } else {
-            $nickname   = '';
-        }
+        $user       = $this->getUser();
+        $userData   = $user->toArray();
+        $idUser     = intval($userData['id']);
 
-        $view->nickname = $nickname;
+        $view->language = $this->getUserLanguage($idUser);
+        $view->maxHits  = $this->getUserAmountMaxHits($idUser);
+
         $view->optsLanguage = $this->getOptionsLanguage();
         $view->optsMaxHits  = $this->getOptionsMaximumHits();
 
-
-        //...Prove of concept...
-        //@todo implement actual values storing
-/** @var $userLocalData \Swissbib\Db\Table\UserLocalData */
-$userLocalData  = $this->getServiceLocator()->get('Swissbib\DbTablePluginManager')->get('userlocaldata');
-$userLocalData->createOrUpdateLanguage('duetsch', 1);
-
         return $view;
+    }
+
+
+
+    /**
+     * EXPLORATION (prove of concept)
+     * Store user data sb_nickname to local VF database
+     *
+     * @return  mixed
+     */
+    protected function saveaccountlocalAction() {
+        $view = $this->createViewModel();
+        $view->setTerminal(true);
+
+        /** @var $user  \VuFind\Db\Row\User */
+        $user       = $this->getUser();
+        $userData   = $user->toArray();
+        $idUser     = intval($userData['id']);
+
+            // Store received value to database
+        /** @var $userLocalData \Swissbib\Db\Table\UserLocalData */
+        $userLocalData  = $this->getServiceLocator()->get('Swissbib\DbTablePluginManager')->get('userlocaldata');
+
+            // Init language from received value/default, save to database
+        if( array_key_exists('language', $_GET) ) {
+            $language   = $_GET['language'];
+            $userLocalData->createOrUpdateLanguage($language, 1);
+        } else {
+            $language    = $this->getUserLanguage($idUser);
+        }
+            // Init max_hits from received value/default, save to database
+        if( array_key_exists('max_hits', $_GET) ) {
+            $maxHits   = $_GET['max_hits'];
+            $userLocalData->createOrUpdateMaxHits($maxHits, 1);
+        } else {
+            $maxHits    = $this->getUserAmountMaxHits($idUser);
+        }
+            // Setup layout / view params
+        $this->layout()->setTemplate('myresearch/searchsettings');
+
+        $this->layout()->language       = $language;
+        $this->layout()->maxHits        = $maxHits;
+        $this->layout()->optsLanguage   = $this->getOptionsLanguage();
+        $this->layout()->optsMaxHits    = $this->getOptionsMaximumHits();
+
+        //@todo implement messages flashing
+//        $this->flashMessenger()->setNamespace('info')
+//                ->addMessage('save_usersettings_success');
+
+        return parent::profileAction();
     }
 
 
@@ -148,31 +189,66 @@ $userLocalData->createOrUpdateLanguage('duetsch', 1);
     }
 
 
+
     /**
-     * EXPLORATION (prove of concept)
-     * Store user data sb_nickname to local VF database
+     * Get user pref: language
+     * Or default language if none stored.
      *
-     * @return  mixed
+     * @param   Integer     $idUser
+     * @return  String      Language key
      */
-    protected function saveaccountlocalAction() {
-        $view = $this->createViewModel();
-        $view->setTerminal(true);
+    private function getUserLanguage($idUser) {
+        $languageKey    = $this->getUserLocalLanguage($idUser);
 
-        $this->layout()->setTemplate('myresearch/profile');
+        return is_null($languageKey) || !$languageKey ? 'de' : $languageKey;
+    }
 
-        /** @var $user  \VuFind\Db\Row\User */
-        $user = $this->getUser();
-        if( is_object($user) && get_class($user) === 'VuFind\Db\Row\User' ) {
-            $nickname   = array_key_exists('nickname', $_GET) ? $_GET['nickname'] : '';
-            $user->sb_nickname  = $nickname;
-            $user->save();
 
-            $this->layout()->nickname   = $nickname;
-        } else {
-            $this->layout()->nickname   = '';
+
+    /**
+     * Get user pref: amount of shown results
+     * Or default amount if none stored.
+     *
+     * @param   Integer     $idUser
+     * @return  String  Language key
+     */
+    public function getUserAmountMaxHits($idUser) {
+        $idUser = intval($idUser);
+
+        /** @var $userLocalData \Swissbib\Db\Table\UserLocalData */
+        $userLocalData  = $this->getServiceLocator()->get('Swissbib\DbTablePluginManager')->get('userlocaldata');
+
+        $amount    = $userLocalData->getAmountMaxHits($idUser);
+        if( is_null($amount) || !$amount) {
+                // No pref found? set to default
+            $amount    = '50';
         }
 
-        return parent::profileAction();
+        return $amount;
+    }
+
+
+
+    /**
+     * Get user preference: language key
+     * Or default if none stored.
+     *
+     * @param   Integer     $idUser
+     * @return  String
+     */
+    public function getUserLocalLanguage($idUser) {
+        $idUser = intval($idUser);
+
+        /** @var $userLocalData \Swissbib\Db\Table\UserLocalData */
+        $userLocalData  = $this->getServiceLocator()->get('Swissbib\DbTablePluginManager')->get('userlocaldata');
+
+        $key    = $userLocalData->getLanguage($idUser);
+        if( is_null($key) || !$key ) {
+                // No pref found? set to default
+            $key    = 'de';
+        }
+
+        return $key;
     }
 
 }

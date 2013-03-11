@@ -13,18 +13,17 @@
 		<!-- begin: content -->
 		<div id="content">
 			<h1><?=$this->transEsc('My_Search_Settings')?></h1>
-			<?=$this->flashmessages()?>
-
-
+			<?=$this->flashmessages()?><br/>
 
             <form name="form_useraccount" action="/vufind/MyResearch/Saveaccountlocal" method="get" id="save_account_submit">
-
                 <h3>Sucheinstellungen und Oberfläche</h3>
 
                 <label for="language"><?=$this->transEsc('Language')?></label>
-                <select id="language">
+                <select id="language" name="language">
                     <? foreach ($this->optsLanguage as $languageKey => $languageLabel): ?>
-                        <option value="<?= $languageKey ?>"><?= $languageLabel ?></option>
+                        <option <? if($languageKey == $this->language): ?>selected="selected"<? endif; ?> value="<?= $languageKey ?>">
+                            <?= $languageLabel ?>
+                        </option>
                     <? endforeach; ?>
                 </select>
 
@@ -32,24 +31,13 @@
                 <h3>Trefferliste und Ausgabeformate</h3>
 
                 <label for="maxHits"><?=$this->transEsc('Max_Amount_Hits')?></label>
-                <select id="maxHits">
-                    <? foreach ($this->optsMaxHits as $maxHits): ?>
-                        <option value="<?= $maxHits ?>"><?= $maxHits ?></option>
+                <select id="maxHits" name="max_hits">
+                    <? foreach ($this->optsMaxHits as $amountHits): ?>
+                        <option <? if($amountHits == $this->maxHits): ?>selected="selected"<? endif; ?> value="<?= $amountHits ?>">
+                            <?= $amountHits ?>
+                        </option>
                     <? endforeach; ?>
                 </select>
-
-<!--                <label for"nickname"=""><strong>Spitzname</strong></label>-->
-<!--                <input type="text" value="--><?//= $this->nickname ?><!--" id="nickname">-->
-<!--                <input type="button" name="useraccount_submit" value="Speichern" onclick="-->
-<!--                    $('#content').prepend(sbAjax.createSpinnerElement());-->
-<!--                    $.ajax({-->
-<!--                        url:		    document.location.href.split('/vufind')[0] + '/vufind/MyResearch/Saveaccountlocal' + '?&nickname=' + $('#nickname')[0].value,-->
-<!--                        type:		    'GET',-->
-<!--                        cache:		    false,-->
-<!--                        dataType:	    'html',-->
-<!--                        //success: function(data) { $('#content').html(data); return false; },-->
-<!--                        error: function(data) { $('#main').html(data.responseText); return false; }-->
-<!--                    });" id="account_submit">-->
 
             </form>
 		</div>

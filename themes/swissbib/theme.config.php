@@ -41,7 +41,6 @@ return array(
         'lib/colorbox/jquery.colorbox.js', //popup dialog solution
         'lib/jquery.enhancedsearch.js',
         'autocomplete.base.js', //used for current highlighting based on java servlet, probably replaced by default VuFind mechanism
-
         'swissbib.ajax.js', // general AJAX helpers
         'swissbib.js',
         'swissbib.pagination.js', // AJAX pagination
@@ -49,6 +48,7 @@ return array(
         'swissbib.filters.js',
         'swissbib.facets.js',
         'swissbib.AdvancedSearch.js',
+        'swissbib.searchsettings.js',
 
         'jstorage.min.js', //used for favorites - there is still some amount of JS code inline of the page -> Todo: Refactoring in upcoming Sprints
 
