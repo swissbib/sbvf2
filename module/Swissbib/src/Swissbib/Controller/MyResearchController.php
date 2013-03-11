@@ -94,6 +94,11 @@ class MyResearchController extends VFMyResearchController {
 
         /** @var $user  \VuFind\Db\Row\User */
         $user       = $this->getUser();
+
+        if( ! is_object($user) ) {
+            return $this->forwardTo('MyResearch', 'Login');
+        }
+
         $userData   = $user->toArray();
         $idUser     = intval($userData['id']);
 
@@ -116,10 +121,15 @@ class MyResearchController extends VFMyResearchController {
      */
     protected function saveaccountlocalAction() {
         $view = $this->createViewModel();
-        $view->setTerminal(true);
 
         /** @var $user  \VuFind\Db\Row\User */
         $user       = $this->getUser();
+
+        if( ! is_object($user) ) {
+            return $this->forwardTo('MyResearch', 'Login');
+        }
+
+        $view->setTerminal(true);
         $userData   = $user->toArray();
         $idUser     = intval($userData['id']);
 
@@ -180,7 +190,7 @@ class MyResearchController extends VFMyResearchController {
      */
     public function getOptionsMaximumHits() {
         return array(
-            10,
+            20,
             50,
             250,
             1250,
