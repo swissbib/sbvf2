@@ -15,7 +15,7 @@ if( isset($item['userActions']) ) {
 	if( $item['userActions']['shortLoan'] ) {
 		$actions[] = array(
 			'label'	=> 'Kurzausleihe',
-			'action'=> '#'
+			'action'=> 'javascript:alert(\'Not implemented yet\')'
 		);
 	}
 	if( $item['userActions']['photocopyRequest'] ) {
@@ -27,7 +27,7 @@ if( isset($item['userActions']) ) {
 	if( $item['userActions']['bookingRequest'] ) {
 		$actions[] = array(
 			'label'	=> 'Booking Request',
-			'action'=> '#'
+			'action'=> 'javascript:alert(\'Not implemented yet\')'
 		);
 	}
 } elseif( isset($item['holdLink']) ) {
