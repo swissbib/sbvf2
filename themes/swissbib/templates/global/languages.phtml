@@ -6,13 +6,14 @@ $langConfig  = array(
     'it'    => 'Italiano'
 );
 
-$languages = array();
-$setLang = array_key_exists('lng', $_GET) ? $_GET['lng'] : 'de';
+$languages  = array();
+$keySelectedLanguage    = array_key_exists('lng', $_GET) ? $_GET['lng'] : 'de';
+
 foreach($langConfig as $key => $label) {
     $languages[] = array(
         'key'       => $key,
         'label'     => $label,
-        'selected'  => $setLang == $key
+        'selected'  => $keySelectedLanguage == $key
     );
 }
 ?>

@@ -2,12 +2,6 @@
 -- to VuFind2 database for Swissbib specific features
 -- ------------------------------------------------------
 
---@todo remove this column when table adapter based storing is implemented
-ALTER TABLE user ADD `sb_nickname` text NOT NULL;
-
-
-
-
 DROP TABLE IF EXISTS `user_localdata`;
 
 CREATE TABLE `user_localdata` (
