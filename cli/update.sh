@@ -9,7 +9,9 @@ LOG=cli/log/update.${TIME}.log
 # Write message with timestamp into log file
 function log {
 	local TIMESTAMP=`date +%Y-%m-%d_%H.%M.%S`
-	echo "${TIMESTAMP}: $1" >> $LOG
+	local message="${TIMESTAMP}: $1\n"
+	echo message >> $LOG
+	echo message
 }
 
 # Update from git
