@@ -20,11 +20,13 @@ var sbSearchSettings = {
 					cache:		    false,
 					dataType:	    'html',
 					//success: function(data) { $('#content').html(data); return false; },
-					error: function(data) {
-						$('#main').html(data.responseText);
-						sbSearchSettings.init();
-						return false;
-					}
+					error: this.name== 'language' ?
+							function() { document.location.reload(); }
+						:	function(data) {
+								$('#main').html(data.responseText);
+								sbSearchSettings.init();
+								return false;
+							}
 				});
 			}
 		});

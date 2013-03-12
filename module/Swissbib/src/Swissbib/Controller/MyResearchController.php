@@ -70,7 +70,6 @@ class MyResearchController extends VFMyResearchController {
 	 */
 	protected function createViewModel($params = null) {
 		$viewModel	= parent::createViewModel($params);
-
 		$viewModel->location = $this->getLocationFromRoute() ?: 'baselbern';
 
 		return $viewModel;
@@ -97,7 +96,10 @@ class MyResearchController extends VFMyResearchController {
         $userData   = $user->toArray();
         $idUser     = intval($userData['id']);
 
-        $view->language = $this->getUserLanguage($idUser);
+        $userLanguage = $this->getUserLanguage($idUser);
+        $view->language = $userLanguage;
+        setcookie('language', $userLanguage, null, '/');
+
         $view->maxHits  = $this->getUserAmountMaxHits($idUser);
 
         $view->optsLanguage = $this->getOptionsLanguage();
@@ -136,6 +138,7 @@ class MyResearchController extends VFMyResearchController {
         if( array_key_exists('language', $_GET) ) {
             $language   = $_GET['language'];
             $userLocalData->createOrUpdateLanguage($language, 1);
+            setcookie('language', $language, null, '/');
         } else {
             $language    = $this->getUserLanguage($idUser);
         }
@@ -154,7 +157,7 @@ class MyResearchController extends VFMyResearchController {
         $this->layout()->optsLanguage   = $this->getOptionsLanguage();
         $this->layout()->optsMaxHits    = $this->getOptionsMaximumHits();
 
-        //@todo implement messages flashing
+        //@todo implement flash messages parts: text, CSS, JS
 //        $this->flashMessenger()->setNamespace('info')
 //                ->addMessage('save_usersettings_success');
 
@@ -181,16 +184,10 @@ class MyResearchController extends VFMyResearchController {
 
 
     /**
-     * @return array
+     * @return  Integer[]
      */
     public function getOptionsMaximumHits() {
-        return array(
-            20,
-            50,
-            250,
-            1250,
-            5000
-        );
+        return array(10, 20, 40, 60, 80, 100);
     }
 
 
