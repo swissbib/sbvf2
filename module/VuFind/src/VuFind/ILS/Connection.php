@@ -425,7 +425,7 @@ class Connection
      */
     public function checkCapability($method)
     {
-        if (is_callable(array($this->getDriverClass(), $method))) {
+        if (is_callable(array($this->driver, $method))) {
             return true;
         }
         return false;
