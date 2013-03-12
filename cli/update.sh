@@ -12,9 +12,6 @@ function log {
 	echo "${TIMESTAMP}: $1" >> $LOG
 }
 
-mkdir -p cli/log
-
-
 # Update from git
 
 log "start update VuFind"
