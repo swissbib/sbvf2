@@ -11,7 +11,7 @@ function log {
 	local TIMESTAMP=`date +%Y-%m-%d_%H.%M.%S`
 	local MESSAGE="${TIMESTAMP}: $1"
 	echo $MESSAGE >> $LOG
-	echo -e "Log: ${MESSAGE}\n"
+	echo "Log: ${MESSAGE}"
 }
 
 # Update from git
