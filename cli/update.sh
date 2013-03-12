@@ -11,7 +11,7 @@ function log {
 	local TIMESTAMP=`date +%Y-%m-%d_%H.%M.%S`
 	local MESSAGE="${TIMESTAMP}: $1\n"
 	echo $MESSAGE >> $LOG
-	echo $MESSAGE
+	echo "Log: ${MESSAGE}\n"
 }
 
 # Update from git
@@ -32,6 +32,6 @@ log "finish update VuFind"
 
 log "Clear local cache"
 
-rm -rfI local/cache/*
+rm -rf local/cache/*
 
 log "Local cache cleared"
