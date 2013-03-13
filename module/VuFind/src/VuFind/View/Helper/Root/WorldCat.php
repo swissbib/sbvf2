@@ -1,6 +1,6 @@
 <?php
 /**
- * Author aspect of the Search Multi-class (Options)
+ * WorldCat view helper
  *
  * PHP version 5
  *
@@ -20,45 +20,51 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @category VuFind2
- * @package  Search_SolrAuthor
+ * @package  View_Helpers
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org   Main Site
+ * @link     http://vufind.org/wiki/vufind2:developer_manual Wiki
  */
-namespace VuFind\Search\SolrAuthor;
+namespace VuFind\View\Helper\Root;
+use Zend\View\Helper\AbstractHelper;
 
 /**
- * Author Search Options
+ * WorldCat view helper
  *
  * @category VuFind2
- * @package  Search_SolrAuthor
+ * @package  View_Helpers
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org   Main Site
+ * @link     http://vufind.org/wiki/vufind2:developer_manual Wiki
  */
-class Options extends \VuFind\Search\Solr\Options
+class WorldCat extends AbstractHelper
 {
     /**
-     * Perform initialization that cannot occur in constructor due to need for
-     * injected dependencies.
+     * WorldCat connection
      *
-     * @return void
+     * @var \VuFind\Connection\WorldCat
      */
-    public function init()
-    {
-        parent::init();
+    protected $wc;
 
-        // No spell check needed in author module:
-        $this->spellcheck = false;
+    /**
+     * Constructor
+     *
+     * @param \VuFind\Connection\WorldCat $wc WorldCat connection
+     */
+    public function __construct(\VuFind\Connection\WorldCat $wc)
+    {
+        $this->wc = $wc;
     }
 
     /**
-     * Return the route name for the search results action.
+     * Get holdings information from WorldCat.
      *
-     * @return string
+     * @param string $id Record ID
+     *
+     * @return SimpleXMLElement
      */
-    public function getSearchAction()
+    public function getHoldings($id)
     {
-        return 'author-home';
+        return $this->wc->getHoldings($id);
     }
 }
