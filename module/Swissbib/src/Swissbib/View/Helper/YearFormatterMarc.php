@@ -49,7 +49,7 @@ class YearFormatterMarc extends AbstractHelper {
 
             case 'p':
             case 'r':
-                $retVal = $year1 . ' [' . $year2;
+                $retVal = $year1 . ' [' . $year2 . ']';
                 break;
 
             case 'q':

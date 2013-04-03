@@ -5,9 +5,9 @@ $resultItem		= $this->driver;
 $viewRecord		= $this->record($this->driver);
 $thumbnailUrl	= $resultItem->getThumbnail() ? $resultItem->getThumbnail() : $this->url('cover-unavailable');
 $detailLink		= $this->recordLink()->getUrl($resultItem);
-$title			= $resultItem->getShortTitle();
+//$title			= $resultItem->getShortTitle();
+$title			= $this->mainTitle($resultItem->getShortTitle());
 $edition		= $resultItem->getEdition();
-
 $publicationDate    = $this->publicationDateMarc($resultItem->getPublicationDates())
 ?>
 <tr>
@@ -33,28 +33,28 @@ $publicationDate    = $this->publicationDateMarc($resultItem->getPublicationDate
 		<h3><a href="<?=$detailLink?>" title="<?=$title?>" class="color"><?=$title?></a></h3>
 		<p>
 			<?php /*var_dump($solrRecord->getSummary())*/?>
-		</p><!-- meta -->
+		</p>
+        <!-- meta -->
 		<div class="meta">
             <span><?=$resultItem->getSubtitle()?></span><br />
             <h6><?=$this->transEsc('Author')?>:</h6>
             <span><?=$resultItem->getTitleStatement()?></span><br/>
+        </div>
+        <div class="meta">
 			<h6><?=$this->transEsc('Year')?>:</h6>
-
-            <span><?=$publicationDate?></span><br />
-
-
+            <span><?=$this->escapeHtml($publicationDate)?></span>
             <?php if($edition): ?>
                 <h6><?=$this->transEsc('Edition')?>:</h6>
                 <span><?=$this->escapeHtml($edition)?></span>
             <?php endif; ?>
-		</div><!-- format -->
+		</div>
+        <!-- format -->
 		<div class="format">
 			<?=$viewRecord->getFormatList()?>
-<!--			<h6 class="icon_format_book">Buch</h6>-->
+        <!-- <h6 class="icon_format_book">Buch</h6> -->
             <?php if(!empty($groupID)): ?>
                 <a href="frbr.html" class="linkbutton icon_show" title="<?=$this->transEsc('FRBR_Button')?>"><span><?=$this->transEsc('FRBR_Button')?></span></a>
             <?php endif; ?>
-
 		</div>
 	</td>
     <!-- col 5 & 6 : libraries, links, info -->
