@@ -269,10 +269,25 @@ class SolrMarc extends VFSolrMarc {
 		return $data;
 	}
 
+    /**
+     * Get physical description out of the MARC record
+     */
+
+    public function getPhysicalDescriptions($asString = false) {
+    $data = $this->getMarcSubFieldMap(300, array(
+        'a' => 'extent',
+        'b' => 'details',
+        'c' => 'dimensions',
+        'e' => 'company',
+        'f' => 'type',
+        'g' => 'size',
+        '3' => 'appliesTo'
+    ));
+        return $data;
+    }
 
 
-
-	/**
+    /**
 	 * Get marc field
 	 *
 	 * @param    Integer        $index
