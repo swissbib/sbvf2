@@ -14,6 +14,7 @@ $subTitle           = $resultItem->getSubtitle(true);
 $titleStatement		= $resultItem->getTitleStatement(true);
 $secondaryAuthors	= $resultItem->getSecondaryAuthors();
 $publisher			= $resultItem->getPublisher(true);
+$physical           = $resultItem->getPhysicalDescriptions(true);
 $edition			= $resultItem->getEdition();
 $summary			= trim(implode($resultItem->getSummary()));
 $groupID            = $resultItem->getGroup(true);
@@ -47,9 +48,21 @@ $publicationDate    = $this->publicationDateMarc($resultItem->getPublicationDate
 		<p><?=$this->escapeHtml($publisher)?>, <?=$publicationDate?></p>
 		<?php endif; ?>
 
-        <h4><?=$this->transEsc('Description')?>:</h4>
-        <p>statisch, 300 $a, $b, $c, $e</p>
-
+        <?php if($physical): ?>
+            <h4><?=$this->transEsc('Physical Description')?>:</h4>
+                <p>
+                <?=$this->escapeHtml($physical[extent])?>.
+                    <?php if($physical[details]): ?>:
+                    <?=$this->escapeHtml($physical[details])?>.
+                    <?php endif; ?>
+                    <?php if($physical[dimensions]): ?>;
+                    <?=$this->escapeHtml($physical[dimensions])?>
+                    <?php endif; ?>
+                    <?php if($physical[company]): ?>+
+                    <?=$this->escapeHtml($physical[company])?>.
+                    <?php endif; ?>
+                </p>
+        <?php endif; ?>
 
 		<h4><?=$this->transEsc('Format')?>:</h4>
 		<p>
