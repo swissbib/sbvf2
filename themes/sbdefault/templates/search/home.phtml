@@ -1,20 +1,22 @@
 <?
-    // Set page title.
+    	// Set page title
     $this->headTitle($this->translate('Search Home'));
 
-    // Disable top search box -- this page has a special layout.
+    	// Disable top search box -- this page has a special layout
     $this->layout()->searchbox = false;
 
-    // Set default value if necessary:
+    	// Set default value if necessary
     if (!isset($this->searchClassId)) {
         $this->searchClassId = 'Solr';
     }
 
-    // Load search actions and settings (if any):
+	    // Load search actions and settings (if any)
     $options = $this->searchOptions($this->searchClassId);
     $basicSearch = $options->getSearchAction();
     $advSearch = $options->getAdvancedSearchAction();
+
 ?>
+
 <div class="searchHomeContent">
   <? if ($this->ils()->getOfflineMode() == "ils-offline"): ?>
     <div class="sysInfo">

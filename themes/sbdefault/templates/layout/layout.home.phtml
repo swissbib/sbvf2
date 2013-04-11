@@ -1,12 +1,6 @@
 <?=$this->doctype('XHTML1_TRANSITIONAL')?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="<?=$this->layout()->userLang?>" xml:lang="en">
-
-
-
   <head>
-
-      <?= $this->ScriptMarker()->headline("layout.home.phtml", true)?>
-
       <?$this->headThemeResources()?>
       <?=$this->headMeta()?>
       <?=$this->headTitle()?>
@@ -23,11 +17,10 @@
           );
       ?>
       <?=$this->headLink()?>
-      <?
-          // Set global path for Javascript code:
+      <?  // Set global path for Javascript code
           $this->headScript()->prependScript("path = '" . rtrim($this->url('home'), '/') . "';");
 
-          // Deal with cart stuff:
+          // Deal with cart stuff
           //$cart = \VuFind\Cart::getInstance();
           //if ($cart->isActive()) {
           //    $this->headScript()->appendFile("jquery.cookie.js");
@@ -47,9 +40,7 @@
           //}
       ?>
       <?=$this->headScript()?>
-
   </head>
-
 
 <body>
 
@@ -60,13 +51,9 @@
             <div id="header">
 
             <?= $this->render('common/logo.phtml') ?>
-
             <?= $this->render('common/keyNavigation.phtml') ?>
             <?= $this->render('common/serviceNavigation.phtml') ?>
-
             <?= $this->render('common/navigation.phtml') ?>
-
-
 
             </div>
 
@@ -79,28 +66,11 @@
 
                             <?=$this->layout()->content?>
 
-
                         </div>
-
                      </div>
-
                  </div>
              </div>
-
-
-
         </div>
-
-
-
     </div>
-
-
-
-
-
 </body>
-
-  <?= $this->ScriptMarker()->footer("layout.home.phtml", true)?>
-
 </html>

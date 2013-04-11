@@ -1,12 +1,14 @@
 <?php
+
 $isLoggedIn	= $this->auth()->isLoggedIn();
 
 if( $isLoggedIn ) {
 	/** @var VuFind\Db\Row\User $user  */
 	$user = $isLoggedIn;
 }
+
 ?>
-<!-- swissbib/templates/global/serviceNavi.phtml -->
+
 <div id="service">
 	<h3 class="hidden">Servicenavigation</h3>
 	<ul>

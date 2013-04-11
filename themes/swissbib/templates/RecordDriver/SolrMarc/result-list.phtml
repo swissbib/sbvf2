@@ -9,7 +9,9 @@ $detailLink		= $this->recordLink()->getUrl($resultItem);
 $title			= $this->mainTitle($resultItem->getShortTitle());
 $edition		= $resultItem->getEdition();
 $publicationDate    = $this->publicationDateMarc($resultItem->getPublicationDates())
+
 ?>
+
 <tr>
     <!-- col 1: Counter -->
 	<td class="small center nodivider"><?=$this->recordIndex?></td>

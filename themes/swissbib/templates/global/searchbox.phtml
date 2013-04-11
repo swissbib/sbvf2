@@ -2,6 +2,7 @@
 
 /** @var VuFind\Search\Solr\Options	 $options  */
 $options 		= $this->searchOptions();
+
 $lastSort		= $options->getLastSort();
 $lastLimit		= $options->getLastLimit();
 $basicSearch	= $options->getSearchAction();
@@ -21,6 +22,7 @@ if( $resultViewParams ) {
 $isAdvancedSearch	= $searchBoxParams && $searchBoxParams['searchType'] == 'advanced';
 
 ?>
+
 <div id="search" class="<?=$isAdvancedSearch?'advSearch':''?>">
 	<?php if( $isAdvancedSearch ): ?>
 		<div id="advancedSearchJumpNavi">
@@ -32,9 +34,9 @@ $isAdvancedSearch	= $searchBoxParams && $searchBoxParams['searchType'] == 'advan
 				<?=$this->transEsc("Your search terms")?> : "<strong><?=$this->escapeHtml($lookFor)?></strong>"
 			</div>
 		</div>
+
 	<?php else: ?>
 		<form id="form_search" name="form_search" action="<?=$this->url('search-results')?>" method="get">
-            <!-- swissbib/templates/global/searchbox.phtml -->
 			<h3>
                 <label for="lookfor"><?=$this->transEsc('Search For')?></label>
             </h3>

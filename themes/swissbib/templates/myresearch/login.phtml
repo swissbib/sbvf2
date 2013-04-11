@@ -1,27 +1,27 @@
 <?
-    // Set up page title:
+    	// Set page title
     $this->headTitle($this->translate('Login'));
 
-//    // Set up breadcrumbs:
+	    // Set up breadcrumbs
 //    $this->layout()->breadcrumbs = '<a href="' . $this->url('myresearch-home') . '">'
 //        . $this->transEsc('Your Account') . '</a>' . '<span>&gt;</span><em>'
 //        . $this->transEsc('Login') . '</em>';
 
-    // If we're in AJAX mode, load some extra Javascript inline:
+    	// If we're in AJAX mode, load some extra Javascript inline:
     if ($this->layout()->getTemplate() == 'layout/lightbox') {
         $this->inlineScript()->appendFile("rc4.js");
     }
 
-    // Convenience variables:
+    	// Convenience variables
     $account = $this->auth()->getManager();
     $hideLogin = !(is_object($account) && $account->loginEnabled());
 //    $offlineMode = $this->ils()->getOfflineMode();
 
 	$sessionInitiator = $account->getSessionInitiator($this->serverUrl($this->url('myresearch-home')));
 
-
 	$initJs		= '$(document).ready(function() { $(\'#loginForm\').validate(); });';
 	$initScript	= $this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $initJs);
+
 ?>
 
 <!-- begin: col1 (sidebar)  -->

@@ -2,6 +2,7 @@
   $topFacetSet = $this->recommend->getTopFacetSet();
   $topFacetSettings = $this->recommend->getTopFacetSettings();
 ?>
+
 <? if (isset($topFacetSet)): ?>
   <? foreach($topFacetSet as $title => $cluster): ?>
     <div class="authorbox">

@@ -1,11 +1,8 @@
 <?php
-
-
 namespace Swissbib;
 
 use VuFind\Config\Reader as ConfigReader,
-    Zend\Console\Console, Zend\Mvc\MvcEvent, Zend\Mvc\Router\Http\RouteMatch;
-
+	Zend\Console\Console, Zend\Mvc\MvcEvent, Zend\Mvc\Router\Http\RouteMatch;
 
 /**
  * swissbib / VuFind <<full descriptive name of the class>>
@@ -31,13 +28,10 @@ use VuFind\Config\Reader as ConfigReader,
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @category swissbib_VuFind2
- * @package  <<name of package>>
+ * @package  Swissbib
  * @author   << name of author  <mail of author> >>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     << link to further documentation related to this resource type (Wiki, tracker ...)
  */
-
-
 class Bootstrapper
 {
 
@@ -45,16 +39,23 @@ class Bootstrapper
     protected $event;
     protected $events;
 
-    public function __construct(MvcEvent $event) {
-        $this->config = $event->getApplication()->getServiceManager()->get('VuFind\Config')->get('config');
+	/**
+	 * @param MvcEvent $event
+	 */
+	public function __construct(MvcEvent $event)
+	{
+        $application	= $this->config = $event->getApplication();
+
+		$this->config = $application->getServiceManager()->get('VuFind\Config')->get('config');
         $this->event = $event;
-        $this->events = $event->getApplication()->getEventManager();
+        $this->events = $application->getEventManager();
 
     }
 
-
-    public function bootstrap() {
-
+	/**
+	 * Bootstrap
+	 */
+	public function bootstrap() {
         $methods = get_class_methods($this);
 
         foreach ($methods as $method) {
@@ -62,19 +63,14 @@ class Bootstrapper
                 $this->$method();
             }
         }
-
-
     }
 
+	public function initSwissbibDBs(){
 
-    public function initSwissbibDBs(){
-        //echo "halo";
     }
 
     /**
      * Set up plugin managers.
-     *
-     * @return void
      */
     protected function initPluginManagers()
     {
@@ -97,10 +93,9 @@ class Bootstrapper
                     )
                 );
             };
+
             $serviceManager->setFactory($serviceName, $factory);
         }
     }
-
-
 
 }

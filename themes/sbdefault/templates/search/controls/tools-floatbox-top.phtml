@@ -1,12 +1,8 @@
-
-
 <!-- ich brauche etwas mit dem ich steuern kann, welche Elemente tools floatbox enthält
 einmal top einmal bottom
 -->
 
 <div class="tools floatbox">
-
-    <!--START of /nose/resultlist/sbToolsSort.jsp-->
     <h3 class="hidden">Einstellungen Suchresultat Anzeige</h3>
     <label for="selectedSorting">Sortieren nach:</label>
     <select id="selectedSorting" class="select mright"><option value="unsortiert">nach Relevanz</option>
@@ -25,8 +21,6 @@ einmal top einmal bottom
         <input type="submit" name="save_to_memorize_3" value="Speichern" id="hiddensaveToListbutton" />
     </div>
 
-    <!--END of /nose/resultlist/sbToolsSort.jsp-->
-    <!--START of /nose/resultlist/sbToolsDisplay.jsp-->
     <!-- display hit-amount -->
     <select name="selectedHitlistSize" id="searchresult_displaynb" class="select tiny"><option value="3_10" selected="selected">10</option>
       <option value="3_25">25</option>
@@ -47,10 +41,6 @@ einmal top einmal bottom
         });
     </script>
     <input type="submit" name="change_hitsize_3" value="Anzeigen" id="changeHitSizebutton" class="hidden" />
-    <!--END of /nose/resultlist/sbToolsDisplay.jsp-->
-
-
 
     <?=$this->render("search/controls/paging.phtml")?>
-
 </div>

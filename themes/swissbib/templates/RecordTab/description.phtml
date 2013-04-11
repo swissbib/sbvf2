@@ -1,5 +1,5 @@
 <?
-// Set page title.
+	// Set page title.
 $this->headTitle($this->translate('Description') . ': ' . $this->driver->getBreadcrumb());
 
 // Grab clean ISBN for convenience:
@@ -9,6 +9,7 @@ $isbn = $this->driver->getCleanISBN();
 if ($this->syndeticsPlus()->isActive()) {
     $this->headScript()->appendFile($this->syndeticsPlus()->getScript());
 }
+
 ?>
 
 <table cellpadding="2" cellspacing="0" border="0" class="citation" summary="<?=$this->transEsc('Description')?>">

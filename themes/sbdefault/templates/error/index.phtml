@@ -1,7 +1,9 @@
 <?
-    // Set page title.
+	    // Set page title
     $this->headTitle($this->translate('An error has occurred'));
+
 ?>
+
 <div class="error fatalError">
   <h1><?=$this->transEsc('An error has occurred')?></h1>
   <p class="errorMsg"><?=$this->transEsc($this->message)?></p>
@@ -31,7 +33,7 @@
   </pre>
 
   <? if ($e = $this->exception->getPrevious()): ?>
-    <h3>Previous exceptions:</h2>
+    <h3>Previous exceptions:</h3>
     <? while($e): ?>
         <h4><?php echo get_class($e); ?></h4>
         <p><?=$e->getMessage()?></p>

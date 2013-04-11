@@ -1,5 +1,5 @@
 <?
-    // Set page title.
+    	// Set page title
     $this->headTitle($this->translate('hierarchy_tree') . ': ' . $this->driver->getBreadcrumb());
     $hierarchyTreeList = $this->tab->getTreeList();
     $activeTree = $this->tab->getActiveTree();
@@ -16,7 +16,9 @@
     $this->inlineScript(\Zend\View\Helper\HeadScript::FILE, 'jsTree/jquery.jstree.js');
     $this->inlineScript(\Zend\View\Helper\HeadScript::FILE, 'hierarchyTree_JSTree.js');
     echo $this->inlineScript();
+
 ?>
+
 <div<?=isset($this->mainTreeClass) ? ' class="' . $this->mainTreeClass . '"' : ''?>>
   <? if (count($hierarchyTreeList) > 1): ?>
     <div id="treeSelector">

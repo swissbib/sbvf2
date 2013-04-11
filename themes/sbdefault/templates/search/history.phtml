@@ -1,10 +1,12 @@
 <?
-    // Set page title.
+    	// Set page title
     $this->headTitle($this->translate('Search History'));
 
-    // Set up breadcrumbs:
+	    // Set up breadcrumbs
     $this->layout()->breadcrumbs = '<em>' . $this->transEsc('History') . '</em>';
+
 ?>
+
 <div class="<?=$this->layoutClass('mainbody')?>">
   <? if (!empty($this->saved) || !empty($this->unsaved)): ?>
     <? if (!empty($this->saved)): ?>

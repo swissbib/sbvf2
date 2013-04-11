@@ -1,12 +1,15 @@
 <?
-    // Set up page title:
+    	// Set page title
     $this->headTitle($this->translate('My Holds'));
 
-    // Set up breadcrumbs:
-    $this->layout()->breadcrumbs = '<a href="' . $this->url('myresearch-home') . '">'
-        . $this->transEsc('Your Account') . '</a>' . '<span>&gt;</span><em>'
-        . $this->transEsc('My Holds') . '</em>';
+    	// Set up breadcrumbs
+    $this->layout()->breadcrumbs =
+		'<a href="' . $this->url('myresearch-home') . '">'
+	.	$this->transEsc('Your Account') . '</a>' . '<span>&gt;</span><em>'
+	.	$this->transEsc('My Holds') . '</em>';
+
 ?>
+
 <?=$this->myResearchSideBar('holds', $this->location);?>
 <!-- begin: col3 (content) -->
 <div id="col3" class="content">
@@ -41,14 +44,3 @@
 	</div>
 </div>
 <!-- end: col3 (content) -->
-
-
-
-
-
-
-
-
-
-
-

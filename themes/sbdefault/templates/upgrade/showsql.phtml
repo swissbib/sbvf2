@@ -12,8 +12,11 @@
         . "}\n"
     );
 ?>
+
 <h1><?=$this->transEsc('Upgrade VuFind')?></h1>
+
 <?=$this->flashmessages()?>
+
 <p>These SQL statements can be used to manually upgrade your database:</p>
 
 <textarea class="pre" rows="20" readonly onClick="this.select()"><?=trim($this->sql) ?></textarea>

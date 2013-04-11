@@ -1,12 +1,14 @@
 <?
-    // Set page title.
+	    // Set page title
     $this->headTitle($this->translate('Email Record'));
 
-    // Set up breadcrumbs:
+    	// Set up breadcrumbs
     $this->layout()->breadcrumbs = $this->getLastSearchLink($this->transEsc('Search'), '', '<span>&gt;</span>') .
         $this->recordLink()->getBreadcrumb($this->driver) . '<span>&gt;</span><em>' . $this->transEsc('Email Record') . '</em>';
 ?>
+
 <?=$this->flashmessages()?>
+
 <form action="" method="post"  name="emailRecord">
     <input type="hidden" name="id" value="<?=$this->escapeHtml($this->driver->getUniqueId())?>" />
     <input type="hidden" name="source" value="<?=$this->escapeHtml($this->driver->getResourceSource())?>" />

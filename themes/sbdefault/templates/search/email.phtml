@@ -1,12 +1,15 @@
 <?
-    // Set page title.
+	    // Set page title
     $this->headTitle($this->translate('Email this Search'));
 
-    // Set up breadcrumbs:
-    $this->layout()->breadcrumbs = $this->getLastSearchLink($this->transEsc('Search'), '', '<span>&gt;</span>') .
-        '<em>' . $this->transEsc('Email this Search') . '</em>';
+    	// Set up breadcrumbs
+    $this->layout()->breadcrumbs =
+		$this->getLastSearchLink($this->transEsc('Search'), '', '<span>&gt;</span>')
+	.	'<em>' . $this->transEsc('Email this Search') . '</em>';
 ?>
+
 <?=$this->flashmessages()?>
+
 <form action="" method="post"  name="emailSearch">
     <input type="hidden" name="url" value="<?=$this->escapeHtml($this->url)?>" />
     <label class="displayBlock" for="email_to"><?=$this->transEsc('To')?>:</label>

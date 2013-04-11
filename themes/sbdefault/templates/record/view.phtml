@@ -1,4 +1,5 @@
 <?
+
     // Set up standard record scripts:
     $this->headScript()->appendFile("record.js");
     $this->headScript()->appendFile("check_save_statuses.js");
@@ -9,15 +10,20 @@
 //    }
 
     // Set up breadcrumbs:
-    $this->layout()->breadcrumbs = $this->getLastSearchLink($this->transEsc('Search'), '', '<span>&gt;</span>') .
-        $this->recordLink()->getBreadcrumb($this->driver);
+    $this->layout()->breadcrumbs =
+		$this->getLastSearchLink($this->transEsc('Search'), '', '<span>&gt;</span>')
+	.   $this->recordLink()->getBreadcrumb($this->driver);
+
 ?>
+
 <div class="<?=$this->layoutClass('mainbody')?>">
   <?=$this->record($this->driver)->getToolbar()?>
 
   <div class="record recordId source<?=$this->escapeHtml($this->driver->getResourceSource())?>" id="record">
     <input type="hidden" value="<?=$this->escapeHtml($this->driver->getUniqueId())?>" class="hiddenId" id="record_id" />
-    <?=$this->flashmessages()?>
+
+	<?=$this->flashmessages()?>
+
     <? if (isset($this->scrollData) && ($this->scrollData['previousRecord'] || $this->scrollData['nextRecord'])): ?>
       <div class="resultscroller">
         <? if ($this->scrollData['previousRecord']): ?><a href="<?=$this->recordLink()->getUrl($this->scrollData['previousRecord'])?>">&laquo; <?=$this->transEsc('Prev')?></a><? endif; ?>
@@ -48,7 +54,6 @@
     <div class="clear"></div>
   </div>
   <? endif; ?>
-
 
   <div class="recordsubcontent">
     <?=isset($activeTabObj) ? $this->record($this->driver)->getTab($activeTabObj) : '' ?>

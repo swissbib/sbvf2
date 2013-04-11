@@ -1,4 +1,5 @@
 <?php
+
 	/** @var	Swissbib\RecordDriver\WorldCat	$resultItem  */
 	/** @var	VuFind\View\Helper\Root\Record		$viewRecord  */
 $resultItem		= $this->driver;
@@ -9,7 +10,9 @@ $title			= $resultItem->getShortTitle();
 $edition		= $resultItem->getEdition();
 
 $publicationDate    = $this->publicationDateWorldCat($resultItem->getPublicationDates());
+
 ?>
+
 <tr>
     <!-- col 1: Counter -->
 	<td class="small center nodivider"><?=$this->recordIndex?></td>
@@ -20,11 +23,18 @@ $publicationDate    = $this->publicationDateWorldCat($resultItem->getPublication
     <!-- col 3: Teaser-image / Thumbnail -->
 	<td class="right nodivider">
 		<a href="<?=$detailLink?>" title="<?=$title?>">
-            <? /** ---------------------------------------------------- */ ?>
-            <? /** temporary fix params over here, to do: fix in driver */ ?>
-            <? if(is_array($title)) $title = implode(' ', $title); ?>
-            <? if(is_array($thumbnailUrl)) $thumbnailUrl = implode(' ', $thumbnailUrl); ?>
-            <? /** ---------------------------------------------------- */ ?>
+<?
+/** ------------------------------------------------------
+ *   temporarily fix params over here, to do: fix in driver
+ */
+ if(is_array($title)) {
+	 $title = implode(' ', $title);
+ }
+ if(is_array($thumbnailUrl)) {
+	 $thumbnailUrl = implode(' ', $thumbnailUrl);
+ }
+ /** ---------------------------------------------------- */
+?>
 			<img src="<?=$thumbnailUrl?>" alt="<?=$title?>" class="dropshadow"/>
 		</a>
 	</td>

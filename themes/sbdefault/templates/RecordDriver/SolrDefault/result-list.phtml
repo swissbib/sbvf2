@@ -9,12 +9,9 @@
         <td class="right nodivider"><a href="<?=$this->recordLink()->getUrl($this->driver)?>" title="<?$this->driver->getTitle()?>"><img src="<?=$this->url('cover-unavailable')?>" alt="<?=$this->transEsc('No Cover Image')?>" class="dropshadow"/></a></td>
     <? endif; ?>
 
-
     <td>
 
-
     <h3><a href="<?=$this->recordLink()->getUrl($this->driver)?>" title="<?=$this->driver->getShortTitle()?>" class="color"><?=$this->driver->getShortTitle()?></a></h3>
-
         <? $summTitleRemainder = $this->driver->getSubtitle(); ?>
         <? $summAuthor = $this->driver->getTitleStatement();  ?>
         <? $summDate = $this->driver->getPublicationDates(); ?>
@@ -41,29 +38,20 @@
             <? endif; ?>
         </div>
 
-
     <? $journalTitle = $this->driver->getContainerTitle(); $summDate = $this->driver->getPublicationDates(); ?>
     <p><?=$journalTitle ?></p>
     <!-- meta -->
     <!-- format -->
     <div class="format">
         <?=$this->record($this->driver)->getFormatList()?>
-
         <? $formatlink = "#"; ?>
 
         <!-- if $group_id exists, set this link and icon -->
         <? if (!empty($group_id)): ?>
-
             <a  href="<?=$group_id ?>" class="linkbutton icon_show" title="Weitere Ausgaben und Formate">
                 <span>FRBR-link has to be done</span>
             </a>
-
-
         <? endif;?>
-
-
-
-
 
     </div>
     </td>

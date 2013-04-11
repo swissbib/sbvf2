@@ -1,7 +1,8 @@
 <?
-    // Set page title.
+	    // Set page title
     $this->headTitle($this->translate('Staff View') . ': ' . $this->driver->getBreadcrumb());
 ?>
+
 <table class="citation">
   <? foreach ($this->driver->getAllFields() as $field => $values): ?>
     <tr>

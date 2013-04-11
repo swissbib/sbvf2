@@ -1,29 +1,25 @@
 <?php
 
-$this->headTitle($this->translate('Photocopies'));
+	$this->headTitle($this->translate('Photocopies'));
 
 ?>
+
 <?=$this->myResearchSideBar('photocopies', $this->location);?>
 <!-- begin: col3 (content) -->
 <div id="col3" class="content">
 	<div id="col3_content" class="clearfix">
 		<!-- begin: content -->
 		<div id="content">
-
 			<h1><?=$this->transEsc('Photocopies')?></h1>
 
 			<?=$this->flashmessages()?>
 
 			<?php if( sizeof($this->photoCopies) ): ?>
-
 				<p>Ihre ausstehenden Kopieraufträge</p>
-
 				<?=$this->render('myresearch/photocopies/itemlist.phtml')?>
 
 			<?php else: ?>
-
 				<p>Sie haben aktuell keine ausstehenden Kopieraufträge</p>
-
 			<?php endif; ?>
 
 		</div>

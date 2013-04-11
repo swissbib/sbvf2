@@ -1,7 +1,9 @@
 <?
-    // Set page title.
+	    // Set page title
     $this->headTitle($this->translate('Comments') . ': ' . $this->driver->getBreadcrumb());
+
 ?>
+
 <ul class="commentList" id="commentList">
 <?=$this->render('record/comments-list.phtml')?>
 </ul>

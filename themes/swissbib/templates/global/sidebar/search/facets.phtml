@@ -1,4 +1,5 @@
 <?php
+
 /** @var $results VuFind\Search\Solr\Results */
 $results    = $this->results;
 $facetList	= $results->getFacetList();
@@ -8,12 +9,12 @@ $options	= $this->searchOptions($this->searchClassId);
 $basicSearch= $options->getSearchAction();
 
     // Facet results settings: settings for items limit per facet
-
 $facetResultsSettings   = $this->facetsConfig->get('Results_Settings');
 $facetItemsMaxAmount	= $facetResultsSettings->get('facet_limit');               // full
 $facetItemsLimitDefault = $facetResultsSettings->get('facet_limit_default');    // initially shown
+
 ?>
-<!-- /themes/swissbib/templates/global/sidebar/search/facets.phtml -->
+
 <h3><?=$this->transEsc('Narrow Search')?></h3>
 
 <div class="facets">

@@ -1,10 +1,12 @@
 <?
-    // Set page title.
+    	// Set page title
     $this->headTitle($this->translate('Search History'));
 
-    // Set up breadcrumbs:
+    	// Set up breadcrumbs
     $this->layout()->breadcrumbs = '<em>' . $this->transEsc('History') . '</em>';
+
 ?>
+
 <?=$this->myResearchSideBar('history');?>
 <!-- begin: col3 (content) -->
 <div id="col3" class="content">
@@ -26,10 +28,8 @@
 				<? endif; ?>
 
 			<? else: ?>
-
 				<h1><?=$this->transEsc("history_recent_searches")?></h1>
 				<?= $this->transEsc("history_no_searches") ?>
-
 			<? endif; ?>
 
 		</div>
