@@ -1,17 +1,19 @@
 <?
-    // Set default value if necessary:
+    	// Set default value if necessary
     if (!isset($this->searchClassId)) {
         $this->searchClassId = 'Solr';
     }
 
-    // Load search actions and settings (if any):
+    	// Load search actions and settings (if any)
     $options = $this->searchOptions($this->searchClassId);
     $basicSearch = $options->getSearchAction();
     $searchHome = $options->getSearchHomeAction();
     $advSearch = $options->getAdvancedSearchAction();
     $lastSort = $options->getLastSort();
     $lastLimit = $options->getLastLimit();
+
 ?>
+
 <div class="searchform">
   <? if ($this->searchType == 'advanced'): ?>
     <a href="<?=$this->url($advSearch)?>?edit=<?=$this->escapeHtml($this->searchId)?>" class="small"><?=$this->transEsc("Edit this Advanced Search")?></a> |

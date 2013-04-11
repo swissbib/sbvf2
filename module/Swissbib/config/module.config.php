@@ -48,18 +48,19 @@ return array(
     ),
     'view_helpers' => array(
         'invokables' => array(
-            'number'					=> 'Swissbib\View\Helper\Number',
-            'SortAndPrepareFacetList'	=> 'Swissbib\View\Helper\SortAndPrepareFacetList',
             'Authors'					=> 'Swissbib\View\Helper\Authors',
+            'facetItem'			        => 'Swissbib\View\Helper\FacetItem',
+            'facetItemLabel'			=> 'Swissbib\View\Helper\FacetItemLabel',
+            'lastTabbedSearchUri'		=> 'Swissbib\View\Helper\LastTabbedSearchUri',
+            'lastSearchWord'			=> 'Swissbib\View\Helper\LastSearchWord',
+            'mainTitle'                 => 'Swissbib\View\Helper\MainTitle',
+            'myResearchSideBar'			=> 'Swissbib\View\Helper\MyResearchSideBar',
+            'number'					=> 'Swissbib\View\Helper\Number',
+            'pageFunctions'				=> 'Swissbib\View\Helper\PageFunctions',
             'publicationDateMarc'		=> 'Swissbib\View\Helper\YearFormatterMarc',
             'publicationDateWorldCat'	=> 'Swissbib\View\Helper\YearFormatterWorldCat',
-            'facetItemLabel'			=> 'Swissbib\View\Helper\FacetItemLabel',
-            'facetItem'			        => 'Swissbib\View\Helper\FacetItem',
-            'lastSearchWord'			=> 'Swissbib\View\Helper\LastSearchWord',
-            'lastTabbedSearchUri'		=> 'Swissbib\View\Helper\LastTabbedSearchUri',
-			'myResearchSideBar'			=> 'Swissbib\View\Helper\MyResearchSideBar',
-			'pageFunctions'				=> 'Swissbib\View\Helper\PageFunctions'
-        )
+            'SortAndPrepareFacetList'	=> 'Swissbib\View\Helper\SortAndPrepareFacetList'
+            )
     ),
     'vufind' => array(
             // This section contains service manager configurations for all VuFind

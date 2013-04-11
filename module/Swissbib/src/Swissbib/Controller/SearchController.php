@@ -6,8 +6,6 @@ use Zend\Session\Container as SessionContainer;
 use VuFind\Search\Memory as VFMemory;
 
 /**
- * [Description]
- *
  * @package       Swissbib
  * @subpackage    [Subpackage]
  */

@@ -1,14 +1,14 @@
 <?
-    // Set page title.
+    	// Set page title
     $this->headTitle($this->translate('Advanced Search'));
 
-    // Disable top search box -- this page has a special layout.
-//    $this->layout()->searchbox = false;
+    	// Disable top search box -- this page has a special layout.
+//  $this->layout()->searchbox = false;
 
-    // Set up breadcrumbs:
-//    $this->layout()->breadcrumbs = '<em>' . $this->transEsc('Advanced') . '</em>';
+    // Set up breadcrumbs
+//  $this->layout()->breadcrumbs = '<em>' . $this->transEsc('Advanced') . '</em>';
 
-    // Set up saved search details:
+    	// Set up saved search details
     if (isset($this->saved) && is_object($this->saved)) {
         $searchDetails = $this->saved->getParams()->getSearchTerms();
         $searchFilters = $this->saved->getParams()->getFilterList();
@@ -16,8 +16,8 @@
         $searchDetails = $searchFilters = false;
     }
 
-    // Set up Javascript:
-    // Step 1: Define our search arrays so they are usuable in the javascript
+    	// Set up Javascript
+    // Step 1: Define our search arrays so they are usable in javascript
 
     // Step 2: Call the javascript to make use of the above
     $this->headScript()->appendFile('advanced_search.js');
@@ -62,7 +62,6 @@
 				<fieldset>
 
 					<h3>Sucheingabe</h3>
-
 					<div id="groupJoin" class="searchGroups">
 						<div class="searchGroupDetails">
 							<label for="groupJoinOptions"><?=$this->transEsc("search_match")?>:</label>

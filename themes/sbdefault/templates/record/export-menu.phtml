@@ -1,12 +1,14 @@
 <?
-    // Set page title.
+    	// Set page title
     $this->headTitle($this->translate('Export Record'));
 
-    // Set up breadcrumbs:
+	    // Set up breadcrumbs
     $this->layout()->breadcrumbs = $this->getLastSearchLink($this->transEsc('Search'), '', '<span>&gt;</span>') .
         $this->recordLink()->getBreadcrumb($this->driver) . '<span>&gt;</span><em>' . $this->transEsc('Export Record') . '</em>';
 ?>
+
 <?=$this->flashmessages()?>
+
 <? $exportFormats = $this->record($this->driver)->getExportFormats(); if (count($exportFormats) > 0): ?>
   <?=$this->transEsc('export_choose_format')?>
   <ul>

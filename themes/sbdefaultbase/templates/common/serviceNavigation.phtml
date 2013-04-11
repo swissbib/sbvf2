@@ -1,23 +1,13 @@
-
-
-<?= $this->ScriptMarker()->headline("serviceNavigation.phtml", true)?>
-    <? if (is_object($this->account)): // hide login/logout if unavailable ?>
-
-      <div id="service">
-
-        <h3 class="hidden">Servicenavigation</h3>
-        <ul>
-
-
-                <!--ich brauche noch eine vernünftige Sprachenregelung sowie Abfrage ob bereits eingeloggt
-                s. header.phtml blueprint / was ist ein institutional login?
-                -->
-                <li class="nav_login">
-                    <a href="<?=$this->url('home')?>" title="Anmelden"><?=$this->transEsc("Anmelden")?></a>
-                </li>
-
-        </ul>
-      </div>
-    <? endif; ?>
-
-<?= $this->ScriptMarker()->footer("serviceNavigation.phtml", true)?>
+<? if (is_object($this->account)): // hide login/logout if unavailable ?>
+  <div id="service">
+	<h3 class="hidden">Servicenavigation</h3>
+	<ul>
+		<!--ich brauche noch eine vernünftige Sprachenregelung sowie Abfrage ob bereits eingeloggt
+		s. header.phtml blueprint / was ist ein institutional login?
+		-->
+		<li class="nav_login">
+			<a href="<?=$this->url('home')?>" title="Anmelden"><?=$this->transEsc("Anmelden")?></a>
+		</li>
+	</ul>
+  </div>
+<? endif; ?>

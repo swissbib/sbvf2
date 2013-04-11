@@ -1,11 +1,13 @@
 <?
-    // Set page title.
+	    // Set page title
     $this->headTitle($this->translate('Add Tag'));
 
-    // Set up breadcrumbs:
+    	// Set up breadcrumbs
     $this->layout()->breadcrumbs = $this->getLastSearchLink($this->transEsc('Search'), '', '<span>&gt;</span>') .
         $this->recordLink()->getBreadcrumb($this->driver) . '<span>&gt;</span><em>' . $this->transEsc('Add Tag') . '</em>';
+
 ?>
+
 <div class="record">
   <h1 class="hideinlightbox"><?=$this->transEsc('Add Tag')?></h1>
   <form action="" method="post" name="tagRecord">

@@ -1,10 +1,12 @@
 <?
-    // Set page title.
+	    // Set page title
     $this->headTitle($this->translate('System Unavailable'));
 
-    // Disable top search box -- this page has a special layout.
+    	// Disable top search box -- this page has a special layout
     $this->layout()->searchbox = false;
+
 ?>
+
 <div class="error unavailable">
   <h1><?=$this->transEsc('System Unavailable')?></h1>
   <p>

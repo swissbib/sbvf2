@@ -1,4 +1,5 @@
 <? $results = $this->recommend->getResults(); ?>
+
 <div class="sidegroup">
   <? if ($results->getResultTotal() > 0): ?><h4><?=$this->transEsc(isset($this->overrideSideFacetCaption) ? $this->overrideSideFacetCaption : 'Narrow Search')?></h4><? endif; ?>
   <? $checkboxFilters = $results->getParams()->getCheckboxFacets(); if (count($checkboxFilters) > 0): ?>

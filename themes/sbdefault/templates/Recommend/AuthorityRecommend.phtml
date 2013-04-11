@@ -2,6 +2,7 @@
     $data = $this->recommend->getRecommendations();
     $results = $this->recommend->getResults();
 ?>
+
 <? if (is_array($data) && !empty($data)): ?>
   <div class="authoritybox">
     <div><strong><?=$this->transEsc('See also')?>:</strong></div>

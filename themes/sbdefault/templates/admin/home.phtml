@@ -1,14 +1,16 @@
 <?
-    // Set page title.
+    	// Set page title
     $this->headTitle($this->translate('VuFind Administration - Home'));
 
-    // Set up map of core name => label
+    	// Set up map of core name => label
     $coreLabels = array(
         'biblio' => $this->translate('Bibliographic Index'),
         'authority' => $this->translate('Authority Index'),
         'stats' => $this->translate('Usage Statistics Index')
     );
+
 ?>
+
 <div class="span-5">
   <?=$this->render("admin/menu.phtml")?>
 </div>

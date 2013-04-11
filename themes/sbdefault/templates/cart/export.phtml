@@ -1,11 +1,13 @@
 <?
-    // Set page title.
+	    // Set page title
     $this->headTitle($this->translate('Export Favorites'));
 
-    // Set up breadcrumbs:
+    	// Set up breadcrumbs
     $this->layout()->breadcrumbs = $this->getLastSearchLink($this->transEsc('Search'), '', '<span>&gt;</span>') .
         '<em>' . $this->transEsc('Export Favorites') . '</em>';
+
 ?>
+
 <h3 class="hideinlightbox"><?=$this->transEsc('Export Favorites')?></h3>
 
 <?=$this->flashmessages()?>

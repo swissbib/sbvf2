@@ -1,5 +1,5 @@
 <?
-    // Set up some convenience variables:
+    	// Set up some convenience variables
     $id = $this->driver->getUniqueId();
     $source = $this->driver->getResourceSource();
     if (isset($this->list) && is_object($this->list)) {
@@ -10,6 +10,7 @@
         $user_id = $this->user ? $this->user->id : null;
     }
 ?>
+
 <div class="listentry recordId source<?=$this->escapeHtml($source)?><?=$this->driver->supportsAjaxStatus()?' ajaxItemId':''?>" id="record<?=$this->escapeHtml($id)?>">
   <input type="hidden" value="<?=$this->escapeHtml($this->driver->getUniqueID())?>" class="hiddenId" />
   <div class="span-2">

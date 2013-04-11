@@ -1,8 +1,4 @@
 
-
-
-
-
     <? if ($this->facetControl["hasfacets"]): ?>
 
         <h3>Ihre Suche</h3>
@@ -24,15 +20,10 @@
             <? endif; ?>
         </div> <!-- end: <div class="filters" -->
 
-
-
-
         <h3>Treffer eingrenzen</h3>
         <div class="facets">
-
             <? $recommend = $this->facetControl["recommend"];   $sideFacetSet = $recommend->getFacetSet(); $dateFacets = $recommend->getDateFacets(); ?>
             <? if (!empty($sideFacetSet) && $this->results->getResultTotal() > 0): ?>
-
 
             <? foreach ($sideFacetSet as $title => $cluster): ?>
               <? if (isset($dateFacets[$title])): ?>
@@ -69,25 +60,16 @@
                                     guenterh local - in Bearbeitung
                                     Problem mit geänderten Methodenaufrufen
                                     nach Umbau des search objects
-
                                      -->
-
                                 </li>
 
                             <? endforeach; ?>
-
                         </ul>
                     </div>
 
-
               <? endif; ?>
-
-
             <? endforeach; ?>
-
             <? endif;?>
 
         </div>
-
     <?endif;?>
-

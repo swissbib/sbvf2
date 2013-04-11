@@ -2,17 +2,20 @@
 
 /** @var	 VuFind\Auth\Manager	$account  */
 $account		= $this->auth()->getManager();
+
 /** @var	Boolean|Object			$user  */
 //$user			= $account->isLoggedIn();
 //$holdings		= $this->driver->getRealTimeHoldings($account);
+
 /** @var	VuFind\ILS\Connection	$ilsConnection  */
 //$ilsConnection	= $this->ils();
+
 /** @var	Swissbib\RecordDriver\SolrMarc	$recordDriver  */
 $recordDriver	= $this->driver;
 $holdings		= $recordDriver->getHoldings($account);
 
 ?>
-<!-- begin: innerbox meine bibliotheken -->
+
 <div class="innerbox grey">
 	<h3 class="toggler persist collapsed" id="library_toggler_meine-bibliotheken"><span class="icon_favorit_library">Meine Bibliotheken</span></h3>
 	<div class="library_toggler_meine-bibliotheken">
@@ -63,11 +66,8 @@ $holdings		= $recordDriver->getHoldings($account);
 
 	</div>
 </div>
-<!-- end: innerbox meine bibliotheken -->
-
 
 <?php foreach($holdings as $networkCode => $network): ?>
-
 	<!-- begin: innerbox <?=$networkCode?> -->
 	<div class="innerbox grey">
 		<h3 class="toggler persist collapsed" id="library_toggler_<?=$networkCode?>"><?=$this->escapeHtml($network['label'])?><?php /*IDS Basel / Bern*/ ?></h3>

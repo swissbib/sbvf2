@@ -1,12 +1,15 @@
 <?
-    // Set page title.
+    	// Set page title
     $this->headTitle($this->translate('Upgrade VuFind'));
 
-    // Set up breadcrumbs:
+	    // Set up breadcrumbs
     $this->layout()->breadcrumbs = '<em>' . $this->transEsc('Upgrade VuFind') . '</em>';
 ?>
+
 <h1><?=$this->transEsc('Upgrade VuFind')?></h1>
+
 <?=$this->flashmessages()?>
+
 <p>Upgrade complete.  You may still have some work to do:</p>
 
 <ol>

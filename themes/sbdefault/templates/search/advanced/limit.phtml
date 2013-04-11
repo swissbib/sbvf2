@@ -1,11 +1,13 @@
 <?
-    // Set up convenience variables:
+	    // Set up convenience variables
     $limitList = $this->options->getLimitOptions();
 
-    // If a previous limit was used, make that the default; otherwise, use the "default default"
+	    // If a previous limit was used, make that the default; otherwise, use the "default default"
     $lastLimit = $this->options->getLastLimit();
     $defaultLimit = empty($lastLimit) ? $this->options->getDefaultLimit() : $lastLimit;
+
 ?>
+
 <? if (count($limitList) > 1): ?>
   <fieldset class="span-4">
     <legend><?=$this->transEsc('Results per page')?></legend>

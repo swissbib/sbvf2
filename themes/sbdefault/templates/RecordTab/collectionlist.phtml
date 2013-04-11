@@ -1,10 +1,11 @@
 <?
-    // Set page title.
+    	// Set page title
     $this->headTitle($this->translate('Collection Items') . ': ' . $this->driver->getBreadcrumb());
 
-    // Get search results
+	    // Get search results
     $results = $this->tab->getResults();
 ?>
+
 <? if (($recordTotal = $results->getResultTotal()) > 0): // only display these at very top if we have results ?>
   <? foreach ($results->getRecommendations('top') as $current): ?>
     <?=$this->recommend($current)?>

@@ -1,16 +1,18 @@
 <?
-    // Set page title.
+    	// Set page title
     $this->headTitle($this->translate('Excerpt') . ': ' . $this->driver->getBreadcrumb());
 
-    // Grab excerpt data:
+    	// Grab excerpt data
     $isbn = $this->driver->getCleanISBN();
     $excerpts = empty($isbn) ? array() : $this->excerpt($isbn);
 
-    // Activate Syndetics Plus if necessary:
+	    // Activate Syndetics Plus if necessary:
     if ($this->syndeticsPlus()->isActive()) {
         $this->headScript()->appendFile($this->syndeticsPlus()->getScript());
     }
+
 ?>
+
 <? if (count($excerpts) > 0): ?>
   <? foreach ($excerpts as $provider => $list): ?>
     <? foreach ($list as $excerpt): ?>
