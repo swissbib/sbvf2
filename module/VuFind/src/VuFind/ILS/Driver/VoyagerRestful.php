@@ -28,7 +28,7 @@
  * @link     http://vufind.org/wiki/vufind2:building_an_ils_driver Wiki
  */
 namespace VuFind\ILS\Driver;
-use PDOException, VuFind\Exception\Date as DateException,
+use PDO, PDOException, VuFind\Exception\Date as DateException,
     VuFind\Exception\ILS as ILSException;
 
 /**
@@ -391,7 +391,7 @@ class VoyagerRestful extends Voyager implements \VuFindHttp\HttpServiceAwareInte
         );
 
         // Create Rest API Renewal Key
-        $restItemID = $this->ws_dbKey. "|" . $itemId;
+        $restItemID = $this->ws_patronHomeUbId . "|" . $itemId;
 
         // Add to Hierarchy
         $hierarchy[$restItemID] = false;
@@ -703,7 +703,7 @@ class VoyagerRestful extends Voyager implements \VuFindHttp\HttpServiceAwareInte
                     );
 
                     // Create Rest API Renewal Key
-                    $restRenewID = $this->ws_dbKey. "|" . $renewID;
+                    $restRenewID = $this->ws_patronHomeUbId . "|" . $renewID;
 
                     // Add to Hierarchy
                     $hierarchy[$restRenewID] = false;
