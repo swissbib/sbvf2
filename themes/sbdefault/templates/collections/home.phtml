@@ -1,4 +1,5 @@
 <?
+
     $this->headTitle($this->translate('Collection Browse'));
     $this->layout()->breadcrumbs = '<a href="' . $this->url('collections-home') . '">' . $this->transEsc('Collections') . '</a>';
     $filterList = array();
@@ -8,7 +9,9 @@
         $filterList[] = $filter;
         $filterString .= '&' . urlencode('filter[]') .  '=' . urlencode($filter['urlPart']);
     }
+
 ?>
+
 <? ob_start(); ?>
   <div class="alphaBrowsePageLinks">
     <? if (isset($prevpage)): ?>

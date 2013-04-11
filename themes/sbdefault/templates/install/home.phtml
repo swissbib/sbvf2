@@ -1,10 +1,12 @@
 <?
-    // Set page title.
+    	// Set page title
     $this->headTitle($this->translate('auto_configure_title'));
 
-    // Set up breadcrumbs:
+	    // Set up breadcrumbs
     $this->layout()->breadcrumbs = '<em>' . $this->transEsc('auto_configure_title') . '</em>';
+
 ?>
+
 <h1><?=$this->transEsc('auto_configure_title')?></h1>
 <ul>
   <? $errors = 0; foreach ($this->checks as $check): ?>

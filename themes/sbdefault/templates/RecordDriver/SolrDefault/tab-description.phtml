@@ -1,15 +1,17 @@
 <?
-    // Set page title.
+    	// Set page title
     $this->headTitle($this->translate('Description') . ': ' . $this->driver->getBreadcrumb());
 
-    // Grab clean ISBN for convenience:
+    	// Grab clean ISBN for convenience
     $isbn = $this->driver->getCleanISBN();
 
-    // Activate Syndetics Plus if necessary:
+    	// Activate Syndetics Plus if necessary
     if ($this->syndeticsPlus()->isActive()) {
         $this->headScript()->appendFile($this->syndeticsPlus()->getScript());
     }
+
 ?>
+
 <table cellpadding="2" cellspacing="0" border="0" class="citation" summary="<?=$this->transEsc('Description')?>">
   <? $summ = $this->driver->getSummary(); if (!empty($summ)): ?>
     <? $contentDisplayed = true; ?>

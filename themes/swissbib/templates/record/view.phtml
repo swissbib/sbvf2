@@ -3,21 +3,22 @@
  * Record detail view
  */
 
-    // Set up standard record scripts:
+    // Set up standard record scripts
 $this->headScript()->appendFile("record.js");
 $this->headScript()->appendFile("check_save_statuses.js");
 
-    // Add RDF header link if applicable:
+    // Add RDF header link if applicable
 if ($this->export()->recordSupportsFormat($this->driver, 'RDF')) {
 	$this->headLink()->appendAlternate($this->recordLink()->getActionUrl($this->driver, 'RDF'), 'application/rdf+xml', 'RDF Representation');
 }
 
-    // Set up breadcrumbs:
+    // Set up breadcrumbs
 //$this->layout()->breadcrumbs = $this->getLastSearchLink($this->transEsc('Search'), '', '<span>&gt;</span>') .
 //	$this->recordLink()->getBreadcrumb($this->driver);
 
 //$lastSearchUrl = VuFind\Search\Memory::retrieve();
 $lastSearchUrl = $this->lastTabbedSearchUri();
+
 ?>
 
 <!-- begin: col1 (sidebar)  -->
@@ -36,14 +37,9 @@ $lastSearchUrl = $this->lastTabbedSearchUri();
 		<!-- begin: content -->
 		<div id="content">
 
-			<!-- begin: inlay -->
 			<div id="inlay">
-
-				<!-- begin: notepad -->
 				<?=$this->render('global/notepad.phtml')?>
-				<!-- end: notepad -->
-
-			</div><!-- end: inlay -->
+			</div>
 
 			<?=$this->flashmessages()?>
 
@@ -52,7 +48,6 @@ $lastSearchUrl = $this->lastTabbedSearchUri();
 			<!-- title -->
 			<h1 class="invisible">Details</h1>
 
-			<!-- begin: tools -->
 			<div class="tools floatbox">
 				<?php if($lastSearchUrl): ?>
 					<a href="<?=$this->escapeHtml($lastSearchUrl)?>" title="Zurück zur swissbib Resultatsliste" class="linkbutton icon_backto">
@@ -60,10 +55,8 @@ $lastSearchUrl = $this->lastTabbedSearchUri();
                     </a>
 				<?php endif; ?>
 
-				<!-- paging -->
 				<?=$this->render('record/paging.phtml')?>
 			</div>
-			<!-- end: tools -->
 
 			<!-- begin: box -->
 			<div class="box">
@@ -71,11 +64,8 @@ $lastSearchUrl = $this->lastTabbedSearchUri();
 			</div>
 			<!-- end: box -->
 
-			<!-- begin: tabs -->
 			<?=$this->render('record/tabs.phtml')?>
-			<!-- end: tabs -->
 
-			<!-- begin: tools -->
 			<div class="tools floatbox">
 				<?php if($lastSearchUrl): ?>
 					<a href="<?=$this->escapeHtml($lastSearchUrl)?>" title="Zurück zur swissbib Resultatsliste" class="linkbutton icon_backto">
@@ -83,7 +73,6 @@ $lastSearchUrl = $this->lastTabbedSearchUri();
                     </a>
 				<?php endif; ?>
 			</div>
-			<!-- end: tools -->
 
 			<!-- begin: pagefunctions -->
 			<?=$this->pageFunctions()?>
@@ -96,8 +85,6 @@ $lastSearchUrl = $this->lastTabbedSearchUri();
 	</div>
 </div>
 <!-- end: col3 (content) -->
-
-
 
 
 
@@ -127,7 +114,7 @@ $lastSearchUrl = $this->lastTabbedSearchUri();
   <div id="tabnav">
     <ul>
       <? foreach ($this->tabs as $tab => $obj): ?>
-      <? // add current tab to breadcrumbs if applicable:
+      <? // Add current tab to breadcrumbs if applicable:
          $desc = $obj->getDescription();
          $isCurrent = (strtolower($this->activeTab) == strtolower($tab));
          if ($isCurrent) {

@@ -1,11 +1,13 @@
 <?
-    // Set page title.
+    	// Set page title
     $this->headTitle($this->translate('request_place_text') . ': ' . $this->driver->getBreadcrumb());
 
-    // Set up breadcrumbs:
-//    $this->layout()->breadcrumbs = $this->getLastSearchLink($this->transEsc('Search'), '', '<span>&gt;</span>') .
-//        $this->recordLink()->getBreadcrumb($this->driver) . '<span>&gt;</span><em>' . $this->transEsc('request_place_text') . '</em>';
+    	// Set up breadcrumbs
+//  $this->layout()->breadcrumbs = $this->getLastSearchLink($this->transEsc('Search'), '', '<span>&gt;</span>') .
+//  $this->recordLink()->getBreadcrumb($this->driver) . '<span>&gt;</span><em>' . $this->transEsc('request_place_text') . '</em>';
+
 ?>
+
 <!-- begin: col1 (sidebar)  -->
 <div id="col1" class="sidebar">
 	<div id="col1_content" class="clearfix">
@@ -27,7 +29,6 @@
 			<?=$this->flashmessages()?>
 
 			<div class="hold-form">
-
 				<form action="" method="post">
 
 					<?php if( in_array("comments", $this->extraHoldFields) ): ?>

@@ -44,24 +44,15 @@
 
   </head>
 
-
 <body>
-
 <!-- layout 1col home-->
-
     <div class="page_margins">
         <div class="page template_home">
             <div id="header">
-
-            <?= $this->render('common/logo.phtml') ?>
-
-            <?= $this->render('common/keyNavigation.phtml') ?>
-            <?= $this->render('common/serviceNavigation.phtml') ?>
-
-            <?= $this->render('common/navigation.phtml') ?>
-
-
-
+				<?= $this->render('common/logo.phtml') ?>
+				<?= $this->render('common/keyNavigation.phtml') ?>
+				<?= $this->render('common/serviceNavigation.phtml') ?>
+				<?= $this->render('common/navigation.phtml') ?>
             </div>
 
             <?= $this->render('common/sbSearchbox.phtml') ?>
@@ -70,30 +61,12 @@
                 <div id="col3" class="content">
                     <div id="col3_content" class="clearfix">
                         <div id="content">
-
                             <?=$this->layout()->content?>
-
-
                         </div>
-
                      </div>
-
                  </div>
              </div>
-
-
-
         </div>
-
-
-
     </div>
-
-
-
-
-
 </body>
-
-
 </html>

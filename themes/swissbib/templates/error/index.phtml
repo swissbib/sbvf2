@@ -1,29 +1,22 @@
 <?
-    // Set page title.
+		// Set page title
     $this->headTitle($this->translate('An error has occurred'));
+
 ?>
 
-<!-- begin: col1 (sidebar)  -->
 <div id="col1" class="sidebar">
 	<div id="col1_content" class="clearfix">
-		<!-- begin: sidebar -->
 		<div id="sidebar">
-<!--			Sidebar error-->
+			<!-- Sidebar error-->
 		</div>
-		<!-- end: sidebar -->
 	</div>
 </div>
-<!-- end: col1 (sidebar) -->
 
 <div id="col3" class="content">
 	<div id="col3_content" class="clearfix">
-		<!-- begin: content -->
 		<div id="content">
-
 			<h1><?=$this->transEsc('An error has occurred')?></h1>
-
 			<p class="errorMsg"><?=$this->transEsc($this->message)?></p>
-
 			<p>
 				<?=$this->transEsc('Please contact the Library Reference Department for assistance')?>
 				<br/>
@@ -65,18 +58,9 @@
 				<? endif; ?>
 			<? endif ?>
 
-
 		</div>
-		<!-- end: content -->
 	</div>
 	<div id="ie_clearing">
 		&nbsp;
 	</div>
 </div>
-
-
-
-
-
-
-

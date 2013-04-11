@@ -9,6 +9,7 @@ $isLoggedIn		= $user !== false;
 $deleteBaseUrl	= $this->recordLink()->getActionUrl($this->driver, 'DeleteComment');
 
 ?>
+
 <?php if( $commentCount == 0 ): ?>
 	<p><?=$this->transEsc('Be the first to leave a comment')?></p>
 <?php else: ?>
@@ -43,8 +44,6 @@ $deleteBaseUrl	= $this->recordLink()->getActionUrl($this->driver, 'DeleteComment
 				<?php endif; ?>
 			</li>
 		<?php endforeach; ?>
-
-
 
 	</ul>
 <?php endif; ?>

@@ -1,13 +1,13 @@
 <?php
+
 $filters	= $this->params->getFilterList();
 /** @var	Vufind\Search\Base\Results	$results  */
 $results	= $this->results;
 /** @var	VuFind\Search\UrlQueryHelper	$urlQuery  */
 $urlQuery	= $results->getUrlQuery();
 
-
 ?>
-<!-- /themes/swissbib/templates/global/sidebar/search/filters.phtml -->
+
 <h3><?=$this->transEsc('Your_Search')?></h3>
 <div class="filters">
 	<p>
@@ -17,7 +17,6 @@ $urlQuery	= $results->getUrlQuery();
 
 	<?php if( sizeof($filters) ): ?>
 		<h4 class="filters_indicator"><span>B&uuml;cher & mehr</span></h4>
-
 		<?php foreach($filters as $filterLabel => $filterValues): ?>
 			<?php
 				$firstItem	= reset($filterValues);

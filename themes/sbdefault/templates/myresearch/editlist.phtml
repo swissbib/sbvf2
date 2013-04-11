@@ -1,13 +1,15 @@
 <?
-    // Set up page title:
+	    // Set up page title
     $pageTitle = empty($this->list->id) ? 'Create a List' : "edit_list";
     $this->headTitle($this->translate($pageTitle));
 
-    // Set up breadcrumbs:
+    	// Set up breadcrumbs
     $this->layout()->breadcrumbs = '<a href="' . $this->url('myresearch-home') . '">'
         . $this->transEsc('Your Account') . '</a>' . '<span>&gt;</span><em>'
         . $this->transEsc($pageTitle) . '</em>';
+
 ?>
+
 <h1><?=$this->transEsc($pageTitle); ?></h1>
 
 <?=$this->flashmessages()?>

@@ -1,10 +1,12 @@
 <?
-    // Set up page title:
+    	// Set up page title
     $this->headTitle($this->translate('Reserves Search'));
 
-    // Set up breadcrumbs:
+	    // Set up breadcrumbs
     $this->layout()->breadcrumbs = '<em>' . $this->transEsc('Reserves') . '</em>';
+
 ?>
+
 <div class="<?=$this->layoutClass('mainbody')?>">
   <h3><?=$this->transEsc('Search For Items on Reserve')?></h3>
   <? if (is_array($this->courseList)): ?>

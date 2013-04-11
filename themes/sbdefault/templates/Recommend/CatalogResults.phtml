@@ -1,4 +1,8 @@
-<? $searchObject = $this->recommend->getResults(); $results = $searchObject->getResults(); if (!empty($results)): ?>
+<?
+	$searchObject = $this->recommend->getResults();
+	$results = $searchObject->getResults();
+	if (!empty($results)): ?>
+
 <div class="sidegroup">
   <h4><?=$this->transEsc('Catalog Results')?></h4>
 

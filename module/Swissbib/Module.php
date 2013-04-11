@@ -6,19 +6,46 @@ use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\InitProviderInterface;
 use Zend\ModuleManager\ModuleManagerInterface;
 
+use Swissbib\Filter\SbTemplateFilenameFilter;
+
 use Zend\ModuleManager\ModuleManager,
 		Zend\Mvc\MvcEvent,
 		Zend\ModuleManager\ModuleEvent;
 
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface, InitProviderInterface {
 
-	public function getConfig() {
+	/**
+	 * @return	Array|mixed|\Traversable
+	 */
+	public function getConfig()
+	{
 		return include __DIR__ . '/config/module.config.php';
 	}
 
+	/**
+	 * @param	MvcEvent	$event
+	 */
+	public function onBootstrap(MvcEvent $event)
+	{
+			// --- Setup template filename comment filter
+		$sm = $event->getApplication()->getServiceManager();
+		$widgetFilter = new SbTemplateFilenameFilter();
+		$widgetFilter->setServiceLocator($sm);
+		$view = $sm->get('ViewRenderer');
+		$filters = $view->getFilterChain();
+		$filters->attach($widgetFilter, 50);
+		$view->setFilterChain($filters);
+			// --- End: setup template filename comment filter
 
+		$b = new Bootstrapper($event);
+		$b->bootstrap();
+	}
 
-	public function getAutoloaderConfig() {
+	/**
+	 * @return	Array
+	 */
+	public function getAutoloaderConfig()
+	{
 		return array(
 			'Zend\Loader\StandardAutoloader' => array(
 				'namespaces' => array(
@@ -28,28 +55,13 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, In
 		);
 	}
 
-
-
-	public function init(ModuleManagerInterface $m) {
-
+	/**
+	 * @param	ModuleManagerInterface	$m
+	 */
+	public function init(ModuleManagerInterface $m)
+	{
 		//note: only for testing
 		//$m->getEventManager()->attach(ModuleEvent::EVENT_LOAD_MODULES_POST,array($this,'postInSwissbib'),10000);
-
 	}
 
-
-
-	public function onBootstrap(MvcEvent $e) {
-		$b = new Bootstrapper($e);
-		$b->bootstrap();
-	}
-
-	//public function postInSwissbib(ModuleEvent $e) {
-
-	//note: only for testing
-	//    $mName = $e->getModuleName();
-
-	//    $params =  $e->getParams();
-
-	//}
 }
