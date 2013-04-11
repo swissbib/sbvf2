@@ -52,6 +52,7 @@ class Options extends \VuFind\Search\Base\Options
      */
     public function __construct()
     {
+        parent::__construct();
         $this->searchIni = $this->facetsIni = 'Summon';
     }
 
@@ -68,7 +69,7 @@ class Options extends \VuFind\Search\Base\Options
         // Load facet preferences:
         $facetSettings = $this->getServiceLocator()->get('VuFind\Config')
             ->get($this->facetsIni);
-        if (isset($facetSettings->Advanced_Settings->translated_facets)
+        if (isset($facetSettings->Advanced_Facet_Settings->translated_facets)
             && count($facetSettings->Advanced_Facet_Settings->translated_facets) > 0
         ) {
             $list = $facetSettings->Advanced_Facet_Settings->translated_facets;
