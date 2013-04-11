@@ -1,12 +1,17 @@
 <?
-    // Set page title.
+    	// Set page title
     $this->headTitle($this->translate('Text this'));
 
-    // Set up breadcrumbs:
-    $this->layout()->breadcrumbs = $this->getLastSearchLink($this->transEsc('Search'), '', '<span>&gt;</span>') .
-        $this->recordLink()->getBreadcrumb($this->driver) . '<span>&gt;</span><em>' . $this->transEsc('Text this') . '</em>';
+	    // Set up breadcrumbs
+    $this->layout()->breadcrumbs =
+		$this->getLastSearchLink($this->transEsc('Search'), '', '<span>&gt;</span>')
+	.   $this->recordLink()->getBreadcrumb($this->driver)
+	.	'<span>&gt;</span><em>' . $this->transEsc('Text this') . '</em>';
+
 ?>
+
 <?=$this->flashmessages()?>
+
 <form method="post" action="" name="smsRecord">
   <input type="hidden" name="id" value="<?=$this->escapeHtml($this->driver->getUniqueId())?>" />
   <input type="hidden" name="source" value="<?=$this->escapeHtml($this->driver->getResourceSource())?>" />

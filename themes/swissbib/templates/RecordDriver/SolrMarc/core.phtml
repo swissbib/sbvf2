@@ -1,4 +1,5 @@
 <?php
+
 /** @var	Swissbib\RecordDriver\SolrMarc	$resultItem  */
 $resultItem	= $this->driver;
 /** @var	VuFind\View\Helper\Root\Record		$record  */
@@ -20,7 +21,9 @@ $summary			= trim(implode($resultItem->getSummary()));
 $groupID            = $resultItem->getGroup(true);
 
 $publicationDate    = $this->publicationDateMarc($resultItem->getPublicationDates());
+
 ?>
+
 <?/* Common parts of recordDriver's core.phtml templates*/?>
 <!-- col -->
 <div class="c25l">

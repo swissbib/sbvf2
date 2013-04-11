@@ -1,16 +1,17 @@
 <?
-    // Set page title.
+    	// Set page title
     $this->headTitle($this->translate('Reviews') . ': ' . $this->driver->getBreadcrumb());
 
-    // Grab review data:
+    	// Grab review data
     $isbn = $this->driver->getCleanISBN();
     $reviews = empty($isbn) ? array() : $this->reviews($isbn);
 
-    // Activate Syndetics Plus if necessary:
+    	// Activate Syndetics Plus if necessary
     if ($this->syndeticsPlus()->isActive()) {
         $this->headScript()->appendFile($this->syndeticsPlus()->getScript());
     }
 ?>
+
 <? if (count($reviews) > 0): ?>
   <? foreach ($reviews as $provider => $list): ?>
     <? foreach ($list as $review): ?>

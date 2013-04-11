@@ -1,10 +1,12 @@
 <?php
-/** @var  VuFind\View\Helper\Root\Record $viewRecord  */
-$viewRecord	= $this->record($this->driver);
+
+	/** @var  VuFind\View\Helper\Root\Record $viewRecord  */
+	$viewRecord	= $this->record($this->driver);
+
 ?>
+
 <div class="tabs">
 	<h3 class="hidden">Tabnavigation</h3>
-
 	<ul>
 		<?php foreach($this->tabs as $tabKey => $tabObject): ?>
 			<?php /** @var	\VuFind\RecordTab\TabInterface $tabObject */ ?>

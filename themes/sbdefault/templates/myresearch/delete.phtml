@@ -1,5 +1,7 @@
 <form action="<?=$this->url('myresearch-delete')?>" method="post" name="bulkDelete">
-  <div id="popupMessages"><?=$this->flashmessages()?></div>
+  <div id="popupMessages">
+	  <?=$this->flashmessages()?>
+  </div>
   <div id="popupDetails">
     <? if (!$this->list): ?>
       <div class="info"><?=$this->transEsc("fav_delete_warn") ?></div>

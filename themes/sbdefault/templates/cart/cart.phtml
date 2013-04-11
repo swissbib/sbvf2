@@ -1,12 +1,15 @@
 <?
-    // Set page title.
+    // Set page title
     $this->headTitle($this->translate('Book Bag'));
 
-    // Set up breadcrumbs:
+    // Set up breadcrumbs
     $this->layout()->breadcrumbs = $this->getLastSearchLink($this->transEsc('Search'), '', '<span>&gt;</span>') .
         '<em>' . $this->transEsc('Book Bag') . '</em>';
+
 ?>
+
 <?=$this->flashmessages()?>
+
 <form action="<?=$this->url('cart-home')?>" method="post"  name="cartForm">
   <? if (!$this->cart()->isEmpty()): ?>
     <div class="bulkActionButtons">

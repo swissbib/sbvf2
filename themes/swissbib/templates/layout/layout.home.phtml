@@ -5,24 +5,14 @@
 		<?=$this->partial('global/head.phtml')?>
 	</head>
 	<body>
-		<!-- begin: page -->
 		<div class="page_margins">
 			<div class="page template_home">
-				<!-- begin: header -->
 				<?=$this->render('global/header.phtml')?>
-				<!-- end: header -->
-				<!-- begin: search -->
 				<?=$this->render('global/searchbox.phtml')?>
-				<!-- end: search -->
-				<!-- begin: main  -->
 				<div id="main">
-					<!-- begin: col3 (content) -->
 					<?=$this->layout()->content?>
-					<!-- end: col3 (content) -->
 				</div>
-				<!-- end: main -->
 			</div>
 		</div>
-		<!-- end: page -->
 	</body>
 </html>

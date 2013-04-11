@@ -1,11 +1,13 @@
 <?
-    // Set page title.
+	    // Set page title
     $this->headTitle($this->translate('bookbag_save_selected'));
 
-    // Set up breadcrumbs:
+    	// Set up breadcrumbs
     $this->layout()->breadcrumbs = $this->getLastSearchLink($this->transEsc('Search'), '', '<span>&gt;</span>') .
         '<em>' . $this->transEsc('bookbag_save_selected') . '</em>';
+
 ?>
+
 <h3 class="hideinlightbox"><?=$this->transEsc('bookbag_save_selected')?></h3>
 
 <?=$this->flashmessages()?>

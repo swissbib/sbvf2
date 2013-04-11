@@ -1,12 +1,15 @@
 <?php
-/** @var \VuFind\Search\Solr\Results	$results  */
-$results	= $this->results;
-/** @var \VuFind\Search\Solr\Params		$params  */
-$params		= $this->params;
 
-$recordTotal= $results->getResultTotal();
-$lookFor	= $params->getDisplayQuery();
+	/** @var \VuFind\Search\Solr\Results	$results  */
+	$results	= $this->results;
+	/** @var \VuFind\Search\Solr\Params		$params  */
+	$params		= $this->params;
+
+	$recordTotal= $results->getResultTotal();
+	$lookFor	= $params->getDisplayQuery();
+
 ?>
+
     <h1>
         <?=$this->number($recordTotal)?> Treffer für ihre Suchanfrage
         <cite><?=$this->escapeHtml($lookFor)?></cite>

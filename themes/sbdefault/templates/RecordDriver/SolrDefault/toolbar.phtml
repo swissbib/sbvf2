@@ -4,12 +4,14 @@
         $this->headScript()->appendFile('https://s7.addthis.com/js/250/addthis_widget.js?pub=' . urlencode($addThis));
     }
 
-    // Set up some variables for convenience:
+	    // Set up some variables for convenience
     $id = $this->driver->getUniqueId();
     $controllerClass = 'controller' . $this->record($this->driver)->getController();
     $cart = $this->cart();
     $cartId = $this->driver->getResourceSource() . '|' . $id;
+
 ?>
+
 <div class="toolbar">
   <ul>
     <? if (count($this->driver->getCitationFormats()) > 0): ?>
