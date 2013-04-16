@@ -98,13 +98,21 @@ class SolrMarcSimpleTest extends SolrMarcTestCase {
 
 
 	public function testGetLocalTopicTerms() {
-		$terms	= $this->driver->getLocalTopicTerms();
+		$terms	= $this->driver->getLocalTopicalTerms();
 
 		$this->assertInternalType('array', $terms);
 		$this->assertEquals(2, sizeof($terms));
 
 		$this->assertEquals('Konzerte', $terms[0]['term']);
 		$this->assertArrayHasKey('label', $terms[0]);
+	}
+
+
+	public function testGetTopicalTerms() {
+		$terms	= $this->driver->getTopicalTerms();
+
+		$this->assertInternalType('array', $terms);
+		$this->assertEquals(0, sizeof($terms));
 	}
 
 

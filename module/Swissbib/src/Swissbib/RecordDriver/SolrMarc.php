@@ -214,14 +214,41 @@ class SolrMarc extends VuFindSolrMarc {
 	/**
 	 * Get local topic term
 	 *
-	 * @return	Array
+	 * @return	Array[]
 	 */
-	public function getLocalTopicTerms() {
-		return $this->getMarcSubFieldMaps('690', array(
-			'a'	=> 'term',
-			'q'	=> 'label', // @todo real name?
-			't'	=> 'time', // @todo real name?
-			'v'	=> 'form_subdivision'
+	public function getLocalTopicalTerms() {
+		return $this->getMarcSubFieldMaps(690, array(
+			'a'		=> 'term',
+			'q'		=> 'label', // @todo real name?
+			't'		=> 'time', // @todo real name?
+			'_v'	=> 'form_subdivision'
+		));
+	}
+
+
+
+	/**
+	 * Get topical terms
+	 *
+	 * @return Array[]
+	 */
+	public function getTopicalTerms() {
+		return $this->getMarcSubFieldMaps(650, array(
+			'a'		=> 'term',
+			'b'		=> 'term_geographic',
+			'c'		=> 'location',
+			'd'		=> 'active_dates',
+			'_e'	=> 'relator_term',
+			'q'		=> 'label', // @todo real name?
+			't'		=> 'time', // @todo real name?
+			'_v'	=> 'form_subdivision',
+			'_x'	=> 'general_subdivision',
+			'_y'	=> 'chronological_subdivision',
+			'_z'	=> 'geographical_subdivision',
+			'_0'	=> 'authority_record_control_numer',
+			'2'		=> 'source_heading',
+			'3'		=> 'materials',
+			'_4'	=> 'relator_code'
 		));
 	}
 
@@ -293,6 +320,25 @@ class SolrMarc extends VuFindSolrMarc {
 			'3'		=> 'appliesTo'
 		));
     }
+
+
+
+	/**
+	 * Get formatted content notes (505)
+	 *
+	 * @return	Array[]
+	 */
+	public function getFormattedContentNotes() {
+		return $this->getMarcSubFieldMaps(505, array(
+			'a'		=> 'notes',
+			'_g'	=> 'misc',
+			'_r'	=> 'responsibility',
+			'_t'	=> 'title',
+			'_u'	=> 'URI'
+		));
+	}
+
+
 
 
 
