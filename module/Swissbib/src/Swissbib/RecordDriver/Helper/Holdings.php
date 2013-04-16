@@ -32,10 +32,12 @@
 
 namespace Swissbib\RecordDriver\Helper;
 
-use Swissbib\RecordDriver\SolrMarc;
-use VuFind\Crypt\HMAC;
 use Zend\Config\Config;
-use Zend\ServiceManager\ServiceLocatorInterface;
+
+use VuFind\Crypt\HMAC;
+use VuFind\ILS\Connection as IlsConnection;
+use VuFind\Auth\Manager as AuthManager;
+
 use Swissbib\VuFind\ILS\Driver\Aleph;
 
 
@@ -44,15 +46,15 @@ use Swissbib\VuFind\ILS\Driver\Aleph;
  * probably Holdings should be a subtype of ZF2 AbstractHelper
  *at first I need a better understanding how things are wired up in this case using means of ZF2
  */
-class Holdings implements HoldingsAwareInterface {
+class Holdings {
 
 	/**
-	 * @var	\VuFind\ILS\Connection
+	 * @var	IlsConnection
 	 */
 	protected $ils;
 
 	/**
-	 * @var	\VuFind\Auth\Manager
+	 * @var	AuthManager
 	 */
 	protected $authManager;
 
@@ -70,11 +72,6 @@ class Holdings implements HoldingsAwareInterface {
 	 * @var	Array	HMAC keys for ILS
 	 */
 	protected $hmacKeys = array();
-
-	/**
-	 * @var \Zend\ServiceManager\ServiceManager
-	 */
-	protected $serviceLocator;
 
 	/**
 	 * @var	Array	Map of fields to named params
@@ -124,14 +121,22 @@ class Holdings implements HoldingsAwareInterface {
 
 
 	/**
-	 * Initialize with service locator
+	 * Initialize helper with dependencies
 	 *
-	 * @param	ServiceLocatorInterface	$serviceLocator
+	 * @param	IlsConnection	$ils
+	 * @param	Config			$holdingsConfig
+	 * @param	HMAC			$hmac
+	 * @param	AuthManager		$authManager
 	 */
-	function __construct(ServiceLocatorInterface $serviceLocator) {
-		$this->serviceLocator	= $serviceLocator;
-		$this->config			= $this->serviceLocator->get('VuFind\Config')->get('Holdings');
-		$this->hmac				= $this->serviceLocator->get('VuFind\HMAC');
+	function __construct(IlsConnection $ils, Config $holdingsConfig, HMAC $hmac, AuthManager $authManager) {
+		$this->ils			= $ils;
+		$this->config		= $holdingsConfig;
+		$this->hmac			= $hmac;
+		$this->authManager	= $authManager;
+
+		$holdsIlsConfig	= $this->ils->checkFunction('Holds');
+
+		$this->hmacKeys	= $holdsIlsConfig['HMACKeys'];
 
 		$this->initNetworks();
 	}
@@ -142,12 +147,10 @@ class Holdings implements HoldingsAwareInterface {
 	 * Initialize for item
 	 *
 	 * @param	String		$idItem
-	 * @param	Array		$hmacKeys
 	 * @param	String		$holdingsXml
 	 */
-	public function initRecord($idItem, array $hmacKeys, $holdingsXml) {
-		$this->idItem			= $idItem;
-		$this->hmacKeys	= $hmacKeys;
+	public function setData($idItem, $holdingsXml = '') {
+		$this->idItem	= $idItem;
 
 		$this->setHoldingsContent($holdingsXml);
 	}
@@ -155,7 +158,28 @@ class Holdings implements HoldingsAwareInterface {
 
 
 	/**
+	 * Get holdings data
+	 *
+	 * @return	Array[]|Boolean			Contains lists for items and holdings {items=>[],holdings=>[]}
+	 */
+	public function getHoldings() {
+		if( $this->extractedData === false ) {
+			$holdingsData	= $this->getHoldingData();
+			$itemsData		= $this->getItemData();
+
+				// Merge items and holding into the same network/institution structure
+				// (stays separated by items/holdings key at lowest level)
+			$this->extractedData = array_merge_recursive($holdingsData, $itemsData);
+		}
+
+		return $this->extractedData;
+	}
+
+
+
+	/**
 	 * Initialize networks from config
+	 *
 	 */
 	protected function initNetworks() {
 		$networkNames	= array('aleph', 'virtua');
@@ -186,8 +210,8 @@ class Holdings implements HoldingsAwareInterface {
 	 * @param	String		$holdingsXml
 	 * @throws	\File_MARC_Exception
 	 */
-	public function setHoldingsContent($holdingsXml) {
-		if( strlen($holdingsXml) > 30 ) {
+	protected function setHoldingsContent($holdingsXml) {
+		if( is_string($holdingsXml) && strlen($holdingsXml) > 30 ) {
 			$holdingsMarcXml= new \File_MARCXML($holdingsXml, \File_MARCXML::SOURCE_STRING);
 			$marcData		= $holdingsMarcXml->next();
 
@@ -200,31 +224,6 @@ class Holdings implements HoldingsAwareInterface {
 				// Invalid input data. Currently just ignore it
 			$this->extractedData	= array();
 		}
-	}
-
-
-
-	/**
-	 * Get holdings data
-	 *
-	 * @param	\VuFind\Auth\Manager	$authManager
-	 * @param	\VuFind\ILS\Connection	$ils
-	 * @return	Array[]|Boolean			Contains lists for items and holdings {items=>[],holdings=>[]}
-	 */
-	public function getHoldings($authManager, $ils) {
-		$this->authManager	= $authManager;
-		$this->ils			= $ils;
-
-		if( $this->extractedData === false ) {
-			$holdingsData	= $this->getHoldingData();
-			$itemsData		= $this->getItemData();
-
-				// Merge items and holding into the same network/institution structure
-				// (stays separated by items/holdings key at lowest level)
-			$this->extractedData = array_merge_recursive($holdingsData, $itemsData);
-		}
-
-		return $this->extractedData;
 	}
 
 
@@ -349,7 +348,7 @@ class Holdings implements HoldingsAwareInterface {
 	 * @return	Boolean
 	 */
 	protected function isLoggedIn() {
-		return $this->serviceLocator->get('VuFind\AuthManager')->isLoggedIn() !== false;
+		return $this->authManager->isLoggedIn() !== false;
 	}
 
 
@@ -360,7 +359,7 @@ class Holdings implements HoldingsAwareInterface {
 	 * @return	Array
 	 */
 	protected function getPatron() {
-		return $this->serviceLocator->get('VuFind\AuthManager')->storedCatalogLogin();
+		return $this->authManager->storedCatalogLogin();
 	}
 
 
@@ -751,47 +750,47 @@ class Holdings implements HoldingsAwareInterface {
 	}
 
 
-
-	public function getTestData() {
-
-		return
-				$testholdings = <<<EOT
-        <record>
-            <datafield tag="949" ind1=" " ind2=" ">
-                <subfield code="B">RERO</subfield>
-                <subfield code="E">vtls0034515</subfield>
-                <subfield code="b">A100</subfield>
-                <subfield code="j">-</subfield>
-                <subfield code="p">1889908238</subfield>
-                <subfield code="4">60100</subfield>
-            </datafield>
-            <datafield tag="949" ind1=" " ind2=" ">
-                <subfield code="B">RERO</subfield>
-                <subfield code="E">vtls003451557</subfield>
-                <subfield code="b">610650002</subfield>
-                <subfield code="j">-</subfield>
-                <subfield code="p">1889908238</subfield>
-                <subfield code="4">60100</subfield>
-            </datafield>
-            <datafield tag="949" ind1=" " ind2=" ">
-                <subfield code="B">RERO</subfield>
-                <subfield code="E">vtls003451557</subfield>
-                <subfield code="b">1234</subfield>
-                <subfield code="j">-</subfield>
-                <subfield code="p">1889908238</subfield>
-                <subfield code="4">60100</subfield>
-            </datafield>
-            <datafield tag="852" ind1=" " ind2=" ">
-                <subfield code="B">IDSBB</subfield>
-                <subfield code="E">sysnr</subfield>
-                <subfield code="b">1234</subfield>
-                <subfield code="j">-</subfield>
-                <subfield code="p">recid</subfield>
-                <subfield code="4">60100</subfield>
-            </datafield>
-        </record>
-EOT;
-
-	}
+//
+//	public function getTestData() {
+//
+//		return
+//				$testholdings = <<<EOT
+//        <record>
+//            <datafield tag="949" ind1=" " ind2=" ">
+//                <subfield code="B">RERO</subfield>
+//                <subfield code="E">vtls0034515</subfield>
+//                <subfield code="b">A100</subfield>
+//                <subfield code="j">-</subfield>
+//                <subfield code="p">1889908238</subfield>
+//                <subfield code="4">60100</subfield>
+//            </datafield>
+//            <datafield tag="949" ind1=" " ind2=" ">
+//                <subfield code="B">RERO</subfield>
+//                <subfield code="E">vtls003451557</subfield>
+//                <subfield code="b">610650002</subfield>
+//                <subfield code="j">-</subfield>
+//                <subfield code="p">1889908238</subfield>
+//                <subfield code="4">60100</subfield>
+//            </datafield>
+//            <datafield tag="949" ind1=" " ind2=" ">
+//                <subfield code="B">RERO</subfield>
+//                <subfield code="E">vtls003451557</subfield>
+//                <subfield code="b">1234</subfield>
+//                <subfield code="j">-</subfield>
+//                <subfield code="p">1889908238</subfield>
+//                <subfield code="4">60100</subfield>
+//            </datafield>
+//            <datafield tag="852" ind1=" " ind2=" ">
+//                <subfield code="B">IDSBB</subfield>
+//                <subfield code="E">sysnr</subfield>
+//                <subfield code="b">1234</subfield>
+//                <subfield code="j">-</subfield>
+//                <subfield code="p">recid</subfield>
+//                <subfield code="4">60100</subfield>
+//            </datafield>
+//        </record>
+//EOT;
+//
+//	}
 
 }

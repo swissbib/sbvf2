@@ -1,6 +1,8 @@
 <?php
 namespace Swissbib\Module\Config;
 
+use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
+
 return array(
 	'router' => array(
 		'routes' => array(
@@ -44,7 +46,17 @@ return array(
         'invokables' => array(
             'VuFindTheme\ResourceContainer'         => 'Swissbib\VuFind\ResourceContainer',
 			'Swissbib\RecordDriverHoldingsHelper'   => 'Swissbib\RecordDriver\Helper\Holdings'
-        )
+        ),
+		'factories' => array(
+			'Swissbib\HoldingsHelper' => function($sm) {
+				$ils			= $sm->get('VuFind\ILSConnection');
+				$holdingsConfig	= $sm->get('VuFind\Config')->get('Holdings');
+				$hmac			= $sm->get('VuFind\HMAC');
+				$authManager	= $sm->get('VuFind\AuthManager');
+
+				return new HoldingsHelper($ils, $holdingsConfig, $hmac, $authManager);
+			}
+		)
     ),
     'view_helpers' => array(
         'invokables' => array(
