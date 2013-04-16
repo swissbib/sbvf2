@@ -54,15 +54,15 @@ $publicationDate    = $this->publicationDateMarc($resultItem->getPublicationDate
         <?php if($physical): ?>
             <h4><?=$this->transEsc('Physical Description')?>:</h4>
                 <p>
-                <?=$this->escapeHtml($physical[extent])?>.
-                    <?php if($physical[details]): ?>:
-                    <?=$this->escapeHtml($physical[details])?>.
+                <?=$this->escapeHtml($physical['extent'])?>.
+                    <?php if($physical['details']): ?>:
+                    <?=$this->escapeHtml($physical['details'])?>.
                     <?php endif; ?>
-                    <?php if($physical[dimensions]): ?>;
-                    <?=$this->escapeHtml($physical[dimensions])?>
+                    <?php if($physical['dimensions']): ?>;
+                    <?=$this->escapeHtml($physical['dimensions'])?>
                     <?php endif; ?>
-                    <?php if($physical[company]): ?>+
-                    <?=$this->escapeHtml($physical[company])?>.
+                    <?php if($physical['company']): ?>+
+                    <?=$this->escapeHtml($physical['company'])?>.
                     <?php endif; ?>
                 </p>
         <?php endif; ?>

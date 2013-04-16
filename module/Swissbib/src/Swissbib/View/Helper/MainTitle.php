@@ -14,7 +14,7 @@ use Zend\View\Helper\AbstractHelper;
  */
 
 class MainTitle extends AbstractHelper {
-    public function __invoke($title, $resultItem) {
+    public function __invoke($title, $resultItem = null) {
         if ($title != '@') {
             return $title;
         }
