@@ -1,5 +1,5 @@
 <?php
-namespace SwissbibTest;
+namespace SwissbibTest\View\Helper;
 
 use Swissbib\View\Helper\Number;
 

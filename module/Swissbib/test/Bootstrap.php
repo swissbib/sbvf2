@@ -52,6 +52,8 @@ class Bootstrap {
 			),
 		);
 
+		self::initVuFind();
+
 		$config = ArrayUtils::merge($baseConfig, $testConfig);
 
 		$serviceManager = new ServiceManager(new ServiceManagerConfig());
@@ -60,6 +62,19 @@ class Bootstrap {
 
 		static::$serviceManager = $serviceManager;
 		static::$config = $config;
+	}
+
+
+	public static function initVuFind() {
+		define('APPLICATION_ENV', 'development');
+		define('SWISSBIB_TEST_FIXTURES', realpath(__DIR__ . '/fixtures'));
+
+
+		// Setup autoloader for VuFindTest classes
+		$loader = \Zend\Loader\AutoloaderFactory::getRegisteredAutoloader(
+		    \Zend\Loader\AutoloaderFactory::STANDARD_AUTOLOADER
+		);
+		$loader->registerNamespace('VuFindTest', __DIR__ . '/../../VuFind/src/VuFindTest');
 	}
 
 
