@@ -191,20 +191,22 @@ class SolrMarc extends VuFindSolrMarc {
 
 	/**
 	 * get group-id from solr-field to display FRBR-Button
-	 * @return string
+	 *
+	 * @return	String|Number
 	 */
 	public function getGroup() {
-		return isset($this->fields['group_id']) ? $this->fields['group_id'] : '';
+		return isset($this->fields['group_id']) ? $this->fields['group_id'][0] : '';
 	}
 
 
 
 	/*
-	* Library / Institution Code as array
-	* @return array
+	* Library / Institution Code
+	 *
+	* @return	String
 	*/
 	public function getInstitution() {
-		return isset($this->fields['institution']) ? $this->fields['institution'] : array();
+		return isset($this->fields['institution']) ? $this->fields['institution'][0] : array();
 	}
 
 
@@ -212,10 +214,15 @@ class SolrMarc extends VuFindSolrMarc {
 	/**
 	 * Get local topic term
 	 *
-	 * @return	String
+	 * @return	Array
 	 */
-	public function getLocalTopicTerm() {
-		return $this->getSimpleMarcFieldValue('690');
+	public function getLocalTopicTerms() {
+		return $this->getMarcSubFieldMaps('690', array(
+			'a'	=> 'term',
+			'q'	=> 'label', // @todo real name?
+			't'	=> 'time', // @todo real name?
+			'v'	=> 'form_subdivision'
+		));
 	}
 
 
@@ -223,50 +230,110 @@ class SolrMarc extends VuFindSolrMarc {
 	/**
 	 * Get host item entry
 	 *
-	 * @return	String
+	 * @todo	Add relevant fields if required
+	 * @return	Array
 	 */
 	public function getHostItemEntry() {
-		return $this->getSimpleMarcSubFieldValue(773, 't');
+		return $this->getMarcSubFieldMaps(773, array(
+			'a'	=> 'heading',
+			'b'	=> 'edition',
+			'd'	=> 'place',
+			'g'	=> 'related',
+			'h'	=> 'physical_description'
+		));
 	}
 
 
 
 	/**
-	 * Get publisher
+	 * Get publishers
 	 *
-	 * @param	Boolean		$asString
-	 * @return	Array|String
+	 * @param	Boolean		$asStrings
+	 * @return	Array[]|String[]
 	 */
-	public function getPublisher($asString = false) {
-		$data = $this->getMarcSubFieldMap(260, array(
+	public function getPublishers($asStrings = false) {
+		$data = $this->getMarcSubFieldMaps(260, array(
 			'a'	=> 'place',
 			'b'	=> 'name',
-			'c'	=> 'date'
+			'c'	=> 'date',
+			'd'	=> 'number',
+			'e'	=> 'place_manufacture',
+			'g'	=> 'date_manufacture'
 		));
 
-		if( $asString ) {
-			return isset($data['name']) ? trim($data['name'] . ', ' . $data['place']) : '';
+		if( $asStrings ) {
+			$strings = array();
+
+			foreach($data as $publication) {
+				$strings[] = trim($data['name'] . ', ' . $data['place']);
+			}
+
+			$data = $strings;
 		}
 
 		return $data;
 	}
 
+
+
     /**
      * Get physical description out of the MARC record
+	 *
+	 * @return	Array[]
      */
-
-    public function getPhysicalDescriptions($asString = false) {
-		$data = $this->getMarcSubFieldMap(300, array(
-			'a' => 'extent',
-			'b' => 'details',
-			'c' => 'dimensions',
-			'e' => 'company',
-			'f' => 'type',
-			'g' => 'size',
-			'3' => 'appliesTo'
+    public function getPhysicalDescriptions() {
+		return $this->getMarcSubFieldMaps(300, array(
+			'_a'	=> 'extent',
+			'b'		=> 'details',
+			'_c'	=> 'dimensions',
+			'd'		=> 'material_single',
+			'_e'	=> 'material_multiple',
+			'_f'	=> 'type',
+			'_g'	=> 'size',
+			'3'		=> 'appliesTo'
 		));
-        return $data;
     }
+
+
+
+	/**
+	 * Get short title
+	 * Override base method to assure a string and not an array
+	 *
+	 * @todo	Still required?
+	 * @return	String
+	 */
+	public function getShortTitle() {
+		$shortTitle	= parent::getShortTitle();
+
+		return is_array($shortTitle) ? reset($shortTitle) : $shortTitle;
+	}
+
+
+
+	/**
+	 * Get title
+	 *
+	 * @todo	Still required?
+	 * @return	String
+	 */
+	public function getTitle() {
+		$title	= parent::getTitle();
+
+		return is_array($title) ? reset($title) : $title;
+	}
+
+
+
+	/**
+	 * Get holdings data
+	 *
+	 * @return	Array|Boolean
+	 */
+	public function getHoldings() {
+		return $this->getHoldingsHelper()->getHoldings();
+    }
+
 
 
     /**
@@ -412,38 +479,6 @@ class SolrMarc extends VuFindSolrMarc {
 		}
 
 		return $this->holdingsHelper;
-	}
-
-
-
-	/**
-	 * Get holdings data
-	 *
-	 * @return	Array|Boolean
-	 */
-	public function getHoldings() {
-		return $this->getHoldingsHelper()->getHoldings();
-    }
-
-
-
-	/**
-	 * Get short title
-	 * Override base method to assure a string and not an array
-	 *
-	 * @return	String
-	 */
-	public function getShortTitle() {
-		$shortTitle	= parent::getShortTitle();
-
-		return is_array($shortTitle) ? reset($shortTitle) : $shortTitle;
-	}
-
-
-	public function getTitle() {
-		$title	= parent::getTitle();
-
-		return is_array($title) ? reset($title) : $title;
 	}
 
 }
