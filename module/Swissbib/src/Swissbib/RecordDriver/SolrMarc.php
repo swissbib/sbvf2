@@ -32,9 +32,11 @@
 
 namespace Swissbib\RecordDriver;
 
-use VuFind\RecordDriver\SolrMarc as VFSolrMarc;
+use VuFind\RecordDriver\SolrMarc as VuFindSolrMarc;
+
 use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
-use Zend\ServiceManager\ServiceLocatorInterface;
+
+
 
 /**
  * enhancement for swissbib MARC records in Solr.
@@ -46,53 +48,33 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://www.swissbib.org
  */
-class SolrMarc extends VFSolrMarc {
-
-
-	protected $personFieldMap = array(
-		'a' => 'name',
-		'b' => 'numeration',
-		'c' => 'titles',
-		'd' => 'dates',
-		'q' => 'fullername',
-		'D' => 'forname'
-	);
+class SolrMarc extends VuFindSolrMarc {
 
 	/**
 	 * @var	HoldingsHelper
 	 */
-	protected $marcHoldings;
-
-
-
-	/**
-	 * Initialize holdings
-	 *
-	 * @inheritDoc
-	 */
-	public function __construct($mainConfig = null, $recordConfig = null, $searchSettings = null, ServiceLocatorInterface $serviceLocator) {
-		parent::__construct($mainConfig, $recordConfig, $searchSettings);
-
-		$this->marcHoldings = new HoldingsHelper($serviceLocator);
-	}
-
+	protected $holdingsHelper;
 
 
 	/**
-	 * Set raw data and initialize holdings helper
-	 *
+	 * @var	Array	Used also for field 100		_ means repeatable
 	 */
-	public function setRawData($data) {
-		parent::setRawData($data);
-
-		 //$holdings = $this->marcHoldings->getTestData();
-		if( isset($data['holdings']) ) {
-			$holdsIlsConfig = $this->ils->checkFunction('Holds');
-
-			$this->marcHoldings->initRecord($this->getUniqueID(), $holdsIlsConfig['HMACKeys'], $data['holdings']);
-		}
-	}
-
+	protected $personFieldMap = array(
+		'a' => 'name',
+		'b' => 'numeration',
+		'_c'=> 'titles', // R
+		'd' => 'dates',
+		'_e'=> 'relator', // R
+		'f'	=> 'date_of_work',
+		'g'	=> 'misc',
+		'l'	=> 'language',
+		'_n'=> 'number_of_parts', // R
+		'q' => 'fullername',
+		'D' => 'forname',
+		't'	=> 'title_of_work',
+		'_8'=> 'extras',
+		'9'	=> 'unknownNumber'
+	);
 
 
 	/**
@@ -274,15 +256,15 @@ class SolrMarc extends VFSolrMarc {
      */
 
     public function getPhysicalDescriptions($asString = false) {
-    $data = $this->getMarcSubFieldMap(300, array(
-        'a' => 'extent',
-        'b' => 'details',
-        'c' => 'dimensions',
-        'e' => 'company',
-        'f' => 'type',
-        'g' => 'size',
-        '3' => 'appliesTo'
-    ));
+		$data = $this->getMarcSubFieldMap(300, array(
+			'a' => 'extent',
+			'b' => 'details',
+			'c' => 'dimensions',
+			'e' => 'company',
+			'f' => 'type',
+			'g' => 'size',
+			'3' => 'appliesTo'
+		));
         return $data;
     }
 
@@ -351,10 +333,23 @@ class SolrMarc extends VFSolrMarc {
 		$subFieldValues	= array();
 
 		foreach($fieldMap as $code => $name) {
-			$subField = $field->getSubfield($code);
+			if( substr($code, 0, 1) === '_' ) { // Underscore means repeatable
+				$code	= substr($code, 1); // Remove underscore
+				$subFields = $field->getSubfields($code);
 
-			if( $subField ) {
-				$subFieldValues[$name] = $subField->getData();
+				if( sizeof($subFields) ) {
+					$subFieldValues[$name] = array();
+
+					foreach($subFields as $subField) {
+						$subFieldValues[$name][] = $subField->getData();
+					}
+				}
+			} else { // Normal single field
+				$subField = $field->getSubfield($code);
+
+				if( $subField ) {
+					$subFieldValues[$name] = $subField->getData();
+				}
 			}
 		}
 
@@ -401,12 +396,33 @@ class SolrMarc extends VFSolrMarc {
 
 
 	/**
-	 * Get holdings
+	 * Get initialized holdings helper
 	 *
-	 * @return	Array[]
+	 * @return	HoldingsHelper
 	 */
-	public function getHoldings(\VuFind\Auth\Manager $authManager) {
-        return $this->marcHoldings->getHoldings($authManager, $this->ils);
+	protected function getHoldingsHelper() {
+		if( !$this->holdingsHelper ) {
+			/** @var HoldingsHelper $holdingsHelper  */
+			$holdingsHelper	= $this->getServiceLocator()->getServiceLocator()->get('Swissbib\HoldingsHelper');
+			$holdingsData	= isset($this->fields['holdings']) ? $this->fields['holdings'] : '';
+
+			$holdingsHelper->setData($this->getUniqueID(), $holdingsData);
+
+			$this->holdingsHelper	= $holdingsHelper;
+		}
+
+		return $this->holdingsHelper;
+	}
+
+
+
+	/**
+	 * Get holdings data
+	 *
+	 * @return	Array|Boolean
+	 */
+	public function getHoldings() {
+		return $this->getHoldingsHelper()->getHoldings();
     }
 
 

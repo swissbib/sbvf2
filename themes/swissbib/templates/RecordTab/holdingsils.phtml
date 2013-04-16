@@ -1,7 +1,7 @@
 <?php
 
 /** @var	 VuFind\Auth\Manager	$account  */
-$account		= $this->auth()->getManager();
+//$account		= $this->auth()->getManager();
 
 /** @var	Boolean|Object			$user  */
 //$user			= $account->isLoggedIn();
@@ -12,7 +12,7 @@ $account		= $this->auth()->getManager();
 
 /** @var	Swissbib\RecordDriver\SolrMarc	$recordDriver  */
 $recordDriver	= $this->driver;
-$holdings		= $recordDriver->getHoldings($account);
+$holdings		= $recordDriver->getHoldings();
 
 ?>
 
