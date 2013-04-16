@@ -1,7 +1,11 @@
 <?php
 return array(
     'modules' => array(
-        'Swissbib',
+		'VuFindHttp',
+		'VuFindTheme',
+//		'VuFindTest',
+		'VuFind',
+        'Swissbib'
     ),
     'module_listener_options' => array(
         'config_glob_paths'    => array(

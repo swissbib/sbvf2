@@ -32,9 +32,11 @@
 
 namespace Swissbib\RecordDriver;
 
-use VuFind\RecordDriver\SolrMarc as VFSolrMarc;
+use VuFind\RecordDriver\SolrMarc as VuFindSolrMarc;
+
 use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
-use Zend\ServiceManager\ServiceLocatorInterface;
+
+
 
 /**
  * enhancement for swissbib MARC records in Solr.
@@ -46,53 +48,33 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://www.swissbib.org
  */
-class SolrMarc extends VFSolrMarc {
-
-
-	protected $personFieldMap = array(
-		'a' => 'name',
-		'b' => 'numeration',
-		'c' => 'titles',
-		'd' => 'dates',
-		'q' => 'fullername',
-		'D' => 'forname'
-	);
+class SolrMarc extends VuFindSolrMarc {
 
 	/**
 	 * @var	HoldingsHelper
 	 */
-	protected $marcHoldings;
-
-
-
-	/**
-	 * Initialize holdings
-	 *
-	 * @inheritDoc
-	 */
-	public function __construct($mainConfig = null, $recordConfig = null, $searchSettings = null, ServiceLocatorInterface $serviceLocator) {
-		parent::__construct($mainConfig, $recordConfig, $searchSettings);
-
-		$this->marcHoldings = new HoldingsHelper($serviceLocator);
-	}
-
+	protected $holdingsHelper;
 
 
 	/**
-	 * Set raw data and initialize holdings helper
-	 *
+	 * @var	Array	Used also for field 100		_ means repeatable
 	 */
-	public function setRawData($data) {
-		parent::setRawData($data);
-
-		 //$holdings = $this->marcHoldings->getTestData();
-		if( isset($data['holdings']) ) {
-			$holdsIlsConfig = $this->ils->checkFunction('Holds');
-
-			$this->marcHoldings->initRecord($this->getUniqueID(), $holdsIlsConfig['HMACKeys'], $data['holdings']);
-		}
-	}
-
+	protected $personFieldMap = array(
+		'a' => 'name',
+		'b' => 'numeration',
+		'_c'=> 'titles', // R
+		'd' => 'dates',
+		'_e'=> 'relator', // R
+		'f'	=> 'date_of_work',
+		'g'	=> 'misc',
+		'l'	=> 'language',
+		'_n'=> 'number_of_parts', // R
+		'q' => 'fullername',
+		'D' => 'forname',
+		't'	=> 'title_of_work',
+		'_8'=> 'extras',
+		'9'	=> 'unknownNumber'
+	);
 
 
 	/**
@@ -260,20 +242,22 @@ class SolrMarc extends VFSolrMarc {
 
 	/**
 	 * get group-id from solr-field to display FRBR-Button
-	 * @return string
+	 *
+	 * @return	String|Number
 	 */
 	public function getGroup() {
-		return isset($this->fields['group_id']) ? $this->fields['group_id'] : '';
+		return isset($this->fields['group_id']) ? $this->fields['group_id'][0] : '';
 	}
 
 
 
 	/*
-	* Library / Institution Code as array
-	* @return array
+	* Library / Institution Code
+	 *
+	* @return	String
 	*/
 	public function getInstitution() {
-		return isset($this->fields['institution']) ? $this->fields['institution'] : array();
+		return isset($this->fields['institution']) ? $this->fields['institution'][0] : array();
 	}
 
 
@@ -281,10 +265,42 @@ class SolrMarc extends VFSolrMarc {
 	/**
 	 * Get local topic term
 	 *
-	 * @return	String
+	 * @return	Array[]
 	 */
-	public function getLocalTopicTerm() {
-		return $this->getSimpleMarcFieldValue('690');
+	public function getLocalTopicalTerms() {
+		return $this->getMarcSubFieldMaps(690, array(
+			'a'		=> 'term',
+			'q'		=> 'label', // @todo real name?
+			't'		=> 'time', // @todo real name?
+			'_v'	=> 'form_subdivision'
+		));
+	}
+
+
+
+	/**
+	 * Get topical terms
+	 *
+	 * @return Array[]
+	 */
+	public function getTopicalTerms() {
+		return $this->getMarcSubFieldMaps(650, array(
+			'a'		=> 'term',
+			'b'		=> 'term_geographic',
+			'c'		=> 'location',
+			'd'		=> 'active_dates',
+			'_e'	=> 'relator_term',
+			'q'		=> 'label', // @todo real name?
+			't'		=> 'time', // @todo real name?
+			'_v'	=> 'form_subdivision',
+			'_x'	=> 'general_subdivision',
+			'_y'	=> 'chronological_subdivision',
+			'_z'	=> 'geographical_subdivision',
+			'_0'	=> 'authority_record_control_numer',
+			'2'		=> 'source_heading',
+			'3'		=> 'materials',
+			'_4'	=> 'relator_code'
+		));
 	}
 
 
@@ -292,50 +308,129 @@ class SolrMarc extends VFSolrMarc {
 	/**
 	 * Get host item entry
 	 *
-	 * @return	String
+	 * @todo	Add relevant fields if required
+	 * @return	Array
 	 */
 	public function getHostItemEntry() {
-		return $this->getSimpleMarcSubFieldValue(773, 't');
+		return $this->getMarcSubFieldMaps(773, array(
+			'a'	=> 'heading',
+			'b'	=> 'edition',
+			'd'	=> 'place',
+			'g'	=> 'related',
+			'h'	=> 'physical_description'
+		));
 	}
 
 
 
 	/**
-	 * Get publisher
+	 * Get publishers
 	 *
-	 * @param	Boolean		$asString
-	 * @return	Array|String
+	 * @param	Boolean		$asStrings
+	 * @return	Array[]|String[]
 	 */
-	public function getPublisher($asString = false) {
-		$data = $this->getMarcSubFieldMap(260, array(
+	public function getPublishers($asStrings = false) {
+		$data = $this->getMarcSubFieldMaps(260, array(
 			'a'	=> 'place',
 			'b'	=> 'name',
-			'c'	=> 'date'
+			'c'	=> 'date',
+			'd'	=> 'number',
+			'e'	=> 'place_manufacture',
+			'g'	=> 'date_manufacture'
 		));
 
-		if( $asString ) {
-			return isset($data['name']) ? trim($data['name'] . ', ' . $data['place']) : '';
+		if( $asStrings ) {
+			$strings = array();
+
+			foreach($data as $publication) {
+				$strings[] = trim($data['name'] . ', ' . $data['place']);
+			}
+
+			$data = $strings;
 		}
 
 		return $data;
 	}
 
+
+
     /**
      * Get physical description out of the MARC record
+	 *
+	 * @return	Array[]
      */
-
-    public function getPhysicalDescriptions($asString = false) {
-    $data = $this->getMarcSubFieldMap(300, array(
-        'a' => 'extent',
-        'b' => 'details',
-        'c' => 'dimensions',
-        'e' => 'company',
-        'f' => 'type',
-        'g' => 'size',
-        '3' => 'appliesTo'
-    ));
-        return $data;
+    public function getPhysicalDescriptions() {
+		return $this->getMarcSubFieldMaps(300, array(
+			'_a'	=> 'extent',
+			'b'		=> 'details',
+			'_c'	=> 'dimensions',
+			'd'		=> 'material_single',
+			'_e'	=> 'material_multiple',
+			'_f'	=> 'type',
+			'_g'	=> 'size',
+			'3'		=> 'appliesTo'
+		));
     }
+
+
+
+	/**
+	 * Get formatted content notes (505)
+	 *
+	 * @return	Array[]
+	 */
+	public function getFormattedContentNotes() {
+		return $this->getMarcSubFieldMaps(505, array(
+			'a'		=> 'notes',
+			'_g'	=> 'misc',
+			'_r'	=> 'responsibility',
+			'_t'	=> 'title',
+			'_u'	=> 'URI'
+		));
+	}
+
+
+
+
+
+	/**
+	 * Get short title
+	 * Override base method to assure a string and not an array
+	 *
+	 * @todo	Still required?
+	 * @return	String
+	 */
+	public function getShortTitle() {
+		$shortTitle	= parent::getShortTitle();
+
+		return is_array($shortTitle) ? reset($shortTitle) : $shortTitle;
+	}
+
+
+
+	/**
+	 * Get title
+	 *
+	 * @todo	Still required?
+	 * @return	String
+	 */
+	public function getTitle() {
+		$title	= parent::getTitle();
+
+		return is_array($title) ? reset($title) : $title;
+	}
+
+
+
+	/**
+	 * Get holdings data
+	 *
+	 * @return	Array|Boolean
+	 */
+	public function getHoldings() {
+		return $this->getHoldingsHelper()->getHoldings();
+    }
+
 
 
     /**
@@ -402,10 +497,23 @@ class SolrMarc extends VFSolrMarc {
 		$subFieldValues	= array();
 
 		foreach($fieldMap as $code => $name) {
-			$subField = $field->getSubfield($code);
+			if( substr($code, 0, 1) === '_' ) { // Underscore means repeatable
+				$code	= substr($code, 1); // Remove underscore
+				$subFields = $field->getSubfields($code);
 
-			if( $subField ) {
-				$subFieldValues[$name] = $subField->getData();
+				if( sizeof($subFields) ) {
+					$subFieldValues[$name] = array();
+
+					foreach($subFields as $subField) {
+						$subFieldValues[$name][] = $subField->getData();
+					}
+				}
+			} else { // Normal single field
+				$subField = $field->getSubfield($code);
+
+				if( $subField ) {
+					$subFieldValues[$name] = $subField->getData();
+				}
 			}
 		}
 
@@ -452,33 +560,22 @@ class SolrMarc extends VFSolrMarc {
 
 
 	/**
-	 * Get holdings
+	 * Get initialized holdings helper
 	 *
-	 * @return	Array[]
+	 * @return	HoldingsHelper
 	 */
-	public function getHoldings(\VuFind\Auth\Manager $authManager) {
-        return $this->marcHoldings->getHoldings($authManager, $this->ils);
-    }
+	protected function getHoldingsHelper() {
+		if( !$this->holdingsHelper ) {
+			/** @var HoldingsHelper $holdingsHelper  */
+			$holdingsHelper	= $this->getServiceLocator()->getServiceLocator()->get('Swissbib\HoldingsHelper');
+			$holdingsData	= isset($this->fields['holdings']) ? $this->fields['holdings'] : '';
 
+			$holdingsHelper->setData($this->getUniqueID(), $holdingsData);
 
+			$this->holdingsHelper	= $holdingsHelper;
+		}
 
-	/**
-	 * Get short title
-	 * Override base method to assure a string and not an array
-	 *
-	 * @return	String
-	 */
-	public function getShortTitle() {
-		$shortTitle	= parent::getShortTitle();
-
-		return is_array($shortTitle) ? reset($shortTitle) : $shortTitle;
-	}
-
-
-	public function getTitle() {
-		$title	= parent::getTitle();
-
-		return is_array($title) ? reset($title) : $title;
+		return $this->holdingsHelper;
 	}
 
 }
