@@ -164,8 +164,8 @@ class SolrMarc extends VuFindSolrMarc {
 	/**
 	 * Get list of secondary authors data
 	 *
+	 * @todo	Implement or remove note
 	 * @note	exclude: if $l == fre|eng
-	 * @todo	Implement note comment
 	 * @return	Array[]
 	 */
 	public function getSecondaryAuthors() {
@@ -175,16 +175,65 @@ class SolrMarc extends VuFindSolrMarc {
 
 
 	/**
-	 * Get corporate authors
+	 * Get corporate name (authors)
 	 *
-	 * @todo	Are there docs with values in field 110?
+	 * @todo	Implement or remove note
 	 * @note	exclude: if $l == fre|eng
 	 * @return	Array[]
 	 */
-	public function getCorporateAuthor() {
+	public function getMainCorporateName() {
+		return $this->getMarcSubFieldMap(110, array(
+			'a'		=> 'name',
+			'_b'	=> 'unit',
+			'c'		=> 'meeting_location',
+			'_d'	=> 'meeting_date',
+			'_e'	=> 'relator',
+			'f'		=> 'date',
+			'g'		=> 'misc',
+			'h'		=> 'medium',
+			'_k'	=> 'form_subheading',
+			'l'		=> 'language',
+			'_n'	=> 'parts_number',
+			'_p'	=> 'parts_name',
+			's'		=> 'version',
+			't'		=> 'title',
+			'u'		=> 'affiliation',
+			'4'		=> 'relator_code'
+		));
+	}
+
+
+
+	/**
+	 * Get added corporate names
+	 *
+	 * @return	Array[]
+	 */
+	public function getAddedCorporateNames() {
 		return $this->getMarcSubFieldMaps(710, array(
-			'a'	=> 'name',
-			'b'	=> 'unit'
+			'a'		=> 'name',
+			'_b'	=> 'unit',
+			'c'		=> 'meeting_location',
+			'_d'	=> 'meeting_date',
+			'_e'	=> 'relator',
+			'f'		=> 'date',
+			'g'		=> 'misc',
+			'h'		=> 'medium',
+			'i'		=> 'relationship',
+			'_k'	=> 'form_subheading',
+			'l'		=> 'language',
+			'_m'	=> 'music_performance_medium',
+			'_n'	=> 'parts_number',
+			'_p'	=> 'parts_name',
+			'r'		=> 'music_key',
+			's'		=> 'version',
+			't'		=> 'title',
+			'u'		=> 'affiliation',
+			'x'		=> 'issn',
+			'3'		=> 'materials_specified',
+			'4'		=> 'relator_code',
+			'5'		=> 'institution',
+			'_8'	=> 'label'
 		));
 	}
 
@@ -193,10 +242,26 @@ class SolrMarc extends VuFindSolrMarc {
 	/**
 	 * Get sub title
 	 *
-	 * @return	String
+	 * @param	Boolean		$full	Get full field data. Else only field c is fetched
+	 * @return	String|String[]
 	 */
-	public function getSubtitle() {
-		return $this->getFirstFieldValue('245', array('b'));
+	public function getTitleStatement($full = false) {
+		if( $full ) {
+			return $this->getMarcSubFieldMap(245, array(
+				'a'		=> 'title',
+				'b'		=> 'title_remainder',
+				'c'		=> 'statement_responsibility',
+				'f'		=> 'inclusive_dates',
+				'g'		=> 'bulk_dates',
+				'h'		=> 'medium',
+				'_k'	=> 'form',
+				'_n'	=> 'parts_amount',
+				'_p'	=> 'parts_name',
+				's'		=> 'version'
+			));
+		} else {
+			return parent::getTitleStatement();
+		}
 	}
 
 
@@ -298,6 +363,29 @@ class SolrMarc extends VuFindSolrMarc {
 			'_z'	=> 'geographical_subdivision',
 			'_0'	=> 'authority_record_control_numer',
 			'2'		=> 'source_heading',
+			'3'		=> 'materials',
+			'_4'	=> 'relator_code'
+		));
+	}
+
+
+
+	/**
+	 * Get geographic names
+	 * Field 651
+	 *
+	 * @return	Array[]
+	 */
+	public function getAddedGeographicNames() {
+		return $this->getMarcSubFieldMaps(651, array(
+			'a'		=> 'name',
+			'_e'	=> 'relator',
+			'_v'	=> 'form_subdivision',
+			'_x'	=> 'general_subdivision',
+			'_y'	=> 'chronilogical_subdivision',
+			'_z'	=> 'geographical_subdivision',
+			'_0'	=> 'arcn',
+			'2'		=> 'source',
 			'3'		=> 'materials',
 			'_4'	=> 'relator_code'
 		));
