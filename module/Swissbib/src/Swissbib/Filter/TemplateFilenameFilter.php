@@ -6,17 +6,47 @@
 
 namespace Swissbib\Filter;
 
+use Zend\Mvc\MvcEvent;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\Filter\AbstractFilter;
 
 /**
  * Class SbTemplateFilenameFilter
- * @package Swissbib\Filter
+ *
+ * Content filter to wrap rendered template content with HTML comments,
+ * indicating which template file implemented a section of output.
+ * Every template section is wrapped by comments to mark the 1) beginning and 2) ending
+ * of a template file.
+ *
+ * Activating the filter: call SbTemplateFilenameFilter::onBootstrap() from within the
+ * onBootstap() method of the module class (\path\to\module\Namespace\Module.php)
+ *
+ * @package	Swissbib\Filter
  */
-class SbTemplateFilenameFilter extends AbstractFilter implements ServiceLocatorAwareInterface
+class TemplateFilenameFilter extends AbstractFilter implements ServiceLocatorAwareInterface
 {
 	protected $serviceLocator;
+
+	/**
+	 * Bootstrap code to activate template filename comment filtering via filterChain
+	 *
+	 * @param	MvcEvent	$event
+	 */
+	public static function onBootstrap(MvcEvent $event)
+	{
+		$sm = $event->getApplication()->getServiceManager();
+
+		$widgetFilter = new TemplateFilenameFilter();
+		$widgetFilter->setServiceLocator($sm);
+
+		$view = $sm->get('ViewRenderer');
+
+		$filters = $view->getFilterChain();
+		$filters->attach($widgetFilter, 50);
+
+		$view->setFilterChain($filters);
+	}
 
 	/**
 	 * @param	Mixed	$content
@@ -43,12 +73,12 @@ class SbTemplateFilenameFilter extends AbstractFilter implements ServiceLocatorA
 	}
 
 	/**
-	 * @param $content
-	 * @param $templateFilename
-	 * @param string $type
-	 * @return string
+	 * @param	String	$content
+	 * @param	String	$templateFilename
+	 * @return	String
 	 */
-	private function wrapContentWithComment($content, $templateFilename, $type = '') {
+	private function wrapContentWithComment($content, $templateFilename)
+	{
 		return
 			"\n" . '<!-- Begin' . (!empty($type) ? ' ' . $type : '') . ': ' . $templateFilename . ' -->'
 		.	"\n" . $content
@@ -57,7 +87,7 @@ class SbTemplateFilenameFilter extends AbstractFilter implements ServiceLocatorA
 	}
 
 	/**
-	 * @param ServiceLocatorInterface $serviceLocator
+	 * @param	ServiceLocatorInterface	$serviceLocator
 	 */
 	public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
 	{
@@ -65,7 +95,7 @@ class SbTemplateFilenameFilter extends AbstractFilter implements ServiceLocatorA
 	}
 
 	/**
-	 * @return ServiceLocatorInterface
+	 * @return	ServiceLocatorInterface
 	 */
 	public function getServiceLocator()
 	{
