@@ -1,0 +1,50 @@
+{
+	"id": "019110936",
+	"recordtype": "marc",
+	"language": [
+		"eng"
+	],
+	"format": [
+		"BK040000000"
+	],
+	"group_id": [
+		"019110936"
+	],
+	"hierarchytype": "series",
+	"hierarchy_parent_id": [
+		"02100188X",
+		"129861324"
+	],
+	"hierarchy_parent_title": [
+		"Handbook of oriental studies. Section 1, The Near and Middle East",
+		"Handbook of Oriental studies. Section 1, The Near and Middle East"
+	],
+	"hierarchy_sequence": [
+		"Vol. 82",
+		"vol. 82"
+	],
+	"institution": [
+		"B400",
+		"A100",
+		"Z01"
+	],
+	"union": [
+		"IDS",
+		"IDSBB",
+		"NEBIS"
+	],
+	"title": [
+		"Enigmatic charms : medieval Arabic block printed amulets in American and European libraries and museums"
+	],
+	"title_short": [
+		"Enigmatic charms"
+	],
+	"fulltext": [
+		""
+	],
+	"time_processed": "2013-02-22T20:38:04.944+01:00",
+	"fullrecord": "<?xml version=\"1.0\"?><record xmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n <leader> cam a22 5u 4500</leader>\n <controlfield tag=\"001\">019110936</controlfield>\n <controlfield tag=\"005\">20110613104537.0</controlfield>\n <controlfield tag=\"008\">061113s2006 ne 00 eng </controlfield>\n <datafield tag=\"010\" ind1=\" \" ind2=\" \">\n <subfield code=\"a\"> 2006049061</subfield>\n </datafield>\n <datafield tag=\"020\" ind1=\" \" ind2=\" \">\n <subfield code=\"a\">978-90-04-14789-8</subfield>\n </datafield>\n <datafield tag=\"020\" ind1=\" \" ind2=\" \">\n <subfield code=\"a\">90-04-14789-6</subfield>\n </datafield>\n <datafield tag=\"035\" ind1=\" \" ind2=\" \">\n <subfield code=\"a\">(OCoLC)238801924</subfield>\n </datafield>\n <datafield tag=\"035\" ind1=\" \" ind2=\" \">\n <subfield code=\"a\">(IDSBB)004046360</subfield>\n </datafield>\n <datafield tag=\"035\" ind1=\" \" ind2=\" \">\n <subfield code=\"a\">(NEBIS)005237174</subfield>\n </datafield>\n <datafield tag=\"040\" ind1=\" \" ind2=\" \">\n <subfield code=\"a\">DLC</subfield>\n <subfield code=\"d\">SzZuIDS BS/BE B400</subfield>\n </datafield>\n <datafield tag=\"050\" ind1=\" \" ind2=\" \">\n <subfield code=\"a\">GR600</subfield>\n <subfield code=\"b\">.S335 2006</subfield>\n </datafield>\n <datafield tag=\"072\" ind1=\" \" ind2=\" \">\n <subfield code=\"a\">bb</subfield>\n </datafield>\n <datafield tag=\"072\" ind1=\" \" ind2=\" \">\n <subfield code=\"a\">is</subfield>\n </datafield>\n <datafield tag=\"082\" ind1=\"0\" ind2=\" \">\n <subfield code=\"a\">133.4/4</subfield>\n </datafield>\n <datafield tag=\"100\" ind1=\"1\" ind2=\" \">\n <subfield code=\"a\">Schaefer</subfield>\n <subfield code=\"D\">Karl Rudolf</subfield>\n </datafield>\n <datafield tag=\"245\" ind1=\"1\" ind2=\"0\">\n <subfield code=\"a\">Enigmatic charms</subfield>\n <subfield code=\"b\">medieval Arabic block printed amulets in American and European libraries and museums</subfield>\n <subfield code=\"c\">by Karl R. Schaefer</subfield>\n </datafield>\n <datafield tag=\"260\" ind1=\" \" ind2=\" \">\n <subfield code=\"a\">Leiden</subfield>\n <subfield code=\"b\">Brill</subfield>\n <subfield code=\"c\">2006</subfield>\n </datafield>\n <datafield tag=\"300\" ind1=\" \" ind2=\" \">\n <subfield code=\"a\">250 S</subfield>\n <subfield code=\"b\">Ill</subfield>\n </datafield>\n <datafield tag=\"490\" ind1=\"0\" ind2=\" \">\n <subfield code=\"a\">Handbook of Oriental studies. Section 1, The Near and Middle East</subfield>\n <subfield code=\"v\">Vol. 82</subfield>\n <subfield code=\"w\">(IDSBB)000083326</subfield>\n <subfield code=\"9\">02100188X</subfield>\n </datafield>\n <datafield tag=\"490\" ind1=\"0\" ind2=\" \">\n <subfield code=\"a\">Handbook of oriental studies. Section 1, The Near and Middle East</subfield>\n <subfield code=\"v\">vol. 82</subfield>\n <subfield code=\"w\">(NEBIS)000637205</subfield>\n <subfield code=\"9\">129861324</subfield>\n </datafield>\n <datafield tag=\"504\" ind1=\" \" ind2=\" \">\n <subfield code=\"a\">Includes bibliographical references and index</subfield>\n </datafield>\n <datafield tag=\"650\" ind1=\" \" ind2=\"7\">\n <subfield code=\"a\">Amulett</subfield>\n <subfield code=\"x\">Blockdruck</subfield>\n <subfield code=\"x\">Islam</subfield>\n <subfield code=\"v\">Verzeichnis</subfield>\n <subfield code=\"2\">ids bs/be</subfield>\n </datafield>\n <datafield tag=\"650\" ind1=\" \" ind2=\"7\">\n <subfield code=\"a\">Islam</subfield>\n <subfield code=\"x\">Blockdruck</subfield>\n <subfield code=\"x\">Amulett</subfield>\n <subfield code=\"v\">Verzeichnis</subfield>\n <subfield code=\"2\">ids bs/be</subfield>\n </datafield>\n <datafield tag=\"650\" ind1=\" \" ind2=\"7\">\n <subfield code=\"a\">Islam</subfield>\n <subfield code=\"x\">Amulett</subfield>\n <subfield code=\"x\">Blockdruck</subfield>\n <subfield code=\"v\">Verzeichnis</subfield>\n <subfield code=\"2\">ids bs/be</subfield>\n </datafield>\n <datafield tag=\"650\" ind1=\" \" ind2=\"7\">\n <subfield code=\"a\">Blockdruck</subfield>\n <subfield code=\"x\">Amulett</subfield>\n <subfield code=\"x\">Islam</subfield>\n <subfield code=\"v\">Verzeichnis</subfield>\n <subfield code=\"2\">ids bs/be</subfield>\n </datafield>\n <datafield tag=\"650\" ind1=\" \" ind2=\"7\">\n <subfield code=\"a\">Amulett</subfield>\n <subfield code=\"x\">Blockdruck</subfield>\n <subfield code=\"x\">Arabisch</subfield>\n <subfield code=\"x\">Sammlung</subfield>\n <subfield code=\"z\">USA</subfield>\n <subfield code=\"v\">Verzeichnis</subfield>\n <subfield code=\"2\">ids zbz</subfield>\n </datafield>\n <datafield tag=\"650\" ind1=\" \" ind2=\"7\">\n <subfield code=\"a\">Amulett</subfield>\n <subfield code=\"x\">Blockdruck</subfield>\n <subfield code=\"x\">Arabisch</subfield>\n <subfield code=\"x\">Sammlung</subfield>\n <subfield code=\"z\">Europa</subfield>\n <subfield code=\"v\">Verzeichnis</subfield>\n <subfield code=\"2\">ids zbz</subfield>\n </datafield>\n <datafield tag=\"650\" ind1=\" \" ind2=\"0\">\n <subfield code=\"a\">Amulets (Islam)</subfield>\n </datafield>\n <datafield tag=\"650\" ind1=\" \" ind2=\"0\">\n <subfield code=\"a\">Block printing</subfield>\n <subfield code=\"z\">Islamic Empire</subfield>\n </datafield>\n <datafield tag=\"651\" ind1=\" \" ind2=\"7\">\n <subfield code=\"a\">USA</subfield>\n <subfield code=\"x\">Sammlung</subfield>\n <subfield code=\"x\">Amulett</subfield>\n <subfield code=\"x\">Blockdruck</subfield>\n <subfield code=\"x\">Arabisch</subfield>\n <subfield code=\"v\">Verzeichnis</subfield>\n <subfield code=\"2\">ids zbz</subfield>\n </datafield>\n <datafield tag=\"651\" ind1=\" \" ind2=\"7\">\n <subfield code=\"a\">Europa</subfield>\n <subfield code=\"x\">Sammlung</subfield>\n <subfield code=\"x\">Amulett</subfield>\n <subfield code=\"x\">Blockdruck</subfield>\n <subfield code=\"x\">Arabisch</subfield>\n <subfield code=\"v\">Verzeichnis</subfield>\n <subfield code=\"2\">ids zbz</subfield>\n </datafield>\n <datafield tag=\"986\" ind1=\" \" ind2=\" \">\n <subfield code=\"a\">SWISSBIB</subfield>\n <subfield code=\"b\">019110936</subfield>\n </datafield>\n <datafield tag=\"898\" ind1=\" \" ind2=\" \">\n <subfield code=\"a\">BK040000000</subfield>\n </datafield>\n <datafield tag=\"949\" ind1=\" \" ind2=\" \">\n <subfield code=\"B\">NEBIS</subfield>\n <subfield code=\"b\">Z01</subfield>\n <subfield code=\"j\">FJ 2016: 82</subfield>\n </datafield>\n <datafield tag=\"949\" ind1=\" \" ind2=\" \">\n <subfield code=\"B\">IDSBB</subfield>\n <subfield code=\"b\">A100</subfield>\n <subfield code=\"j\">BE I 2070</subfield>\n </datafield>\n <datafield tag=\"956\" ind1=\"4\" ind2=\" \">\n <subfield code=\"B\">IDSBB</subfield>\n <subfield code=\"C\">DSV51</subfield>\n <subfield code=\"a\">A100</subfield>\n <subfield code=\"u\">http://www.ub.unibas.ch/tox/HBZ/HT014841086/PDF</subfield>\n <subfield code=\"q\">pdf</subfield>\n <subfield code=\"x\">VIEW</subfield>\n <subfield code=\"y\">Inhaltsverzeichnis</subfield>\n </datafield>\n <datafield tag=\"949\" ind1=\" \" ind2=\" \">\n <subfield code=\"B\">IDSBB</subfield>\n <subfield code=\"b\">B400</subfield>\n <subfield code=\"j\">ZB Hist XLIII 2277 : 1:82</subfield>\n </datafield>\n </record>",
+	"holdings": "<record><datafield tag=\"949\" ind1=\" \" ind2=\" \"><subfield code=\"B\">NEBIS</subfield><subfield code=\"C\">ZAD50</subfield><subfield code=\"E\">005237174</subfield><subfield code=\"b\">Z01</subfield><subfield code=\"c\">03</subfield><subfield code=\"j\">FJ 2016: 82</subfield><subfield code=\"p\">ZM01887896</subfield><subfield code=\"q\">005237174</subfield><subfield code=\"r\">000010</subfield><subfield code=\"0\">ZB (Zürich)</subfield><subfield code=\"1\">Freihand 03</subfield><subfield code=\"2\">4</subfield><subfield code=\"3\">BOOK</subfield><subfield code=\"4\">11</subfield><subfield code=\"5\">Heimausleihe 4 Wochen</subfield></datafield><datafield tag=\"949\" ind1=\" \" ind2=\" \"><subfield code=\"B\">IDSBB</subfield><subfield code=\"C\">DSV51</subfield><subfield code=\"E\">004046360</subfield><subfield code=\"b\">A100</subfield><subfield code=\"c\">100FM</subfield><subfield code=\"j\">BE I 2070</subfield><subfield code=\"p\">A1001504110</subfield><subfield code=\"q\">004046360</subfield><subfield code=\"r\">000020</subfield><subfield code=\"0\">Basel UB</subfield><subfield code=\"1\">Freihandmagazin</subfield><subfield code=\"2\">i</subfield><subfield code=\"3\">BOOK</subfield><subfield code=\"4\">11</subfield><subfield code=\"5\">Heimausleihe</subfield></datafield><datafield tag=\"949\" ind1=\" \" ind2=\" \"><subfield code=\"B\">IDSBB</subfield><subfield code=\"C\">DSV51</subfield><subfield code=\"E\">004046360</subfield><subfield code=\"b\">B400</subfield><subfield code=\"c\">400M4</subfield><subfield code=\"j\">ZB Hist XLIII 2277 : 1:82</subfield><subfield code=\"p\">BM1134548</subfield><subfield code=\"q\">004046360</subfield><subfield code=\"r\">000010</subfield><subfield code=\"0\">Bern UB ZB</subfield><subfield code=\"1\">Magazin (U4)</subfield><subfield code=\"3\">BOOK</subfield><subfield code=\"4\">01</subfield><subfield code=\"5\">Heimausleihe</subfield></datafield></record>",
+	"_version_": 1427968625542692900,
+	"time_indexed": "2013-02-25T18:30:00Z"
+}
