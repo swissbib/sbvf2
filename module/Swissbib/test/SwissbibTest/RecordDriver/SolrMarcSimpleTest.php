@@ -49,24 +49,6 @@ class SolrMarcSimpleTest extends SolrMarcTestCase {
 		$this->assertEquals('Herbert', $authors[0]['forname']);
 	}
 
-
-	public function testGetCorporateAuthor() {
-		$author	= $this->driver->getCorporateAuthor();
-
-		$this->assertInternalType('array', $author);
-		$this->assertEquals(0, sizeof($author));
-	}
-
-
-	public function testGetSubtitle() {
-		$subtitle	= $this->driver->getSubtitle();
-		$expect		= 'Concerto in e minor, for recorder, flute, two violins, viola and basso continuo';
-
-		$this->assertInternalType('string', $subtitle);
-		$this->assertEquals($expect, $subtitle);
-	}
-
-
 	public function testGetEdition() {
 		$edition	= $this->driver->getEdition();
 
@@ -89,11 +71,11 @@ class SolrMarcSimpleTest extends SolrMarcTestCase {
 	}
 
 
-	public function testGetInstitution() {
-		$institution	= $this->driver->getInstitution();
+	public function testGetInstitutions() {
+		$institutions	= $this->driver->getInstitutions();
 
-		$this->assertInternalType('string', $institution);
-		$this->assertEquals('LUMH1', $institution);
+		$this->assertInternalType('array', $institutions);
+		$this->assertEquals('LUMH1', $institutions[0]);
 	}
 
 
@@ -146,6 +128,77 @@ class SolrMarcSimpleTest extends SolrMarcTestCase {
 		$this->assertEquals('1 Partitur', $physicalDescriptions[0]['extent'][0]);
 	}
 
-}
+	public function testGetFormattedContentNotes() {
+		$notes	= $this->driver->getFormattedContentNotes();
 
-?>
+		$this->assertInternalType('array', $notes);
+		$this->assertEquals(0, sizeof($notes));
+	}
+
+
+	public function testGetTitle() {
+		$title	= $this->driver->getTitle();
+		$expect	= 'Konzert e-Moll, für Blockflöte, Querflöte, zwei Violinen, Viola und Basso continuo, [TWV 52 e 1] : Concerto in e minor, for recorder, flute, two violins, viola and basso continuo';
+
+		$this->assertInternalType('string', $title);
+		$this->assertEquals($expect, $title);
+	}
+
+
+	public function testGetShortTitle() {
+		$title	= $this->driver->getShortTitle();
+		$expect	= 'Konzert e-Moll, für Blockflöte, Querflöte, zwei Violinen, Viola und Basso continuo, [TWV 52 e 1]';
+
+		$this->assertInternalType('string', $title);
+		$this->assertEquals($expect, $title);
+	}
+
+
+	public function testGetUnions() {
+		$unions	= $this->driver->getUnions();
+
+		$this->assertInternalType('array', $unions);
+		$this->assertEquals(2, sizeof($unions));
+		$this->assertEquals('IDSLU', $unions[0]);
+	}
+
+
+	public function testGetTitleStatementSimple() {
+		$titleSimple	= $this->driver->getTitleStatement();
+		$expectSimple	= 'Georg Philipp Telemann ; hrsg. von Herbert Kölbel ; Generalbass-Bearb. von Otto Kiel';
+
+		$this->assertInternalType('string', $titleSimple);
+		$this->assertEquals($expectSimple, $titleSimple);
+	}
+
+	public function testGetTitleStatementFull() {
+		$titleFull	= $this->driver->getTitleStatement(true);
+
+		$this->assertInternalType('array', $titleFull);
+
+		$expect	= 'Konzert e-Moll, für Blockflöte, Querflöte, zwei Violinen, Viola und Basso continuo, [TWV 52 e 1]';
+
+		$this->assertEquals($expect, $titleFull['title']);
+	}
+
+
+	public function testGetAddedCorporateNames() {
+		$corporateName	= $this->driver->getAddedCorporateNames();
+
+		$this->assertInternalType('array', $corporateName);
+	}
+
+
+	public function testIndicators() {
+		$terms	= $this->driver->getLocalTopicalTerms();
+		$first	= $terms[0];
+
+		$this->assertInternalType('array', $first);
+		$this->assertArrayHasKey('@ind1', $first);
+		$this->assertArrayHasKey('@ind2', $first);
+
+		$this->assertEquals('L', $first['@ind1']);
+		$this->assertEquals('A', $first['@ind2']);
+	}
+
+}
