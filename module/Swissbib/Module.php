@@ -6,7 +6,7 @@ use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\InitProviderInterface;
 use Zend\ModuleManager\ModuleManagerInterface;
 
-use Swissbib\Filter\SbTemplateFilenameFilter;
+use Swissbib\Filter\TemplateFilenameFilter;
 
 use Zend\ModuleManager\ModuleManager,
 		Zend\Mvc\MvcEvent,
@@ -27,15 +27,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, In
 	 */
 	public function onBootstrap(MvcEvent $event)
 	{
-			// --- Setup template filename comment filter
-		$sm = $event->getApplication()->getServiceManager();
-		$widgetFilter = new SbTemplateFilenameFilter();
-		$widgetFilter->setServiceLocator($sm);
-		$view = $sm->get('ViewRenderer');
-		$filters = $view->getFilterChain();
-		$filters->attach($widgetFilter, 50);
-		$view->setFilterChain($filters);
-			// --- End: setup template filename comment filter
+			// Add template filename comments filter to filter chain
+		TemplateFilenameFilter::onBootstrap($event);
 
 		$b = new Bootstrapper($event);
 		$b->bootstrap();
