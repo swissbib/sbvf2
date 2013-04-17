@@ -94,9 +94,56 @@ class SolrMarc extends VuFindSolrMarc {
 		return array($dateType, $year1, $year2);
 	}
 
+    /**
+     * Get standard numbers (ISBN, ISSN, ISMN, DOI, URN) for display
+     *
+     * @return Array
+     */
+
+    public function getStandardNumbers()
+    {
+        // this fields may contain standard numbers
+        $fields = array(
+            '020', '022', '024'
+        );
+
+        $retval = array();
+        foreach ($fields as $field) {
+            // Do we have any results for the current field?  If not, try the next.
+            $results = $this->marcRecord->getFields($field);
+            if (!$results) {
+                continue;
+            }
+
+            // If we got here, we found results -- let's loop through them.
+            foreach ($results as $result) {
+                // Start an array for holding the chunks of the current heading:
+                $current = array();
+
+                // Get all the chunks and collect them together:
+                $subfields = $result->getSubfields();
+                if ($subfields) {
+                    foreach ($subfields as $subfield) {
+                        // Numeric subfields are for control purposes and should not
+                        // be displayed:
+                        if (!is_numeric($subfield->getCode())) {
+                            $current[] = $subfield->getData();
+                        }
+                    }
+                    // If we found at least one chunk, add a heading to our result:
+                    if (!empty($current)) {
+                        $retval[] = $current;
+                    }
+                }
+            }
+        }
+
+        // Send back everything we collected:
+        return $retval;
+    }
 
 
-	/**
+    /**
 	 * Get primary author
 	 *
 	 * @param	Boolean        $asString
@@ -248,7 +295,11 @@ class SolrMarc extends VuFindSolrMarc {
 	 */
 	public function getGNDSubjectHeadings() {
 		return $this->getMarcSubFieldMaps(600, array(
-			'a'	=> 'name'
+			'a'	=> 'name',
+            'b' => 'numeration',
+            'c' => 'title',
+            'd' => 'lifespan',
+            't' => 'work'
 		));
 	}
 
