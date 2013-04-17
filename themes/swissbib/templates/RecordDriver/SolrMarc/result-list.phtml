@@ -13,24 +13,24 @@ $publicationDate    = $this->publicationDateMarc($resultItem->getPublicationDate
 ?>
 
 <tr>
-    <!-- col 1: Counter -->
+    <!-- Column 1: Index -->
 	<td class="small center nodivider"><?=$this->recordIndex?></td>
-    <!-- colr 2: Merkliste -->
+    <!-- Column 2: Memo list -->
 	<td class="nodivider">
 		<a href="#" class="icon_notepad_add" title="Zur Merkliste hinzufügen">Zur Merkliste hinzufügen</a>
 	</td>
-    <!-- col 3: Teaser-image / Thumbnail -->
+    <!-- Column 3: Teaser-image / Thumbnail -->
 	<td class="right nodivider">
 		<a href="<?=$detailLink?>" title="<?=$title?>">
             <? /** ---------------------------------------------------- */ ?>
-            <? /** temporary fix params over here, to do: fix in driver */ ?>
+            <? /** temporary fix params over here, @todo: fix in driver */ ?>
             <? if(is_array($title)) $title = implode(' ', $title); ?>
             <? if(is_array($thumbnailUrl)) $thumbnailUrl = implode(' ', $thumbnailUrl); ?>
             <? /** ---------------------------------------------------- */ ?>
 			<img src="<?=$thumbnailUrl?>" alt="<?=$title?>" class="dropshadow"/>
 		</a>
 	</td>
-    <!-- col 4: Title and author details => links to full-view -->
+    <!-- Column 4: Title and author details => links to full-view -->
 	<td>
 		<h3><a href="<?=$detailLink?>" title="<?=$title?>" class="color"><?=$title?></a></h3>
 		<p>
@@ -61,7 +61,7 @@ $publicationDate    = $this->publicationDateMarc($resultItem->getPublicationDate
             <?php endif; ?>
 		</div>
 	</td>
-    <!-- col 5 & 6 : libraries, links, info -->
+    <!-- Column 5 & 6 : libraries, links, info -->
 	<td class="small right nodivider">
 		<?=$this->render('search/results/available.phtml')?>
 	</td>
