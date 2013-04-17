@@ -55,7 +55,9 @@ $publicationDate    = $this->publicationDateMarc($resultItem->getPublicationDate
 			<?=$viewRecord->getFormatList()?>
         <!-- <h6 class="icon_format_book">Buch</h6> -->
             <?php if(!empty($groupID)): ?>
-                <a href="frbr.html" class="linkbutton icon_show" title="<?=$this->transEsc('FRBR_Button')?>"><span><?=$this->transEsc('FRBR_Button')?></span></a>
+                <a href="#frbr.html" class="linkbutton icon_show" title="<?=$this->transEsc('FRBR_Button')?>">
+					<span><?=$this->transEsc('FRBR_Button')?></span>
+				</a>
             <?php endif; ?>
 		</div>
 	</td>
