@@ -10,6 +10,8 @@ if ($this->syndeticsPlus()->isActive()) {
     $this->headScript()->appendFile($this->syndeticsPlus()->getScript());
 }
 
+$physicalDescriptions = $this->driver->getPhysicalDescriptions();
+
 ?>
 
 <table cellpadding="2" cellspacing="0" border="0" class="citation" summary="<?=$this->transEsc('Description')?>">
@@ -49,16 +51,20 @@ if ($this->syndeticsPlus()->isActive()) {
 </tr>
     <? endif; ?>
 
-<? $physical = $this->driver->getPhysicalDescriptions(); if (!empty($physical)): ?>
+<? if ($physicalDescriptions): ?>
     <? $contentDisplayed = true; ?>
-<tr valign="top">
-    <th><?=$this->transEsc('Physical Description')?>: </th>
-    <td>
-        <? foreach ($physical as $field): ?>
-        <?=$this->escapeHtml($field)?><br/>
-        <? endforeach; ?>
-    </td>
-</tr>
+	<tr valign="top">
+		<th><?=$this->transEsc('Physical Description')?>: </th>
+		<td>
+			<?php
+			foreach($physicalDescriptions as $physicalDescription) {
+				foreach($physicalDescription as $types) {
+					echo $this->escapeHtml(implode(', ', $types));
+				}
+			}
+			?>
+		</td>
+	</tr>
     <? endif; ?>
 
 <? $freq = $this->driver->getPublicationFrequency(); if (!empty($freq)): ?>

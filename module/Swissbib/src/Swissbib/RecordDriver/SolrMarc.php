@@ -252,12 +252,12 @@ class SolrMarc extends VuFindSolrMarc {
 
 
 	/*
-	* Library / Institution Code
+	* Library / Institution Codes
 	 *
-	* @return	String
+	* @return	String[]
 	*/
-	public function getInstitution() {
-		return isset($this->fields['institution']) ? $this->fields['institution'][0] : array();
+	public function getInstitutions() {
+		return isset($this->fields['institution']) ? $this->fields['institution'] : array();
 	}
 
 
@@ -343,7 +343,7 @@ class SolrMarc extends VuFindSolrMarc {
 			$strings = array();
 
 			foreach($data as $publication) {
-				$strings[] = trim($data['name'] . ', ' . $data['place']);
+				$strings[] = trim($publication['name'] . ', ' . $publication['place']);
 			}
 
 			$data = $strings;
@@ -371,6 +371,17 @@ class SolrMarc extends VuFindSolrMarc {
 			'3'		=> 'appliesTo'
 		));
     }
+
+
+
+	/**
+	 * Get unions
+	 *
+	 * @return	String[]
+	 */
+	public function getUnions() {
+		return isset($this->fields['union']) ? $this->fields['union'] : array();
+	}
 
 
 
@@ -448,6 +459,21 @@ class SolrMarc extends VuFindSolrMarc {
 
 
 	/**
+	 * Get marc fields
+	 * Multiple values are possible for the field
+	 *
+	 * @param	Integer		$index
+	 * @return	Array|\File_MARC_List
+	 */
+	protected function getMarcFields($index) {
+		$index	= sprintf('%03d', $index);
+
+		return $this->marcRecord->getFields($index);
+	}
+
+
+
+	/**
 	 * @param $index
 	 * @param array $fieldMap
 	 * @return array
@@ -458,7 +484,7 @@ class SolrMarc extends VuFindSolrMarc {
 		$field			= $this->marcRecord->getField($index);
 
 		if( $field ) {
-			$subFieldValues = $this->convertSubFieldsToMap($field, $fieldMap);
+			$subFieldValues = $this->getMappedFieldData($field, $fieldMap);
 		}
 
 		return $subFieldValues;
@@ -478,7 +504,7 @@ class SolrMarc extends VuFindSolrMarc {
 		$fields			= $this->marcRecord->getFields($index);
 
 		foreach($fields as $field) {
-			$subFieldsValues[] = $this->convertSubFieldsToMap($field, $fieldMap);
+			$subFieldsValues[] = $this->getMappedFieldData($field, $fieldMap);
 		}
 
 		return $subFieldsValues;
@@ -493,8 +519,11 @@ class SolrMarc extends VuFindSolrMarc {
 	 * @param	Array					$fieldMap
 	 * @return	Array
 	 */
-	protected function convertSubFieldsToMap($field, array $fieldMap) {
-		$subFieldValues	= array();
+	protected function getMappedFieldData($field, array $fieldMap) {
+		$subFieldValues	= array(
+			'@ind1'	=> $field->getIndicator(1),
+			'@ind2'	=> $field->getIndicator(2)
+		);
 
 		foreach($fieldMap as $code => $name) {
 			if( substr($code, 0, 1) === '_' ) { // Underscore means repeatable
