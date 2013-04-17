@@ -71,8 +71,9 @@ return array(
             'pageFunctions'				=> 'Swissbib\View\Helper\PageFunctions',
             'publicationDateMarc'		=> 'Swissbib\View\Helper\YearFormatterMarc',
             'publicationDateWorldCat'	=> 'Swissbib\View\Helper\YearFormatterWorldCat',
-            'SortAndPrepareFacetList'	=> 'Swissbib\View\Helper\SortAndPrepareFacetList'
-            )
+            'SortAndPrepareFacetList'	=> 'Swissbib\View\Helper\SortAndPrepareFacetList',
+            'physicalDescription'		=> 'Swissbib\View\Helper\PhysicalDescriptions'
+        )
     ),
     'vufind' => array(
             // This section contains service manager configurations for all VuFind

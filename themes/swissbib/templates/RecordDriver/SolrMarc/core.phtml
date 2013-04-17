@@ -15,7 +15,7 @@ $subTitle				= $resultItem->getSubtitle(true);
 $titleStatement			= $resultItem->getTitleStatement(true);
 $secondaryAuthors		= $resultItem->getSecondaryAuthors();
 $publishers				= $resultItem->getPublishers(true);
-$physicalDescriptions	= $resultItem->getPhysicalDescriptions(true);
+$physicalDescriptions	= $resultItem->getPhysicalDescriptions();
 $edition				= $resultItem->getEdition();
 $summary				= trim(implode($resultItem->getSummary()));
 $groupID				= $resultItem->getGroup(true);
@@ -53,20 +53,7 @@ $publicationDate		= $this->publicationDateMarc($resultItem->getPublicationDates(
 
         <?php if($physicalDescriptions): ?>
             <h4><?=$this->transEsc('Physical Description')?>:</h4>
-                <p>
-					<?php foreach($physicalDescriptions as $physicalDescription): ?>
-						<?=$this->escapeHtml(implode(',', $physicalDescription['extent']))?>.
-						<?php if( isset($physicalDescription['details']) ): ?>:
-							<?=$this->escapeHtml(implode(',', $physicalDescription['details']))?>.
-						<?php endif; ?>
-						<?php if( isset($physicalDescription['dimensions']) ): ?>;
-							<?=$this->escapeHtml(implode(',', $physicalDescription['dimensions']))?>
-						<?php endif; ?>
-						<?php if (isset($physicalDescription['company']) ): ?>+
-							<?=$this->escapeHtml(implode(',', $physicalDescription['company']))?>.
-						<?php endif; ?>
-					<?php endforeach; ?>
-                </p>
+			<p><?=$this->physicalDescription($physicalDescriptions)?></p>
         <?php endif; ?>
 
 		<h4><?=$this->transEsc('Format')?>:</h4>
