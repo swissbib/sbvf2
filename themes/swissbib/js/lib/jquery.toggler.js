@@ -24,10 +24,9 @@
  * @option persist			True to persist state (requires jquery.cookie.js).
  * 
  * 
- * @version 1.0.0	initial version			
+ * @version 1.0.0	initial version
  */
-jQuery.fn.toggler = function(content,op) {	
-	// defaults
+jQuery.fn.toggler = function(content,op) {
 	var defaults =  {	
 			classCollapsed:"collapsed",
 			classExpanded:"expanded",
