@@ -43,7 +43,7 @@ $publicationDate		= $this->publicationDateMarc($resultItem->getPublicationDates(
 
 		<?php if($titleStatement): ?>
 		<h4><?=$this->transEsc('Author')?>:</h4>
-		<p><?=$this->escapeHtml($titleStatement['title'])?></p>
+		<p><?=$this->escapeHtml($titleStatement['statement_responsibility'])?></p>
 		<?php endif; ?>
 
 		<?php if($publishers): ?>
