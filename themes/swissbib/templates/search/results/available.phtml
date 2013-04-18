@@ -1,5 +1,12 @@
+<?php
+	/** @var	\Swissbib\RecordDriver\SolrMarc	$driver */
+	$amountHoldings	= count($driver->getInstitutions());
+?>
+
 <p>
-	5 Bibliotheken
+	<? if (count($driver->getInstitutions()) != 1): ?><?= $amountHoldings ?> Bibliotheken
+	<? else: ?>1 Bibliothek<? endif; ?>
+
 </p>
 <ul class="lending">
 	<li>

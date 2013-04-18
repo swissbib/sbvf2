@@ -1,7 +1,7 @@
 <?php
 	/** @var	\Swissbib\RecordDriver\SolrMarc	$driver */
 	$institutions	= $driver->getInstitutions();
-//	$holdings		= $driver->getHoldings();
+
 ?>
 
 <span class="info rollover right">
@@ -11,5 +11,6 @@
 				<a href="#"><?= $institutionSysCode ?></a>
 			</li>
 		<?php endforeach; ?>
+		<? if (count($institutions) === 0): ?><li>Keine Bestandsangaben</li><? endif ?>
 	</ul>
 </span>
