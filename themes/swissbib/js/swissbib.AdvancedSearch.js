@@ -11,7 +11,6 @@ swissbib.AdvancedSearch = {
 
 	/**
 	 * Initialize when in advanced search view
-	 *
 	 */
 	init: function() {
 		if( this.isInAdvancedSearch() ) {

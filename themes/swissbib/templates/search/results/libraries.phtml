@@ -8,7 +8,9 @@
 	<span class="info rollover right">
 		<ul class="infolist">
 			<?php foreach($institutions as $institutionSysCode): ?>
-				<li><a href="#"><?= $institutionSysCode ?></a></li>
+				<li><a href="<?=$this->recordLink()->getUrl($driver)?>?expandlib=<?= $institutionSysCode ?>#tab-holdings">
+						<?= $institutionSysCode ?>
+				</a></li>
 			<?php endforeach; ?>
 		</ul>
 	</span>
