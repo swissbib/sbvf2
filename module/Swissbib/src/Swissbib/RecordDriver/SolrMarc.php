@@ -77,6 +77,39 @@ class SolrMarc extends VuFindSolrMarc {
 	);
 
 
+
+	/**
+	 * Get possible ISBN/ISSN numbers from record
+	 *
+	 * @return	String[]
+	 */
+	public function getISBNs() {
+		$tags		= array('020', '022', '024');
+		$isbnList	= array();
+
+		foreach($tags as $tag) {
+			$fields	= $this->getMarcSubFieldMaps($tag, array(
+				'a'		=> 'isbn',
+				'_b'	=> 'binding',
+				'c'		=> 'availability',
+				'z'		=> 'canceled'
+			));
+
+			foreach($fields as $field) {
+				if( isset($field['isbn']) ) {
+					$isbnList[] = $field['isbn'];
+				}
+			}
+		}
+
+			// Add ISBN numbers from solr field
+		$baseIsbn	= parent::getISBNs();
+		$isbnList	= array_merge($isbnList, $baseIsbn);
+
+		return $isbnList;
+	}
+
+
 	/**
 	 * Get years and datetype from field 008 for display
      *
@@ -552,7 +585,7 @@ class SolrMarc extends VuFindSolrMarc {
 	 * Multiple values are possible for the field
 	 *
 	 * @param	Integer		$index
-	 * @return	Array|\File_MARC_List
+	 * @return	\File_MARC_Field[]|\File_MARC_List
 	 */
 	protected function getMarcFields($index) {
 		$index	= sprintf('%03d', $index);
