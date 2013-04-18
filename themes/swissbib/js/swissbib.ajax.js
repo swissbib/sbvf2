@@ -71,6 +71,7 @@ var sbAjax = {
 				$('#' + containerId + ' .' + tabId).html(content);
 				$('#' + containerId + ' .' + tabId).append(swissbib.createHiddenField('ajaxuri_' + tabId + '_sidebar', ajaxUrl));
 				sbAjax.initAjaxElements();
+				swissbib.initForms();
 				return false;
 			};
 		} else {
@@ -80,6 +81,7 @@ var sbAjax = {
 				$('#' + containerId + ' .' + tabId).addClass('tabbed_selected');
 				$('#' + containerId + ' .' + tabId).append(swissbib.createHiddenField('ajaxuri_' + tabId + '_sidebar', ajaxUrl));
 				sbAjax.initAjaxElements();
+				swissbib.initForms();
 				return false;
 			}
 		}
