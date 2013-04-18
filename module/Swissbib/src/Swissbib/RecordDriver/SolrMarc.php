@@ -83,30 +83,29 @@ class SolrMarc extends VuFindSolrMarc {
 	 *
 	 * @return	String[]
 	 */
-	public function getISBNs() {
+	public function getStandardNumbers() {
 		$tags		= array('020', '022', '024');
-		$isbnList	= array();
+		$idList	= array();
 
 		foreach($tags as $tag) {
 			$fields	= $this->getMarcSubFieldMaps($tag, array(
-				'a'		=> 'isbn',
-				'_b'	=> 'binding',
-				'c'		=> 'availability',
-				'z'		=> 'canceled'
+				'a'		=> 'id',
+				'z'		=> 'canceled',
+                '2'     => 'code',
 			));
 
 			foreach($fields as $field) {
-				if( isset($field['isbn']) ) {
-					$isbnList[] = $field['isbn'];
+				if( isset($field['id']) ) {
+					$idList[] = $field['id'];
 				}
 			}
 		}
 
 			// Add ISBN numbers from solr field
-		$baseIsbn	= parent::getISBNs();
-		$isbnList	= array_merge($isbnList, $baseIsbn);
+		//$baseIsbn	= parent::getISBNs();
+		//$idList	= array_merge($idList, $baseIsbn);
 
-		return $isbnList;
+		return $idList;
 	}
 
 
@@ -135,47 +134,7 @@ class SolrMarc extends VuFindSolrMarc {
 	 * @todo	May need a refactoring to simplify
      * @return Array
      */
-    public function getStandardNumbers()
-    {
-        // this fields may contain standard numbers
-        $fields = array(
-            '020', '022', '024'
-        );
 
-        $retval = array();
-        foreach ($fields as $field) {
-            // Do we have any results for the current field?  If not, try the next.
-            $results = $this->marcRecord->getFields($field);
-            if (!$results) {
-                continue;
-            }
-
-            // If we got here, we found results -- let's loop through them.
-            foreach ($results as $result) {
-                // Start an array for holding the chunks of the current heading:
-                $current = array();
-
-                // Get all the chunks and collect them together:
-                $subfields = $result->getSubfields();
-                if ($subfields) {
-                    foreach ($subfields as $subfield) {
-                        // Numeric subfields are for control purposes and should not
-                        // be displayed:
-                        if (!is_numeric($subfield->getCode())) {
-                            $current[] = $subfield->getData();
-                        }
-                    }
-                    // If we found at least one chunk, add a heading to our result:
-                    if (!empty($current)) {
-                        $retval[] = $current;
-                    }
-                }
-            }
-        }
-
-        // Send back everything we collected:
-        return $retval;
-    }
 
 
 
