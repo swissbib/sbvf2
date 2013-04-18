@@ -16,67 +16,48 @@ $holdings		= $recordDriver->getHoldings();
 
 ?>
 
-<div class="innerbox grey">
-	<h3 class="toggler persist collapsed" id="library_toggler_meine-bibliotheken"><span class="icon_favorit_library">Meine Bibliotheken</span></h3>
-	<div class="library_toggler_meine-bibliotheken">
-
-		<!-- begin: innerbox -->
-		<div class="innerbox">
-			<h4>Historisches Seminar</h4>
-			<ul class="actions">
-				<li>
-					<a href="#" class="linkbutton primary icon_link_primary" title="Zum Bestand"><span>Zum Bestand</span></a>
-				</li>
-				<li>
-					<a href="#" class="linkbutton icon_show toggler collapsed" title="Informationen zum Bestand" id="stock_toggler_meine-bibliotheken_historisches-seminar"><span>Informationen zum Bestand</span></a>
-				</li>
-			</ul>
-			<ul class="miniactions boxed">
-				<li class="miniaction_favorite_remove">
-					<a href="#" title="Bibliothek aus Favoriten entfernen">Bibliothek aus Favoriten entfernen</a>
-				</li>
-				<li class="miniaction_link">
-					<a href="http://aleph.unibas.ch" class="externallink" title="Historisches Seminar">http://aleph.unibas.ch</a>
-				</li>
-			</ul>
-
-			<div class="stock_toggler_meine-bibliotheken_historisches-seminar">
-				<table>
-					<thead>
-						<tr>
-							<th>Standort</th>
-							<th>Signatur</th>
-							<th>Exemplarstatus</th>
-							<th>Ausleihstatus</th>
-							<th>Bechreibung</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>-</td>
-							<td>Gd XIII 3836</td>
-							<td>ausleihbar</td>
-							<td>erhältlich</td>
-							<td>Diest ist ein Beschreibungstext.</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div><!-- end: innerbox -->
-
-	</div>
-</div>
+<?= $this->render('RecordTab\mylibraries.phtml') ?>
 
 <?php foreach($holdings as $networkCode => $network): ?>
 	<!-- begin: innerbox <?=$networkCode?> -->
 	<div class="innerbox grey">
-		<h3 class="toggler persist collapsed" id="library_toggler_<?=$networkCode?>"><?=$this->escapeHtml($network['label'])?><?php /*IDS Basel / Bern*/ ?></h3>
+		<?php
+			$expandLib	= isset($_GET['expandlib']) ? $_GET['expandlib'] : '';
+			$expandedOrCollapsedClass = 'collapsed';
+			$expandOnLoad = '';
+			if( array_key_exists('institutions', $network) && count($network['institutions']) > 0 ) {
+				foreach($network['institutions'] as $institutionSysCode => $institution) {
+					if ($institutionSysCode == $expandLib) {
+						$expandedOrCollapsedClass	= 'expanded';
+						$expandOnLoad= $networkCode;
+					}
+				}
+			}
+		?>
+
+		<? if($expandOnLoad != ''): ?>
+<script type="text/javascript">
+		// On DOM-ready: expand selected library even if it's collapsed via cookie
+	$(document).ready(function() {
+		var elItem	= $('.toggler#library_toggler_<?= $expandOnLoad ?>')['0'];
+		var cname	= "toggler_" + jQuery(elItem).attr("id");
+		cname 		= encodeURI(cname);
+		if(jQuery.cookie(cname)) {
+			if(jQuery.cookie(cname) != "expanded") {
+				expandedLibItem.click();
+			}
+		}
+	});
+</script>
+		<? endif; ?>
+
+		<h3 class="toggler persist <?= $expandedOrCollapsedClass ?>" id="library_toggler_<?=$networkCode?>">
+			<?=$this->escapeHtml($network['label']) /*IDS Basel / Bern*/ ?>
+		</h3>
 		<div class="library_toggler_<?=$networkCode?>">
 
 			<div class="innerbox">
-
 				<?php foreach($network['institutions'] as $institutionCode => $institution): ?>
-
 					<h4><?=$this->escapeHtml($institution['label'])?></h4>
 					<ul class="actions">
 						<li>
@@ -111,7 +92,6 @@ $holdings		= $recordDriver->getHoldings();
 							</thead>
 							<tbody>
 								<?php
-
 										// Items
 									if( isset($institution['items'])) {
 										foreach($institution['items'] as $item) {
@@ -129,12 +109,10 @@ $holdings		= $recordDriver->getHoldings();
 											));
 										}
 									}
-
 								?>
 							</tbody>
 						</table>
 					</div>
-
 				<?php endforeach; ?>
 
 			</div>
