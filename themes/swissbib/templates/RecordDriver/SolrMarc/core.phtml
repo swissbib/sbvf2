@@ -1,15 +1,16 @@
 <?php
 
-/** @var	Swissbib\RecordDriver\SolrMarc	$resultItem  */
+/** @var	VuFind\View\Helper\Root\Record		$viewRecord  */
+/** @var	Swissbib\RecordDriver\SolrMarc		$resultItem  */
+
 $resultItem	= $this->driver;
-/** @var	VuFind\View\Helper\Root\Record		$record  */
 $viewRecord	= $this->record($resultItem);
 
 //$authors	= $this->Authors($resultItem->getDeduplicatedAuthors());
 
-$mediumThumb= $viewRecord->getThumbnail('medium');
-//$largeThumb	= $viewRecord->getThumbnail('large');
-$thumbUrl	= $mediumThumb ? $mediumThumb : $this->url('cover-unavailable');
+//$thumbnail		= $viewRecord->getThumbnail('medium');
+$thumbnail		= $viewRecord->getThumbnail('large');
+$thumbnailSrc	= $thumbnail ? $thumbnail : $this->url('cover-unavailable');
 
 $subTitle				= $resultItem->getSubtitle(true);
 $titleStatement			= $resultItem->getTitleStatement(true);
@@ -28,7 +29,7 @@ $publicationDate		= $this->publicationDateMarc($resultItem->getPublicationDates(
 <!-- col -->
 <div class="c25l">
 	<a title="Zur Merkliste hinzufügen" class="icon_notepad_add_link" href="#">
-		<img src="<?=$thumbUrl?>" class="dropshadow"/>
+		<img src="<?=$thumbnailSrc?>" class="dropshadow"/>
 	</a>
 </div>
 

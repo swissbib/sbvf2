@@ -3,7 +3,8 @@
 	/** @var	VuFind\View\Helper\Root\Record		$viewRecord  */
 $resultItem		= $this->driver;
 $viewRecord		= $this->record($this->driver);
-$thumbnailUrl	= $resultItem->getThumbnail() ? $resultItem->getThumbnail() : $this->url('cover-unavailable');
+$thumbnail		= $viewRecord->getThumbnail('small');
+$thumbnailSrc	= $thumbnail ? $thumbnail : $this->url('cover-unavailable');
 $detailLink		= $this->recordLink()->getUrl($resultItem);
 //$title			= $resultItem->getShortTitle();
 $title			= $this->mainTitle($resultItem->getShortTitle());
@@ -25,9 +26,8 @@ $publicationDate= $this->publicationDateMarc($resultItem->getPublicationDates())
             <? /** ---------------------------------------------------- */ ?>
             <? /** temporary fix params over here, @todo: fix in driver */ ?>
             <? if(is_array($title)) $title = implode(' ', $title); ?>
-            <? if(is_array($thumbnailUrl)) $thumbnailUrl = implode(' ', $thumbnailUrl); ?>
             <? /** ---------------------------------------------------- */ ?>
-			<img src="<?=$thumbnailUrl?>" alt="<?=$title?>" class="dropshadow"/>
+			<img src="<?=$thumbnailSrc?>" alt="<?=$title?>" class="dropshadow"/>
 		</a>
 	</td>
     <!-- Column 4: Title and author details => links to full-view -->
