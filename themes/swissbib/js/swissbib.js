@@ -67,7 +67,7 @@ var swissbib = {
         if (jQuery.browser.msie) {
             tag = "ie";
             swissbib.ie = true;
-            if (jQuery.browser.version.substr(0,1)<7) {
+            if (jQuery.browser.version.substr(0, 1) < 7) {
                 swissbib.ie6 = true;
             }
         } else if (jQuery.browser.mozilla) {
@@ -84,7 +84,7 @@ var swissbib = {
 
 
     /**
-     * Initializes the navigation.
+     * Initializes the navigation
 	 *
 	 * @param	{Element}	ctx		Selector context
      */
@@ -95,35 +95,35 @@ var swissbib = {
 
 
     /**
-     * Initializes the toggler.
+     * Initializes all (expand-/collapse-able) toggler elements
 	 *
 	 * @param	{Element}	ctx		Selector context
      */
     initToggler: function(ctx){
-        var animate = true;
-        if (swissbib.ie6) {
-            animate = false;
-        }
-        $(".toggler",ctx).each(function(ind,el) {
-            // vars
-            var id = $(el).attr("id");
-            var msgExpanded = null;
-            var msgCollapsed = null;
-            var expanded = false;
-            var title = $(this).attr("title");
-            if ($(el).hasClass("expanded")) {
-                expanded = true;
-            }
+        var animate = !swissbib.ie6;
+
+        $(".toggler",ctx).each(function(ind, el) {
+            var id 			= $(el).attr("id");
+            var msgExpanded	= null;
+            var msgCollapsed= null;
+			var expanded 	= $(el).hasClass("expanded");
+			var title 		= $(this).attr("title");
 
             if (title != null && title.indexOf("$") >= 0) {
-                var msgs = title.split("$");
-                msgCollapsed = msgs[0];
-                msgExpanded = msgs[1];
+                var msgs	= title.split("$");
+                msgCollapsed= msgs[0];
+                msgExpanded	= msgs[1];
             }
 
-            // toggle
-            $(el).toggler("."+id,{expanded:expanded,msgCollapsed:msgCollapsed,msgExpanded:msgExpanded,animate:animate});
-
+            	// Toggle
+            $(el).toggler(
+				"." + id,
+				{	expanded:		expanded,
+					msgCollapsed:	msgCollapsed,
+					msgExpanded:	msgExpanded,
+					animate:		animate
+				}
+			);
         });
     },
 
@@ -355,7 +355,7 @@ var swissbib = {
 
 
     /**
-     * Initialize the modal.
+     * Initialize the modal
 	 *
 	 * @param	{Element}	ctx		Selector context
      */
@@ -416,6 +416,10 @@ var swissbib = {
     },
 
 
+
+	/**
+	 * Call detection and initialization of advanced search
+	 */
 	initAdvancedSearch: function() {
 		this.AdvancedSearch.init();
 	}
@@ -424,7 +428,7 @@ var swissbib = {
 
 
 /**
- * Init swissbib on ready & load
+ * Init Swissbib on ready & load
  */
 $(document).ready(function(){
     swissbib.initOnReady();
