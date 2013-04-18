@@ -15,6 +15,23 @@ $physicalDescriptions = $this->driver->getPhysicalDescriptions();
 ?>
 
 <table cellpadding="2" cellspacing="0" border="0" class="citation" summary="<?=$this->transEsc('Description')?>">
+
+<? $mainAuthor = $this->driver->getPrimaryAuthor(); if (!empty($mainAuthor)): ?>
+    <?$contentDisplayed = true; ?>
+    <h4>Hauptautor</h4>
+    <p><?=$this->escapeHtml($mainAuthor[name]) . ', ' . ($mainAuthor[forname])?></p>
+    <? endif; ?>
+
+<? $topics = $this->driver->getTopicalTerms(); ?>
+    <h4>Schlagworte (in Arbeit)</h4>
+
+    <p><?=$this->escapeHtml($topics[0][term])?></p>
+<!--<p>
+    <?/* foreach ($topics[array()][term] as $term): */?>
+    <?/*=$this->escapeHtml($term)*/?>
+    <?/* endforeach; */?>
+</p>-->
+
 <? $summ = $this->driver->getSummary(); if (!empty($summ)): ?>
     <? $contentDisplayed = true; ?>
 <tr valign="top">
@@ -26,7 +43,6 @@ $physicalDescriptions = $this->driver->getPhysicalDescriptions();
     </td>
 </tr>
     <? endif; ?>
-
 <? $dateSpan = $this->driver->getDateSpan(); if (!empty($dateSpan)): ?>
     <? $contentDisplayed = true; ?>
 <tr valign="top">
