@@ -19,8 +19,12 @@ $physicalDescriptions = $this->driver->getPhysicalDescriptions();
 <? $mainAuthor = $this->driver->getPrimaryAuthor(); if (!empty($mainAuthor)): ?>
     <?$contentDisplayed = true; ?>
     <h4>Hauptautor</h4>
-    <p><?=$this->escapeHtml($mainAuthor[name]) . ', ' . ($mainAuthor[forname])?></p>
-    <? endif; ?>
+	<?php
+		$authLastname = array_key_exists('name', $mainAuthor) ? $mainAuthor['name'] : '';
+		$authForename = array_key_exists('forname', $mainAuthor) ? $mainAuthor['forname'] : '';
+	?>
+    <p><?= !empty($autLastname) ? ($this->escapeHtml($authLastname)) : '' ?><?= !empty($authLastname) && !empty($authForename) ? ', ' : '' ?><?= $this->escapeHtml($authForename) ?>
+	</p>
 
 <? $topics = $this->driver->getTopicalTerms(); ?>
     <h4>Schlagworte (in Arbeit)</h4>
