@@ -72,7 +72,8 @@ return array(
             'publicationDateMarc'		=> 'Swissbib\View\Helper\YearFormatterMarc',
             'publicationDateWorldCat'	=> 'Swissbib\View\Helper\YearFormatterWorldCat',
             'SortAndPrepareFacetList'	=> 'Swissbib\View\Helper\SortAndPrepareFacetList',
-            'physicalDescription'		=> 'Swissbib\View\Helper\PhysicalDescriptions'
+            'physicalDescription'		=> 'Swissbib\View\Helper\PhysicalDescriptions',
+            'noHolding'					=> 'Swissbib\View\Helper\NoHolding'
         )
     ),
     'vufind' => array(
