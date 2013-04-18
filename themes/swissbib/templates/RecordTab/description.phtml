@@ -23,9 +23,10 @@ $physicalDescriptions = $this->driver->getPhysicalDescriptions();
 		$authLastname = array_key_exists('name', $mainAuthor) ? $mainAuthor['name'] : '';
 		$authForename = array_key_exists('forname', $mainAuthor) ? $mainAuthor['forname'] : '';
 	?>
-    <p><?= !empty($autLastname) ? ($this->escapeHtml($authLastname)) : '' ?><?= !empty($authLastname) && !empty($authForename) ? ', ' : '' ?><?= $this->escapeHtml($authForename) ?>
+    <p><?= !empty($autLastname) ? $this->escapeHtml($authLastname) : '' ?><?= !empty($authLastname) && !empty($authForename) ? ', ' : '' ?>
+	   <?= $this->escapeHtml($authForename) ?>
 	</p>
-
+	<? endif; ?>
 <? $topics = $this->driver->getTopicalTerms(); ?>
     <h4>Schlagworte (in Arbeit)</h4>
 
