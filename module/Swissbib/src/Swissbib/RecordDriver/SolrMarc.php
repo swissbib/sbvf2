@@ -94,12 +94,14 @@ class SolrMarc extends VuFindSolrMarc {
 		return array($dateType, $year1, $year2);
 	}
 
+
+
     /**
      * Get standard numbers (ISBN, ISSN, ISMN, DOI, URN) for display
      *
+	 * @todo	May need a refactoring to simplify
      * @return Array
      */
-
     public function getStandardNumbers()
     {
         // this fields may contain standard numbers
@@ -141,6 +143,7 @@ class SolrMarc extends VuFindSolrMarc {
         // Send back everything we collected:
         return $retval;
     }
+
 
 
     /**
@@ -490,8 +493,6 @@ class SolrMarc extends VuFindSolrMarc {
 
 
 
-
-
 	/**
 	 * Get short title
 	 * Override base method to assure a string and not an array
@@ -562,6 +563,9 @@ class SolrMarc extends VuFindSolrMarc {
 
 
 	/**
+	 * Get items of a field as named map (array)
+	 * Use this method if the field is (N)ot(R)epeatable
+	 *
 	 * @param $index
 	 * @param array $fieldMap
 	 * @return array
@@ -581,7 +585,8 @@ class SolrMarc extends VuFindSolrMarc {
 
 
 	/**
-	 * Get sub field maps for a field which exists multiple times
+	 * Get items of a field (which exists multiple times) as named map (array)
+	 * Use this method if the field is (R)epeatable
 	 *
 	 * @param	Integer		$index
 	 * @param	Array		$fieldMap
