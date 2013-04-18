@@ -4,15 +4,10 @@
 ?>
 
 <p>
-	<? if (count($driver->getInstitutions()) != 1): ?><?= $amountHoldings ?> Bibliotheken
-	<? else: ?>1 Bibliothek<? endif; ?>
-
+	<? if ($amountHoldings > 0): ?>
+		<? if ($amountHoldings != 1): ?><?= $amountHoldings ?> Bibliotheken
+		<? else: ?>1 Bibliothek<? endif; ?>
+	<? else: ?>
+		<?= $this->noHolding() ?>
+	<? endif; ?>
 </p>
-<ul class="lending">
-	<li>
-		<span class="icon_lending_online" title="Online Ausleihbar">3</span>
-	</li>
-	<li>
-		<span class="icon_lending_onplace" title="Vor Ort konsultierbar">2</span>
-	</li>
-</ul>

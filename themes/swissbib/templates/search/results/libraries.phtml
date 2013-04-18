@@ -4,13 +4,12 @@
 
 ?>
 
-<span class="info rollover right">
-	<ul class="infolist">
-		<?php foreach($institutions as $institutionSysCode): ?>
-			<li>
-				<a href="#"><?= $institutionSysCode ?></a>
-			</li>
-		<?php endforeach; ?>
-		<? if (count($institutions) === 0): ?><li>Keine Bestandsangaben</li><? endif ?>
-	</ul>
-</span>
+<? if (count($institutions) > 0): ?>
+	<span class="info rollover right">
+		<ul class="infolist">
+			<?php foreach($institutions as $institutionSysCode): ?>
+				<li><a href="#"><?= $institutionSysCode ?></a></li>
+			<?php endforeach; ?>
+		</ul>
+	</span>
+<? endif; ?>
