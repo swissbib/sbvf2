@@ -22,7 +22,7 @@ class PhysicalDescriptions extends AbstractHelper {
 
 		foreach($physicalDescriptions as $physicalDescription) {
 			foreach($types as $type) {
-				if( isset($physicalDescription[$type]) ) {
+				if ( isset($physicalDescription[$type]) ) {
 					if( is_array($physicalDescription[$type]) ) {
 						$infos	= array_merge($infos, $physicalDescription[$type]);
 					} else {
@@ -32,7 +32,7 @@ class PhysicalDescriptions extends AbstractHelper {
 			}
 		}
 
-		return implode(', ', $infos);
+		return implode('; ', $infos);
 	}
 
 }
