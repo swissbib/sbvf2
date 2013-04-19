@@ -83,30 +83,32 @@ class SolrMarc extends VuFindSolrMarc {
 	 *
 	 * @return	String[]
 	 */
-	public function getStandardNumbers() {
+	public function getISBNs() {
 		$tags		= array('020', '022', '024');
-		$idList	= array();
+		$isbnList	= array();
 
 		foreach($tags as $tag) {
 			$fields	= $this->getMarcSubFieldMaps($tag, array(
-				'a'		=> 'id',
-				'z'		=> 'canceled',
-                '2'     => 'code',
+				'a'		=> 'isbn',
+				'_b'	=> 'binding',
+				'c'		=> 'availability',
+				'z'		=> 'canceled'
 			));
 
 			foreach($fields as $field) {
-				if( isset($field['id']) ) {
-					$idList[] = $field['id'];
+				if( isset($field['isbn']) ) {
+					$isbnList[] = $field['isbn'];
 				}
 			}
 		}
 
 			// Add ISBN numbers from solr field
-		//$baseIsbn	= parent::getISBNs();
-		//$idList	= array_merge($idList, $baseIsbn);
+		$baseIsbn	= parent::getISBNs();
+		$isbnList	= array_merge($isbnList, $baseIsbn);
 
-		return $idList;
+		return $isbnList;
 	}
+
 
 
 	/**
