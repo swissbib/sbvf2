@@ -15,10 +15,7 @@ var sbSearchSettings = {
 
 				var spinnerElId = 'spinner' + jQuery.guid++;
 				$('#content').prepend(sbAjax.createSpinnerElement(spinnerElId));
-				$('#' + spinnerElId).sprite({
-					fps: 10,
-					no_of_frames: 12
-				});
+				$('#' + spinnerElId).sprite({fps: 10, no_of_frames: 12});
 				$('#' + spinnerElId).spStart();
 
 				$.ajax({
