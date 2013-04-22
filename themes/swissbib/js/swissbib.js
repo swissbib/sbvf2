@@ -226,13 +226,11 @@ var swissbib = {
 	 * @return	{Element}
 	 */
 	createHiddenField: function(fieldId, fieldValue) {
-		var el= $('<input/>', {
+		return $('<input/>', {
 			type:	'hidden',
 			id:		fieldId,
 			value:	fieldValue
 		});
-
-		return el;
 	},
 
 
@@ -283,74 +281,120 @@ var swissbib = {
 	 * @param	{Element}	ctx		Selector context
      */
     initForms: function(ctx) {
-        var zIndex = 100;
-
-        $(".info.rollover", ctx).each(function(i, el){
-            $(el).rollover();
-            $(el).css("z-index", zIndex--)
-        });
-
-        $(".info.tooltip", ctx).each(function(i, el){
-            $(el).info();
-        });
-
-
-        	// Styled dropdowns
-        $(".dropdown", ctx).each(function(i, el){
-            $(el).dropdown(i);
-        });
-
-        	// Slider
-        $("input.slider", ctx).each(function(i, el){
-            $(el).hide();
-
-            	// Control
-            $(el).after("<div id='slider_"+i+"'></div>");
-            var slidecontrol = $("#slider_"+i);
-            var slidetitel = $(el).attr("title");
-            var slidevalue = 0;
-            if ($(el).attr("value") != null && $(el).attr("value") != "") {
-                slidevalue = parseInt($(el).attr("value"));
-            }
-
-            	// Create slider
-            vmin = 0;
-            vmax = 1000;
-            vstep = 100;
-
-            if ($(el).attr("rel") != null) {
-                var params = $(el).attr("rel").split(";");
-                for (var i = 0; i < params.length; i++) {
-                    var p = params[i].split(":");
-                    switch(p[0]) {
-                        case "min": vmin = parseInt(p[1]);
-                        case "max": vmax = parseInt(p[1]);
-                        case "step": vstep = parseInt(p[1]);
-                    }
-                }
-            }
-
-            $(slidecontrol).slider({"value":slidevalue,"min":vmin,"max":vmax,"step":vstep});
-
-            	// Init
-            slidecontrol.attr("title",slidetitel + ": " + slidevalue + " / " + vmax);
-
-            	// Events
-            $(slidecontrol).bind("slidechange", function(e, ui) {
-                $(el).attr("value", ui.value);
-                slidecontrol.attr("title", slidetitel + ": " + ui.value + " / " + vmax);
-            });
-            $(slidecontrol).bind("slide", function(e, ui) {
-                slidecontrol.attr("title", slidetitel + ": " + ui.value + " / " + vmax);
-            });
-        });
-
-
-        	// Checker
-        $(".checker").each(function(i, checker){
-            $(checker).checker();
-        });
+        this.initRollovers(ctx);
+		this.initTooltips(ctx);
+		this.initDropDowns(ctx);
+		this.initSliders(ctx);
+		this.initCheckboxes(ctx);
     },
+
+
+
+	/**
+	 * Init all rollover elements
+	 *
+	 * @param	{Element}	ctx		Selector context
+	 */
+	initRollovers: function(ctx) {
+		var zIndex	= 100;
+
+		$(".info.rollover", ctx).each(function(i, el){
+			$(el).rollover();
+			$(el).css("z-index", zIndex--);
+		});
+	},
+
+
+	/**
+	 * Init all tooltip elements
+	 *
+	 * @param	{Element}	ctx		Selector context
+	 */
+	initTooltips: function(ctx) {
+		$(".info.tooltip", ctx).each(function(i, el){
+			$(el).info();
+	   });
+	},
+
+
+	/**
+	 * Init all styled drop-downs
+	 *
+	 * @param	{Element}	ctx		Selector context
+	 */
+	initDropDowns: function(ctx) {
+		$(".dropdown", ctx).each(function(i, el){
+			$(el).dropdown(i);
+		});
+	},
+
+
+	/**
+	 * Init all sliders
+	 *
+	 * @param	{Element}	ctx		Selector context
+	 */
+	initSliders: function(ctx) {
+
+		$("input.slider", ctx).each(function(i, el){
+			$(el).hide();
+
+				// Control
+			$(el).after("<div id='slider_"+i+"'></div>");
+
+			var slidecontrol= $("#slider_"+i);
+			var slidetitel	= $(el).attr("title");
+			var slidevalue	= 0;
+
+			if ($(el).attr("value") != null && $(el).attr("value") != "") {
+				slidevalue = parseInt($(el).attr("value"));
+			}
+
+				// Create slider
+			vmin = 0;
+			vmax = 1000;
+			vstep = 100;
+
+			if ($(el).attr("rel") != null) {
+				var params = $(el).attr("rel").split(";");
+				for (var i = 0; i < params.length; i++) {
+					var p = params[i].split(":");
+					switch(p[0]) {
+						case "min": vmin = parseInt(p[1]);
+						case "max": vmax = parseInt(p[1]);
+						case "step": vstep = parseInt(p[1]);
+					}
+				}
+			}
+
+			$(slidecontrol).slider({"value":slidevalue,"min":vmin,"max":vmax,"step":vstep});
+
+				// Init
+			slidecontrol.attr("title",slidetitel + ": " + slidevalue + " / " + vmax);
+
+				// Events
+			$(slidecontrol).bind("slidechange", function(e, ui) {
+				$(el).attr("value", ui.value);
+				slidecontrol.attr("title", slidetitel + ": " + ui.value + " / " + vmax);
+			});
+			$(slidecontrol).bind("slide", function(e, ui) {
+				slidecontrol.attr("title", slidetitel + ": " + ui.value + " / " + vmax);
+			});
+		});
+	},
+
+
+
+	/**
+	 * Init all checkboxes
+	 *
+	 * @param	{Element}	ctx		Selector context
+	 */
+	initCheckboxes:function(ctx) {
+		$(".checker").each(function(i, checker){
+			$(checker).checker();
+		});
+	},
 
 
 

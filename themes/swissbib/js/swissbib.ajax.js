@@ -61,7 +61,7 @@ var sbAjax = {
 			// Setup request
 		var action	= "Tab" + containerId;
 		var ajaxUrl = (searchQuery == '') ? sbAjax.getTabbedUrl(tabId, action, "Search") : searchQuery;
-			ajaxUrl	= ajaxUrl.replace('?', '?tab=' + tabId.replace('tabbed_', '') + '&')
+			ajaxUrl	= ajaxUrl.replace('?', '?tab=' + tabId.replace('tabbed_', '') + '&');
 
 		var options	= sbAjax.setupRequestOptions(ajaxUrl, false);
 
@@ -74,7 +74,7 @@ var sbAjax = {
 				container.append(swissbib.createHiddenField('ajaxuri_' + tabId + '_sidebar', ajaxUrl));
 
 				sbAjax.initAjaxElements();
-				swissbib.initForms();
+				swissbib.initForms(container);
 				return false;
 			};
 		} else {
@@ -87,7 +87,7 @@ var sbAjax = {
 				container.append(swissbib.createHiddenField('ajaxuri_' + tabId + '_sidebar', ajaxUrl));
 
 				sbAjax.initAjaxElements();
-				swissbib.initForms();
+				swissbib.initForms(container);
 				return false;
 			}
 		}
