@@ -68,8 +68,11 @@ var sbAjax = {
 		if(replace== true) {
 				// Update (content of) element from response
 			options.success = function(content) {
-				$('#' + containerId + ' .' + tabId).html(content);
-				$('#' + containerId + ' .' + tabId).append(swissbib.createHiddenField('ajaxuri_' + tabId + '_sidebar', ajaxUrl));
+				var container = $('#' + containerId + ' .' + tabId);
+
+				container.html(content);
+				container.append(swissbib.createHiddenField('ajaxuri_' + tabId + '_sidebar', ajaxUrl));
+
 				sbAjax.initAjaxElements();
 				swissbib.initForms();
 				return false;
@@ -77,9 +80,12 @@ var sbAjax = {
 		} else {
 				// Replace element from response
 			options.success	= function(content) {
-				$('#' + containerId + ' .' + tabId).replaceWith(content);
-				$('#' + containerId + ' .' + tabId).addClass('tabbed_selected');
-				$('#' + containerId + ' .' + tabId).append(swissbib.createHiddenField('ajaxuri_' + tabId + '_sidebar', ajaxUrl));
+				var container = $('#' + containerId + ' .' + tabId);
+
+				container.replaceWith(content);
+				container.addClass('tabbed_selected');
+				container.append(swissbib.createHiddenField('ajaxuri_' + tabId + '_sidebar', ajaxUrl));
+
 				sbAjax.initAjaxElements();
 				swissbib.initForms();
 				return false;
@@ -187,4 +193,5 @@ var sbAjax = {
 			+ (page > 0 ? ('&page=' + page) : '')
 			+ "&" + swissbib.getSearchQuery();	// must be last part as it might end on #
 	}
+
 };
