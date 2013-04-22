@@ -112,6 +112,32 @@ class SolrMarc extends VuFindSolrMarc {
 
 
 	/**
+	 * Get possible ISBN/ISSN numbers from record
+	 *
+	 * @return String[]
+	 */
+	public function getStandardNumbers()
+	{
+		$tags = array('020', '022', '024');
+		$idList = array();
+
+		foreach( $tags as $tag ) {
+			$fields = $this->getMarcSubFieldMaps($tag, array(
+				'a' => 'id',
+				'z' => 'canceled',
+				'2' => 'code',
+			));
+
+			foreach( $fields as $field ) {
+				if( isset($field['id']) ) {
+					$idList[] = $field['id'];
+				}
+			}
+		}
+	}
+
+
+	/**
 	 * Get years and datetype from field 008 for display
      *
 	 * @return  Array
@@ -462,7 +488,9 @@ class SolrMarc extends VuFindSolrMarc {
 			$strings = array();
 
 			foreach($data as $publication) {
-				$strings[] = trim($publication['name'] . ', ' . $publication['place']);
+				$strings[] = trim(
+					(array_key_exists('name', $publication) ? $publication['name'] . ', ' : '')
+					. $publication['place']);
 			}
 
 			$data = $strings;

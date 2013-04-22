@@ -52,17 +52,36 @@ $holdings		= $recordDriver->getHoldings();
 		<? endif; ?>
 
 		<h3 class="toggler persist <?= $expandedOrCollapsedClass ?>" id="library_toggler_<?=$networkCode?>">
+		<?php if( is_array($network['label']) ): ?>
+			<?php $network['label'] = array_unique($network['label']); ?>
+			<?=$this->escapeHtml(implode(', ', $network['label'])) ?>
+		<?php else: ?>
 			<?=$this->escapeHtml($network['label']) /*IDS Basel / Bern*/ ?>
+		<?php endif; ?>
 		</h3>
 		<div class="library_toggler_<?=$networkCode?>">
 
 			<div class="innerbox">
 				<?php foreach($network['institutions'] as $institutionCode => $institution): ?>
-					<h4><?=$this->escapeHtml($institution['label'])?></h4>
+					<h4>
+						<?php if( is_array($institution['label']) ): ?>
+							<?php $institution['label'] = array_unique($institution['label']); ?>
+							<?=$this->escapeHtml(implode(', ', $institution['label'])) ?>
+						<?php else: ?>
+							<?=$this->escapeHtml($institution['label'])?>
+						<?php endif; ?>
+					</h4>
+
 					<ul class="actions">
+						<?php if(array_key_exists('backlink', $institution)): ?>
 						<li>
-							<a href="<?=$this->escapeHtml($institution['backlink'])?>" class="linkbutton primary icon_link_primary" title="Zum Bestand" target="_blank"><span>Zum Bestand</span></a>
+							<a href="<?=$this->escapeHtml($institution['backlink'])?>" class="linkbutton primary icon_link_primary" title="Zum Bestand" target="_blank">
+								<span>Zum Bestand</span>
+							</a>
 						</li>
+						<?php else: ?>
+							<li>Kein Institutions-Backlink.</li>
+						<?php endif; ?>
 						<li>
 							<a href="#" class="linkbutton icon_show toggler collapsed" title="Informationen zum Bestand" id="stock_toggler_<?=$networkCode?>_<?=$institutionCode?>">
 								<span>Informationen zum Bestand</span>
@@ -73,9 +92,15 @@ $holdings		= $recordDriver->getHoldings();
 						<li class="miniaction_favorite_remove">
 							<a href="#" title="Bibliothek aus Favoriten entfernen">Bibliothek aus Favoriten entfernen</a>
 						</li>
+						<?php if( array_key_exists('link', $network)): ?>
 						<li class="miniaction_link">
-							<a href="<?=$this->escapeHtml($network['link'])?>" class="externallink" title="Bibliothek Historisches Seminar"><?=$this->escapeHtml($network['link'])?></a>
+							<a href="<?=$this->escapeHtml($network['link'])?>" class="externallink" title="Bibliothek Historisches Seminar">
+								<?=$this->escapeHtml($network['link'])?>
+							</a>
 						</li>
+						<?php else: ?>
+							<li>Kein Netzwerklink.</li>
+						<?php endif; ?>
 					</ul>
 
 					<div class="stock_toggler_<?=$networkCode?>_<?=$institutionCode?>">
