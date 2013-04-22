@@ -15,31 +15,40 @@ if ($this->syndeticsPlus()->isActive()) {
 
 <!-- Tab-Inhalte gemaess TP detailstab -->
 
-<? $stdID = $this->driver->getStandardNumbers(); if (!empty($stdID)): ?>
-    <?$contentDisplayed = true; ?>
-    <h4>Standard-Nummern (ISBN, ISSN, ISMN, DOI, URN)</h4>
-        <? if ($stdID): ?>
-    <p><?=$this->escapeHtml($stdID[0])?></p>
+<h1>hallo</h1>
+
+
+<h4>Alternativtitel</h4>
+<p>hier 240 etc.</p>
+
+<h4>Reihe</h4>
+<p>490 etc.</p>
+
+<h4>diverse 500</h4>
+<p>diverse 500</p>
+
+    <? $subjectHeadings = $this->driver->getAllSubjectHeadings(true) ?>
+    <? if (sizeof($subjectHeadings) > 0) :?>
+    <? foreach ($subjectHeadings as $heading): ?>
+        <? if ($heading['@ind2'] === '0') :?>
+        <h4>LCSH</h4>
+        <p><?=$this->escapeHtml($heading['600a'])?></p>
+        <? endif; ?>
+        <? if ($topic['@ind2'] === '7' && $topic['6500'] === 'gnd') :?>
+        <h4>GND-Schlagworte</h4>
+        <p><?=$this->escapeHtml($topic['6500'])?></p>
+        <? endif; ?>
+    <? endforeach; ?>
     <? endif; ?>
+
+<? $topics = $this->driver->getTopicalTerms() ?>
+<? if (sizeof($topics) > 0) :?>
+<? foreach ($topics as $topic): ?>
+    <? if ($topic['@ind2'] === '7' && $topic['source_heading'] === 'gnd') :?>
+        <h4>GND-Schlagworte</h4>
+        <p><?=$this->escapeHtml($topic['a'])?>, <?=$this->escapeHtml($topic['authority_record_control_numer'][0])?></p>
+        <? endif; ?>
+    <? endforeach; ?>
 <? endif; ?>
 
-<? $mainAuthor = $this->driver->getPrimaryAuthor(); if (!empty($mainAuthor)): ?>
-    <?$contentDisplayed = true; ?>
-    <h4>Hauptautor</h4>
-    <p><?=$this->escapeHtml($mainAuthor[name]) . ', ' . ($mainAuthor[forname])?></p>
-<? endif; ?>
 
-    <h4>Alternativtitel</h4>
-    <p>hier 240 etc.</p>
-
-    <h4>Reihe</h4>
-    <p>490 etc.</p>
-
-    <h4>diverse 500</h4>
-    <p>diverse 500</p>
-
-    <? $topics = $this->driver->getTopicalTerms(); if (!empty($topics)): ?>
-        <?$contentDisplayed = true; ?>
-        <h4>Themen (in Arbeit)</h4>
-        <p><?=$this->escapeHtml($topics[0][term])?></p>
-    <? endif; ?>
