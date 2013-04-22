@@ -60,9 +60,15 @@ $holdings		= $recordDriver->getHoldings();
 				<?php foreach($network['institutions'] as $institutionCode => $institution): ?>
 					<h4><?=$this->escapeHtml($institution['label'])?></h4>
 					<ul class="actions">
+						<?php if(array_key_exists('backlink', $institution)): ?>
 						<li>
-							<a href="<?=$this->escapeHtml($institution['backlink'])?>" class="linkbutton primary icon_link_primary" title="Zum Bestand" target="_blank"><span>Zum Bestand</span></a>
+							<a href="<?=$this->escapeHtml($institution['backlink'])?>" class="linkbutton primary icon_link_primary" title="Zum Bestand" target="_blank">
+								<span>Zum Bestand</span>
+							</a>
 						</li>
+						<?php else: ?>
+							<li>Kein Institutions-Backlink.</li>
+						<?php endif; ?>
 						<li>
 							<a href="#" class="linkbutton icon_show toggler collapsed" title="Informationen zum Bestand" id="stock_toggler_<?=$networkCode?>_<?=$institutionCode?>">
 								<span>Informationen zum Bestand</span>
@@ -73,9 +79,15 @@ $holdings		= $recordDriver->getHoldings();
 						<li class="miniaction_favorite_remove">
 							<a href="#" title="Bibliothek aus Favoriten entfernen">Bibliothek aus Favoriten entfernen</a>
 						</li>
+						<?php if( array_key_exists('link', $network)): ?>
 						<li class="miniaction_link">
-							<a href="<?=$this->escapeHtml($network['link'])?>" class="externallink" title="Bibliothek Historisches Seminar"><?=$this->escapeHtml($network['link'])?></a>
+							<a href="<?=$this->escapeHtml($network['link'])?>" class="externallink" title="Bibliothek Historisches Seminar">
+								<?=$this->escapeHtml($network['link'])?>
+							</a>
 						</li>
+						<?php else: ?>
+							<li>Kein Netzwerklink.</li>
+						<?php endif; ?>
 					</ul>
 
 					<div class="stock_toggler_<?=$networkCode?>_<?=$institutionCode?>">
