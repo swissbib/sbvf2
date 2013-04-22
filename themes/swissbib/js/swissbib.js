@@ -28,18 +28,22 @@ var swissbib = {
         var contextContent	= $("#content");
         var contextAll		= $("#header, #search, #main");
 
-        	// Init interface
+        	// Init UI elements
         this.initBrowserFlags();
 		this.initNavigation(contextHeader);
+
 //        swissbib.initAutocomplete(ctxAll);
+
 		this.initToggler(contextMain);
 		this.initTabs(contextContent);
+
+			// "Forms" covers initialization of: Rollovers, Tooltips, DropDowns, Sliders, Checkboxes
 		this.initForms(contextAll);
+
 		this.initModal(contextMain);
 		this.initLinks(contextMain);
 		this.initModalNBImages(contextMain);
 		this.initAdvancedSearch();
-
 
 			// Init tabs (if present =after search)
 		this.initTabbed(contextMain);

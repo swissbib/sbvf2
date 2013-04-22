@@ -40,7 +40,14 @@ var sbAjax = {
 		if( destinationEl.length > 1 ) {
 			destinationEl	= $('#' + idContainer + ' .' + idTab + ':first');
 		}
-		destinationEl.prepend( this.createSpinnerElement() );
+
+		var spinnerElId = 'spinner' + jQuery.guid++;
+		destinationEl.prepend( this.createSpinnerElement(spinnerElId) );
+		$('#' + spinnerElId).sprite({
+			fps: 10,
+			no_of_frames: 12
+		});
+		$('#' + spinnerElId).spStart();
 	},
 
 
@@ -160,11 +167,15 @@ var sbAjax = {
 	 *
 	 * @return	{Element}
 	 */
-	createSpinnerElement: function() {
-		return $('<div/>', {
-			class:	'ajax_loading_spinner_transp',
-			style:	'width:32px;height:32px;'
+	createSpinnerElement: function(elementId) {
+		spinnerElement	= $(
+			'<div/>', {
+				id:		elementId,
+				class:	'ajax_spinner',
+				style:	'width:26px; height:26px;'
 		});
+
+		return spinnerElement;
 	},
 
 
