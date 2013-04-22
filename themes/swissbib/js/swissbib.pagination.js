@@ -7,14 +7,16 @@ var sbPagination = {
 	 * Prevent default paging HREF triggering and reroute to AJAX request
 	 */
 	init: function() {
-		$('#content div.paging a').click(function(event) {
-			event.stopPropagation();
-			event.preventDefault();
+		if( $('#tabbed').length > 0 ) {
+			$('#content div.paging a').click(function(event) {
+				event.stopPropagation();
+				event.preventDefault();
 
-			var url	= this.href.replace('/Results?', '/Tabcontent?');
+				var url	= this.href.replace('/Results?', '/Tabcontent?');
 
-			sbAjax.ajaxLoadTabContent(url);
-		});
+				sbAjax.ajaxLoadTabContent(url);
+			});
+		}
 	}
 };
 

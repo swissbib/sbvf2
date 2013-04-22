@@ -26,7 +26,7 @@ if ($this->syndeticsPlus()->isActive()) {
 <? $mainAuthor = $this->driver->getPrimaryAuthor(); if (!empty($mainAuthor)): ?>
     <?$contentDisplayed = true; ?>
     <h4>Hauptautor</h4>
-    <p><?=$this->escapeHtml($mainAuthor[name]) . ', ' . ($mainAuthor[forname])?></p>
+    <p><?=$this->escapeHtml($mainAuthor['name']) . ', ' . ($mainAuthor['forname'])?></p>
 <? endif; ?>
 
     <h4>Alternativtitel</h4>
@@ -41,5 +41,9 @@ if ($this->syndeticsPlus()->isActive()) {
     <? $topics = $this->driver->getTopicalTerms(); if (!empty($topics)): ?>
         <?$contentDisplayed = true; ?>
         <h4>Themen (in Arbeit)</h4>
-        <p><?=$this->escapeHtml($topics[0][term])?></p>
+		<?php if( count($topics) > 0 && array_key_exists('term', $topics[0])): ?>
+        	<p><?=$this->escapeHtml($topics[0]['term'])?></p>
+		<?php else: ?>
+			Term not given.
+		<?php endif; ?>
     <? endif; ?>

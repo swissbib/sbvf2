@@ -40,7 +40,14 @@ var sbAjax = {
 		if( destinationEl.length > 1 ) {
 			destinationEl	= $('#' + idContainer + ' .' + idTab + ':first');
 		}
-		destinationEl.prepend( this.createSpinnerElement() );
+
+		var spinnerElId = 'spinner' + jQuery.guid++;
+		destinationEl.prepend( this.createSpinnerElement(spinnerElId) );
+		$('#' + spinnerElId).sprite({
+			fps: 10,
+			no_of_frames: 12
+		});
+		$('#' + spinnerElId).spStart();
 	},
 
 
@@ -61,32 +68,49 @@ var sbAjax = {
 			// Setup request
 		var action	= "Tab" + containerId;
 		var ajaxUrl = (searchQuery == '') ? sbAjax.getTabbedUrl(tabId, action, "Search") : searchQuery;
-			ajaxUrl	= ajaxUrl.replace('?', '?tab=' + tabId.replace('tabbed_', '') + '&')
+			ajaxUrl	= ajaxUrl.replace('?', '?tab=' + tabId.replace('tabbed_', '') + '&');
 
 		var options	= sbAjax.setupRequestOptions(ajaxUrl, false);
-
-		if(replace== true) {
+		options.success = (replace == true) ?
 				// Update (content of) element from response
-			options.success = function(content) {
-				$('#' + containerId + ' .' + tabId).html(content);
-				$('#' + containerId + ' .' + tabId).append(swissbib.createHiddenField('ajaxuri_' + tabId + '_sidebar', ajaxUrl));
+			function(content) {
+				var container = sbAjax.getTabContainer(containerId, tabId);
+
+				container.html(content);
+				container.append(swissbib.createHiddenField('ajaxuri_' + tabId + '_sidebar', ajaxUrl));
+
 				sbAjax.initAjaxElements();
-				swissbib.initForms();
+				swissbib.initForms(container);
 				return false;
-			};
-		} else {
-				// Replace element from response
-			options.success	= function(content) {
-				$('#' + containerId + ' .' + tabId).replaceWith(content);
-				$('#' + containerId + ' .' + tabId).addClass('tabbed_selected');
-				$('#' + containerId + ' .' + tabId).append(swissbib.createHiddenField('ajaxuri_' + tabId + '_sidebar', ajaxUrl));
+			} :
+				// Replace element itself from response
+			function(content) {
+				sbAjax.getTabContainer(containerId, tabId).replaceWith(content);
+				var container = sbAjax.getTabContainer(containerId,tabId);
+
+				container.addClass('tabbed_selected');
+				container.append(swissbib.createHiddenField('ajaxuri_' + tabId + '_sidebar', ajaxUrl));
+
 				sbAjax.initAjaxElements();
-				swissbib.initForms();
+				swissbib.initForms(container);
 				return false;
 			}
-		}
+		;
 
 		return options;
+	},
+
+
+
+	/**
+	 * Get element of given container + tab IDs
+	 *
+	 * @param	{String}	containerId
+	 * @param	{String}	tabId
+	 * @returns {*|jQuery|HTMLElement}
+	 */
+	getTabContainer: function(containerId, tabId) {
+		return $('#' + containerId + ' .' + tabId);
 	},
 
 
@@ -118,10 +142,10 @@ var sbAjax = {
 	 */
 	ajaxLoadTabContent: function(searchQuery, tabId, containerId) {
 		if( this.loadsContent == false ) {
-			containerId	= containerId ? containerId : 'content';
-            var ajaxOptions	= this.getAjaxOptions(searchQuery, tabId, containerId, true);
-
+			containerId			= containerId ? containerId : 'content';
+			var ajaxOptions		= this.getAjaxOptions(searchQuery, tabId, containerId, true);
 			this.loadsContent	= true;
+
 			this.addSpinner(containerId, tabId);
 			$.ajax(ajaxOptions);
 		}
@@ -138,10 +162,10 @@ var sbAjax = {
 	 */
 	ajaxLoadSidebarContent: function(searchQuery, tabId, containerId) {
 		if( this.loadsSidebar == false ) {
-			containerId	= containerId ? containerId : 'sidebar';
-    		var ajaxOptions	= this.getAjaxOptions(searchQuery, tabId, containerId, false);
-
+			containerId			= containerId ? containerId : 'sidebar';
+    		var ajaxOptions		= this.getAjaxOptions(searchQuery, tabId, containerId, false);
 			this.loadsSidebar	= true;
+
 			this.addSpinner(containerId, tabId);
 			$.ajax(ajaxOptions);
 		}
@@ -154,10 +178,12 @@ var sbAjax = {
 	 *
 	 * @return	{Element}
 	 */
-	createSpinnerElement: function() {
-		return $('<div/>', {
-			class:	'ajax_loading_spinner_transp',
-			style:	'width:32px;height:32px;'
+	createSpinnerElement: function(elementId) {
+		return $(
+			'<div/>', {
+				id:		elementId,
+				class:	'ajax_spinner',
+				style:	'width:26px; height:26px;'
 		});
 	},
 
@@ -187,4 +213,5 @@ var sbAjax = {
 			+ (page > 0 ? ('&page=' + page) : '')
 			+ "&" + swissbib.getSearchQuery();	// must be last part as it might end on #
 	}
+
 };
