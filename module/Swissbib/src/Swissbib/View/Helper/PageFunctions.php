@@ -8,7 +8,8 @@ use Zend\View\Helper\AbstractHelper;
  * Options for offset (normal pages)
  *
  */
-class PageFunctions extends AbstractHelper {
+class PageFunctions extends AbstractHelper
+{
 
 	/**
 	 * Render page functions
@@ -16,9 +17,10 @@ class PageFunctions extends AbstractHelper {
 	 * @param    Boolean        $offset
 	 * @return    String
 	 */
-	public function __invoke($offset = true) {
-		$data	= array(
-			'boxClass'	=> $offset ? 'offset' : ''
+	public function __invoke($offset = true)
+	{
+		$data = array(
+			'boxClass' => $offset ? 'offset' : ''
 		);
 
 		return $this->getView()->render('global/pagefunctions.phtml', $data);

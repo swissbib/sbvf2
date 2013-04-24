@@ -7,7 +7,8 @@ use Zend\View\Helper\AbstractHelper;
  * Prepare authors link list
  *
  */
-class Authors extends AbstractHelper {
+class Authors extends AbstractHelper
+{
 
 	/**
 	 * Merge author fields to a single list with urls
@@ -15,35 +16,36 @@ class Authors extends AbstractHelper {
 	 * @param    Array    $authors
 	 * @return    Array[]
 	 */
-	public function __invoke(array $authors = array()) {
+	public function __invoke(array $authors = array())
+	{
 		$recordPlugin = $this->getView()->plugin('record');
 
-		$mainAuthor			= isset($authors['main']) && !empty($authors['main']) ? $authors['main'] : false;
-		$corporateAuthor	= isset($authors['corporate']) && !empty($authors['corporate']) ? $authors['corporate'] : false;
-		$secondaryAuthors	= isset($authors['secondary']) ? $authors['secondary'] : false;
+		$mainAuthor = isset($authors['main']) && !empty($authors['main']) ? $authors['main'] : false;
+		$corporateAuthor = isset($authors['corporate']) && !empty($authors['corporate']) ? $authors['corporate'] : false;
+		$secondaryAuthors = isset($authors['secondary']) ? $authors['secondary'] : false;
 
 		$authorsData = array();
 
-		if( $mainAuthor ) {
+		if ($mainAuthor) {
 			$authorsData[] = array(
-				'author'=> $mainAuthor,
-				'url'	=> $recordPlugin->getLink('author', $mainAuthor),
-				'type'	=> 'main'
+				'author' => $mainAuthor,
+				'url' => $recordPlugin->getLink('author', $mainAuthor),
+				'type' => 'main'
 			);
 		}
-		if( $corporateAuthor ) {
+		if ($corporateAuthor) {
 			$authorsData[] = array(
-				'author'	=> $corporateAuthor,
-				'url'		=> $recordPlugin->getLink('author', $corporateAuthor),
-				'type'		=> 'corporate'
+				'author' => $corporateAuthor,
+				'url' => $recordPlugin->getLink('author', $corporateAuthor),
+				'type' => 'corporate'
 			);
 		}
-		if( $secondaryAuthors ) {
-			foreach($secondaryAuthors as $secondaryAuthor) {
+		if ($secondaryAuthors) {
+			foreach ($secondaryAuthors as $secondaryAuthor) {
 				$authorsData[] = array(
-					'author'	=> $corporateAuthor,
-					'url'		=> $recordPlugin->getLink('author', $secondaryAuthor),
-					'type'		=> 'secondary'
+					'author' => $corporateAuthor,
+					'url' => $recordPlugin->getLink('author', $secondaryAuthor),
+					'type' => 'secondary'
 				);
 			}
 		}

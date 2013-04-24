@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="snmcms" default="build">
 
-	<property name="build" location="${basedir}/../../../../build" />
-	<property name="logs" location="${build}/logs" />
-	<property name="source" location="${basedir}/../.." /> <!--Swissbib module-->
-	<property name="memorylimit" value="512M" />
+	<property name="build" location="${basedir}/../../../../build"/>
+	<property name="logs" location="${build}/logs"/>
+	<property name="source" location="${basedir}/../.."/>
+	<!--Swissbib module-->
+	<property name="memorylimit" value="512M"/>
 
 
 	<target name="build" depends="prepare,lint,phploc,phpcs,phpunit,phpcpd,phpmd,pdepend"/>
@@ -23,9 +24,9 @@
 			<arg value="-l"/>
 			<fileset dir="${source}">
 				<include name="**/*.php"/>
-				<exclude name="**/vendor/*" />
-				<exclude name="**/web/*" />
-				<modified />
+				<exclude name="**/vendor/*"/>
+				<exclude name="**/web/*"/>
+				<modified/>
 			</fileset>
 		</apply>
 	</target>
@@ -41,7 +42,7 @@
 		</exec>
 	</target>
 
-	<target name="phpcs"	description="Find coding standard violations using PHP_CodeSniffer">
+	<target name="phpcs" description="Find coding standard violations using PHP_CodeSniffer">
 		<exec executable="php" output="/dev/null" failonerror="false">
 			<arg value="-d"/>
 			<arg value="memory_limit=${memorylimit}"/>
@@ -49,7 +50,7 @@
 			<arg value="--report=checkstyle"/>
 			<arg value="--report-file=${logs}/checkstyle.xml"/>
 			<arg value="--standard=${basedir}/ruleset.xml"/>
-			<arg value="--extensions=php" />
+			<arg value="--extensions=php"/>
 			<arg path="${source}"/>
 		</exec>
 	</target>
@@ -59,7 +60,7 @@
 			<arg value="-d"/>
 			<arg value="memory_limit=${memorylimit}"/>
 			<arg path="/usr/bin/phpunit"/>
-			<arg value="--configuration" />
+			<arg value="--configuration"/>
 			<arg path="${source}/test/phpunit.xml.dist"/>
 		</exec>
 	</target>

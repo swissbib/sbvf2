@@ -7,18 +7,21 @@ use Zend\ModuleManager\Feature\InitProviderInterface;
 use Zend\ModuleManager\ModuleManagerInterface;
 use Zend\Mvc\MvcEvent;
 
-class Module implements AutoloaderProviderInterface, ConfigProviderInterface, InitProviderInterface {
+class Module implements AutoloaderProviderInterface, ConfigProviderInterface, InitProviderInterface
+{
 
 	/**
-	 * @return	Array|mixed|\Traversable
+	 * @return    Array|mixed|\Traversable
 	 */
 	public function getConfig()
 	{
 		return include __DIR__ . '/config/module.config.php';
 	}
 
+
+
 	/**
-	 * @param	MvcEvent	$event
+	 * @param    MvcEvent    $event
 	 */
 	public function onBootstrap(MvcEvent $event)
 	{
@@ -26,8 +29,10 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, In
 		$b->bootstrap();
 	}
 
+
+
 	/**
-	 * @return	Array
+	 * @return    Array
 	 */
 	public function getAutoloaderConfig()
 	{
@@ -40,8 +45,10 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, In
 		);
 	}
 
+
+
 	/**
-	 * @param	ModuleManagerInterface	$m
+	 * @param    ModuleManagerInterface    $m
 	 */
 	public function init(ModuleManagerInterface $m)
 	{
