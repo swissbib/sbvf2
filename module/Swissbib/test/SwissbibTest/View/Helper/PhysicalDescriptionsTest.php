@@ -28,7 +28,7 @@ class PhysicalDescriptionsTest extends \PHPUnit_Framework_TestCase
 		$desc = new PhysicalDescriptions();
 		$data = array(
 			array(
-				'extent' => array(
+				'extent'  => array(
 					'a',
 					'b'
 				),

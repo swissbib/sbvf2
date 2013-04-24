@@ -71,7 +71,7 @@ class UserLocalData extends Gateway
 	 */
 	public function getValue($column, $user_id, $intVal = false)
 	{
-		$user_id = intval($user_id);
+		$user_id       = intval($user_id);
 		$userLocalData = $this->getUserLocalData($user_id);
 
 		if (!is_array($userLocalData)) {
@@ -124,7 +124,7 @@ class UserLocalData extends Gateway
 
 		// Only create row if it does not already exist:
 		if (empty($result)) {
-			$result = $this->createRow();
+			$result          = $this->createRow();
 			$result->user_id = $user_id;
 
 		}

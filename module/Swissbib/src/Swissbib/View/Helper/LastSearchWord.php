@@ -19,9 +19,9 @@ class LastSearchWord extends AbstractHelper
 	 */
 	public function __invoke()
 	{
-		$lookFor = '';
+		$lookFor       = '';
 		$lastSearchUrl = Memory::retrieve();
-		$lastSearch = parse_url($lastSearchUrl);
+		$lastSearch    = parse_url($lastSearchUrl);
 
 		if (isset($lastSearch['query'])) {
 			parse_str($lastSearch['query'], $queryParts);

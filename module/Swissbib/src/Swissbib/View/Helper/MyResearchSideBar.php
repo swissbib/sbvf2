@@ -21,7 +21,7 @@ class MyResearchSideBar extends AbstractHelper
 	public function __invoke($active, $location = '')
 	{
 		return $this->getView()->render('myresearch/sidebar/wrap.phtml', array(
-																			  'active' => $active,
+																			  'active'   => $active,
 																			  'location' => $location
 																		 ));
 	}

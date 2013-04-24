@@ -62,7 +62,7 @@ class Bootstrap
 		$serviceManager->get('ModuleManager')->loadModules();
 
 		static::$serviceManager = $serviceManager;
-		static::$config = $config;
+		static::$config         = $config;
 	}
 
 
@@ -115,7 +115,7 @@ class Bootstrap
 		AutoloaderFactory::factory(array(
 										'Zend\Loader\StandardAutoloader' => array(
 											'autoregister_zf' => true,
-											'namespaces' => array(
+											'namespaces'      => array(
 												__NAMESPACE__ => __DIR__ . '/' . __NAMESPACE__,
 											),
 										),
@@ -126,7 +126,7 @@ class Bootstrap
 
 	protected static function findParentPath($path)
 	{
-		$dir = __DIR__;
+		$dir         = __DIR__;
 		$previousDir = '.';
 		while (!is_dir($dir . '/' . $path)) {
 			$dir = dirname($dir);

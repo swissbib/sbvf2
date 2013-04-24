@@ -174,7 +174,7 @@ class SolrMarcSimpleTest extends SolrMarcTestCase
 
 	public function testGetTitle()
 	{
-		$title = $this->driver->getTitle();
+		$title  = $this->driver->getTitle();
 		$expect = 'Konzert e-Moll, für Blockflöte, Querflöte, zwei Violinen, Viola und Basso continuo, [TWV 52 e 1] : Concerto in e minor, for recorder, flute, two violins, viola and basso continuo';
 
 		$this->assertInternalType('string', $title);
@@ -185,7 +185,7 @@ class SolrMarcSimpleTest extends SolrMarcTestCase
 
 	public function testGetShortTitle()
 	{
-		$title = $this->driver->getShortTitle();
+		$title  = $this->driver->getShortTitle();
 		$expect = 'Konzert e-Moll, für Blockflöte, Querflöte, zwei Violinen, Viola und Basso continuo, [TWV 52 e 1]';
 
 		$this->assertInternalType('string', $title);
@@ -207,7 +207,7 @@ class SolrMarcSimpleTest extends SolrMarcTestCase
 
 	public function testGetTitleStatementSimple()
 	{
-		$titleSimple = $this->driver->getTitleStatement();
+		$titleSimple  = $this->driver->getTitleStatement();
 		$expectSimple = 'Georg Philipp Telemann ; hrsg. von Herbert Kölbel ; Generalbass-Bearb. von Otto Kiel';
 
 		$this->assertInternalType('string', $titleSimple);

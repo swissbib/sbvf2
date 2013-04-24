@@ -122,16 +122,16 @@ class Holdings
 	/**
 	 * Initialize helper with dependencies
 	 *
-	 * @param    IlsConnection    $ils
-	 * @param    Config            $holdingsConfig
-	 * @param    HMAC            $hmac
+	 * @param    IlsConnection      $ils
+	 * @param    Config             $holdingsConfig
+	 * @param    HMAC               $hmac
 	 * @param    AuthManager        $authManager
 	 */
 	function __construct(IlsConnection $ils, Config $holdingsConfig, HMAC $hmac, AuthManager $authManager)
 	{
-		$this->ils = $ils;
-		$this->config = $holdingsConfig;
-		$this->hmac = $hmac;
+		$this->ils         = $ils;
+		$this->config      = $holdingsConfig;
+		$this->hmac        = $hmac;
 		$this->authManager = $authManager;
 
 		$holdsIlsConfig = $this->ils->checkFunction('Holds');
@@ -167,7 +167,7 @@ class Holdings
 	{
 		if ($this->extractedData === false) {
 			$holdingsData = $this->getHoldingData();
-			$itemsData = $this->getItemData();
+			$itemsData    = $this->getItemData();
 
 			// Merge items and holding into the same network/institution structure
 			// (stays separated by items/holdings key at lowest level)
@@ -197,9 +197,9 @@ class Holdings
 				list($domain, $library) = explode(',', $networkConfig, 2);
 
 				$this->networks[$network] = array(
-					'domain' => $domain,
+					'domain'  => $domain,
 					'library' => $library,
-					'type' => $networkName
+					'type'    => $networkName
 				);
 			}
 		}
@@ -217,7 +217,7 @@ class Holdings
 	{
 		if (is_string($holdingsXml) && strlen($holdingsXml) > 30) {
 			$holdingsMarcXml = new \File_MARCXML($holdingsXml, \File_MARCXML::SOURCE_STRING);
-			$marcData = $holdingsMarcXml->next();
+			$marcData        = $holdingsMarcXml->next();
 
 			if (!$marcData) {
 				throw new \File_MARC_Exception('Cannot Process Holdings Structure');
@@ -239,7 +239,7 @@ class Holdings
 	 */
 	protected function getItemData()
 	{
-		$fieldName = 949; // Field code for item information in holdings xml
+		$fieldName          = 949; // Field code for item information in holdings xml
 		$structuredElements = $this->getStructuredHoldingData($fieldName, $this->fieldMapping, 'items');
 
 		// Add hold link and availability for all items
@@ -290,7 +290,7 @@ class Holdings
 
 			// Add availability if supported by network
 			$item['availability'] = $this->getAvailabilityInfos($item['bibsysnumber'], $item['barcode']);
-			$item['isAvailable'] = $this->isAvailable($item['bibsysnumber'], $item['barcode']);
+			$item['isAvailable']  = $this->isAvailable($item['bibsysnumber'], $item['barcode']);
 
 			if ($this->isLoggedIn()) {
 				$item['userActions'] = $this->getAllowedUserActions($item);
@@ -312,13 +312,13 @@ class Holdings
 	{
 		/** @var Aleph $ilsDriver */
 		$ilsDriver = $this->ils->getDriver();
-		$patron = $this->getPatron();
+		$patron    = $this->getPatron();
 
-		$itemId = $item['localid'] . $item['sequencenumber'];
+		$itemId  = $item['localid'] . $item['sequencenumber'];
 		$groupId = $this->buildItemId($item);
 
 		$allowedActions = $ilsDriver->getAllowedActionsForItem($patron['id'], $itemId, $groupId);
-		$host = $ilsDriver->host . ':8991'; // @todo make dev port dynamic
+		$host           = $ilsDriver->host . ':8991'; // @todo make dev port dynamic
 
 		if ($allowedActions['photocopyRequest']) {
 			$allowedActions['photocopyRequestLink'] = $this->getPhotoCopyRequestLink($host, $item);;
@@ -334,18 +334,18 @@ class Holdings
 	 *
 	 * @todo    refactor
 	 * @param    String        $host
-	 * @param    Array        $item
+	 * @param    Array         $item
 	 * @return    String
 	 */
 	protected function getPhotoCopyRequestLink($host, array $item)
 	{
 		return 'http://' . $host . '/F/?' . http_build_query(array(
-																  'func' => 'item-photo-request',
-																  'doc_library' => $item['adm_code'],
+																  'func'           => 'item-photo-request',
+																  'doc_library'    => $item['adm_code'],
 																  'adm_doc_number' => $item['localid'],
-																  'item_sequence' => $item['sequencenumber'],
-																  'bib_doc_num' => $item['bibsysnumber'],
-																  'bib_library' => 'DSV01'
+																  'item_sequence'  => $item['sequencenumber'],
+																  'bib_doc_num'    => $item['bibsysnumber'],
+																  'bib_library'    => 'DSV01'
 															 ));
 	}
 
@@ -395,22 +395,22 @@ class Holdings
 	 *
 	 * @param    String        $networkCode
 	 * @param    String        $institutionCode
-	 * @param    Array        $item
+	 * @param    Array         $item
 	 * @return    Boolean
 	 */
 	protected function getBackLink($networkCode, $institutionCode, $item)
 	{
 		$method = false;
-		$data = array();
+		$data   = array();
 
 		if (isset($this->config->Backlink->{$networkCode})) { // Has the network its own backlink type
 			$method = 'getBackLink' . ucfirst($networkCode);
-			$data = array(
+			$data   = array(
 				'pattern' => $this->config->Backlink->{$networkCode}
 			);
 		} else { // no custom type
 			if (isset($this->networks[$networkCode])) { // is network even configured?
-				$type = $this->networks[$networkCode]['type'];
+				$type   = $this->networks[$networkCode]['type'];
 				$method = 'getBackLink' . ucfirst($type);
 
 				// Has the network type (aleph, virtua, etc) a general link?
@@ -443,16 +443,16 @@ class Holdings
 	 *
 	 * @param    String        $networkCode
 	 * @param    String        $institutionCode
-	 * @param    Array        $item
-	 * @param    Array        $data
+	 * @param    Array         $item
+	 * @param    Array         $data
 	 * @return    String
 	 */
 	protected function getBackLinkAleph($networkCode, $institutionCode, $item, array $data)
 	{
 		$values = array(
-			'server' => $data['domain'],
-			'bib-library-code' => $data['library'],
-			'bib-system-number' => $item['bibsysnumber'],
+			'server'                => $data['domain'],
+			'bib-library-code'      => $data['library'],
+			'bib-system-number'     => $item['bibsysnumber'],
 			'aleph-sublibrary-code' => $institutionCode
 		);
 
@@ -467,15 +467,15 @@ class Holdings
 	 * @todo    Get user language
 	 * @param    String        $networkCode
 	 * @param    String        $institutionCode
-	 * @param    Array        $item
-	 * @param    Array        $data
+	 * @param    Array         $item
+	 * @param    Array         $data
 	 * @return    String
 	 */
 	protected function getBackLinkVirtua($networkCode, $institutionCode, $item, array $data)
 	{
 		$values = array(
-			'server' => $data['domain'],
-			'language-code' => 'de', // @todo fetch from user
+			'server'            => $data['domain'],
+			'language-code'     => 'de', // @todo fetch from user
 			'bib-system-number' => $this->getNumericString($item['bibsysnumber']) // remove characters from number string
 		);
 
@@ -490,8 +490,8 @@ class Holdings
 	 *
 	 * @param    String        $networkCode
 	 * @param    String        $institutionCode
-	 * @param    Array        $item
-	 * @param    Array        $data
+	 * @param    Array         $item
+	 * @param    Array         $data
 	 * @return    String
 	 */
 	protected function getBackLinkAlexandria($networkCode, $institutionCode, array $item, array $data)
@@ -507,8 +507,8 @@ class Holdings
 	 *
 	 * @param    String        $networkCode
 	 * @param    String        $institutionCode
-	 * @param    Array        $item
-	 * @param    Array        $data
+	 * @param    Array         $item
+	 * @param    Array         $data
 	 * @return    String
 	 */
 	protected function getBackLinkSNL($networkCode, $institutionCode, $item, array $data)
@@ -521,20 +521,20 @@ class Holdings
 	/**
 	 * Build rero backlink
 	 *
-	 * @param $networkCode
-	 * @param $institutionCode
-	 * @param $item
+	 * @param       $networkCode
+	 * @param       $institutionCode
+	 * @param       $item
 	 * @param array $data
 	 * @return mixed
 	 */
 	protected function getBackLinkRERO($networkCode, $institutionCode, $item, array $data)
 	{
 		$values = array(
-			'server' => $data['domain'],
-			'language-code' => 'de', // @todo fetch from user,
+			'server'            => $data['domain'],
+			'language-code'     => 'de', // @todo fetch from user,
 			'RERO-network-code' => substr($institutionCode, 0, 2), // first two characters should do it. not sure
 			'bib-system-number' => $this->getNumericString($item['bibsysnumber']), // remove characters from number string
-			'sub-library-code' => $institutionCode
+			'sub-library-code'  => $institutionCode
 		);
 
 		return $this->compileString($data['pattern'], $values);
@@ -546,7 +546,7 @@ class Holdings
 	 * Compile string. Replace {varName} pattern with names and data from array
 	 *
 	 * @param    String        $string
-	 * @param    Array        $keyValues
+	 * @param    Array         $keyValues
 	 * @return    String
 	 */
 	protected function compileString($string, array $keyValues)
@@ -613,7 +613,7 @@ class Holdings
 	/**
 	 * Check whether item is avilable
 	 *
-	 * @todo    Improve checks!
+	 * @todo       Improve checks!
 	 * @see        getAvailabilityInfos
 	 * @param    String        $sysNumber
 	 * @param    String        $barcode
@@ -641,7 +641,7 @@ class Holdings
 	protected function getItemCirculationStatuses($sysNumber)
 	{
 		$circulationStatuses = $this->ils->getDriver()->getCirculationStatus($sysNumber);
-		$data = array();
+		$data                = array();
 
 		foreach ($circulationStatuses as $circulationStatus) {
 			$data[$circulationStatus['barcode']] = $circulationStatus;
@@ -668,25 +668,25 @@ class Holdings
 	 * Get structured elements (grouped by network and institution)
 	 *
 	 * @param    String        $fieldName
-	 * @param    Array        $mapping
+	 * @param    Array         $mapping
 	 * @param    String        $elementKey
 	 * @return    Array
 	 */
 	protected function getStructuredHoldingData($fieldName, array $mapping, $elementKey)
 	{
-		$data = array();
+		$data   = array();
 		$fields = $this->holdings->getFields($fieldName);
 
 		if (is_array($fields)) {
 			foreach ($fields as $index => $field) {
-				$item = $this->extractFieldData($field, $mapping);
-				$network = $item['network'];
+				$item        = $this->extractFieldData($field, $mapping);
+				$network     = $item['network'];
 				$institution = $item['institution'];
 
 				// Make sure network is present
 				if (!isset($data[$network])) {
 					$data[$network] = array(
-						'label' => 'Label: ' . $network,
+						'label'        => 'Label: ' . $network,
 						'institutions' => array()
 					);
 				}
@@ -694,7 +694,7 @@ class Holdings
 				// Make sure institution is present
 				if (!isset($data[$network]['institutions'][$institution])) {
 					$data[$network]['institutions'][$institution] = array(
-						'label' => 'Label: ' . $institution,
+						'label'     => 'Label: ' . $institution,
 						$elementKey => array()
 					);
 				}
@@ -736,7 +736,7 @@ class Holdings
 	protected function getHoldLink(array $holdingItem)
 	{
 		$linkValues = array(
-			'id' => $holdingItem['localid'], // $this->idItem,
+			'id'      => $holdingItem['localid'], // $this->idItem,
 			'item_id' => $this->buildItemId($holdingItem)
 		);
 
@@ -744,7 +744,7 @@ class Holdings
 			'action' => 'Hold',
 			'record' => $this->idItem,
 			'anchor' => '#tabnav',
-			'query' => http_build_query($linkValues + array(
+			'query'  => http_build_query($linkValues + array(
 				'hashKey' => $this->hmac->generate($this->hmacKeys, $linkValues)
 			))
 		);
@@ -756,14 +756,14 @@ class Holdings
 	 * Extract field data
 	 *
 	 * @param    \File_MARC_Data_Field    $field
-	 * @param    Array        $fieldMapping    Field code=>name mapping
+	 * @param    Array                    $fieldMapping    Field code=>name mapping
 	 * @return    Array
 	 */
 	protected function extractFieldData(\File_MARC_Data_Field $field, array $fieldMapping)
 	{
 		$subFields = $field->getSubfields();
-		$rawData = array();
-		$data = array();
+		$rawData   = array();
+		$data      = array();
 
 		// Fetch data
 		foreach ($subFields as $code => $subdata) {

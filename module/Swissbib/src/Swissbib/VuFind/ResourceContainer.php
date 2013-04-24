@@ -30,8 +30,8 @@ class ResourceContainer extends VfResourceContainer implements ServiceLocatorAwa
 	public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
 	{
 		$this->serviceLocator = $serviceLocator;
-		$config = new Config($serviceLocator->get('Config'));
-		$this->ignoredFiles = $config->swissbib->ignore_assets->toArray();
+		$config               = new Config($serviceLocator->get('Config'));
+		$this->ignoredFiles   = $config->swissbib->ignore_assets->toArray();
 	}
 
 

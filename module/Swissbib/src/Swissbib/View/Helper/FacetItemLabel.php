@@ -16,7 +16,7 @@ class FacetItemLabel extends AbstractHelper
 	public function __invoke(array $facet)
 	{
 		$displayText = trim($facet['displayText']);
-		$count = intval($facet['count']);
+		$count       = intval($facet['count']);
 
 		return $this->view->escapeHtml($displayText) . '&nbsp;(' . $count . ')';
 	}

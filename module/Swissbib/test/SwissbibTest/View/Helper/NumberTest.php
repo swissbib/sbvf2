@@ -8,10 +8,10 @@ class NumberTest extends \PHPUnit_Framework_TestCase
 
 	public function testInvokeLarge()
 	{
-		$number = new Number();
-		$input = 123456;
+		$number   = new Number();
+		$input    = 123456;
 		$expected = '123\'456';
-		$output = $number($input);
+		$output   = $number($input);
 
 		$this->assertEquals($expected, $output);
 	}
@@ -20,10 +20,10 @@ class NumberTest extends \PHPUnit_Framework_TestCase
 
 	public function testInvokeSmall()
 	{
-		$number = new Number();
-		$input = 123;
+		$number   = new Number();
+		$input    = 123;
 		$expected = '123';
-		$output = $number($input);
+		$output   = $number($input);
 
 		$this->assertEquals($expected, $output);
 	}
