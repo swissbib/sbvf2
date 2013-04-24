@@ -85,5 +85,4 @@ class ResourceContainer extends VfResourceContainer implements ServiceLocatorAwa
 
 		return $css;
 	}
-
 }

@@ -35,5 +35,4 @@ class SortAndPrepareFacetList extends AbstractHelper
 
 		return array_values($facets);
 	}
-
 }

@@ -7,5 +7,4 @@ namespace Swissbib\Libadmin\Exception;
  */
 class Store extends Exception
 {
-
 }

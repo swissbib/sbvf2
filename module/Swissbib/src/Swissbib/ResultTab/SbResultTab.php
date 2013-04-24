@@ -44,7 +44,7 @@ class SbResultTab
 	 * @param   Array                       $templates
 	 * @throws  \Exception
 	 */
-	function __construct($viewModel, array $config = array(), array $templates = array())
+	public function __construct($viewModel, array $config = array(), array $templates = array())
 	{
 		$this->viewModel = $viewModel;
 
@@ -130,7 +130,9 @@ class SbResultTab
 		// Ensure tab template
 		$templates = $this->ensureTemplateSet($templates, 'tab', 'search/tabs/base.phtml');
 		// Ensure sidebar partial template
-		$templates['sidebar'] = $this->ensureTemplateSet(array_key_exists('sidebar', $templates) ? $templates['sidebar'] : array(), null, 'global/sidebar/search/filters.phtml');
+		$sidebarTemplate        = isset($templates['sidebar']) ? $templates['sidebar'] : array();
+		$defaultSidebarTemplate = 'global/sidebar/search/filters.phtml';
+		$templates['sidebar']   = $this->ensureTemplateSet($sidebarTemplate, null, $defaultSidebarTemplate);
 
 		$this->__set('templates', $templates);
 	}
@@ -151,7 +153,7 @@ class SbResultTab
 			if (!array_key_exists($key, $templates) || empty($templates[$key])) {
 				$templates['tab'] = $default;
 			}
-		} else if (empty($templates)) {
+		} elseif (empty($templates)) {
 			$templates[] = $default;
 		}
 
@@ -207,5 +209,4 @@ class SbResultTab
 			'count'     => $this->getResultTotal(),
 		);
 	}
-
 }

@@ -25,5 +25,4 @@ class PageFunctions extends AbstractHelper
 
 		return $this->getView()->render('global/pagefunctions.phtml', $data);
 	}
-
 }

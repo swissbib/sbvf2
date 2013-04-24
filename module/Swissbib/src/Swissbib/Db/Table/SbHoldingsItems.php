@@ -43,5 +43,4 @@ class SbHoldingsItems extends Gateway
 	{
 		parent::__construct('items', 'Swissbib\Db\Row\SbHoldingsItems');
 	}
-
 }

@@ -41,5 +41,4 @@ class PluginFactory extends AbstractPlugin
 	{
 		$this->defaultNamespace = 'Swissbib\Db\Table';
 	}
-
 }

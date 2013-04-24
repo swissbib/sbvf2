@@ -47,5 +47,4 @@ class SbHoldingsItems extends RowGateway
 	{
 		parent::__construct(array('core', 'id'), 'items', $adapter);
 	}
-
 }

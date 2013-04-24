@@ -7,5 +7,4 @@ namespace Swissbib\Libadmin\Exception;
  */
 class Exception extends \Exception
 {
-
 }

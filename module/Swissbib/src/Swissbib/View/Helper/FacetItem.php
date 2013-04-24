@@ -23,5 +23,4 @@ class FacetItem extends AbstractHelper
 
 		return $this->getView()->render('global/sidebar/search/facet.item.phtml', $facetData);
 	}
-
 }

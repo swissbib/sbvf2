@@ -112,5 +112,4 @@ class TemplateFilenameFilter extends AbstractFilter implements ServiceLocatorAwa
 	{
 		return $this->serviceLocator;
 	}
-
 }

@@ -20,5 +20,4 @@ class FacetItemLabel extends AbstractHelper
 
 		return $this->view->escapeHtml($displayText) . '&nbsp;(' . $count . ')';
 	}
-
 }

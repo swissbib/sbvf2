@@ -127,7 +127,7 @@ class Holdings
 	 * @param    HMAC               $hmac
 	 * @param    AuthManager        $authManager
 	 */
-	function __construct(IlsConnection $ils, Config $holdingsConfig, HMAC $hmac, AuthManager $authManager)
+	public function __construct(IlsConnection $ils, Config $holdingsConfig, HMAC $hmac, AuthManager $authManager)
 	{
 		$this->ils         = $ils;
 		$this->config      = $holdingsConfig;
@@ -248,11 +248,13 @@ class Holdings
 
 			foreach ($network['institutions'] as $institutionCode => $institution) {
 				// Add backlink
-				$structuredElements[$networkCode]['institutions'][$institutionCode]['backlink'] = $this->getBackLink($networkCode, $institutionCode, $institution['items'][0]);
+				$structuredElements[$networkCode]['institutions'][$institutionCode]['backlink']
+						= $this->getBackLink($networkCode, $institutionCode, $institution['items'][0]);
 
 				foreach ($institution['items'] as $index => $item) {
 					// Add extra information for item
-					$structuredElements[$networkCode]['institutions'][$institutionCode]['items'][$index] = $this->extendWithActionLinks($item);
+					$structuredElements[$networkCode]['institutions'][$institutionCode]['items'][$index]
+							= $this->extendWithActionLinks($item);
 				}
 			}
 		}
@@ -284,7 +286,8 @@ class Holdings
 	 */
 	protected function extendWithActionLinks(array $item)
 	{
-		if ($this->isAlephNetwork($item['network']) && $this->isRestfulNetwork($item['network'])) { // Only add links for supported networks
+			// Only add links for supported networks
+		if ($this->isAlephNetwork($item['network']) && $this->isRestfulNetwork($item['network'])) {
 			// Add hold link for item
 			$item['holdLink'] = $this->getHoldLink($item);
 
@@ -321,7 +324,7 @@ class Holdings
 		$host           = $ilsDriver->host . ':8991'; // @todo make dev port dynamic
 
 		if ($allowedActions['photocopyRequest']) {
-			$allowedActions['photocopyRequestLink'] = $this->getPhotoCopyRequestLink($host, $item);;
+			$allowedActions['photocopyRequestLink'] = $this->getPhotoCopyRequestLink($host, $item);
 		}
 
 		return $allowedActions;
@@ -339,14 +342,16 @@ class Holdings
 	 */
 	protected function getPhotoCopyRequestLink($host, array $item)
 	{
-		return 'http://' . $host . '/F/?' . http_build_query(array(
-																  'func'           => 'item-photo-request',
-																  'doc_library'    => $item['adm_code'],
-																  'adm_doc_number' => $item['localid'],
-																  'item_sequence'  => $item['sequencenumber'],
-																  'bib_doc_num'    => $item['bibsysnumber'],
-																  'bib_library'    => 'DSV01'
-															 ));
+		$queryParams = array(
+			'func'           => 'item-photo-request',
+			'doc_library'    => $item['adm_code'],
+			'adm_doc_number' => $item['localid'],
+			'item_sequence'  => $item['sequencenumber'],
+			'bib_doc_num'    => $item['bibsysnumber'],
+			'bib_library'    => 'DSV01'
+		);
+
+		return 'http://' . $host . '/F/?' . http_build_query($queryParams);
 	}
 
 
@@ -819,5 +824,4 @@ class Holdings
 //EOT;
 //
 //	}
-
 }

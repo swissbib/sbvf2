@@ -27,6 +27,8 @@
  */
 namespace Swissbib\Db\Table;
 
+use Zend\ServiceManager\ConfigInterface;
+
 /**
  * Database table plugin manager
  *
@@ -46,14 +48,11 @@ class PluginManager extends \VuFind\ServiceManager\AbstractPluginManager
 	 *
 	 * @param null|ConfigInterface $configuration Configuration settings (optional)
 	 */
-	public function __construct(
-		\Zend\ServiceManager\ConfigInterface $configuration = null
-	)
+	public function __construct(ConfigInterface $configuration = null)
 	{
 		parent::__construct($configuration);
 		$initializer = function ($instance, $manager) {
-			$instance
-					->setAdapter($manager->getServiceLocator()->get('VuFind\DbAdapter'));
+			$instance->setAdapter($manager->getServiceLocator()->get('VuFind\DbAdapter'));
 			$instance->initialize();
 		};
 		$this->addInitializer($initializer, false);

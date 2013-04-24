@@ -1,16 +1,15 @@
 <?php
 namespace Swissbib;
 
-use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
-use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
-use Zend\ModuleManager\Feature\InitProviderInterface;
+use Zend\ModuleManager\Feature\AutoloaderProviderInterface as Autoloadable;
+use Zend\ModuleManager\Feature\ConfigProviderInterface as Configurable;
+use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface as Consolable;
+use Zend\ModuleManager\Feature\InitProviderInterface as Initializable;
 use Zend\ModuleManager\ModuleManagerInterface;
 use Zend\Mvc\MvcEvent;
 use Zend\Console\Adapter\AdapterInterface as Console;
 
-class Module
-	implements AutoloaderProviderInterface, ConfigProviderInterface, InitProviderInterface, ConsoleUsageProviderInterface
+class Module implements Autoloadable, Configurable, Initializable, Consolable
 {
 
 	/**
@@ -75,5 +74,4 @@ class Module
 		//note: only for testing
 		//$m->getEventManager()->attach(ModuleEvent::EVENT_LOAD_MODULES_POST,array($this,'postInSwissbib'),10000);
 	}
-
 }

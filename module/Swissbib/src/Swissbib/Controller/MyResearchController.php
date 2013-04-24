@@ -262,5 +262,4 @@ class MyResearchController extends VFMyResearchController
 
 		return $key;
 	}
-
 }
