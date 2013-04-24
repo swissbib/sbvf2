@@ -414,17 +414,15 @@ class SolrMarc extends VuFindSolrMarc {
                 '0' => $field . '0',
                 '2' => $field . '2',
             ));
-            if (!empty($results)) {
-                $retval = $results;
-                $results = array();
+
+            foreach ($results as $result) {
+                $retval[] = $result;
             }
             if (!empty($field)) {
                 continue;
             }
-            else {
-                return $retval;
-            }
         }
+        return $retval;
     }
 
 	/**
