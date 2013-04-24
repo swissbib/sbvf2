@@ -1,37 +1,12 @@
 <?php
 namespace Swissbib;
 
-use VuFind\Config\Reader as ConfigReader,
-	Zend\Console\Console, Zend\Mvc\MvcEvent, Zend\Mvc\Router\Http\RouteMatch;
+use VuFind\Config\Reader as ConfigReader;
+use Zend\Mvc\MvcEvent;
+use Zend\Console\Request as ConsoleRequest;
+use Swissbib\Filter\TemplateFilenameFilter;
 
-/**
- * swissbib / VuFind <<full descriptive name of the class>>
- *
- * PHP version 5
- *
- * Copyright (C) project swissbib, University Library Basel, Switzerland
- * http://www.swissbib.org  / http://www.swissbib.ch / http://www.ub.unibas.ch
- *
- * Date: 1/30/13
- * Time: 10:30 PM
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2,
- * as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- * @category swissbib_VuFind2
- * @package  Swissbib
- * @author   << name of author  <mail of author> >>
- * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- */
+
 class Bootstrapper
 {
 
@@ -65,6 +40,25 @@ class Bootstrapper
         }
     }
 
+
+
+	/**
+	 * Add template path filter to filter chain
+	 *
+	 */
+	protected function initFilterChain() {
+		if( !$this->event->getRequest() instanceof ConsoleRequest ) {
+			$sm = $this->event->getApplication()->getServiceManager();
+
+			$widgetFilter = new TemplateFilenameFilter();
+			$widgetFilter->setServiceLocator($sm);
+
+			$view = $sm->get('ViewRenderer');
+
+			$view->getFilterChain()->attach($widgetFilter, 50);
+		}
+	}
+
 	public function initSwissbibDBs(){
 
     }
@@ -72,7 +66,7 @@ class Bootstrapper
     /**
      * Set up plugin managers.
      */
-    protected function initPluginManagers()
+    protected function DISABLEDinitPluginManagers()
     {
         $app = $this->event->getApplication();
         $serviceManager = $app->getServiceManager();
