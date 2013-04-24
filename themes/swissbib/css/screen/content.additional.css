@@ -47,15 +47,11 @@ line-height:15px;
 }
 
 
-/*class is used to indicate loading procedure e.g. fetching online availability*/
-.facets_loading {
-	background: url('../../images/facets_loading.gif') right center no-repeat;
-}
-
-
-.facets_loading_transp,
-.ajax_loading_spinner_transp {
-	background: url('../../images/facets_loading_transp.gif') right center no-repeat;
+.ajax_spinner {
+	width: 26px;
+	height: 26px;
+	background-image: url('../../images/ajax_spinner.png');
+	background-position: 0 0;
 }
 
 

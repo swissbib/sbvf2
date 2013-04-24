@@ -38,6 +38,7 @@ return array(
         'lib/jquery.hint.js',
         'lib/jquery.info.js',
         'lib/jquery.info.rollover.js',
+		'lib/jquery.spritely.js',	// sprite animation, e.g. for ajax spinner
         'lib/colorbox/jquery.colorbox.js', //popup dialog solution
         'lib/jquery.enhancedsearch.js',
         'autocomplete.base.js', //used for current highlighting based on java servlet, probably replaced by default VuFind mechanism
