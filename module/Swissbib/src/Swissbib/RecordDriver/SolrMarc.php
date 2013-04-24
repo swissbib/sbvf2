@@ -402,7 +402,39 @@ class SolrMarc extends VuFindSolrMarc
 											   ));
 	}
 
+    public function getAllSubjectHeadings()
+    {
+        // These are the fields that may contain (controlled or local) subject headings:
+        $fields = array(
+            '600', '610', '611', '630', '648', '650', '651', '655', '656', '690', '691',
+        );
 
+        // Try each MARC field one at a time:
+        foreach ($fields as $field) {
+            $results = $this->getMarcSubFieldMaps($field, array(
+                'a' => $field . 'a',
+                'b' => $field . 'b',
+                'c' => $field . 'c',
+                'd' => $field . 'd',
+                'e' => $field . 'e',
+                'f' => $field . 'f',
+                'g' => $field . 'g',
+                'h' => $field . 'h',
+                'v' => $field . 'v',
+                'x' => $field . 'x',
+                '0' => $field . '0',
+                '2' => $field . '2',
+            ));
+
+            foreach ($results as $result) {
+                $retval[] = $result;
+            }
+            if (!empty($field)) {
+                continue;
+            }
+        }
+        return $retval;
+    }
 
 	/**
 	 * Get geographic names
