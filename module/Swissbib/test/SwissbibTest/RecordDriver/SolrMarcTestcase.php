@@ -27,7 +27,7 @@ class SolrMarcTestCase extends VuFindTestCase
 	{
 		if (!$this->driver) {
 			$this->driver = new SolrMarcDriver();
-			$fixture = $this->getFixtureData($file);
+			$fixture      = $this->getFixtureData($file);
 
 			$this->driver->setRawData($fixture);
 		}
