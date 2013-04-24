@@ -8,10 +8,10 @@ use Swissbib\Libadmin\Importer;
  * [Description]
  *
  */
-class SyncController extends AbstractActionController
+class LibadminSyncController extends AbstractActionController
 {
 
-	public function indexAction()
+	public function syncAction()
 	{
 		/** @var Importer $importer */
 		$importer = $this->getServiceLocator()->get('Swissbib\Libadmin\Importer');

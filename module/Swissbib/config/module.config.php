@@ -1,6 +1,7 @@
 <?php
 namespace Swissbib\Module\Config;
 
+use Swissbib\Libadmin\Importer;
 use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
 
 return array(
@@ -36,10 +37,26 @@ return array(
 
 		)
 	),
+	'console' => array(
+		'router' => array(
+			'routes' => array(
+				'libadmin-sync' => array(
+					'options' => array(
+						'route'	=> 'libadmin sync [--verbose] [--dry]',
+						'defaults' => array(
+							'controller' => 'libadminsync',
+							'action'	=> 'sync'
+						)
+					)
+				)
+			)
+		)
+	),
     'controllers' => array(
         'invokables' => array(
             'search'		=> 'Swissbib\Controller\SearchController',
             'my-research'	=> 'Swissbib\Controller\MyResearchController',
+			'libadminsync'	=> 'Swissbib\Controller\LibadminSyncController'
         )
     ),
     'service_manager' => array(
@@ -55,6 +72,11 @@ return array(
 				$authManager	= $sm->get('VuFind\AuthManager');
 
 				return new HoldingsHelper($ils, $holdingsConfig, $hmac, $authManager);
+			},
+			'Swissbib\Libadmin\Importer' => function($sm) {
+				$config	= $sm->get('VuFind\Config')->get('Libadmin');
+
+				return new Importer($config);
 			}
 		)
     ),
