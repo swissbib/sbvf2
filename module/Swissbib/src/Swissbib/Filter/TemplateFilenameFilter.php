@@ -22,16 +22,19 @@ use Zend\Filter\AbstractFilter;
  * Activating the filter: call SbTemplateFilenameFilter::onBootstrap() from within the
  * onBootstap() method of the module class (\path\to\module\Namespace\Module.php)
  *
- * @package	Swissbib\Filter
+ * @package    Swissbib\Filter
  */
 class TemplateFilenameFilter extends AbstractFilter implements ServiceLocatorAwareInterface
 {
+
 	protected $serviceLocator;
+
+
 
 	/**
 	 * Bootstrap code to activate template filename comment filtering via filterChain
 	 *
-	 * @param	MvcEvent	$event
+	 * @param    MvcEvent    $event
 	 */
 	public static function onBootstrap(MvcEvent $event)
 	{
@@ -48,54 +51,62 @@ class TemplateFilenameFilter extends AbstractFilter implements ServiceLocatorAwa
 		$view->setFilterChain($filters);
 	}
 
+
+
 	/**
-	 * @param	Mixed	$content
-	 * @return	Mixed|String
+	 * @param    Mixed    $content
+	 * @return    Mixed|String
 	 */
 	public function filter($content)
 	{
-		$sm		= $this->getServiceLocator();
+		$sm = $this->getServiceLocator();
 		/** @var $phpRenderer \Zend\View\Renderer\PhpRenderer */
-		$phpRenderer= $sm->get('Zend\View\Renderer\PhpRenderer');
+		$phpRenderer = $sm->get('Zend\View\Renderer\PhpRenderer');
 
-			// Fetch private property PhpRenderer::__file via reflection
-		$rendererReflection	= new \ReflectionObject($phpRenderer);
+		// Fetch private property PhpRenderer::__file via reflection
+		$rendererReflection = new \ReflectionObject($phpRenderer);
 
-		$fileProperty	= $rendererReflection->getProperty('__file');
+		$fileProperty = $rendererReflection->getProperty('__file');
 		$fileProperty->setAccessible(true);
-		$templateFilename= $fileProperty->getValue($phpRenderer);
+		$templateFilename = $fileProperty->getValue($phpRenderer);
 
-			// Remove possibly confidential server details from path
-		$directoryDelimiter	= 'themes' . DIRECTORY_SEPARATOR;
-		$templateFilename= substr($templateFilename, strpos($templateFilename, $directoryDelimiter) );
+		// Remove possibly confidential server details from path
+		$directoryDelimiter = 'themes' . DIRECTORY_SEPARATOR;
+		$templateFilename = substr($templateFilename, strpos($templateFilename, $directoryDelimiter));
 
 		return $this->wrapContentWithComment($content, $templateFilename, '');
 	}
 
+
+
 	/**
-	 * @param	String	$content
-	 * @param	String	$templateFilename
-	 * @return	String
+	 * @param    String    $content
+	 * @param    String    $templateFilename
+	 * @return    String
 	 */
 	private function wrapContentWithComment($content, $templateFilename)
 	{
 		return
-			"\n" . '<!-- Begin' . (!empty($type) ? ' ' . $type : '') . ': ' . $templateFilename . ' -->'
-		.	"\n" . $content
-		.	"\n" . '<!-- End: ' . $templateFilename . ' -->'
-		.	"\n";
+				"\n" . '<!-- Begin' . (!empty($type) ? ' ' . $type : '') . ': ' . $templateFilename . ' -->'
+				. "\n" . $content
+				. "\n" . '<!-- End: ' . $templateFilename . ' -->'
+				. "\n";
 	}
 
+
+
 	/**
-	 * @param	ServiceLocatorInterface	$serviceLocator
+	 * @param    ServiceLocatorInterface    $serviceLocator
 	 */
 	public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
 	{
 		$this->serviceLocator = $serviceLocator;
 	}
 
+
+
 	/**
-	 * @return	ServiceLocatorInterface
+	 * @return    ServiceLocatorInterface
 	 */
 	public function getServiceLocator()
 	{

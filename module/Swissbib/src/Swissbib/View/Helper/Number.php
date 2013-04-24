@@ -7,7 +7,8 @@ use Zend\View\Helper\AbstractHelper;
  * Format integers
  *
  */
-class Number extends AbstractHelper {
+class Number extends AbstractHelper
+{
 
 	/**
 	 * Format integer with thousand separator
@@ -15,7 +16,8 @@ class Number extends AbstractHelper {
 	 * @param    Integer        $number
 	 * @return    String
 	 */
-	public function __invoke($number) {
+	public function __invoke($number)
+	{
 		return number_format($number, 0, '', '\'');
 	}
 

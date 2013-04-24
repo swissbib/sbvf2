@@ -7,22 +7,26 @@ use Swissbib\View\Helper\PhysicalDescriptions;
  * [Description]
  *
  */
-class PhysicalDescriptionsTest extends \PHPUnit_Framework_TestCase {
+class PhysicalDescriptionsTest extends \PHPUnit_Framework_TestCase
+{
 
-	public function testEmpty() {
-		$desc	= new PhysicalDescriptions();
-		$data	= array();
+	public function testEmpty()
+	{
+		$desc = new PhysicalDescriptions();
+		$data = array();
 
-		$result	= $desc($data);
+		$result = $desc($data);
 
 		$this->assertInternalType('string', $result);
 		$this->assertEmpty($result);
 	}
 
 
-	public function testNormal() {
-		$desc	= new PhysicalDescriptions();
-		$data	= array(
+
+	public function testNormal()
+	{
+		$desc = new PhysicalDescriptions();
+		$data = array(
 			array(
 				'extent' => array(
 					'a',
@@ -33,7 +37,7 @@ class PhysicalDescriptionsTest extends \PHPUnit_Framework_TestCase {
 			)
 		);
 
-		$result	= $desc($data);
+		$result = $desc($data);
 
 		$this->assertInternalType('string', $result);
 		$this->assertEquals('a, b, c', $result);

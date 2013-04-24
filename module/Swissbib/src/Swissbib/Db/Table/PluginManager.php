@@ -38,33 +38,37 @@ namespace Swissbib\Db\Table;
  */
 class PluginManager extends \VuFind\ServiceManager\AbstractPluginManager
 {
-    /**
-     * Constructor
-     *
-     * Make sure table gateways are properly initialized.
-     *
-     * @param null|ConfigInterface $configuration Configuration settings (optional)
-     */
-    public function __construct(
-        \Zend\ServiceManager\ConfigInterface $configuration = null
-    ) {
-        parent::__construct($configuration);
-        $initializer = function ($instance, $manager) {
-            $instance
-                ->setAdapter($manager->getServiceLocator()->get('VuFind\DbAdapter'));
-            $instance->initialize();
-        };
-        $this->addInitializer($initializer, false);
-    }
 
-    /**
-     * Return the name of the base class or interface that plug-ins must conform
-     * to.
-     *
-     * @return string
-     */
-    protected function getExpectedInterface()
-    {
-        return 'VuFind\Db\Table\Gateway';
-    }
+	/**
+	 * Constructor
+	 *
+	 * Make sure table gateways are properly initialized.
+	 *
+	 * @param null|ConfigInterface $configuration Configuration settings (optional)
+	 */
+	public function __construct(
+		\Zend\ServiceManager\ConfigInterface $configuration = null
+	)
+	{
+		parent::__construct($configuration);
+		$initializer = function ($instance, $manager) {
+			$instance
+					->setAdapter($manager->getServiceLocator()->get('VuFind\DbAdapter'));
+			$instance->initialize();
+		};
+		$this->addInitializer($initializer, false);
+	}
+
+
+
+	/**
+	 * Return the name of the base class or interface that plug-ins must conform
+	 * to.
+	 *
+	 * @return string
+	 */
+	protected function getExpectedInterface()
+	{
+		return 'VuFind\Db\Table\Gateway';
+	}
 }

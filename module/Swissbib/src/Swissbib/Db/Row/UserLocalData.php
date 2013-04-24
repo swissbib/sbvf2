@@ -1,6 +1,7 @@
 <?php
 
 namespace Swissbib\Db\Row;
+
 use Zend\Db\RowGateway\RowGateway;
 
 /**
@@ -11,13 +12,14 @@ use Zend\Db\RowGateway\RowGateway;
  */
 class UserLocalData extends RowGateway
 {
-    /**
-     * Constructor
-     *
-     * @param \Zend\Db\Adapter\Adapter $adapter Database adapter
-     */
-    public function __construct($adapter)
-    {
-        parent::__construct('id', 'user_localdata', $adapter);
-    }
+
+	/**
+	 * Constructor
+	 *
+	 * @param \Zend\Db\Adapter\Adapter $adapter Database adapter
+	 */
+	public function __construct($adapter)
+	{
+		parent::__construct('id', 'user_localdata', $adapter);
+	}
 }
