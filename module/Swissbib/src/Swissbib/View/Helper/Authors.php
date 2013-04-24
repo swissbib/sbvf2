@@ -20,8 +20,8 @@ class Authors extends AbstractHelper
 	{
 		$recordPlugin = $this->getView()->plugin('record');
 
-		$mainAuthor = isset($authors['main']) && !empty($authors['main']) ? $authors['main'] : false;
-		$corporateAuthor = isset($authors['corporate']) && !empty($authors['corporate']) ? $authors['corporate'] : false;
+		$mainAuthor       = isset($authors['main']) && !empty($authors['main']) ? $authors['main'] : false;
+		$corporateAuthor  = isset($authors['corporate']) && !empty($authors['corporate']) ? $authors['corporate'] : false;
 		$secondaryAuthors = isset($authors['secondary']) ? $authors['secondary'] : false;
 
 		$authorsData = array();
@@ -29,23 +29,23 @@ class Authors extends AbstractHelper
 		if ($mainAuthor) {
 			$authorsData[] = array(
 				'author' => $mainAuthor,
-				'url' => $recordPlugin->getLink('author', $mainAuthor),
-				'type' => 'main'
+				'url'    => $recordPlugin->getLink('author', $mainAuthor),
+				'type'   => 'main'
 			);
 		}
 		if ($corporateAuthor) {
 			$authorsData[] = array(
 				'author' => $corporateAuthor,
-				'url' => $recordPlugin->getLink('author', $corporateAuthor),
-				'type' => 'corporate'
+				'url'    => $recordPlugin->getLink('author', $corporateAuthor),
+				'type'   => 'corporate'
 			);
 		}
 		if ($secondaryAuthors) {
 			foreach ($secondaryAuthors as $secondaryAuthor) {
 				$authorsData[] = array(
 					'author' => $corporateAuthor,
-					'url' => $recordPlugin->getLink('author', $secondaryAuthor),
-					'type' => 'secondary'
+					'url'    => $recordPlugin->getLink('author', $secondaryAuthor),
+					'type'   => 'secondary'
 				);
 			}
 		}

@@ -73,7 +73,7 @@ class MyResearchController extends VFMyResearchController
 	 */
 	protected function createViewModel($params = null)
 	{
-		$viewModel = parent::createViewModel($params);
+		$viewModel           = parent::createViewModel($params);
 		$viewModel->location = $this->getLocationFromRoute() ? : 'baselbern';
 
 		return $viewModel;
@@ -98,16 +98,16 @@ class MyResearchController extends VFMyResearchController
 		}
 
 		$userData = $user->toArray();
-		$idUser = intval($userData['id']);
+		$idUser   = intval($userData['id']);
 
-		$userLanguage = $this->getUserLanguage($idUser);
+		$userLanguage   = $this->getUserLanguage($idUser);
 		$view->language = $userLanguage;
 		setcookie('language', $userLanguage, null, '/');
 
 		$view->maxHits = $this->getUserAmountMaxHits($idUser);
 
 		$view->optsLanguage = $this->getOptionsLanguage();
-		$view->optsMaxHits = $this->getOptionsMaximumHits();
+		$view->optsMaxHits  = $this->getOptionsMaximumHits();
 
 		return $view;
 	}
@@ -133,7 +133,7 @@ class MyResearchController extends VFMyResearchController
 
 		$view->setTerminal(true);
 		$userData = $user->toArray();
-		$idUser = intval($userData['id']);
+		$idUser   = intval($userData['id']);
 
 		// Store received value to database
 		/** @var $userLocalData \Swissbib\Db\Table\UserLocalData */
@@ -157,10 +157,10 @@ class MyResearchController extends VFMyResearchController
 		// Setup layout / view params
 		$this->layout()->setTemplate('myresearch/searchsettings');
 
-		$this->layout()->language = $language;
-		$this->layout()->maxHits = $maxHits;
+		$this->layout()->language     = $language;
+		$this->layout()->maxHits      = $maxHits;
 		$this->layout()->optsLanguage = $this->getOptionsLanguage();
-		$this->layout()->optsMaxHits = $this->getOptionsMaximumHits();
+		$this->layout()->optsMaxHits  = $this->getOptionsMaximumHits();
 
 		//@todo implement flash messages parts: text, CSS, JS
 //        $this->flashMessenger()->setNamespace('info')

@@ -20,28 +20,28 @@ class Aleph extends AlephDriver
 		$photoCopyRequests = $this->getPhotoCopyRequests($idPatron);
 
 		$dataMap = array(
-			'title' => 'z13-title',
-			'title2' => 'z38-title',
-			'dateOpen' => 'z38-open-date',
-			'dateUpdate' => 'z30-update-date',
-			'author' => 'z38-author',
-			'pages' => 'z38-pages',
-			'note1' => 'z38-note-1',
-			'note2' => 'z38-note-2',
-			'status' => 'z38-status',
-			'printStatus' => 'z38-print-status',
-			'pickup' => 'z38-pickup-location',
-			'library' => 'z30-sub-library',
-			'description' => 'z30-description',
-			'callNumber' => 'z30-call-no',
-			'callNumberKey' => 'z30-call-no-key',
+			'title'          => 'z13-title',
+			'title2'         => 'z38-title',
+			'dateOpen'       => 'z38-open-date',
+			'dateUpdate'     => 'z30-update-date',
+			'author'         => 'z38-author',
+			'pages'          => 'z38-pages',
+			'note1'          => 'z38-note-1',
+			'note2'          => 'z38-note-2',
+			'status'         => 'z38-status',
+			'printStatus'    => 'z38-print-status',
+			'pickup'         => 'z38-pickup-location',
+			'library'        => 'z30-sub-library',
+			'description'    => 'z30-description',
+			'callNumber'     => 'z30-call-no',
+			'callNumberKey'  => 'z30-call-no-key',
 			'additionalInfo' => 'z38-additional-info',
-			'requesterName' => 'z38-requester-name',
-			'sequence' => 'z38-sequence',
-			'itemSequence' => 'z38-item-sequence',
-			'id' => 'z38-id',
-			'number' => 'z38-number',
-			'alpha' => 'z38-alpha'
+			'requesterName'  => 'z38-requester-name',
+			'sequence'       => 'z38-sequence',
+			'itemSequence'   => 'z38-item-sequence',
+			'id'             => 'z38-id',
+			'number'         => 'z38-number',
+			'alpha'          => 'z38-alpha'
 		);
 
 		$photoCopiesData = array();
@@ -50,7 +50,7 @@ class Aleph extends AlephDriver
 			$photoCopyData = $this->extractResponseData($photoCopyRequest, $dataMap);
 
 			// Process data
-			$photoCopyData['dateOpen'] = DateTime::createFromFormat('Ymd', $photoCopyData['dateOpen'])->getTimestamp();
+			$photoCopyData['dateOpen']   = DateTime::createFromFormat('Ymd', $photoCopyData['dateOpen'])->getTimestamp();
 			$photoCopyData['dateUpdate'] = DateTime::createFromFormat('Ymd', $photoCopyData['dateUpdate'])->getTimestamp();
 
 			$photoCopiesData[] = $photoCopyData;
@@ -70,22 +70,22 @@ class Aleph extends AlephDriver
 	public function getBookings($idPatron)
 	{
 		$bookingRequests = $this->getBookingRequests($idPatron);
-		$dataMap = array(
-			'sequence' => 'z37-sequence',
-			'title' => 'z13-title',
-			'author' => 'z13-author',
-			'dateStart' => 'z37-booking-orig-start-time',
-			'dateEnd' => 'z37-booking-orig-end-time',
-			'pickupLocation' => 'z37-pickup-location',
+		$dataMap         = array(
+			'sequence'          => 'z37-sequence',
+			'title'             => 'z13-title',
+			'author'            => 'z13-author',
+			'dateStart'         => 'z37-booking-orig-start-time',
+			'dateEnd'           => 'z37-booking-orig-end-time',
+			'pickupLocation'    => 'z37-pickup-location',
 			'pickupSubLocation' => 'z37-delivery-sub-location',
-			'itemStatus' => 'z30-item-status',
-			'callNumber' => 'z30-call-no',
-			'library' => 'z30-sub-library',
-			'note1' => 'z37-note-1',
-			'note2' => 'z37-note-2',
-			'barcode' => 'z30-barcode',
-			'collection' => 'z30-collection',
-			'description' => 'z30-description'
+			'itemStatus'        => 'z30-item-status',
+			'callNumber'        => 'z30-call-no',
+			'library'           => 'z30-sub-library',
+			'note1'             => 'z37-note-1',
+			'note2'             => 'z37-note-2',
+			'barcode'           => 'z30-barcode',
+			'collection'        => 'z30-collection',
+			'description'       => 'z30-description'
 		);
 
 		$bookingsData = array();
@@ -95,7 +95,7 @@ class Aleph extends AlephDriver
 
 			// Process data
 			$bookingData['dateStart'] = DateTime::createFromFormat('YmdHi', $bookingData['dateStart'])->getTimestamp();
-			$bookingData['dateEnd'] = DateTime::createFromFormat('YmdHi', $bookingData['dateEnd'])->getTimestamp();
+			$bookingData['dateEnd']   = DateTime::createFromFormat('YmdHi', $bookingData['dateEnd'])->getTimestamp();
 
 			$bookingsData[] = $bookingData;
 		}
@@ -109,31 +109,31 @@ class Aleph extends AlephDriver
 	 * Get allowed actions for current user for holding item
 	 * Actions: hold, shortLoan, photocopyRequest, bookingRequest
 	 *
-	 * @param    String        $patronId        Catalog user id
+	 * @param    String        $patronId          Catalog user id
 	 * @param    String        $id                Item id
-	 * @param    String        $group            Group id
+	 * @param    String        $group             Group id
 	 * @return    Array        List with flags for actions
 	 */
 	public function getAllowedActionsForItem($patronId, $id, $group)
 	{
 		list($bib, $sys_no) = $this->parseId($id);
 		$resource = $bib . $sys_no;
-		$xml = $this->doRestDLFRequest(
+		$xml      = $this->doRestDLFRequest(
 			array('patron', $patronId, 'record', $resource, 'items', $group)
 		);
 
-		$result = array();
+		$result    = array();
 		$functions = array(
-			'hold' => 'HoldRequest',
-			'shortLoan' => 'ShortLoan',
+			'hold'             => 'HoldRequest',
+			'shortLoan'        => 'ShortLoan',
 			'photocopyRequest' => 'PhotocopyRequest',
-			'bookingRequest' => 'BookingRequest'
+			'bookingRequest'   => 'BookingRequest'
 		);
 
 		// Check flags for each info node
 		foreach ($functions as $key => $type) {
 			$typeInfoNodes = $xml->xpath('//info[@type="' . $type . '"]');
-			$result[$key] = (string)$typeInfoNodes[0]['allowed'] === 'Y';
+			$result[$key]  = (string)$typeInfoNodes[0]['allowed'] === 'Y';
 		}
 
 		return $result;
@@ -151,12 +151,12 @@ class Aleph extends AlephDriver
 	public function getCirculationStatus($sysNumber, $library = 'DSV01')
 	{
 		$xml = $this->doXRequest('circ-status', array(
-													 'sys_no' => $sysNumber,
+													 'sys_no'  => $sysNumber,
 													 'library' => $library
 												));
 
 		$itemDataNodes = $xml->xpath('item-data');
-		$data = array();
+		$data          = array();
 
 		foreach ($itemDataNodes as $itemDataNode) {
 			$itemData = array();
@@ -213,7 +213,7 @@ class Aleph extends AlephDriver
 	 * Extract a list of values out of the XML response
 	 *
 	 * @param    \SimpleXMLElement $xmlResponse
-	 * @param    Array        $map
+	 * @param    Array             $map
 	 * @return    Array
 	 */
 	protected function extractResponseData(SimpleXMLElement $xmlResponse, array $map)
@@ -234,8 +234,8 @@ class Aleph extends AlephDriver
 	/**
 	 * Fix xserver port problem
 	 *
-	 * @param    String        $op
-	 * @param    Array        $params
+	 * @param    String         $op
+	 * @param    Array          $params
 	 * @param    Boolean        $auth
 	 * @return SimpleXMLElement
 	 * @throws ILSException

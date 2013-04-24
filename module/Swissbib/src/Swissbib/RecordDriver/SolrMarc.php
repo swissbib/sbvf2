@@ -27,7 +27,7 @@
  * @package  RecordDriver
  * @author   Guenter Hipler  <guenter.hipler@unibas.ch>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link    http://www.swissbib.org
+ * @link     http://www.swissbib.org
  */
 
 namespace Swissbib\RecordDriver;
@@ -59,20 +59,20 @@ class SolrMarc extends VuFindSolrMarc
 	 * @var    Array    Used also for field 100        _ means repeatable
 	 */
 	protected $personFieldMap = array(
-		'a' => 'name',
-		'b' => 'numeration',
+		'a'  => 'name',
+		'b'  => 'numeration',
 		'_c' => 'titles', // R
-		'd' => 'dates',
+		'd'  => 'dates',
 		'_e' => 'relator', // R
-		'f' => 'date_of_work',
-		'g' => 'misc',
-		'l' => 'language',
+		'f'  => 'date_of_work',
+		'g'  => 'misc',
+		'l'  => 'language',
 		'_n' => 'number_of_parts', // R
-		'q' => 'fullername',
-		'D' => 'forname',
-		't' => 'title_of_work',
+		'q'  => 'fullername',
+		'D'  => 'forname',
+		't'  => 'title_of_work',
 		'_8' => 'extras',
-		'9' => 'unknownNumber'
+		'9'  => 'unknownNumber'
 	);
 
 
@@ -84,15 +84,15 @@ class SolrMarc extends VuFindSolrMarc
 	 */
 	public function getISBNs()
 	{
-		$tags = array('020', '022', '024');
+		$tags     = array('020', '022', '024');
 		$isbnList = array();
 
 		foreach ($tags as $tag) {
 			$fields = $this->getMarcSubFieldMaps($tag, array(
-															'a' => 'isbn',
+															'a'  => 'isbn',
 															'_b' => 'binding',
-															'c' => 'availability',
-															'z' => 'canceled'
+															'c'  => 'availability',
+															'z'  => 'canceled'
 													   ));
 
 			foreach ($fields as $field) {
@@ -118,7 +118,7 @@ class SolrMarc extends VuFindSolrMarc
 	 */
 	public function getStandardNumbers()
 	{
-		$tags = array('020', '022', '024');
+		$tags   = array('020', '022', '024');
 		$idList = array();
 
 		foreach ($tags as $tag) {
@@ -150,8 +150,8 @@ class SolrMarc extends VuFindSolrMarc
 
 		// Get parts
 		$dateType = substr($code, 6, 1);
-		$year1 = substr($code, 7, 4);
-		$year2 = substr($code, 11, 4);
+		$year1    = substr($code, 7, 4);
+		$year2    = substr($code, 11, 4);
 
 		return array($dateType, $year1, $year2);
 	}
@@ -208,22 +208,22 @@ class SolrMarc extends VuFindSolrMarc
 	public function getMainCorporateName()
 	{
 		return $this->getMarcSubFieldMap(110, array(
-												   'a' => 'name',
+												   'a'  => 'name',
 												   '_b' => 'unit',
-												   'c' => 'meeting_location',
+												   'c'  => 'meeting_location',
 												   '_d' => 'meeting_date',
 												   '_e' => 'relator',
-												   'f' => 'date',
-												   'g' => 'misc',
-												   'h' => 'medium',
+												   'f'  => 'date',
+												   'g'  => 'misc',
+												   'h'  => 'medium',
 												   '_k' => 'form_subheading',
-												   'l' => 'language',
+												   'l'  => 'language',
 												   '_n' => 'parts_number',
 												   '_p' => 'parts_name',
-												   's' => 'version',
-												   't' => 'title',
-												   'u' => 'affiliation',
-												   '4' => 'relator_code'
+												   's'  => 'version',
+												   't'  => 'title',
+												   'u'  => 'affiliation',
+												   '4'  => 'relator_code'
 											  ));
 	}
 
@@ -237,28 +237,28 @@ class SolrMarc extends VuFindSolrMarc
 	public function getAddedCorporateNames()
 	{
 		return $this->getMarcSubFieldMaps(710, array(
-													'a' => 'name',
+													'a'  => 'name',
 													'_b' => 'unit',
-													'c' => 'meeting_location',
+													'c'  => 'meeting_location',
 													'_d' => 'meeting_date',
 													'_e' => 'relator',
-													'f' => 'date',
-													'g' => 'misc',
-													'h' => 'medium',
-													'i' => 'relationship',
+													'f'  => 'date',
+													'g'  => 'misc',
+													'h'  => 'medium',
+													'i'  => 'relationship',
 													'_k' => 'form_subheading',
-													'l' => 'language',
+													'l'  => 'language',
 													'_m' => 'music_performance_medium',
 													'_n' => 'parts_number',
 													'_p' => 'parts_name',
-													'r' => 'music_key',
-													's' => 'version',
-													't' => 'title',
-													'u' => 'affiliation',
-													'x' => 'issn',
-													'3' => 'materials_specified',
-													'4' => 'relator_code',
-													'5' => 'institution',
+													'r'  => 'music_key',
+													's'  => 'version',
+													't'  => 'title',
+													'u'  => 'affiliation',
+													'x'  => 'issn',
+													'3'  => 'materials_specified',
+													'4'  => 'relator_code',
+													'5'  => 'institution',
 													'_8' => 'label'
 											   ));
 	}
@@ -275,16 +275,16 @@ class SolrMarc extends VuFindSolrMarc
 	{
 		if ($full) {
 			return $this->getMarcSubFieldMap(245, array(
-													   'a' => 'title',
-													   'b' => 'title_remainder',
-													   'c' => 'statement_responsibility',
-													   'f' => 'inclusive_dates',
-													   'g' => 'bulk_dates',
-													   'h' => 'medium',
+													   'a'  => 'title',
+													   'b'  => 'title_remainder',
+													   'c'  => 'statement_responsibility',
+													   'f'  => 'inclusive_dates',
+													   'g'  => 'bulk_dates',
+													   'h'  => 'medium',
 													   '_k' => 'form',
 													   '_n' => 'parts_amount',
 													   '_p' => 'parts_name',
-													   's' => 'version'
+													   's'  => 'version'
 												  ));
 		} else {
 			return parent::getTitleStatement();
@@ -310,6 +310,7 @@ class SolrMarc extends VuFindSolrMarc
 	 * build an array (multidimensional?) from all GND headings
 	 * GND headings
 	 * fields: 600, 610, 611, 630, 648, 650, 651, 655
+	 *
 	 * @ind2=7
 	 * subfield $2=gnd
 	 * subfields vary per field, build array per field with all
@@ -366,9 +367,9 @@ class SolrMarc extends VuFindSolrMarc
 	public function getLocalTopicalTerms()
 	{
 		return $this->getMarcSubFieldMaps(690, array(
-													'a' => 'term',
-													'q' => 'label', // @todo real name?
-													't' => 'time', // @todo real name?
+													'a'  => 'term',
+													'q'  => 'label', // @todo real name?
+													't'  => 'time', // @todo real name?
 													'_v' => 'form_subdivision'
 											   ));
 	}
@@ -383,20 +384,20 @@ class SolrMarc extends VuFindSolrMarc
 	public function getTopicalTerms()
 	{
 		return $this->getMarcSubFieldMaps(650, array(
-													'a' => 'term',
-													'b' => 'term_geographic',
-													'c' => 'location',
-													'd' => 'active_dates',
+													'a'  => 'term',
+													'b'  => 'term_geographic',
+													'c'  => 'location',
+													'd'  => 'active_dates',
 													'_e' => 'relator_term',
-													'q' => 'label', // @todo real name?
-													't' => 'time', // @todo real name?
+													'q'  => 'label', // @todo real name?
+													't'  => 'time', // @todo real name?
 													'_v' => 'form_subdivision',
 													'_x' => 'general_subdivision',
 													'_y' => 'chronological_subdivision',
 													'_z' => 'geographical_subdivision',
 													'_0' => 'authority_record_control_numer',
-													'2' => 'source_heading',
-													'3' => 'materials',
+													'2'  => 'source_heading',
+													'3'  => 'materials',
 													'_4' => 'relator_code'
 											   ));
 	}
@@ -412,15 +413,15 @@ class SolrMarc extends VuFindSolrMarc
 	public function getAddedGeographicNames()
 	{
 		return $this->getMarcSubFieldMaps(651, array(
-													'a' => 'name',
+													'a'  => 'name',
 													'_e' => 'relator',
 													'_v' => 'form_subdivision',
 													'_x' => 'general_subdivision',
 													'_y' => 'chronilogical_subdivision',
 													'_z' => 'geographical_subdivision',
 													'_0' => 'arcn',
-													'2' => 'source',
-													'3' => 'materials',
+													'2'  => 'source',
+													'3'  => 'materials',
 													'_4' => 'relator_code'
 											   ));
 	}
@@ -489,13 +490,13 @@ class SolrMarc extends VuFindSolrMarc
 	{
 		return $this->getMarcSubFieldMaps(300, array(
 													'_a' => 'extent',
-													'b' => 'details',
+													'b'  => 'details',
 													'_c' => 'dimensions',
-													'd' => 'material_single',
+													'd'  => 'material_single',
 													'_e' => 'material_multiple',
 													'_f' => 'type',
 													'_g' => 'size',
-													'3' => 'appliesTo'
+													'3'  => 'appliesTo'
 											   ));
 	}
 
@@ -521,7 +522,7 @@ class SolrMarc extends VuFindSolrMarc
 	public function getFormattedContentNotes()
 	{
 		return $this->getMarcSubFieldMaps(505, array(
-													'a' => 'notes',
+													'a'  => 'notes',
 													'_g' => 'misc',
 													'_r' => 'responsibility',
 													'_t' => 'title',
@@ -609,15 +610,15 @@ class SolrMarc extends VuFindSolrMarc
 	 * Get items of a field as named map (array)
 	 * Use this method if the field is (N)ot(R)epeatable
 	 *
-	 * @param $index
+	 * @param       $index
 	 * @param array $fieldMap
 	 * @return array
 	 */
 	protected function getMarcSubFieldMap($index, array $fieldMap)
 	{
-		$index = sprintf('%03d', $index);
+		$index          = sprintf('%03d', $index);
 		$subFieldValues = array();
-		$field = $this->marcRecord->getField($index);
+		$field          = $this->marcRecord->getField($index);
 
 		if ($field) {
 			$subFieldValues = $this->getMappedFieldData($field, $fieldMap);
@@ -633,13 +634,13 @@ class SolrMarc extends VuFindSolrMarc
 	 * Use this method if the field is (R)epeatable
 	 *
 	 * @param    Integer        $index
-	 * @param    Array        $fieldMap
+	 * @param    Array          $fieldMap
 	 * @return    Array[]
 	 */
 	protected function getMarcSubFieldMaps($index, array $fieldMap)
 	{
 		$subFieldsValues = array();
-		$fields = $this->marcRecord->getFields($index);
+		$fields          = $this->marcRecord->getFields($index);
 
 		foreach ($fields as $field) {
 			$subFieldsValues[] = $this->getMappedFieldData($field, $fieldMap);
@@ -666,7 +667,7 @@ class SolrMarc extends VuFindSolrMarc
 
 		foreach ($fieldMap as $code => $name) {
 			if (substr($code, 0, 1) === '_') { // Underscore means repeatable
-				$code = substr($code, 1); // Remove underscore
+				$code      = substr($code, 1); // Remove underscore
 				$subFields = $field->getSubfields($code);
 
 				if (sizeof($subFields)) {
@@ -694,7 +695,7 @@ class SolrMarc extends VuFindSolrMarc
 	 * Get value of a sub field
 	 *
 	 * @param    Integer        $index
-	 * @param    String        $subFieldCode
+	 * @param    String         $subFieldCode
 	 * @return    String|Boolean
 	 */
 	protected function getSimpleMarcSubFieldValue($index, $subFieldCode)
@@ -739,7 +740,7 @@ class SolrMarc extends VuFindSolrMarc
 		if (!$this->holdingsHelper) {
 			/** @var HoldingsHelper $holdingsHelper */
 			$holdingsHelper = $this->getServiceLocator()->getServiceLocator()->get('Swissbib\HoldingsHelper');
-			$holdingsData = isset($this->fields['holdings']) ? $this->fields['holdings'] : '';
+			$holdingsData   = isset($this->fields['holdings']) ? $this->fields['holdings'] : '';
 
 			$holdingsHelper->setData($this->getUniqueID(), $holdingsData);
 

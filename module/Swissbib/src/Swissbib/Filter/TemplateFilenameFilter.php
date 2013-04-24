@@ -72,7 +72,7 @@ class TemplateFilenameFilter extends AbstractFilter implements ServiceLocatorAwa
 
 		// Remove possibly confidential server details from path
 		$directoryDelimiter = 'themes' . DIRECTORY_SEPARATOR;
-		$templateFilename = substr($templateFilename, strpos($templateFilename, $directoryDelimiter));
+		$templateFilename   = substr($templateFilename, strpos($templateFilename, $directoryDelimiter));
 
 		return $this->wrapContentWithComment($content, $templateFilename, '');
 	}

@@ -58,11 +58,12 @@ class SbResultTab
 		$this->id = trim($config['id']);
 
 		// Init label
-		$label = trim($config['label']);
+		$label       = trim($config['label']);
 		$this->label = empty($label) ? 'Label missing!' : $label;
 
 		/**
 		 * Init isSelected
+		 *
 		 * @note    When there's a key 'selected' it's considered true, w/o looking at the value
 		 */
 		$this->isSelected = array_key_exists('selected', $config);
@@ -183,7 +184,7 @@ class SbResultTab
 		}
 
 		/** @var $results \VuFind\Search\Base\Results */
-		$results = $this->viewModel->results;
+		$results           = $this->viewModel->results;
 		$this->resultTotal = $results->getResultTotal();
 
 		return $this->resultTotal;
@@ -199,11 +200,11 @@ class SbResultTab
 	public function getConfig()
 	{
 		return array(
-			'id' => $this->id,
-			'label' => $this->getLabel(),
-			'selected' => $this->isSelected,
+			'id'        => $this->id,
+			'label'     => $this->getLabel(),
+			'selected'  => $this->isSelected,
 			'templates' => $this->getTemplates(),
-			'count' => $this->getResultTotal(),
+			'count'     => $this->getResultTotal(),
 		);
 	}
 

@@ -15,9 +15,9 @@ class SortAndPrepareFacetList extends AbstractHelper
 	 * Sort and extend facet list
 	 *
 	 * @param    Results        $results        VuFind\Search\Solr\Results
-	 * @param    String        $field          Facet group ID, e.g. 'navSubidsbb'
-	 * @param    Array        $list           Contained items of the facet group
-	 * @param    String        $searchRoute    e.g. 'search-results'
+	 * @param    String         $field          Facet group ID, e.g. 'navSubidsbb'
+	 * @param    Array          $list           Contained items of the facet group
+	 * @param    String         $searchRoute    e.g. 'search-results'
 	 * @return  Array
 	 */
 	public function __invoke(Results $results, $field, array $list, $searchRoute)
@@ -29,7 +29,7 @@ class SortAndPrepareFacetList extends AbstractHelper
 		$baseRoute = $urlHelper($searchRoute);
 
 		foreach ($list as $facetItem) {
-			$facetItem['url'] = $baseRoute . $results->getUrlQuery()->addFacet($field, $facetItem['value']);
+			$facetItem['url']                  = $baseRoute . $results->getUrlQuery()->addFacet($field, $facetItem['value']);
 			$facets[$facetItem['displayText']] = $facetItem;
 		}
 

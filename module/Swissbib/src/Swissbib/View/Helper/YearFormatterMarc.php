@@ -29,8 +29,8 @@ class YearFormatterMarc extends AbstractHelper
 		$retVal = '';
 
 		$dateType = $publicationDate[0];
-		$year1 = $publicationDate[1];
-		$year2 = $publicationDate[2];
+		$year1    = $publicationDate[1];
+		$year2    = $publicationDate[2];
 
 		switch ($dateType) {
 			case 's':

@@ -41,8 +41,8 @@ class SearchController extends VFSearchController
 	{
 		// Initialize tab(s) config
 		$preloadNonSelectedTabResultCounts = !!$this->getModuleConfigParam('preload_result_tabs_counts');
-		$idSelectedTab = $this->getIdSelectedTab();
-		$resultTabsConfig = $this->getModuleConfigParam('result_tabs');
+		$idSelectedTab                     = $this->getIdSelectedTab();
+		$resultTabsConfig                  = $this->getModuleConfigParam('result_tabs');
 
 		// Init all tabs
 		$views = array();
@@ -52,8 +52,8 @@ class SearchController extends VFSearchController
 
 			if ($idTab === $idSelectedTab) {
 				// Selected tab
-				$views[$idTab] = parent::resultsAction();
-				$selectedView = $views[$idTab];
+				$views[$idTab]                   = parent::resultsAction();
+				$selectedView                    = $views[$idTab];
 				$tabConfig['params']['selected'] = true;
 			} else {
 				// Non-selected tabs (preload results optionally)
@@ -69,8 +69,8 @@ class SearchController extends VFSearchController
 
 		// Add view params
 		/** @var    $selectedView    \Zend\View\Model\ViewModel */
-		$selectedView->tabHeadConfigs = $resultTabsConfig;
-		$selectedView->facetsConfig = $this->getServiceLocator()->get('VuFind\Config')->get('facets');
+		$selectedView->tabHeadConfigs     = $resultTabsConfig;
+		$selectedView->facetsConfig       = $this->getServiceLocator()->get('VuFind\Config')->get('facets');
 		$this->layout()->resultViewParams = $selectedView->params;
 
 		return $selectedView;
@@ -113,13 +113,13 @@ class SearchController extends VFSearchController
 
 		// Initialize tab config
 		$resultTabsConfig = $this->getModuleConfigParam('result_tabs');
-		$tabConfig = $resultTabsConfig[$tabKey];
+		$tabConfig        = $resultTabsConfig[$tabKey];
 		/** @var    $view    \Zend\View\Model\ViewModel */
 		$this->searchClassId = $tabConfig['searchClassId'];
 
-		$view = parent::resultsAction();
+		$view                = parent::resultsAction();
 		$view->tabHeadConfig = $this->getTabConfig($tabConfig, $view);
-		$view->facetsConfig = $this->getServiceLocator()->get('VuFind\Config')->get('facets');
+		$view->facetsConfig  = $this->getServiceLocator()->get('VuFind\Config')->get('facets');
 
 		// Add view params to layout
 		$this->layout()->resultViewParams = $view->params;
@@ -146,7 +146,7 @@ class SearchController extends VFSearchController
 		// Get selected tab from cookie if set
 		if (isset($_COOKIE[self::COOKIENAME_SELECTED_TAB])) {
 			$cookieContent = $_COOKIE[self::COOKIENAME_SELECTED_TAB];
-			$idTab = str_replace('tabbed_', '', $cookieContent);
+			$idTab         = str_replace('tabbed_', '', $cookieContent);
 		}
 
 		return !empty($idTab) ? $idTab : $this->getModuleConfigParam('default_result_tab');
@@ -165,11 +165,11 @@ class SearchController extends VFSearchController
 	{
 		if (is_null($view)) {
 			$this->searchClassId = $tabConfig['searchClassId'];
-			$view = null; //parent::resultsAction();
+			$view                = null; //parent::resultsAction();
 		}
 
 		/** @var $tabModel \Swissbib\ResultTab\SbResultTab */
-		$tabModel = $tabConfig['model'];
+		$tabModel  = $tabConfig['model'];
 		$tabParams = $tabConfig['params'];
 
 		$templates = array_key_exists('templates', $tabConfig) ? $tabConfig['templates'] : array();
@@ -203,7 +203,7 @@ class SearchController extends VFSearchController
 	 */
 	private function storeInSessionContainer($containerName, $parameterKey, $value)
 	{
-		$session = new SessionContainer($containerName);
+		$session                = new SessionContainer($containerName);
 		$session->$parameterKey = $value;
 	}
 
@@ -235,7 +235,7 @@ class SearchController extends VFSearchController
 	 */
 	private function getModuleConfigParam($parameterKey, $moduleKey = 'swissbib')
 	{
-		$config = $this->getServiceLocator()->get('Config');
+		$config       = $this->getServiceLocator()->get('Config');
 		$moduleConfig = $config[$moduleKey];
 
 		if (!array_key_exists($parameterKey, $moduleConfig)) {

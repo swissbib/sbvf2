@@ -25,7 +25,7 @@ class Bootstrapper
 		$application = $this->config = $event->getApplication();
 
 		$this->config = $application->getServiceManager()->get('VuFind\Config')->get('config');
-		$this->event = $event;
+		$this->event  = $event;
 		$this->events = $application->getEventManager();
 
 	}
@@ -80,9 +80,9 @@ class Bootstrapper
 	 */
 	protected function DISABLEDinitPluginManagers()
 	{
-		$app = $this->event->getApplication();
+		$app            = $this->event->getApplication();
 		$serviceManager = $app->getServiceManager();
-		$config = $app->getConfig();
+		$config         = $app->getConfig();
 
 		// Use naming conventions to set up a bunch of services based on namespace:
 		$namespaces = array(
@@ -90,7 +90,7 @@ class Bootstrapper
 		);
 		foreach ($namespaces as $ns) {
 			$serviceName = 'Swissbib\\' . str_replace('\\', '', $ns) . 'PluginManager';
-			$factory = function ($sm) use ($config, $ns) {
+			$factory     = function ($sm) use ($config, $ns) {
 				$className = 'Swissbib\\' . $ns . '\PluginManager';
 				$configKey = strtolower(str_replace('\\', '_', $ns));
 				return new $className(
