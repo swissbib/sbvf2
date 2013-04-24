@@ -5,12 +5,7 @@ use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\InitProviderInterface;
 use Zend\ModuleManager\ModuleManagerInterface;
-
-use Swissbib\Filter\TemplateFilenameFilter;
-
-use Zend\ModuleManager\ModuleManager,
-		Zend\Mvc\MvcEvent,
-		Zend\ModuleManager\ModuleEvent;
+use Zend\Mvc\MvcEvent;
 
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface, InitProviderInterface {
 
@@ -27,9 +22,6 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, In
 	 */
 	public function onBootstrap(MvcEvent $event)
 	{
-			// Add template filename comments filter to filter chain
-		TemplateFilenameFilter::onBootstrap($event);
-
 		$b = new Bootstrapper($event);
 		$b->bootstrap();
 	}
