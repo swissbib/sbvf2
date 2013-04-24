@@ -31,8 +31,9 @@ var sbAjax = {
 	 *
 	 * @param	{String}	[idContainer]
 	 * @param	{String}	[idTab]
+	 * @param	{String}	[addStyle]
 	 */
-	addSpinner:function(idContainer, idTab) {
+	addSpinner:function(idContainer, idTab, addStyle) {
 		idContainer	= idContainer ? idContainer : 'content';
 		idTab		= idTab ? idTab : swissbib.getIdSelectedTab();
 
@@ -42,11 +43,8 @@ var sbAjax = {
 		}
 
 		var spinnerElId = 'spinner' + jQuery.guid++;
-		destinationEl.prepend( this.createSpinnerElement(spinnerElId) );
-		$('#' + spinnerElId).sprite({
-			fps: 10,
-			no_of_frames: 12
-		});
+		destinationEl.prepend( this.createSpinnerElement(spinnerElId, addStyle) );
+		$('#' + spinnerElId).sprite({fps: 10, no_of_frames: 12});
 		$('#' + spinnerElId).spStart();
 	},
 
@@ -146,7 +144,7 @@ var sbAjax = {
 			var ajaxOptions		= this.getAjaxOptions(searchQuery, tabId, containerId, true);
 			this.loadsContent	= true;
 
-			this.addSpinner(containerId, tabId);
+			this.addSpinner(containerId, tabId, 'margin-bottom:-26px;');
 			$.ajax(ajaxOptions);
 		}
 	},
@@ -166,7 +164,7 @@ var sbAjax = {
     		var ajaxOptions		= this.getAjaxOptions(searchQuery, tabId, containerId, false);
 			this.loadsSidebar	= true;
 
-			this.addSpinner(containerId, tabId);
+			this.addSpinner(containerId, tabId, 'margin-top:-26px;');
 			$.ajax(ajaxOptions);
 		}
 	},
@@ -176,14 +174,16 @@ var sbAjax = {
 	/**
 	 * Create AJAX spinner element, containing hidden value of requested AJAX uri
 	 *
+	 * @param	{String}	elementId
+	 * @param	{String}	[addStyle]
 	 * @return	{Element}
 	 */
-	createSpinnerElement: function(elementId) {
+	createSpinnerElement: function(elementId, addStyle) {
 		return $(
 			'<div/>', {
 				id:		elementId,
 				class:	'ajax_spinner',
-				style:	'width:26px; height:26px;'
+				style:	'width:26px; height:26px;' + addStyle
 		});
 	},
 
