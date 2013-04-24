@@ -43,9 +43,10 @@ class Importer implements ServiceLocatorAwareInterface
 	/**
 	 * Import data from libadmin api
 	 *
+	 * @param    Boolean        $dryRun
 	 * @return    Result
 	 */
-	public function import()
+	public function import($dryRun = false)
 	{
 		$result = new Result();
 
@@ -59,12 +60,16 @@ class Importer implements ServiceLocatorAwareInterface
 			return $result->addError($e->getMessage());
 		}
 
-		try {
-			$storeResult = $this->storeData($importData['data']);
+		if (!$dryRun) {
+			try {
+				$storeResult = $this->storeData($importData['data']);
 
-			$result->addMessage('Data stored in local system');
-		} catch (Exceptions\Store $e) {
-			return $result->addError($e->getMessage());
+				$result->addMessage('Data stored in local system');
+			} catch (Exceptions\Store $e) {
+				return $result->addError($e->getMessage());
+			}
+		} else {
+			$result->addMessage('Skipped storing of data on local system (dry run)');
 		}
 
 		$result->addMessage('Import completed');
