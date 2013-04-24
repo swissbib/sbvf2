@@ -9,23 +9,25 @@ use VuFind\Search\Memory;
  * the search word (lookfor) is part of the search URL
  *
  */
-class LastSearchWord extends AbstractHelper {
+class LastSearchWord extends AbstractHelper
+{
 
 	/**
 	 * Get last search word
 	 *
 	 * @return    String
 	 */
-	public function __invoke() {
-		$lookFor		= '';
-		$lastSearchUrl	= Memory::retrieve();
-		$lastSearch  	= parse_url($lastSearchUrl);
+	public function __invoke()
+	{
+		$lookFor = '';
+		$lastSearchUrl = Memory::retrieve();
+		$lastSearch = parse_url($lastSearchUrl);
 
-		if( isset($lastSearch['query']) ) {
+		if (isset($lastSearch['query'])) {
 			parse_str($lastSearch['query'], $queryParts);
 
-			if( isset($queryParts['lookfor']) ) {
-				$lookFor	= trim($queryParts['lookfor']);
+			if (isset($queryParts['lookfor'])) {
+				$lookFor = trim($queryParts['lookfor']);
 			}
 		}
 
