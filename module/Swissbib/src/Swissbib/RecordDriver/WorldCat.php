@@ -34,9 +34,8 @@ namespace Swissbib\RecordDriver;
 
 use VuFind\RecordDriver\WorldCat as VFWorldCat;
 
-
-class WorldCat extends VFWorldCat {
-
+class WorldCat extends VFWorldCat
+{
 
 
 }

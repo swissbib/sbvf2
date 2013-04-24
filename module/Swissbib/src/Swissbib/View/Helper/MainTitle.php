@@ -13,16 +13,17 @@ use Zend\View\Helper\AbstractHelper;
  * @link     http://www.swissbib.org
  */
 
-class MainTitle extends AbstractHelper {
-    public function __invoke($title, $resultItem = null) {
-        if ($title != '@') {
-            return $title;
-        }
-        elseif (!isset($title)) {
-            return '[ohne Titel]';
-        }
-        elseif ($title == '@') {
-             // 'hier müsste 490 av rein';
-        }
-    }
+class MainTitle extends AbstractHelper
+{
+
+	public function __invoke($title, $resultItem = null)
+	{
+		if ($title != '@') {
+			return $title;
+		} elseif (!isset($title)) {
+			return '[ohne Titel]';
+		} elseif ($title == '@') {
+			// 'hier müsste 490 av rein';
+		}
+	}
 }

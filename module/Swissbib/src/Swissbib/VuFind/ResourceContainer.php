@@ -6,7 +6,8 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Config\Config;
 
-class ResourceContainer extends VfResourceContainer implements ServiceLocatorAwareInterface {
+class ResourceContainer extends VfResourceContainer implements ServiceLocatorAwareInterface
+{
 
 	/**
 	 * @var    ServiceLocatorInterface
@@ -26,7 +27,8 @@ class ResourceContainer extends VfResourceContainer implements ServiceLocatorAwa
 	 *
 	 * @param    ServiceLocatorInterface $serviceLocator
 	 */
-	public function setServiceLocator(ServiceLocatorInterface $serviceLocator) {
+	public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+	{
 		$this->serviceLocator = $serviceLocator;
 		$config = new Config($serviceLocator->get('Config'));
 		$this->ignoredFiles = $config->swissbib->ignore_assets->toArray();
@@ -39,7 +41,8 @@ class ResourceContainer extends VfResourceContainer implements ServiceLocatorAwa
 	 *
 	 * @return    ServiceLocatorInterface
 	 */
-	public function getServiceLocator() {
+	public function getServiceLocator()
+	{
 		return $this->serviceLocator;
 	}
 
@@ -50,7 +53,8 @@ class ResourceContainer extends VfResourceContainer implements ServiceLocatorAwa
 	 *
 	 * @param    Array|String        $css
 	 */
-	public function addCss($css) {
+	public function addCss($css)
+	{
 		$css = $this->removeIgnoredFiles($css);
 
 		parent::addCss($css);
@@ -64,14 +68,15 @@ class ResourceContainer extends VfResourceContainer implements ServiceLocatorAwa
 	 * @param    Array|String|\Traversable    $css
 	 * @return     Array|\Traversable
 	 */
-	protected function removeIgnoredFiles($css) {
-		if( !is_array($css) && !is_a($css, 'Traversable') ) {
+	protected function removeIgnoredFiles($css)
+	{
+		if (!is_array($css) && !is_a($css, 'Traversable')) {
 			$css = array($css);
 		}
 
-		foreach($this->ignoredFiles as $ignorePattern) {
-			foreach($css as $index => $file) {
-				if( stristr($file, $ignorePattern) !== false ) {
+		foreach ($this->ignoredFiles as $ignorePattern) {
+			foreach ($css as $index => $file) {
+				if (stristr($file, $ignorePattern) !== false) {
 					// File matches ignore pattern
 					unset($css[$index]);
 				}

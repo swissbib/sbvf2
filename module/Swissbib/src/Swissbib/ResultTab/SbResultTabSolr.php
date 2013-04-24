@@ -8,6 +8,7 @@ namespace Swissbib\ResultTab;
  * @package       Swissbib
  * @subpackage    [Subpackage]
  */
-class SbResultTabSolr extends \Swissbib\ResultTab\SbResultTab {
+class SbResultTabSolr extends \Swissbib\ResultTab\SbResultTab
+{
 
 }

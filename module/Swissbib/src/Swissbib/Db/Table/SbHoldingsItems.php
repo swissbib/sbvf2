@@ -1,5 +1,6 @@
 <?php
 namespace Swissbib\Db\Table;
+
 use \VuFind\Db\Table\Gateway;
 
 /**
@@ -32,18 +33,15 @@ use \VuFind\Db\Table\Gateway;
  * @link     << link to further documentation related to this resource type (Wiki, tracker ...)
  */
 
-
 class SbHoldingsItems extends Gateway
 {
 
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        parent::__construct('items', 'Swissbib\Db\Row\SbHoldingsItems');
-    }
-
-
+	/**
+	 * Constructor
+	 */
+	public function __construct()
+	{
+		parent::__construct('items', 'Swissbib\Db\Row\SbHoldingsItems');
+	}
 
 }

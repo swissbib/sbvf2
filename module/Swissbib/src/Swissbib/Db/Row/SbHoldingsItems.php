@@ -1,9 +1,8 @@
 <?php
 
 namespace Swissbib\Db\Row;
+
 use Zend\Db\RowGateway\RowGateway;
-
-
 
 /**
  * swissbib / VuFind <<full descriptive name of the class>>
@@ -35,20 +34,18 @@ use Zend\Db\RowGateway\RowGateway;
  * @link     << link to further documentation related to this resource type (Wiki, tracker ...)
  */
 
-
 class SbHoldingsItems extends RowGateway
 {
 
 
-    /**
-     * Constructor
-     *
-     * @param \Zend\Db\Adapter\Adapter $adapter Database adapter
-     */
-    public function __construct($adapter)
-    {
-        parent::__construct(array('core', 'id'), 'items', $adapter);
-    }
-
+	/**
+	 * Constructor
+	 *
+	 * @param \Zend\Db\Adapter\Adapter $adapter Database adapter
+	 */
+	public function __construct($adapter)
+	{
+		parent::__construct(array('core', 'id'), 'items', $adapter);
+	}
 
 }

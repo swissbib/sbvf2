@@ -13,62 +13,63 @@ use Zend\View\Helper\AbstractHelper;
  * @link     http://www.swissbib.org
  */
 
-class YearFormatterMarc extends AbstractHelper {
+class YearFormatterMarc extends AbstractHelper
+{
 
-    /**
-     * @param   Array   $publicationDate
-     * @return  String
-     */
-    public function __invoke($publicationDate) {
-        if( !is_array($publicationDate) || sizeof($publicationDate) == 0 ) {
-            return '';
-        }
+	/**
+	 * @param   Array   $publicationDate
+	 * @return  String
+	 */
+	public function __invoke($publicationDate)
+	{
+		if (!is_array($publicationDate) || sizeof($publicationDate) == 0) {
+			return '';
+		}
 
-        $retVal     = '';
+		$retVal = '';
 
-        $dateType   = $publicationDate[0];
-        $year1      = $publicationDate[1];
-        $year2      = $publicationDate[2];
+		$dateType = $publicationDate[0];
+		$year1 = $publicationDate[1];
+		$year2 = $publicationDate[2];
 
-        switch ($dateType)
-        {
-            case 's':
-            case 'n':
-            case 'e':
-                $retVal = $year1;
-                break;
+		switch ($dateType) {
+			case 's':
+			case 'n':
+			case 'e':
+				$retVal = $year1;
+				break;
 
-            case 'c':
-            case 'u':
-                $retVal = $year1 . '-';
-                break;
+			case 'c':
+			case 'u':
+				$retVal = $year1 . '-';
+				break;
 
-            case 'd':
-                $retVal = $year1 . '-' . $year2;
-                break;
+			case 'd':
+				$retVal = $year1 . '-' . $year2;
+				break;
 
-            case 'p':
-            case 'r':
-                $retVal = $year1 . ' [' . $year2 . ']';
-                break;
+			case 'p':
+			case 'r':
+				$retVal = $year1 . ' [' . $year2 . ']';
+				break;
 
-            case 'q':
-                if ($year2 === '9999') {
-                    $retVal = $year1;
-                } elseif ($year2 != '9999') {
-                    $retVal = $year1 . ' / ' . $year2;
-                }
-                break;
+			case 'q':
+				if ($year2 === '9999') {
+					$retVal = $year1;
+				} elseif ($year2 != '9999') {
+					$retVal = $year1 . ' / ' . $year2;
+				}
+				break;
 
-            case 'm':
-                if ($year2 === '9999') {
-                    $retVal = $year1 . '-';
-                } elseif ($year2 != '9999') {
-                    $retVal = $year1 . '-' . $year2;
-                }
-                break;
-        }
+			case 'm':
+				if ($year2 === '9999') {
+					$retVal = $year1 . '-';
+				} elseif ($year2 != '9999') {
+					$retVal = $year1 . '-' . $year2;
+				}
+				break;
+		}
 
-        return str_replace('u', '?', $retVal);
-    }
+		return str_replace('u', '?', $retVal);
+	}
 }

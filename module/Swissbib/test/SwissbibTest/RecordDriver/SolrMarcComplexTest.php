@@ -5,14 +5,19 @@ namespace SwissbibTest\RecordDriver;
  * [Description]
  *
  */
-class SolrMarcComplexTest extends SolrMarcTestCase {
+class SolrMarcComplexTest extends SolrMarcTestCase
+{
 
-	public function setUp() {
+	public function setUp()
+	{
 		$this->initialize('marc-complex.json');
 	}
 
-	public function testGetFormattedContentNotes() {
-		$notes	= $this->driver->getFormattedContentNotes();
+
+
+	public function testGetFormattedContentNotes()
+	{
+		$notes = $this->driver->getFormattedContentNotes();
 
 		$this->assertInternalType('array', $notes);
 		$this->assertEquals(1, sizeof($notes));

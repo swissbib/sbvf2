@@ -1,6 +1,7 @@
 <?php
 
 namespace Swissbib\Db\Table;
+
 use \VuFind\ServiceManager\AbstractPluginFactory as AbstractPlugin;
 
 /**
@@ -33,14 +34,12 @@ use \VuFind\ServiceManager\AbstractPluginFactory as AbstractPlugin;
  * @link     << link to further documentation related to this resource type (Wiki, tracker ...)
  */
 
-
 class PluginFactory extends AbstractPlugin
 {
 
-    public function __construct()
-    {
-        $this->defaultNamespace = 'Swissbib\Db\Table';
-    }
-
+	public function __construct()
+	{
+		$this->defaultNamespace = 'Swissbib\Db\Table';
+	}
 
 }

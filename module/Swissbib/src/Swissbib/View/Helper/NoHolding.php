@@ -12,13 +12,15 @@ use Zend\View\Helper\AbstractHelper;
  * @link     http://www.swissbib.org
  */
 
-class NoHolding extends AbstractHelper {
+class NoHolding extends AbstractHelper
+{
 
-    /**
-     * @return  String
-     */
-    public function __invoke() {
+	/**
+	 * @return  String
+	 */
+	public function __invoke()
+	{
 
-        return 'Keine Bestandsangaben';
-    }
+		return 'Keine Bestandsangaben';
+	}
 }
