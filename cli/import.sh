@@ -1,1 +1,1 @@
-php ../public/index.php synclibadmin
+php ../public/index.php synclibadminx
