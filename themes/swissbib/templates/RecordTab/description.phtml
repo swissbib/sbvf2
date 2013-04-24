@@ -15,35 +15,16 @@ if ($this->syndeticsPlus()->isActive()) {
 
 <!-- Tab-Inhalte gemaess TP detailstab -->
 
-<? $stdID = $this->driver->getStandardNumbers(); if (!empty($stdID)): ?>
-    <?$contentDisplayed = true; ?>
-    <h4>Standard-Nummern (ISBN, ISSN, ISMN, DOI, URN)</h4>
-        <? if ($stdID): ?>
-    <p><?=$this->escapeHtml($stdID[0])?></p>
-    <? endif; ?>
-<? endif; ?>
+<h4>Alternativtitel</h4>
+<p>hier 240 etc.</p>
 
-<? $mainAuthor = $this->driver->getPrimaryAuthor(); if (!empty($mainAuthor)): ?>
-    <?$contentDisplayed = true; ?>
-    <h4>Hauptautor</h4>
-    <p><?=$this->escapeHtml($mainAuthor['name']) . ', ' . ($mainAuthor['forname'])?></p>
-<? endif; ?>
+<h4>Reihe</h4>
+<p>490 etc.</p>
 
-    <h4>Alternativtitel</h4>
-    <p>hier 240 etc.</p>
+<h4>diverse 500</h4>
+<p>diverse 500</p>
 
-    <h4>Reihe</h4>
-    <p>490 etc.</p>
-
-    <h4>diverse 500</h4>
-    <p>diverse 500</p>
-
-    <? $topics = $this->driver->getTopicalTerms(); if (!empty($topics)): ?>
-        <?$contentDisplayed = true; ?>
-        <h4>Themen (in Arbeit)</h4>
-		<?php if( count($topics) > 0 && array_key_exists('term', $topics[0])): ?>
-        	<p><?=$this->escapeHtml($topics[0]['term'])?></p>
-		<?php else: ?>
-			Term not given.
-		<?php endif; ?>
+    <? $subjectHeadings = $this->driver->getAllSubjectHeadings() ?>
+    <? if (sizeof($subjectHeadings) > 0) :?>
+    <?=$subjectHeadingsDisplay = $this->subjectHeadings(); ?>
     <? endif; ?>
