@@ -78,7 +78,7 @@ class Bootstrapper
 	/**
 	 * Set up plugin managers.
 	 */
-	protected function DISABLEDinitPluginManagers()
+	protected function initPluginManagers()
 	{
 		$app            = $this->event->getApplication();
 		$serviceManager = $app->getServiceManager();

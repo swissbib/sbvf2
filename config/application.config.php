@@ -1,7 +1,7 @@
 <?php
 $config = array(
     'modules' => array(
-        'VuFindHttp', 'VuFindTheme', 'VuFind', 'Swissbib'
+        'VuFindHttp', 'VuFindTheme', 'VuFind'
     ),
     'module_listener_options' => array(
         'config_glob_paths'    => array(
@@ -21,7 +21,7 @@ $config = array(
     ),
 );
 if (PHP_SAPI == 'cli' && !defined('VUFIND_PHPUNIT_RUNNING')) {
-    $config['modules'][] = 'VuFindConsole';
+//    $config['modules'][] = 'VuFindConsole';
 }
 if (APPLICATION_ENV == 'development') {
     $config['modules'][] = 'VuFindDevTools';

@@ -3,11 +3,14 @@ namespace Swissbib;
 
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
+use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 use Zend\ModuleManager\Feature\InitProviderInterface;
 use Zend\ModuleManager\ModuleManagerInterface;
 use Zend\Mvc\MvcEvent;
+use Zend\Console\Adapter\AdapterInterface as Console;
 
-class Module implements AutoloaderProviderInterface, ConfigProviderInterface, InitProviderInterface
+class Module
+	implements AutoloaderProviderInterface, ConfigProviderInterface, InitProviderInterface, ConsoleUsageProviderInterface
 {
 
 	/**
@@ -42,6 +45,23 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, In
 					__NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
 				),
 			),
+		);
+	}
+
+
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getConsoleUsage(Console $console)
+	{
+		return array(
+			'Libadmin VuFind Synchronisation',
+			'Import library and group data from libadmin API and save as local files',
+			'Usage: libadmin sync [--verbose|-v] [--dry|-d] [--result|-r]',
+			'--verbose|-v' => 'Print informations about actions on console output',
+			'--dry|-d'     => 'Don\'t replace local files with new data (check if new data is available/reachable)',
+			'--result|-r'  => 'Print out a single result info at the end. This is included in the verbose flag'
 		);
 	}
 
