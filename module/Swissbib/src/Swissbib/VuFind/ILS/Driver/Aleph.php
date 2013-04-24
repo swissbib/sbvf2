@@ -267,5 +267,4 @@ class Aleph extends AlephDriver
 			return parent::doXRequest($op, $params, $auth);
 		}
 	}
-
 }

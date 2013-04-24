@@ -63,7 +63,4 @@ class Config extends AbstractHelper implements ServiceLocatorAwareInterface
 		return $this->getConfig();
 //		return $this->config;
 	}
-
 }
-
-

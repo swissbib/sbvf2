@@ -15,6 +15,7 @@
 		<exclude name="Generic.WhiteSpace.DisallowTabIndent"/>
 		<exclude name="Generic.WhiteSpace.ScopeIndent"/>
 		<exclude name="PEAR.Functions.FunctionCallSignature"/>
+		<exclude name="PSR2.ControlStructures.SwitchDeclaration"/>
 	</rule>
 
 </ruleset>

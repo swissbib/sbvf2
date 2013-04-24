@@ -20,5 +20,4 @@ class Number extends AbstractHelper
 	{
 		return number_format($number, 0, '', '\'');
 	}
-
 }

@@ -52,5 +52,4 @@ class Authors extends AbstractHelper
 
 		return $authorsData;
 	}
-
 }

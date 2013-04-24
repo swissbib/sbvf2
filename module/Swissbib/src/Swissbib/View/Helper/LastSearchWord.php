@@ -33,5 +33,4 @@ class LastSearchWord extends AbstractHelper
 
 		return $lookFor;
 	}
-
 }

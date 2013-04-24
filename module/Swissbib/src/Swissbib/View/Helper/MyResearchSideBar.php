@@ -25,5 +25,4 @@ class MyResearchSideBar extends AbstractHelper
 																			  'location' => $location
 																		 ));
 	}
-
 }

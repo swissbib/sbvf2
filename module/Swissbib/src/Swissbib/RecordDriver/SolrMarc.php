@@ -785,5 +785,4 @@ class SolrMarc extends VuFindSolrMarc
 
 		return $this->holdingsHelper;
 	}
-
 }

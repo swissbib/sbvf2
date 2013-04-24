@@ -103,5 +103,4 @@ class Bootstrapper
 			$serviceManager->setFactory($serviceName, $factory);
 		}
 	}
-
 }

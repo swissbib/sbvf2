@@ -36,5 +36,4 @@ class PhysicalDescriptions extends AbstractHelper
 
 		return implode('; ', $infos);
 	}
-
 }

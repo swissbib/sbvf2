@@ -41,6 +41,4 @@ class Missing extends VFMissing
 
 		return $shortTitle;
 	}
-
 }
-

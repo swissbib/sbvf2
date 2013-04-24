@@ -67,5 +67,4 @@ class Result
 	{
 		return $this->success;
 	}
-
 }

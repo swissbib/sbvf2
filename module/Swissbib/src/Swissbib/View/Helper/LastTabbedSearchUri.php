@@ -23,5 +23,4 @@ class LastTabbedSearchUri extends AbstractHelper
 
 		return isset($session->last) ? $session->last : '';
 	}
-
 }

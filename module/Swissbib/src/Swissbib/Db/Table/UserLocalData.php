@@ -133,5 +133,4 @@ class UserLocalData extends Gateway
 
 		$result->save();
 	}
-
 }
