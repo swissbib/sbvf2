@@ -2,9 +2,11 @@
 namespace Swissbib;
 
 use VuFind\Config\Reader as ConfigReader;
+use Zend\Console\Console;
 use Zend\Mvc\MvcEvent;
 use Zend\Console\Request as ConsoleRequest;
 use Swissbib\Filter\TemplateFilenameFilter;
+use Zend\I18n\Translator\Translator;
 
 class Bootstrapper
 {
@@ -64,6 +66,48 @@ class Bootstrapper
 
 			$view->getFilterChain()->attach($widgetFilter, 50);
 		}
+	}
+
+
+
+	/**
+	 * Initialize translator for custom label files
+	 *
+	 */
+	public function initLanguage()
+	{
+		// Language not supported in CLI mode:
+		if (Console::isConsole()) {
+			return;
+		}
+
+		$baseDir = LOCAL_OVERRIDE_DIR . '/languages';
+		$types   = array(
+			'institution',
+			'group',
+			'bibinfo',
+			'facets'
+		);
+
+		$callback = function ($event) use ($baseDir, $types) {
+			$sm             = $event->getApplication()->getServiceManager();
+			$baseTranslator = $sm->get('VuFind\Translator');
+			/** @var Translator $libadminTranslator */
+			$libadminTranslator = $sm->get('Swissbib\Libadmin\Translator');
+			$locale             = $baseTranslator->getLocale();
+
+			foreach ($types as $type) {
+				$langFile = $baseDir . '/' . $type . '/' . $locale . '.ini';
+
+				if (is_file($langFile)) {
+					$libadminTranslator->addTranslationFile('ExtendedIni', $langFile, $type, $locale)
+							->setLocale($locale);
+				}
+			}
+		};
+
+		// Attach right AFTER base translator, so it is initialized
+		$this->events->attach('dispatch', $callback, 8999);
 	}
 
 
