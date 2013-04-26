@@ -84,9 +84,8 @@ class Bootstrapper
 		$baseDir = LOCAL_OVERRIDE_DIR . '/languages';
 		$types   = array(
 			'institution',
-//			'group',
-//			'bibinfo',
-//			'facet'
+			'group',
+			'bibinfo'
 		);
 
 		$callback = function ($event) use ($baseDir, $types) {
