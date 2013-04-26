@@ -704,7 +704,7 @@ class SolrMarc extends VuFindSolrMarc
 		foreach ($fieldMap as $code => $name) {
 			if (substr($code, 0, 1) === '_') { // Underscore means repeatable
 				$code      = substr($code, 1); // Remove underscore
-				$subFields = $field->getSubfields($code);
+				$subFields = $field->getSubfields((string)$code);
 
 				if (sizeof($subFields)) {
 					$subFieldValues[$name] = array();
@@ -714,7 +714,7 @@ class SolrMarc extends VuFindSolrMarc
 					}
 				}
 			} else { // Normal single field
-				$subField = $field->getSubfield($code);
+				$subField = $field->getSubfield((string)$code);
 
 				if ($subField) {
 					$subFieldValues[$name] = $subField->getData();

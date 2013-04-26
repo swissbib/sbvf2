@@ -357,7 +357,7 @@ class File_MARC_Data_Field extends File_MARC_Field
     {
         // iterate merrily through the subfields looking for the requested code
         foreach ($this->subfields as $sf) {
-            if ($sf->getCode() === $code) {
+            if ($sf->getCode() == $code) {
                 return $sf;
             }
         }
