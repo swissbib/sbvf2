@@ -63,4 +63,37 @@ $facetItemsLimitDefault = $facetResultsSettings->get('facet_limit_default');    
 		</div>
 		<!-- facet -->
 	<?php endforeach; ?>
+
+
+	<!-- Slider widget: Range of publication date  -->
+	<?php
+		$this->headScript()->appendFile('pubdate_slider.js');
+		$title = 'Erscheinungsjahr';
+	?>
+	<div id="facet_pubdate_slider" class="facet">
+		<h5 id="facet_toggler_publishdate" class="toggler persist expanded" title="adv_search_year">Erscheinungsjahr</h5>
+
+		<form action="" name="<?=$this->escapeHtml($title)?>Filter" id="<?=$this->escapeHtml($title)?>Filter">
+			<?=$results->getUrlQuery()->asHiddenFields(array('filter' => "/^{$title}:.*/"))?>
+			<input type="hidden" name="daterange[]" value="<?=$this->escapeHtml($title)?>"/>
+
+			<fieldset class="publishDateLimit facet_toggler_publishdate" id="publishDateSlider">
+				<div class="values">
+					<div>
+						<label for="<?=$this->escapeHtml($title)?>from"><?=$this->transEsc('date_from')?>:</label>
+						<input type="text" size="4" maxlength="4" class="yearbox" name="<?=$this->escapeHtml($title)?>from" id="<?=$this->escapeHtml($title)?>from" value="<?=isset($dateFacets[$title][0])?$this->escapeHtml($dateFacets[$title][0]):''?>" />
+					</div>
+					<div>
+						<label for="<?=$this->escapeHtml($title)?>to"><?=$this->transEsc('date_to')?>:</label>
+						<input type="text" size="4" maxlength="4" class="yearbox" name="<?=$this->escapeHtml($title)?>to" id="<?=$this->escapeHtml($title)?>to" value="<?=isset($dateFacets[$title][1])?$this->escapeHtml($dateFacets[$title][1]):''?>" />
+					</div>
+				</div>
+
+				<div id="<?=$this->escapeHtml($title)?>Slider" class="dateSlider"></div>
+
+				<input type="submit" value="<?=$this->transEsc('Set')?>" id="<?=$this->escapeHtml($title)?>goButton"/>
+			</fieldset>
+		</form>
+	</div>
+
 </div>
