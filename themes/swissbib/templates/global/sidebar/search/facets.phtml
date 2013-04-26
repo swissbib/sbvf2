@@ -40,7 +40,7 @@ $facetItemsLimitDefault = $facetResultsSettings->get('facet_limit_default');    
 ?>		    <?php foreach($facetGroupItems as $facet): ?>
                 <?php if($itemsCount >= $amountItemsShown) break; /* Limit initially shown items per facet*/ ?>
                 <?php $itemsCount++; ?>
-                <?= $this->facetItem($facet) ?>
+                <?= $this->facetItem($facet, $facetGroup) ?>
             <?php endforeach; ?>
             <? if($amountItems > $amountItemsShown): /* Show "more facets" link if there are more */ ?>
                 <?php $amountMore = $amountItems - $amountItemsShown ?>
@@ -51,7 +51,7 @@ $facetItemsLimitDefault = $facetResultsSettings->get('facet_limit_default');    
                 <?php while($itemsCount < $amountItems) {
                     $facet  = $facetGroupItems[$itemsCount];
                 ?>
-                    <?= $this->facetItem($facet) ?>
+                    <?= $this->facetItem($facet, $facetGroup) ?>
                     <?php $itemsCount++; ?>
                 <?php } ?>
                 <li id="less<?=$facetId?>" class="facet_more">

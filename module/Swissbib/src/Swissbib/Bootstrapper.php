@@ -72,7 +72,7 @@ class Bootstrapper
 
 	/**
 	 * Initialize translator for custom label files
-	 *
+	 * DISABLED AT THE MOMENT
 	 */
 	public function initLanguage()
 	{
@@ -84,24 +84,23 @@ class Bootstrapper
 		$baseDir = LOCAL_OVERRIDE_DIR . '/languages';
 		$types   = array(
 			'institution',
-			'group',
-			'bibinfo',
-			'facets'
+//			'group',
+//			'bibinfo',
+//			'facet'
 		);
 
 		$callback = function ($event) use ($baseDir, $types) {
 			$sm             = $event->getApplication()->getServiceManager();
 			$baseTranslator = $sm->get('VuFind\Translator');
 			/** @var Translator $libadminTranslator */
-			$libadminTranslator = $sm->get('Swissbib\Libadmin\Translator');
 			$locale             = $baseTranslator->getLocale();
 
 			foreach ($types as $type) {
 				$langFile = $baseDir . '/' . $type . '/' . $locale . '.ini';
 
 				if (is_file($langFile)) {
-					$libadminTranslator->addTranslationFile('ExtendedIni', $langFile, $type, $locale)
-							->setLocale($locale);
+					$baseTranslator->addTranslationFile('ExtendedIni', $langFile, $type, $locale)
+									->setLocale($locale);
 				}
 			}
 		};

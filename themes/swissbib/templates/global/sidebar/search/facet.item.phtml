@@ -1,4 +1,6 @@
-<?php $facetLabel = $this->facetItemLabel($facet); ?>
+<?php
+$facetLabel = $this->facetItemLabel($facet, $type);
+?>
 <li>
     <a href="<?=$facet['url']?>" title="<?=$facetLabel?>"><?=$facetLabel?>&nbsp;&raquo;</a>
 </li>
