@@ -7,7 +7,8 @@ use Zend\Console\Request as ConsoleRequest;
 use Swissbib\Libadmin\Importer;
 
 /**
- * [Description]
+ * Synchronize VuFind with LibAdmin
+ * Import data into local files
  *
  */
 class LibadminSyncController extends AbstractActionController
@@ -32,28 +33,17 @@ class LibadminSyncController extends AbstractActionController
 
 		/** @var Importer $importer */
 		$importer = $this->getServiceLocator()->get('Swissbib\Libadmin\Importer');
+		$result   = $importer->import($dryRun);
 
-		$result = $importer->import($dryRun);
-
+			// Show all messages?
 		if ($verbose) {
-			echo "Import status: " . ($result->isSuccess() ? 'Success' : 'Failed') . "\n";
-
-			if ($result->hasErrors()) {
-				echo "Errors:\n";
-				foreach ($result->getErrors() as $error) {
-					echo ' - ' . $error . "\n";
-				}
-			}
-
-			if ($result->hasMessages()) {
-				echo "Messages:\n";
-				foreach ($result->getMessages() as $message) {
-					echo ' - ' . $message . "\n";
-				}
+			foreach ($result->getFormattedMessages() as $message) {
+				echo '- ' . $message . "\n";
 			}
 		}
 
-		if (!$verbose || $showResult) {
+			// No messages printed, but result required?
+		if (!$verbose && $showResult) {
 			echo $result->isSuccess() ? 1 : 0;
 		}
 	}
