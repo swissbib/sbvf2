@@ -11,4 +11,4 @@ CREATE TABLE `user_localdata` (
   `max_hits` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
