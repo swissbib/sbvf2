@@ -49,7 +49,4 @@ class SolrMarcKeywordsTest extends SolrMarcTestCase
 		$this->assertEquals(4, sizeof($geoNames[0]['general_subdivision']));
 		$this->assertEquals('Arabisch', $geoNames[0]['general_subdivision'][3]);
 	}
-
 }
-
-?>

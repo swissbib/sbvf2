@@ -25,7 +25,4 @@ class SolrMarcSubjectHeadingsTest extends SolrMarcTestCase
 		$this->assertEquals('Indianer', $testItem['650a']);
 		$this->assertEquals('(DE-588)4026718-0', $testItem['6500']);
 	}
-
 }
-
-?>

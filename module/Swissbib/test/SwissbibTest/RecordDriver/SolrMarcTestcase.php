@@ -45,7 +45,4 @@ class SolrMarcTestCase extends VuFindTestCase
 	{
 		return json_decode(file_get_contents(realpath(SWISSBIB_TEST_FIXTURES . '/' . $file)), true);
 	}
-
 }
-
-?>
