@@ -13,20 +13,23 @@ use Zend\View\Helper\AbstractHelper;
  * @link     http://www.swissbib.org
  */
 
-class SubjectHeadings extends AbstractHelper
-{
-
-	public function __invoke($subjectHeadings, $resultItem = null)
-	{
-		return '<h4>from the view helper SubjectHeadings</h4>';
+class SubjectHeadings extends AbstractHelper {
+	public function __invoke(array $subjectHeadings = array()) {
+        foreach ($subjectHeadings as $heading) {
+            if ($heading['@ind2'] === '0') {
+                $title = '<h4>LCSH</h4>';
+                $lcsh = $heading['650a'];
+            }
+        }
+		return 'aus dem View-Helper SubjectHeadings' . $title . '<p>' . $lcsh . '</p>';
+    }
+}
 //        foreach ($subjectHeadings as $heading) {
 //            if ($heading['@ind2'] === '0') {
 //                $lcsh = '<p>asdf</p>';
 //                return $lcsh;
 //            }
 //        }
-	}
-}
 
 /**
 <? foreach ($subjectHeadings as $heading):
