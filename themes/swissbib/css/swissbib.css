@@ -125,3 +125,31 @@
 #search.advSearch {
 	height: auto;
 }
+
+
+
+#facet_pubdate_slider label {
+	color:#ffffff;
+	font-size:11px;
+}
+#facet_pubdate_slider div.values {
+	margin:5px;
+}
+#facet_pubdate_slider div.values div {
+	float:left;
+	padding:0 10px 3px 0;
+}
+#facet_pubdate_slider input[type=text] {
+	width:35px;
+	font-size:11px;
+}
+#facet_pubdate_slider input[type=submit] {
+	color:#ffffff;
+	font-size:11px;
+	background-color:#2D313A;
+	float:right;
+	margin:5px;
+}
+#facet_pubdate_slider div.dateSlider {
+	margin:0 0 0 5px;
+}
