@@ -89,18 +89,21 @@ class Bootstrapper
 		);
 
 		$callback = function ($event) use ($baseDir, $types) {
-			$sm             = $event->getApplication()->getServiceManager();
+			$sm = $event->getApplication()->getServiceManager();
+			/** @var Translator $baseTranslator */
 			$baseTranslator = $sm->get('VuFind\Translator');
-			/** @var Translator $libadminTranslator */
-			$locale             = $baseTranslator->getLocale();
+			$locale         = $baseTranslator->getLocale();
 
 			foreach ($types as $type) {
 				$langFile = $baseDir . '/' . $type . '/' . $locale . '.ini';
 
-				if (is_file($langFile)) {
-					$baseTranslator->addTranslationFile('ExtendedIni', $langFile, $type, $locale)
-									->setLocale($locale);
+					// File not available, add empty file to prevent problems
+				if (!is_file($langFile)) {
+					$langFile = $baseDir . '/empty_fallback.ini';
 				}
+
+				$baseTranslator->addTranslationFile('ExtendedIni', $langFile, $type, $locale)
+						->setLocale($locale);
 			}
 		};
 
