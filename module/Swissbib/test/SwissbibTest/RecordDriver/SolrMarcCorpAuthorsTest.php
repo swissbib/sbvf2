@@ -28,7 +28,4 @@ class SolrMarcCorpAuthorsTest extends SolrMarcTestCase
 		$expect = 'Schule für Gestaltung Bern und Biel';
 		$this->assertEquals($expect, $corpNames[0]['name']);
 	}
-
 }
-
-?>

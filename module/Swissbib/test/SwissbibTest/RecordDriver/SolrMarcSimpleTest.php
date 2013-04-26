@@ -175,7 +175,8 @@ class SolrMarcSimpleTest extends SolrMarcTestCase
 	public function testGetTitle()
 	{
 		$title  = $this->driver->getTitle();
-		$expect = 'Konzert e-Moll, für Blockflöte, Querflöte, zwei Violinen, Viola und Basso continuo, [TWV 52 e 1] : Concerto in e minor, for recorder, flute, two violins, viola and basso continuo';
+		$expect = 'Konzert e-Moll, für Blockflöte, Querflöte, zwei Violinen, Viola und Basso continuo, [TWV 52 e 1] :'.
+				' Concerto in e minor, for recorder, flute, two violins, viola and basso continuo';
 
 		$this->assertInternalType('string', $title);
 		$this->assertEquals($expect, $title);
@@ -250,5 +251,4 @@ class SolrMarcSimpleTest extends SolrMarcTestCase
 		$this->assertEquals('L', $first['@ind1']);
 		$this->assertEquals('A', $first['@ind2']);
 	}
-
 }
