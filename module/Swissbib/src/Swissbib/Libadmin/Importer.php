@@ -1,14 +1,18 @@
 <?php
 namespace Swissbib\Libadmin;
 
+use Zend\Cache\Storage\StorageInterface;
 use Zend\Config\Config;
+use Zend\Di\ServiceLocator;
 use Zend\Http\Client as HttpClient;
 use Zend\Http\Request;
 use Zend\Http\Response;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Cache\Storage\Adapter\Filesystem as FileSystemCache;
 
 use Swissbib\Libadmin\Exception as Exceptions;
+use Swissbib\Libadmin\Writer as LibadminWriter;
 
 /**
  * Libadmin data importer
@@ -18,24 +22,43 @@ use Swissbib\Libadmin\Exception as Exceptions;
 class Importer implements ServiceLocatorAwareInterface
 {
 
+	/**
+	 * @var ServiceLocator
+	 */
 	protected $serviceLocator;
 
-	protected $debugActive = true;
-
+	/**
+	 * @var    String        Cache directory for data file download
+	 */
 	protected $cacheDir;
 
+	/** @var Result */
+	protected $result;
+
 	/**
-	 * @var    Config
+	 * @var Config
 	 */
 	protected $config;
 
+	/**
+	 * @var FileSystemCache
+	 */
+	protected $languageCache;
 
 
-	public function __construct(Config $config)
+
+	/**
+	 * Initialize importer with import config and language cache
+	 *
+	 * @param Config           $config
+	 * @param StorageInterface $languageCache
+	 */
+	public function __construct(Config $config, StorageInterface $languageCache)
 	{
-		$this->config      = $config;
-		$this->debugActive = !!$this->config->Settings->debug;
-		$this->cacheDir    = realpath(APPLICATION_PATH . '/data/cache');
+		$this->config        = $config;
+		$this->languageCache = $languageCache;
+		$this->cacheDir      = realpath(APPLICATION_PATH . '/data/cache');
+		$this->result        = new Result();
 	}
 
 
@@ -48,65 +71,188 @@ class Importer implements ServiceLocatorAwareInterface
 	 */
 	public function import($dryRun = false)
 	{
-		$result = new Result();
-
-		$result->addMessage('Start import');
+		$this->result->reset();
+		$this->result->addInfo('Start import at ' . date('r'));
 
 		try {
 			$importData = $this->getData();
 
-			$result->addMessage('Data fetched from libadmin');
+			$this->result->addSuccess('Data fetched from libadmin');
 		} catch (Exceptions\Exception $e) {
-			return $result->addError($e->getMessage());
+			return $this->result->addError($e->getMessage());
 		}
 
 		if (!$dryRun) {
 			try {
-				$storeResult = $this->storeData($importData['data']);
+				$this->result->addInfo('Store data on local system');
 
-				$result->addMessage('Data stored in local system');
+				$storeStatus = $this->storeData($importData['data']);
+
+				if ($storeStatus) {
+					$this->result->addSuccess('All data files were stored successfully');
+				} else {
+					$this->result->addError('Not all data was imported successfully');
+				}
+
 			} catch (Exceptions\Store $e) {
-				return $result->addError($e->getMessage());
+				return $this->result->addError($e->getMessage());
 			}
 		} else {
-			$result->addMessage('Skipped storing of data on local system (dry run)');
+			$this->result->addInfo('Skipped storing of data on local system (dry run)');
 		}
 
-		$result->addMessage('Import completed');
+		$this->clearLanguageCache();
 
-		return $result;
+		$this->result->addSuccess('Import completed at ' . date('r'));
+
+		return $this->result;
 	}
 
 
 
+	/**
+	 * Flush language cache
+	 */
+	protected function clearLanguageCache()
+	{
+		$this->result->addInfo('Clear language cache');
+		try {
+			$this->languageCache->flush();
+
+			$this->result->addSuccess('Cache cleared');
+		} catch (\Exception $e) {
+			$this->result->addError('Clearing language cache failed');
+			$this->result->addError($e->getMessage());
+		}
+	}
+
+
+
+	/**
+	 * Store received data in different formats
+	 *
+	 * @param    Array[]        $data
+	 * @return    Boolean
+	 */
 	protected function storeData(array $data)
 	{
-		$this->storeInstitutionLabels($data);
-		$this->storeLibraryInfoLinks($data);
-		$this->storeGroupLabels($data);
+		$this->result->addInfo('Store institution labels');
+		$statusInstitution = $this->storeInstitutionLabels($data);
 
-		return true;
+		$this->result->addInfo('Store bibinfo links');
+		$statusInfoLinks = $this->storeLibraryInfoLinks($data);
+
+		$this->result->addInfo('Store group labels');
+		$statusGroups = $this->storeGroupLabels($data);
+
+		return $statusInstitution && $statusInfoLinks && $statusGroups;
 	}
 
 
 
+	/**
+	 * Store translated labels in local/languages/institution/xx.ini files
+	 *
+	 * @param    Array    $data
+	 * @return    Boolean
+	 */
 	protected function storeInstitutionLabels(array $data)
 	{
-
+		return $this->storeInstitutionField($data, 'institution', 'label', 'bib_code');
 	}
 
 
 
+	/**
+	 * Store bib info links as language file
+	 *
+	 * @param    Array $data
+	 * @return    Boolean
+	 */
 	protected function storeLibraryInfoLinks(array $data)
 	{
-
+		return $this->storeInstitutionField($data, 'bibinfo', 'url', 'bib_code');
 	}
 
 
 
+	/**
+	 * Store group labels
+	 *
+	 * @param    Array $data
+	 * @return    Boolean
+	 */
 	protected function storeGroupLabels(array $data)
 	{
+		$translations = array();
+		$writer       = new LibadminWriter();
+		$status       = true;
 
+		foreach ($data as $group) {
+			if (isset($group['group'])) {
+				$key = strtolower($group['group']['code']);
+				foreach ($group['group']['label'] as $locale => $label) {
+					$translations[$locale][$key] = $label;
+				}
+			}
+		}
+
+		foreach ($translations as $locale => $labels) {
+			try {
+				$storageFile = $writer->saveLanguageFile($labels, 'group', $locale);
+
+				$this->result->addSuccess('Saved [' . $locale . '] group label file to ' . $storageFile);
+			} catch (\Exception $e) {
+				$this->result->addError('Failed saving [' . $locale . '] group label file');
+				$this->result->addError($e->getMessage());
+				$status = false;
+			}
+		}
+
+		return $status;
+	}
+
+
+
+	/**
+	 * Store localized institution fields in local language files
+	 *
+	 * @param    Array     $data
+	 * @param    String    $type
+	 * @param    String    $fieldName
+	 * @param    String    $fieldKey
+	 * @return    Boolean
+	 */
+	protected function storeInstitutionField(array $data, $type, $fieldName, $fieldKey = 'bib_code')
+	{
+		$translations = array();
+		$writer       = new LibadminWriter();
+		$status       = true;
+
+		foreach ($data as $group) {
+			if (isset($group['institutions']) && is_array($group['institutions'])) {
+				foreach ($group['institutions'] as $institution) {
+					foreach ($institution[$fieldName] as $locale => $label) {
+						$key                         = strtolower($institution[$fieldKey]);
+						$translations[$locale][$key] = $label;
+					}
+				}
+			}
+		}
+
+		foreach ($translations as $locale => $labels) {
+			try {
+				$storageFile = $writer->saveLanguageFile($labels, $type, $locale);
+
+				$this->result->addSuccess('Saved [' . $locale . '] ' . $type . ' label file to ' . $storageFile);
+			} catch (\Exception $e) {
+				$this->result->addError('Failed saving [' . $locale . '] ' . $type . ' label file');
+				$this->result->addError($e->getMessage());
+				$status = false;
+			}
+		}
+
+		return $status;
 	}
 
 
@@ -116,10 +262,18 @@ class Importer implements ServiceLocatorAwareInterface
 	 *
 	 * @return    String
 	 * @throws    Exceptions\Fetch
+	 * @throws    \Exception
 	 */
 	protected function download()
 	{
-		$url    = $this->getApiEndpointUrl();
+		try {
+			$url = $this->getApiEndpointUrl();
+		} catch (Exceptions\Fetch $e) {
+			$this->result->addError($e->getMessage());
+
+			throw new Exceptions\Fetch('Stopped sync. Cannot start synchronization because API URL is invalid');
+		}
+
 		$client = new HttpClient($url);
 
 		/** @var Response $response */
@@ -161,6 +315,8 @@ class Importer implements ServiceLocatorAwareInterface
 
 
 	/**
+	 * Get/download and verify data from server
+	 *
 	 * @return    Array
 	 * @throws Exception\Data
 	 * @throws Exception\Fetch
@@ -187,9 +343,21 @@ class Importer implements ServiceLocatorAwareInterface
 
 
 
+	/**
+	 * Get full API url from config
+	 *
+	 * @return    String
+	 * @throws    Exceptions\Fetch
+	 */
 	protected function getApiEndpointUrl()
 	{
-		return $this->config->Server->uri . '/' . $this->config->Server->api . '/' . $this->config->Server->path;
+		$apiUrl = $this->config->Server->uri . '/' . $this->config->Server->api . '/' . $this->config->Server->path;
+
+		if (!filter_var($apiUrl, FILTER_VALIDATE_URL)) {
+			throw new Exceptions\Fetch('Invalid api url, please check config in Libadmin.ini. Current url "' . $apiUrl . '"');
+		}
+
+		return $apiUrl;
 	}
 
 
@@ -214,19 +382,5 @@ class Importer implements ServiceLocatorAwareInterface
 	public function getServiceLocator()
 	{
 		return $this->serviceLocator;
-	}
-
-
-
-	/**
-	 * Write debug message if active
-	 *
-	 * @param    String        $message
-	 */
-	protected function debug($message)
-	{
-		if ($this->debugActive) {
-			echo $message . "\n";
-		}
 	}
 }
