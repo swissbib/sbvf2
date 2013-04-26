@@ -321,7 +321,7 @@ class Holdings
 		$groupId = $this->buildItemId($item);
 
 		$allowedActions = $ilsDriver->getAllowedActionsForItem($patron['id'], $itemId, $groupId);
-		$host           = $ilsDriver->host . ':8991'; // @todo make dev port dynamic
+		$host           = $ilsDriver->host; // @todo make dev port dynamic
 
 		if ($allowedActions['photocopyRequest']) {
 			$allowedActions['photocopyRequestLink'] = $this->getPhotoCopyRequestLink($host, $item);
