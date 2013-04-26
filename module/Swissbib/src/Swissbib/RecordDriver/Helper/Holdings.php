@@ -691,7 +691,7 @@ class Holdings
 				// Make sure network is present
 				if (!isset($data[$network])) {
 					$data[$network] = array(
-						'label'        => 'Label: ' . $network,
+						'label'        => strtolower($network),
 						'institutions' => array()
 					);
 				}
@@ -699,7 +699,7 @@ class Holdings
 				// Make sure institution is present
 				if (!isset($data[$network]['institutions'][$institution])) {
 					$data[$network]['institutions'][$institution] = array(
-						'label'     => 'Label: ' . $institution,
+						'label'     => strtolower($institution),
 						$elementKey => array()
 					);
 				}
