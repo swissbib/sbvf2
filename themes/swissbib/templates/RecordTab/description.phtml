@@ -26,5 +26,5 @@ if ($this->syndeticsPlus()->isActive()) {
 
     <? $subjectHeadings = $this->driver->getAllSubjectHeadings() ?>
     <? if (sizeof($subjectHeadings) > 0) :?>
-    <?=$subjectHeadingsDisplay = $this->subjectHeadings(); ?>
+    <?=$subjectHeadingsDisplay = $this->subjectHeadingFormatter($subjectHeadings); ?>
     <? endif; ?>

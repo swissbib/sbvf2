@@ -94,7 +94,7 @@ return array(
 			'publicationDateMarc'     => 'Swissbib\View\Helper\YearFormatterMarc',
 			'publicationDateWorldCat' => 'Swissbib\View\Helper\YearFormatterWorldCat',
 			'SortAndPrepareFacetList' => 'Swissbib\View\Helper\SortAndPrepareFacetList',
-			'subjectHeadings'         => 'Swissbib\View\Helper\SubjectHeadings',
+			'subjectHeadingFormatter' => 'Swissbib\View\Helper\SubjectHeadings',
 			'physicalDescription'     => 'Swissbib\View\Helper\PhysicalDescriptions',
 			'noHolding'               => 'Swissbib\View\Helper\NoHolding'
 		)
