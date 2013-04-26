@@ -12,13 +12,15 @@ class FacetItem extends AbstractHelper
 	/**
 	 * Render facet item
 	 *
-	 * @param   Array        $facetData
-	 * @return  String
+	 * @param	Array		$facetData
+	 * @param	String		$facetType
+	 * @return	String
 	 */
-	public function __invoke(array $facetData)
+	public function __invoke(array $facetData, $facetType)
 	{
 		$facetData = array(
-			'facet' => $facetData
+			'facet' => $facetData,
+			'type'	=> $facetType
 		);
 
 		return $this->getView()->render('global/sidebar/search/facet.item.phtml', $facetData);

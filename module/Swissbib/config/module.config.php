@@ -3,8 +3,6 @@ namespace Swissbib\Module\Config;
 
 use Swissbib\Libadmin\Importer;
 use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
-use Zend\I18n\Translator\TranslatorServiceFactory;
-use VuFind\I18n\Translator\Loader\ExtendedIni;
 
 return array(
 	'router'          => array(
@@ -79,32 +77,6 @@ return array(
 				$config = $sm->get('VuFind\Config')->get('Libadmin');
 
 				return new Importer($config);
-			},
-			'Swissbib\Libadmin\Translator' => function ($sm) {
-				$factory    = new TranslatorServiceFactory();
-				$translator = $factory->createService($sm);
-
-				// Set up the ExtendedIni plugin:
-				$translator->getPluginManager()->setService(
-					'extendedini', new ExtendedIni()
-				);
-
-				// Set up language caching for better performance:
-				try {
-					$translator->setCache(
-						$sm->get('VuFind\CacheManager')->getCache('language')
-					);
-				} catch (\Exception $e) {
-					// Don't let a cache failure kill the whole application, but make
-					// note of it:
-					$logger = $sm->get('VuFind\Logger');
-					$logger->debug(
-						'Problem loading cache: ' . get_class($e) . ' exception: '
-								. $e->getMessage()
-					);
-				}
-
-				return $translator;
 			}
 		)
 	),
@@ -124,7 +96,8 @@ return array(
 			'SortAndPrepareFacetList' => 'Swissbib\View\Helper\SortAndPrepareFacetList',
 			'subjectHeadings'         => 'Swissbib\View\Helper\SubjectHeadings',
 			'physicalDescription'     => 'Swissbib\View\Helper\PhysicalDescriptions',
-			'noHolding'               => 'Swissbib\View\Helper\NoHolding'
+			'noHolding'               => 'Swissbib\View\Helper\NoHolding',
+			'zendTranslate'           => 'Zend\I18n\View\Helper\Translate'
 		)
 	),
 	'vufind'          => array(
