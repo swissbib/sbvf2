@@ -30,8 +30,8 @@ log "finish update VuFind"
 
 # Clear cache
 
-log "Clear local cache"
+#log "Clear local cache"
 
-rm -rf local/cache/*
+#rm -rf local/cache/*
 
-log "Local cache cleared"
+log "Local cache not cleared - please use root account"
