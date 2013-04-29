@@ -30,9 +30,9 @@
  * @link     http://vufind.org/wiki/vufind2:building_an_ils_driver Wiki
  */
 namespace VuFind\ILS\Driver;
-use ArrayObject, VuFind\Connection\Manager as ConnectionManager,
-    VuFind\Exception\Date as DateException,
+use ArrayObject, VuFind\Exception\Date as DateException,
     VuFind\Exception\ILS as ILSException,
+    VuFindSearch\Query\Query, VuFindSearch\Service as SearchService,
     Zend\Session\Container as SessionContainer;
 
 /**
@@ -49,9 +49,9 @@ class Demo extends AbstractBase
     /**
      * Connection used when getting random bib ids from Solr
      *
-     * @var object
+     * @var SearchService
      */
-    protected $db;
+    protected $searchService;
 
     /**
      * Total count of records in the Solr index (used for random bib lookup)
@@ -85,10 +85,13 @@ class Demo extends AbstractBase
      * Constructor
      *
      * @param \VuFind\Date\Converter $dateConverter Date converter object
+     * @param SearchService          $ss            Search service
      */
-    public function __construct(\VuFind\Date\Converter $dateConverter)
-    {
+    public function __construct(\VuFind\Date\Converter $dateConverter,
+        SearchService $ss
+    ) {
         $this->dateConverter = $dateConverter;
+        $this->searchService = $ss;
     }
 
     /**
@@ -168,12 +171,9 @@ class Demo extends AbstractBase
      */
     protected function prepSolr()
     {
-        // Create or solr connection
-        $this->db = ConnectionManager::connectToIndex();
-
         // Get the total # of records in the system
-        $result = $this->db->search(array('query' => '*:*'));
-        $this->totalRecords = $result['response']['numFound'];
+        $result = $this->searchService->search('Solr', new Query('*:*'));
+        $this->totalRecords = $result->getTotal();
     }
 
     /**
@@ -184,14 +184,13 @@ class Demo extends AbstractBase
     protected function getRandomBibId()
     {
         // Let's keep away from both ends of the index
-        $result = $this->db->search(
-            array(
-                'query' => '*:*',
-                'start' => rand()%($this->totalRecords-1),
-                'limit' => 1
-            )
+        $result = $this->searchService->search(
+            'Solr', new Query('*:*'), rand()%($this->totalRecords-1), 1
         );
-        return $result['response']['docs'][0]['id'];
+        if (count($result) === 0) {
+            throw new \Exception('Solr index is empty!');
+        }
+        return current($result->getRecords())->getUniqueId();
     }
 
     /**
@@ -874,8 +873,17 @@ class Demo extends AbstractBase
      */
     public function renewMyItems($renewDetails)
     {
-        // Set up return value -- no blocks in demo driver currently.
-        $finalResult = array('blocks' => array(), 'details' => array());
+        // Simulate an account block at random.
+        if (rand() % 4 == 1) {
+            return array(
+                'blocks' => array(
+                    'Simulated account block; try again and it will work eventually.'
+                )
+            );
+        }
+
+        // Set up successful return value.
+        $finalResult = array('blocks' => false, 'details' => array());
 
         // Grab transactions from session so we can modify them:
         $transactions = $this->session->transactions;

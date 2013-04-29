@@ -27,9 +27,7 @@
  */
 namespace VuFind\RecordDriver;
 use VuFind\Exception\LoginRequired as LoginRequiredException,
-    VuFind\Tags, VuFind\XSLT\Import\VuFind as ArticleStripper,
-    Zend\ServiceManager\ServiceLocatorInterface,
-    Zend\ServiceManager\ServiceLocatorAwareInterface;
+    VuFind\Tags, VuFind\XSLT\Import\VuFind as ArticleStripper;
 
 /**
  * Abstract base record model.
@@ -42,15 +40,16 @@ use VuFind\Exception\LoginRequired as LoginRequiredException,
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://www.vufind.org  Main Page
  */
-abstract class AbstractBase implements ServiceLocatorAwareInterface,
-    \VuFind\I18n\Translator\TranslatorAwareInterface
+abstract class AbstractBase implements \VuFind\Db\Table\DbTableAwareInterface,
+    \VuFind\I18n\Translator\TranslatorAwareInterface,
+    \VuFindSearch\Response\RecordInterface
 {
     /**
-     * Used for identifying database records
+     * Used for identifying search backends
      *
      * @var string
      */
-    protected $resourceSource = 'VuFind';
+    protected $sourceIdentifier = 'Solr';
 
     /**
      * For storing extra data with record
@@ -81,11 +80,11 @@ abstract class AbstractBase implements ServiceLocatorAwareInterface,
     protected $fields = array();
 
     /**
-     * Service locator
+     * Database table plugin manager
      *
-     * @var ServiceLocatorInterface
+     * @var \VuFind\Db\Table\PluginManager
      */
-    protected $serviceLocator;
+    protected $tableManager;
 
     /**
      * Translator (or null if unavailable)
@@ -158,7 +157,9 @@ abstract class AbstractBase implements ServiceLocatorAwareInterface,
     public function getComments()
     {
         $table = $this->getDbTable('Comments');
-        return $table->getForResource($this->getUniqueId(), $this->resourceSource);
+        return $table->getForResource(
+            $this->getUniqueId(), $this->getResourceSource()
+        );
     }
 
     /**
@@ -188,7 +189,8 @@ abstract class AbstractBase implements ServiceLocatorAwareInterface,
     {
         $tags = $this->getDbTable('Tags');
         return $tags->getForResource(
-            $this->getUniqueId(), $this->resourceSource, 0, $list_id, $user_id, $sort
+            $this->getUniqueId(), $this->getResourceSource(), 0, $list_id, $user_id,
+            $sort
         );
     }
 
@@ -203,8 +205,9 @@ abstract class AbstractBase implements ServiceLocatorAwareInterface,
     public function addTags($user, $tags)
     {
         $resources = $this->getDbTable('Resource');
-        $resource
-            = $resources->findResource($this->getUniqueId(), $this->resourceSource);
+        $resource = $resources->findResource(
+            $this->getUniqueId(), $this->getResourceSource()
+        );
         foreach (Tags::parse($tags) as $tag) {
             $resource->addTag($tag, $user);
         }
@@ -245,7 +248,7 @@ abstract class AbstractBase implements ServiceLocatorAwareInterface,
         // Get or create a resource object as needed:
         $resourceTable = $this->getDbTable('Resource');
         $resource = $resourceTable->findResource(
-            $this->getUniqueId(), $this->resourceSource, true, $this
+            $this->getUniqueId(), $this->getResourceSource(), true, $this
         );
 
         // Add the information to the user's account:
@@ -269,7 +272,7 @@ abstract class AbstractBase implements ServiceLocatorAwareInterface,
     {
         $db = $this->getDbTable('UserResource');
         $data = $db->getSavedData(
-            $this->getUniqueId(), $this->resourceSource, $list_id, $user_id
+            $this->getUniqueId(), $this->getResourceSource(), $list_id, $user_id
         );
         $notes = array();
         foreach ($data as $current) {
@@ -291,7 +294,7 @@ abstract class AbstractBase implements ServiceLocatorAwareInterface,
     {
         $table = $this->getDbTable('UserList');
         return $table->getListsContainingResource(
-            $this->getUniqueId(), $this->resourceSource, $user_id
+            $this->getUniqueId(), $this->getResourceSource(), $user_id
         );
     }
 
@@ -302,22 +305,49 @@ abstract class AbstractBase implements ServiceLocatorAwareInterface,
      */
     public function getResourceSource()
     {
-        return $this->resourceSource;
+        // Normally resource source is the same as source identifier, but for legacy
+        // reasons we need to call Solr 'VuFind' instead.  TODO: clean this up.
+        $id = $this->getSourceIdentifier();
+        return $id == 'Solr' ? 'VuFind' : $id;
+    }
+
+    /**
+     * Set the source backend identifier.
+     *
+     * @param string $identifier Backend identifier
+     *
+     * @return void
+     */
+    public function setSourceIdentifier($identifier)
+    {
+        // Normalize "VuFind" identifier to "Solr" (see above).  TODO: clean this up.
+        $this->sourceIdentifier = $identifier == 'VuFind' ? 'Solr' : $identifier;
+    }
+
+    /**
+     * Return the source backend identifier.
+     *
+     * @return string
+     */
+    public function getSourceIdentifier()
+    {
+        return $this->sourceIdentifier;
     }
 
     /**
      * Return an array of related record suggestion objects (implementing the
      * \VuFind\Related\RelatedInterface) based on the current record.
      *
-     * @param array $types Array of relationship types to load; each entry should
-     * be a partial class name (i.e. 'Similar' or 'Editions') optionally followed
-     * by a colon-separated list of parameters to pass to the constructor.  If the
-     * parameter is set to null instead of an array, default settings will be loaded
-     * from config.ini.
+     * @param \VuFind\Related\PluginManager $factory Related module plugin factory
+     * @param array                         $types   Array of relationship types to
+     * load; each entry should be a service name (i.e. 'Similar' or 'Editions')
+     * optionally followed by a colon-separated list of parameters to pass to the
+     * constructor.  If the parameter is set to null instead of an array, default
+     * settings will be loaded from config.ini.
      *
      * @return array
      */
-    public function getRelated($types = null)
+    public function getRelated(\VuFind\Related\PluginManager $factory, $types = null)
     {
         if (is_null($types)) {
             $types = isset($this->recordConfig->Record->related) ?
@@ -328,8 +358,6 @@ abstract class AbstractBase implements ServiceLocatorAwareInterface,
             $parts = explode(':', $current);
             $type = $parts[0];
             $params = isset($parts[1]) ? $parts[1] : null;
-            $factory = $this->getServiceLocator()->getServiceLocator()
-                ->get('VuFind\RelatedPluginManager');
             if ($factory->has($type)) {
                 $plugin = $factory->get($type);
                 $plugin->init($params, $this);
@@ -443,39 +471,41 @@ abstract class AbstractBase implements ServiceLocatorAwareInterface,
     }
 
     /**
-     * Set the service locator.
-     *
-     * @param ServiceLocatorInterface $serviceLocator Locator to register
-     *
-     * @return AbstractBase
-     */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->serviceLocator = $serviceLocator;
-        return $this;
-    }
-
-    /**
-     * Get the service locator.
-     *
-     * @return \Zend\ServiceManager\ServiceLocatorInterface
-     */
-    public function getServiceLocator()
-    {
-        return $this->serviceLocator;
-    }
-
-    /**
      * Get a database table object.
      *
-     * @param string $table Name of table to retrieve
+     * @param string $table Table to load.
      *
-     * @return \VuFind\Db\Table\Gateway
+     * @return \VuFind\Db\Table\User
      */
-    protected function getDbTable($table)
+    public function getDbTable($table)
     {
-        return $this->getServiceLocator()->getServiceLocator()
-            ->get('VuFind\DbTablePluginManager')->get($table);
+        return $this->getDbTableManager()->get($table);
+    }
+
+    /**
+     * Get the table plugin manager.  Throw an exception if it is missing.
+     *
+     * @throws \Exception
+     * @return \VuFind\Db\Table\PluginManager
+     */
+    public function getDbTableManager()
+    {
+        if (null === $this->tableManager) {
+            throw new \Exception('DB table manager missing.');
+        }
+        return $this->tableManager;
+    }
+
+    /**
+     * Set the table plugin manager.
+     *
+     * @param \VuFind\Db\Table\PluginManager $manager Plugin manager
+     *
+     * @return void
+     */
+    public function setDbTableManager(\VuFind\Db\Table\PluginManager $manager)
+    {
+        $this->tableManager = $manager;
     }
 
     /**
