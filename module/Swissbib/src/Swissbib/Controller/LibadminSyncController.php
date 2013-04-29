@@ -34,9 +34,11 @@ class LibadminSyncController extends AbstractActionController
 		/** @var Importer $importer */
 		$importer = $this->getServiceLocator()->get('Swissbib\Libadmin\Importer');
 		$result   = $importer->import($dryRun);
+		$hasErrors= $result->hasErrors();
+
 
 			// Show all messages?
-		if ($verbose) {
+		if ($verbose || $hasErrors) {
 			foreach ($result->getFormattedMessages() as $message) {
 				echo '- ' . $message . "\n";
 			}

@@ -136,6 +136,10 @@ class Importer implements ServiceLocatorAwareInterface
 	 */
 	protected function storeData(array $data)
 	{
+		if (sizeof($data) === 0) {
+			$this->result->addInfo('No data received from libadmin server. Are any institutions linked for this view?');
+		}
+
 		$this->result->addInfo('Store institution labels');
 		$statusInstitution = $this->storeInstitutionLabels($data);
 
@@ -351,7 +355,7 @@ class Importer implements ServiceLocatorAwareInterface
 	 */
 	protected function getApiEndpointUrl()
 	{
-		$apiUrl = $this->config->Server->uri . '/' . $this->config->Server->api . '/' . $this->config->Server->path;
+		$apiUrl = $this->config->uri . '/' . $this->config->api . '/' . $this->config->path;
 
 		if (!filter_var($apiUrl, FILTER_VALIDATE_URL)) {
 			throw new Exceptions\Fetch('Invalid api url, please check config in Libadmin.ini. Current url "' . $apiUrl . '"');
