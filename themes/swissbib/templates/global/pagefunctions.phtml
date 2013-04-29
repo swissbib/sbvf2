@@ -13,6 +13,21 @@
 		<li id="pagefunction_send">
 			<a href="#" title="<?=$this->transEsc('Email this')?>"><?=$this->transEsc('Email this')?></a>
 		</li>
+		<?php if ($bulk): ?>
+			<?php
+				$bulkExportFormats = array('EndNote', 'MARC', 'RefWorks', 'MARCXML');
+			?>
+			<li id="pagefunction_save" class="bulkExport">
+				<a href="#" title="<?=$this->transEsc('Save')?>"><?=$this->transEsc('Save')?></a>
+				<ul class="menu" id="exportMenu">
+					<?php foreach ($bulkExportFormats as $format): ?>
+						<li>
+							<a href="<?=$this->url('cart-doexport')?>?f=<?=$format?>"><?= $this->transEsc('Export to') ?> <?= $this->escapeHtml($format) ?></a>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+			</li>
+		<?php endif; ?>
 		<?php
 			$exportFormats = $this->export()->getFormatsForRecord($this->driver);
 		?>

@@ -67,6 +67,11 @@ class Writer
 			throw new \Exception('Cannot create language folder ' . $type);
 		}
 
+			// Replace double quotes, because they're invalid for ini format in zend
+		foreach ($data as $key => $value) {
+			$data[$key] = str_replace('"', '', $value);
+		}
+
 		$config	= new Config($data, false);
 		$writer	= new IniWriter();
 
