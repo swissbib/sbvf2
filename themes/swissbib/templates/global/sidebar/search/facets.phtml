@@ -68,9 +68,8 @@ $facetItemsLimitDefault = $facetResultsSettings->get('facet_limit_default');    
 	<!-- Slider widget: Range of publication date  -->
 	<?php
 		$this->headScript()->appendFile('pubdate_slider.js');
-		$title = 'publishDate';
-		$publishDateFrom= isset($dateFacets['publishDate'][0]) ? $this->escapeHtml($dateFacets['publishDate'][0]) : '1500';
-		$publishDateTo	= isset($dateFacets['publishDate'][1]) ? $this->escapeHtml($dateFacets['publishDate'][1]) : intval(date('Y'))+1;
+		$publishDateFrom= isset($_GET['publishDatefrom']) ? intval($_GET['publishDatefrom']) : '1500';
+		$publishDateTo	= isset($_GET['publishDateto']) ? intval($_GET['publishDateto']) : intval(date('Y'))+1;
 	?>
 	<div id="facet_pubdate_slider" class="facet">
 		<h5 id="facet_toggler_publishdate" onclick="$('#publishDateForceHeight').toggleClass('publishDateForceHeight')" class="toggler persist expanded" title="adv_search_year">Erscheinungsjahr</h5>
@@ -90,7 +89,7 @@ $facetItemsLimitDefault = $facetResultsSettings->get('facet_limit_default');    
 						</div>
 					</div>
 					<div id="publishDateSlider" class="dateSlider"></div>
-					<input type="submit" value="<?=$this->transEsc('Set')?>" id="<?=$this->escapeHtml($title)?>goButton"/>
+					<input type="submit" value="<?=$this->transEsc('Set')?>" id="publishDategoButton"/>
 				</fieldset>
 			</div>
 		</form>
