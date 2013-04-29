@@ -1,0 +1,33 @@
+<?php
+// Set page title.
+$this->headTitle($this->translate('Export Record'));
+
+$exportFormats = $this->export()->getFormatsForRecord($this->driver);
+
+// Set up breadcrumbs:
+//    $this->layout()->breadcrumbs = $this->getLastSearchLink($this->transEsc('Search'), '', '<span>&gt;</span>') .
+//        $this->recordLink()->getBreadcrumb($this->driver) . '<span>&gt;</span><em>' . $this->transEsc('Export Record') . '</em>';
+?>
+<div id="col3" class="content">
+	<div id="col3_content" class="clearfix">
+		<!-- begin: content -->
+		<div id="content">
+
+			<?= $this->flashmessages() ?>
+
+			<?php if (count($exportFormats) > 0): ?>
+				<h1><?= $this->transEsc('export_choose_format') ?></h1>
+				<ul>
+					<?php foreach ($exportFormats as $exportFormat): ?>
+						<li>
+							<a href="<?= $this->recordLink()->getActionUrl($this->driver, 'Export') ?>?style=<?= $this->escapeHtml($exportFormat) ?>"><?= $this->transEsc('Export to') ?> <?= $this->escapeHtml($exportFormat) ?></a>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+			<?php else: ?>
+				<?= $this->transEsc('export_no_formats') ?>
+			<?php endif; ?>
+
+		</div>
+	</div>
+</div>

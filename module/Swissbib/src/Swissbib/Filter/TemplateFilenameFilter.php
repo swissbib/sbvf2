@@ -30,29 +30,6 @@ class TemplateFilenameFilter extends AbstractFilter implements ServiceLocatorAwa
 	protected $serviceLocator;
 
 
-
-	/**
-	 * Bootstrap code to activate template filename comment filtering via filterChain
-	 *
-	 * @param    MvcEvent    $event
-	 */
-	public static function onBootstrap(MvcEvent $event)
-	{
-		$sm = $event->getApplication()->getServiceManager();
-
-		$widgetFilter = new TemplateFilenameFilter();
-		$widgetFilter->setServiceLocator($sm);
-
-		$view = $sm->get('ViewRenderer');
-
-		$filters = $view->getFilterChain();
-		$filters->attach($widgetFilter, 50);
-
-		$view->setFilterChain($filters);
-	}
-
-
-
 	/**
 	 * @param    Mixed    $content
 	 * @return    Mixed|String
@@ -70,9 +47,14 @@ class TemplateFilenameFilter extends AbstractFilter implements ServiceLocatorAwa
 		$fileProperty->setAccessible(true);
 		$templateFilename = $fileProperty->getValue($phpRenderer);
 
+			// Don't wrap export stuff
+		if (stristr($templateFilename, 'export-') !== false) {
+			return $content;
+		}
+
 		// Remove possibly confidential server details from path
 		$directoryDelimiter = 'themes' . DIRECTORY_SEPARATOR;
-		$templateFilename   = substr($templateFilename, strpos($templateFilename, $directoryDelimiter));
+		$templateFilename   = substr($templateFilename, strpos($templateFilename, $directoryDelimiter)+7);
 
 		return $this->wrapContentWithComment($content, $templateFilename, '');
 	}
@@ -86,6 +68,8 @@ class TemplateFilenameFilter extends AbstractFilter implements ServiceLocatorAwa
 	 */
 	private function wrapContentWithComment($content, $templateFilename)
 	{
+		$templateFilename	= str_replace('\\', '/', $templateFilename);
+
 		return
 				"\n" . '<!-- Begin' . (!empty($type) ? ' ' . $type : '') . ': ' . $templateFilename . ' -->'
 				. "\n" . $content
