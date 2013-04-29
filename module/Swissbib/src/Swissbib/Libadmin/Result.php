@@ -125,6 +125,18 @@ class Result
 
 
 	/**
+	 * Check whether import had errors
+	 *
+	 * @return	Boolean
+	 */
+	public function hasErrors()
+	{
+		return !$this->success;
+	}
+
+
+
+	/**
 	 * Get all plain messages
 	 *
 	 * @return    Array
