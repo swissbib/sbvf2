@@ -89,13 +89,32 @@ var sbAjax = {
 				container.addClass('tabbed_selected');
 				container.append(swissbib.createHiddenField('ajaxuri_' + tabId + '_sidebar', ajaxUrl));
 
+					// Init JS controlled elements that were updated via AJAX
 				sbAjax.initAjaxElements();
 				swissbib.initForms(container);
+
+				if($('#facet_pubdate_slider').length>0) {
+					sbAjax.initFacetPublicationDateSlider();
+				}
+
 				return false;
 			}
 		;
 
 		return options;
+	},
+
+
+
+	/**
+	 * Create slider for publish date facet after AJAX update
+	 */
+	initFacetPublicationDateSlider: function() {
+		$('#publishDateSlider.dateSlider').each(function(i) {
+			var myId = $(this).attr('id');
+			var prefix = myId.substr(0, myId.length - 6);
+			makePublishDateSlider(prefix);
+		});
 	},
 
 
