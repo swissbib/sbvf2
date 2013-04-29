@@ -355,7 +355,7 @@ class Importer implements ServiceLocatorAwareInterface
 	 */
 	protected function getApiEndpointUrl()
 	{
-		$apiUrl = $this->config->uri . '/' . $this->config->api . '/' . $this->config->path;
+		$apiUrl = $this->config->host . '/' . $this->config->api . '/' . $this->config->path;
 
 		if (!filter_var($apiUrl, FILTER_VALIDATE_URL)) {
 			throw new Exceptions\Fetch('Invalid api url, please check config in Libadmin.ini. Current url "' . $apiUrl . '"');
