@@ -171,7 +171,7 @@ class SolrMarc extends VuFindSolrMarc
 	 * @param    Boolean        $asString
 	 * @return    Array|String
 	 */
-	public function getPrimaryAuthor($asString = false)
+	public function getPrimaryAuthor($asString = true)
 	{
 		$data = $this->getMarcSubFieldMap(100, $this->personFieldMap);
 
@@ -187,13 +187,26 @@ class SolrMarc extends VuFindSolrMarc
 	/**
 	 * Get list of secondary authors data
 	 *
-	 * @todo    Implement or remove note
-	 * @note    exclude: if $l == fre|eng
+	 * @param    String        $asString
 	 * @return    Array[]
 	 */
-	public function getSecondaryAuthors()
+	public function getSecondaryAuthors($asString = true)
 	{
-		return $this->getMarcSubFieldMaps(700, $this->personFieldMap);
+		$authors = $this->getMarcSubFieldMaps(700, $this->personFieldMap);
+
+		if ($asString) {
+			$stringAuthors = array();
+
+			foreach ($authors as $author) {
+				$name            = isset($author['name']) ? $author['name'] : '';
+				$forename        = isset($author['forname']) ? $author['forname'] : '';
+				$stringAuthors[] = trim($name . ' ' . $forename);
+			}
+
+			$authors = $stringAuthors;
+		}
+
+		return $authors;
 	}
 
 
@@ -489,7 +502,7 @@ class SolrMarc extends VuFindSolrMarc
 	 * @param    Boolean        $asStrings
 	 * @return    Array[]|String[]
 	 */
-	public function getPublishers($asStrings = false)
+	public function getPublishers($asStrings = true)
 	{
 		$data = $this->getMarcSubFieldMaps(260, array(
 													 'a' => 'place',
@@ -520,20 +533,31 @@ class SolrMarc extends VuFindSolrMarc
 	/**
 	 * Get physical description out of the MARC record
 	 *
-	 * @return    Array[]
+	 * @param    Boolean        $asStrings
+	 * @return    Array[]|String[]
 	 */
-	public function getPhysicalDescriptions()
+	public function getPhysicalDescriptions($asStrings = true)
 	{
-		return $this->getMarcSubFieldMaps(300, array(
-													'_a' => 'extent',
-													'b'  => 'details',
-													'_c' => 'dimensions',
-													'd'  => 'material_single',
-													'_e' => 'material_multiple',
-													'_f' => 'type',
-													'_g' => 'size',
-													'3'  => 'appliesTo'
-											   ));
+		$descriptions = $this->getMarcSubFieldMaps(300, array(
+															 '_a' => 'extent',
+															 'b'  => 'details',
+															 '_c' => 'dimensions',
+															 'd'  => 'material_single',
+															 '_e' => 'material_multiple',
+															 '_f' => 'type',
+															 '_g' => 'size',
+															 '3'  => 'appliesTo'
+														));
+
+		if ($asStrings) {
+			$strings = array();
+			foreach ($descriptions as $description) {
+				$strings[] = $description['extent'][0];
+			}
+			$descriptions = $strings;
+		}
+
+		return $descriptions;
 	}
 
 

@@ -51,7 +51,7 @@ class SolrMarcSimpleTest extends SolrMarcTestCase
 
 	public function testGetSecondaryAuthors()
 	{
-		$authors = $this->driver->getSecondaryAuthors();
+		$authors = $this->driver->getSecondaryAuthors(false);
 
 		$this->assertInternalType('array', $authors);
 		$this->assertEquals(2, sizeof($authors));
@@ -152,7 +152,7 @@ class SolrMarcSimpleTest extends SolrMarcTestCase
 
 	public function testGetPhysicalDescriptions()
 	{
-		$physicalDescriptions = $this->driver->getPhysicalDescriptions();
+		$physicalDescriptions = $this->driver->getPhysicalDescriptions(false);
 
 		$this->assertInternalType('array', $physicalDescriptions);
 		$this->assertEquals(1, sizeof($physicalDescriptions));

@@ -13,8 +13,25 @@
 		<li id="pagefunction_send">
 			<a href="#" title="<?=$this->transEsc('Email this')?>"><?=$this->transEsc('Email this')?></a>
 		</li>
-		<li id="pagefunction_save">
-			<a href="#" title="<?=$this->transEsc('Save')?>"><?=$this->transEsc('Save')?></a>
-		</li>
+		<?php
+			$exportFormats = $this->export()->getFormatsForRecord($this->driver);
+		?>
+		<?php if (count($exportFormats) > 0): ?>
+			<li id="pagefunction_save">
+				<a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Export')?>" title="<?=$this->transEsc('Save')?>"><?=$this->transEsc('Save')?></a>
+				<ul class="menu" id="exportMenu">
+					<?php foreach ($exportFormats as $exportFormat): ?>
+						<?php
+							$needsRedirect	= $this->export()->needsRedirect($exportFormat);
+							$targetAttr		= $needsRedirect ? 'target=' . $this->escapeHtml($exportFormat) . 'Main' : '';
+							$exportLink		= $this->recordLink()->getActionUrl($this->driver, 'Export') . '?style=' . $this->escapeHtml($exportFormat);
+						?>
+						<li>
+							<a <?=$targetAttr?> href="<?=$exportLink?>"><?= $this->transEsc('Export to') ?> <?= $this->escapeHtml($exportFormat) ?></a>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+			</li>
+		<?php endif; ?>
 	</ul>
 </div>

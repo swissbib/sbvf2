@@ -161,3 +161,31 @@ div.facets fieldset#publishDateSlider {
 #facet_pubdate_slider div.dateSlider {
 	margin:0 0 0 5px;
 }
+
+
+#pagefunction_save .menu {
+	display: none;
+}
+#pagefunction_save:hover .menu {
+	display: block;
+}
+
+#pagefunction_save .menu {
+	width: 200px;
+	right: 5px;
+	position: absolute;
+	border: 1px solid #CCC;
+}
+
+#pagefunctions #pagefunction_save .menu li {
+	float: none;
+}
+
+#pagefunctions #pagefunction_save .menu li a {
+	width: 95%;
+	font-size: 12px;
+	line-height: 16px;
+	text-indent: 20px;
+	text-decoration: underline;
+	background-color: #e6e6e6;
+}

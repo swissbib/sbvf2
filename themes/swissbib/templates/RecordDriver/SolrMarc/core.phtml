@@ -14,9 +14,9 @@ $thumbnailSrc	= $thumbnail ? $thumbnail : $this->url('cover-unavailable');
 
 $subTitle				= $resultItem->getSubtitle(true);
 $titleStatement			= $resultItem->getTitleStatement(true);
-$secondaryAuthors		= $resultItem->getSecondaryAuthors();
+$secondaryAuthors		= $resultItem->getSecondaryAuthors(false);
 $publishers				= $resultItem->getPublishers(true);
-$physicalDescriptions	= $resultItem->getPhysicalDescriptions();
+$physicalDescriptions	= $resultItem->getPhysicalDescriptions(false);
 $edition				= $resultItem->getEdition();
 $summary				= trim(implode($resultItem->getSummary()));
 $groupID				= $resultItem->getGroup(true);
