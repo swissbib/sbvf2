@@ -10,6 +10,7 @@ use Zend\Http\Response;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Cache\Storage\Adapter\Filesystem as FileSystemCache;
+use Zend\Http\Client\Adapter\Exception\RuntimeException as HttpException;
 
 use Swissbib\Libadmin\Exception as Exceptions;
 use Swissbib\Libadmin\Writer as LibadminWriter;
@@ -79,6 +80,12 @@ class Importer implements ServiceLocatorAwareInterface
 
 			$this->result->addSuccess('Data fetched from libadmin');
 		} catch (Exceptions\Exception $e) {
+			return $this->result->addError($e->getMessage());
+		} catch (HttpException $e) {
+			$this->result->addError('Unable to connect to the server! Stopped sync');
+			return $this->result->addError($e->getMessage());
+		} catch (\Exception $e) {
+			$this->result->addError('Unexpected error type during import data fetching');
 			return $this->result->addError($e->getMessage());
 		}
 
