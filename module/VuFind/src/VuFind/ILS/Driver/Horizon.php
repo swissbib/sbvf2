@@ -134,35 +134,54 @@ class Horizon extends AbstractBase
         // import/marc.properties
         // Expressions
         $sqlExpressions = array(
-            "item.item# as ITEM_NUM", "item.item_status as STATUS_CODE",
-            "item_status.descr as STATUS", "location.name as LOCATION",
-            "item.call_reconstructed as CALLNUMBER", "item.ibarcode as ITEM_BARCODE",
-            "convert(varchar(12), " .
-            "dateadd(dd,item.due_date,'jan 1 1970')) as DUEDATE",
-            "item.copy_reconstructed as ITEM_SEQUENCE_NUMBER",
-            "substring(collection.pac_descr,5,40) as COLLECTION",
-            "(select count(*) from request where " .
-            "request.bib# = item.bib# and reactivate_date = NULL) as REQUEST"
+            "i.item# as ITEM_ID",
+            "i.item_status as STATUS_CODE",
+            "ist.descr as STATUS",
+            "l.name as LOCATION",
+            "i.call_reconstructed as CALLNUMBER",
+            "i.ibarcode as ITEM_BARCODE",
+            "convert(varchar(10), " .
+            "        dateadd(dd,i.due_date,'jan 1 1970'), " .
+            "        101) as DUEDATE",
+            "i.copy_reconstructed as NUMBER",
+            "convert(varchar(10), " .
+            "        dateadd(dd,ch.cki_date,'jan 1 1970'), " .
+            "        101) as RETURNDATE",
+            "(select count(*)
+                from request r
+               where r.bib# = i.bib#
+                 and r.reactivate_date = NULL) as REQUEST",
+            "i.notes as NOTES",
+            "ist.available_for_request IS_HOLDABLE",
+
         );
 
         // From
-        $sqlFrom = array("item");
+        $sqlFrom = array("item i");
 
         // inner Join
         $sqlInnerJoin = array(
-            "item_status on item.item_status = item_status.item_status",
-            "location on item.location = location.location",
-            "collection on item.collection = collection.collection"
+            "item_status ist on i.item_status = ist.item_status",
+            "location l on i.location = l.location",
+        );
+
+        $sqlLeftOuterJoin = array(
+           "circ_history ch on ch.item# = i.item#"
         );
 
         // Where
-        $sqlWhere = array("item.bib# = " . addslashes($id));
+        $sqlWhere = array(
+            "i.bib# = " . addslashes($id),
+            "i.staff_only = 0"
+        );
 
-        $sqlArray = array('expressions' => $sqlExpressions,
-                          'from' => $sqlFrom,
-                          'innerJoin' => $sqlInnerJoin,
-                          'where' => $sqlWhere
-                          );
+        $sqlArray = array(
+            'expressions' => $sqlExpressions,
+            'from' => $sqlFrom,
+            'innerJoin' => $sqlInnerJoin,
+            'leftOuterJoin' => $sqlLeftOuterJoin,
+            'where' => $sqlWhere
+        );
 
         return $sqlArray;
     }
@@ -178,40 +197,90 @@ class Horizon extends AbstractBase
      */
     protected function processHoldingRow($id, $row, $patron)
     {
-        $duedate = $row['DUEDATE'];
-        switch ($row['STATUS_CODE']) {
-        case 'i': // checked in
-            $available = 1;
-            $reserve = 'N';
-            break;
-        case 'h': // being held
-            $available = 0;
-            $reserve = 'Y';
-            break;
-        case 'l': // lost
-            $available = 0;
-            $reserve = 'N';
-            $duedate=''; // No due date for lost items
-            break;
-        default:
-            $available = 0;
-            $reserve = 'N';
-            break;
+        $duedate     = $row['DUEDATE'];
+        $item_status = $row['STATUS_CODE']; //get the item status code
+        $statuses    = isset($this->config['Statuses'][$item_status])
+                     ? $this->config['Statuses'][$item_status] : null;
+
+        // query the config file for the item status if there are
+        // config values, use the configuration otherwise execute the switch
+        if (!$statuses == null) {
+            // break out the values
+            $arrayValues = array_map('strtolower', explode(',', $statuses));
+
+            //set the variables based on what we find in the config file
+            if (in_array(strtolower('available:1'), $arrayValues)) {
+                $available = 1;
+            }
+            if (in_array(strtolower('available:0'), $arrayValues)) {
+                $available = 0;
+            }
+            if (in_array(strtolower('reserve:N'), $arrayValues)) {
+                $reserve = 'N';
+            }
+            if (in_array(strtolower('reserve:Y'), $arrayValues)) {
+                $reserve = 'Y';
+            }
+            if (in_array(strtolower('duedate:0'), $arrayValues)) {
+                $duedate='';
+            }
+        } else {
+            switch ($row['STATUS_CODE']) {
+            case 'i': // checked in
+                $available = 1;
+                $reserve   = 'N';
+                break;
+            case 'rb': // Reserve Bookroom
+                $available = 0;
+                $reserve   = 'Y';
+                break;
+            case 'h': // being held
+                $available = 0;
+                $reserve   = 'N';
+                break;
+            case 'l': // lost
+                $available = 0;
+                $reserve   = 'N';
+                $duedate   = ''; // No due date for lost items
+                break;
+            case 'm': // missing
+                $available = 0;
+                $reserve   = 'N';
+                $duedate   = ''; // No due date for missing items
+                break;
+            default:
+                $available = 0;
+                $reserve   = 'N';
+                break;
+            }
         }
 
-         return array('id' => $id,
-                      'availability' => $available,
-                      'item_num' => $row['ITEM_NUM'],
-                      'status' => $row['STATUS'],
-                      'location' => $row['LOCATION'],
-                      'reserve' => $reserve,
-                      'callnumber' => $row['CALLNUMBER'],
-                      'collection' => $row['COLLECTION'],
-                      'duedate' => $duedate,
-                      'barcode' => $row['ITEM_BARCODE'],
-                      'number' => $row['ITEM_SEQUENCE_NUMBER'],
-                      'requests_placed' => $row['REQUEST']
-         );
+        $holding = array(
+            'id'              => $id,
+            'availability'    => $available,
+            'item_id'         => $row['ITEM_ID'],
+            'status'          => $row['STATUS'],
+            'location'        => $row['LOCATION'],
+            'reserve'         => $reserve,
+            'callnumber'      => $row['CALLNUMBER'],
+            'duedate'         => $duedate,
+            'returnDate'      => $row['RETURNDATE'],
+            'barcode'         => $row['ITEM_BARCODE'],
+            'requests_placed' => $row['REQUEST'],
+            'is_holdable'     => $row['IS_HOLDABLE'],
+        );
+
+        // Only set the number key if there is actually volume data
+        if ($row['NUMBER'] != '') {
+            $holding += array('number' => $row['NUMBER']);
+        }
+
+        // Only set the notes key if there are actually notes to display
+        if ($row['NOTES'] != '') {
+            $holding += array('notes' => array($row['NOTES']));
+        }
+
+        return $holding;
     }
 
     /**
@@ -357,33 +426,60 @@ class Horizon extends AbstractBase
     {
         // Expressions
         $sqlExpressions = array(
-            "bib# as BIB_NUM", "bib_queue_ord as POSITION",
-            "request_location as LOCATION", "request_status as STATUS",
-            "convert(varchar(12),dateadd(dd, hold_exp_date, '1 jan 1970')) " .
-                "as EXPIRE",
-            "convert(varchar(12),dateadd(dd, request_date, '1 jan 1970')) " .
-                "as CREATED"
+            "r.bib#           as BIB_NUM",
+            "r.request#       as REQNUM",
+            "r.item#          as ITEM_ID",
+            "r.bib_queue_ord  as POSITION",
+            "l.name           as LOCATION",
+            "r.request_status as STATUS",
+            "case when r.request_status = 1 " .
+                "then 0 " .
+                "else 1 " .
+                "end          as SORT",
+            "t.processed      as TITLE",
+            "p.pubdate        as PUBLICATION_YEAR",
+            "i.volume         as VOLUME",
+            "convert(varchar(12),dateadd(dd, r.hold_exp_date, '1 jan 1970')) " .
+                             "as HOLD_EXPIRE",
+            "convert(varchar(12),dateadd(dd, r.expire_date, '1 jan 1970'))   " .
+                             "as REQUEST_EXPIRE",
+            "convert(varchar(12),dateadd(dd, r.request_date, '1 jan 1970'))  " .
+                             "as CREATED"
         );
 
         // From
-        $sqlFrom = array("request");
+        $sqlFrom = array("request r");
 
         // Join
         $sqlJoin = array(
-            "borrower_barcode on borrower_barcode.borrower#=request.borrower#"
+            "borrower_barcode bb on bb.borrower# = r.borrower#",
+            "location l          on l.location = r.pickup_location",
+            "title t             on t.bib# = r.bib#"
+        );
+
+        $sqlLeftOuterJoin = array(
+            "item i             on i.item# = r.item#",
+            "pubdate_inverted p on p.bib# = r.bib#"
         );
 
         // Where
         $sqlWhere = array(
-            "borrower_barcode.bbarcode=\"" . addslashes($patron['id']) .
+            "bb.bbarcode=\"" . addslashes($patron['id']) .
                "\""
         );
 
+        $sqlOrder = array(
+            "SORT",
+            "t.processed"
+        );
+
         $sqlArray = array(
-            'expressions' => $sqlExpressions,
-            'from' => $sqlFrom,
-            'join' => $sqlJoin,
-            'where' => $sqlWhere
+            'expressions'   => $sqlExpressions,
+            'from'          => $sqlFrom,
+            'join'          => $sqlJoin,
+            'leftOuterJoin' => $sqlLeftOuterJoin,
+            'where'         => $sqlWhere,
+            'order'         => $sqlOrder
         );
 
         return $sqlArray;
@@ -400,17 +496,27 @@ class Horizon extends AbstractBase
     protected function processHoldsRow($row)
     {
         if ($row['STATUS'] != 6) {
-            $position = ($row['STATUS'] != 1) ? $row['POSITION'] : false;
+            $position  = ($row['STATUS'] != 1) ? $row['POSITION'] : false;
             $available = ($row['STATUS'] == 1) ? true : false;
-            $expire = false;
-            $create = false;
+            $expire    = false;
+            $create    = false;
             // Convert Horizon Format to display format
-            if (!empty($row['EXPIRE'])) {
+            if (!empty($row['HOLD_EXPIRE'])) {
                 $expire = $this->dateFormat->convertToDisplayDate(
-                    "M d Y", trim($row['EXPIRE'])
+                    "M d Y", trim($row['HOLD_EXPIRE'])
                 );
+            } elseif (!empty($row['REQUEST_EXPIRE'])) {
+                // If there is no Hold Expiration date fall back to the
+                // Request Expiration date.
+                $expire = $this->dateFormat->convertToDisplayDate(
+                    "M d Y", trim($row['REQUEST_EXPIRE'])
+                );
+            } elseif ($row['STATUS']==2) {
+                // Items that are 'In Transit' have no expiration date.
+                $expire = 'In Transit';
             } else {
-                $expire = "[Not yet available for pickup]";
+                // Just in case we missed a possible scenario
+                $expire = false;
             }
             if (!empty($row['CREATED'])) {
                 $create = $this->dateFormat->convertToDisplayDate(
@@ -418,13 +524,18 @@ class Horizon extends AbstractBase
                 );
             }
 
-            return array('id' => $row['BIB_NUM'],
-                         'location' => $row['LOCATION'],
-                         'expire' => $expire,
-                         'create' => $create,
-                         'reqnum' => null,
-                         'position' => $position,
-                         'available' => $available
+            return array(
+                'id' => $row['BIB_NUM'],
+                'location'         => $row['LOCATION'],
+                'reqnum'           => $row['REQNUM'],
+                'expire'           => $expire,
+                'create'           => $create,
+                'position'         => $position,
+                'available'        => $available,
+                'item_id'          => $row['ITEM_ID'],
+                'volume'           => $row['VOLUME'],
+                'publication_year' => $row['PUBLICATION_YEAR'],
+                'title'            => $row['TITLE']
             );
         }
         return false;
@@ -444,7 +555,7 @@ class Horizon extends AbstractBase
     public function getMyHolds($patron)
     {
         $sqlArray = $this->getHoldsSQL($patron);
-        $sql = $this->buildSqlFromArray($sqlArray);
+        $sql      = $this->buildSqlFromArray($sqlArray);
 
         try {
             $sqlStmt = mssql_query($sql);
@@ -474,66 +585,83 @@ class Horizon extends AbstractBase
      */
     public function getMyFines($patron)
     {
-        $sql = "select item.bib# as BIB_NUM, item.item# as ITEM_NUM, " .
-               "burb.borrower# as BORROWER_NUM, burb.amount as AMOUNT, " .
-               "convert(varchar(12),dateadd(dd, burb.date, '01 jan 1970')) " .
-               "as DUEDATE, " .
-               "burb.block as FINE, burb.amount as BALANCE from burb " .
-               "join item on item.item#=burb.item# " .
-               "join borrower on borrower.borrower#=burb.borrower# " .
-               "join borrower_barcode on " .
-               "borrower_barcode.borrower#=burb.borrower# " .
-               "where borrower_barcode.bbarcode=\"" . addslashes($patron['id']) .
-               "\" and amount != 0";
+        $sql = "   select bu.amount as AMOUNT " .
+               "        , coalesce( " .
+               "              convert(varchar(10), " .
+               "                      dateadd(dd, i.last_cko_date, '01jan70'), " .
+               "                      101), " .
+               "              convert(varchar(10), " .
+               "                      dateadd(dd, bu2.date, '01jan70'), " .
+               "                      101)) as CHECKOUT " .
+               "        , bl.descr as FINE " .
+               "        , (  select sum(b2.amount) " .
+               "               from burb b2 " .
+               "              where b2.reference# = bu.reference# " .
+               "           group by b2.reference#) as BALANCE " .
+               "        , convert(varchar(10), " .
+               "                  dateadd(dd, bu.date, '01jan70'), " .
+               "                  101) as CREATEDATE " .
+               "        , coalesce( " .
+               "              convert(varchar(10), " .
+               "                      dateadd(dd, i.due_date, '01jan70'), " .
+               "                      101), " .
+               "              convert(varchar(10), " .
+               "                      dateadd(dd, bu3.date, '01jan70'), " .
+               "                      101)) as DUEDATE " .
+               "        , i2.bib# as ID " .
+               "        , coalesce (t.processed, bu4.comment) as TITLE " .
+               "        , case when bl.amount_type = 0 " .
+               "               then 0 " .
+               "               else 1 " .
+               "          end as FEEBLOCK " .
+               "     from burb bu " .
+               "     join block bl " .
+               "       on bl.block = bu.block " .
+               "     join borrower_barcode bb " .
+               "       on bb.borrower# = bu.borrower# " .
+               "left join item i " .
+               "       on i.item# = bu.item# " .
+               "      and i.borrower# = bu.borrower# " .
+               "left join item i2 " .
+               "       on i2.item# = bu.item# " .
+               "left join burb bu2 " .
+               "       on bu2.reference# = bu.reference# " .
+               "      and bu2.block = 'infocko' " .
+               "left join burb bu3 " .
+               "       on bu3.reference# = bu.reference# " .
+               "      and bu3.block = 'infodue' " .
+               "left join title t " .
+               "       on t.bib# = i2.bib# " .
+               "left join burb bu4 " .
+               "       on bu4.reference# = bu.reference# " .
+               "      and bu4.ord = 0 " .
+               "      and bu4.block in ('l', 'LostPro','fine','he') " .
+               "    where bb.bbarcode = \"" . addslashes($patron['id']) . "\" " .
+               "      and bu.ord = 0 " .
+               "      and bl.pac_display = 1 " .
+               " order by FEEBLOCK desc " .
+               "        , bu.item# " .
+               "        , TITLE " .
+               "        , bu.block " .
+               "        , bu.date";
 
         try {
             $sqlStmt = mssql_query($sql);
 
             while ($row = mssql_fetch_assoc($sqlStmt)) {
-                $checkout = '';
-                $duedate = '';
-                $bib_num = $row['BIB_NUM'];
-                $item_num = $row['ITEM_NUM'];
-                $borrower_num = $row['BORROWER_NUM'];
-                $amount = $row['AMOUNT'];
-                $balance += $amount;
-
-                if (isset($bib_num) && isset($item_num)) {
-                    $cko = "select convert(varchar(12)," .
-                        "dateadd(dd, date, '01 jan 1970')) as CHECKOUT " .
-                        "from burb where borrower#=" . addslashes($borrower_num) .
-                        " and item#=" . addslashes($item_num) .
-                        " and block=\"infocko\"";
-                    $sqlStmt_cko = mssql_query($cko);
-
-                    if ($row_cko = mssql_fetch_assoc($sqlStmt_cko)) {
-                        $checkout = $row_cko['CHECKOUT'];
-                    }
-
-                    $due = "select convert(varchar(12)," .
-                        "dateadd(dd, date, '01 jan 1970')) as DUEDATE " .
-                        "from burb where borrower#=" . addslashes($borrower_num) .
-                        " and item#=" . addslashes($item_num) .
-                        " and block=\"infodue\"";
-                    $sqlStmt_due = mssql_query($due);
-
-                    if ($row_due = mssql_fetch_assoc($sqlStmt_due)) {
-                        $duedate = $row_due['DUEDATE'];
-                    }
-                }
-
-                $fineList[] = array('id' => $bib_num,
-                                    'amount' => $amount,
+                 $fineList[] = array('amount'     => $row['AMOUNT'],
+                                     'checkout'   => $row['CHECKOUT'],
                                     'fine' => $row['FINE'],
-                                    'balance' => $balance,
-                                    'checkout' => $checkout,
-                                    'duedate' => $duedate);
+                                     'balance'    => $row['BALANCE'],
+                                     'createdate' => $row['CREATEDATE'],
+                                     'duedate'    => $row['DUEDATE'],
+                                     'id'         => $row['ID'],
+                                     'title'      => $row['TITLE']);
             }
             return $fineList;
         } catch (\Exception $e) {
             throw new ILSException($e->getMessage());
         }
-
     }
 
     /**
@@ -593,36 +721,52 @@ class Horizon extends AbstractBase
     {
         // Expressions
         $sqlExpressions = array(
-            "item.bib# as BIB_NUM", "item.item# as ITEM_NUM",
-            "item.ibarcode as ITEM_BARCODE",
-            "convert(varchar(12), dateadd(dd, item.due_date, '01 jan 1970'))" .
-                "as DUEDATE",
-            "item.n_renewals as RENEW", "request.bib_queue_ord as REQUEST"
+            "convert(varchar(12), dateadd(dd, i.due_date, '01 jan 1970')) " .
+                            "as DUEDATE",
+            "i.bib#          as BIB_NUM",
+            "i.ibarcode      as ITEM_BARCODE",
+            "i.n_renewals    as RENEW",
+            "r.bib_queue_ord as REQUEST",
+            "i.volume        as VOLUME",
+            "p.pubdate       as PUBLICATION_YEAR",
+            "t.processed     as TITLE",
+            "i.item#         as ITEM_NUM",
         );
 
         // From
-        $sqlFrom = array("circ");
+        $sqlFrom = array("circ c");
 
         // Join
         $sqlJoin = array(
-            "item on item.item#=circ.item#",
-            "borrower on borrower.borrower#=circ.borrower#",
-            "borrower_barcode on borrower_barcode.borrower#=circ.borrower#"
+            "item i on i.item#=c.item#",
+            "borrower b on b.borrower# = c.borrower#",
+            "borrower_barcode bb on bb.borrower# = c.borrower#",
+            "title t on t.bib# = i.bib#",
         );
 
         // Left Outer Join
-        $sqlLeftOuterJoin = array("request on request.item#=circ.item#");
+        $sqlLeftOuterJoin = array(
+            "request r on r.item#=c.item#",
+            "pubdate_inverted p on p.bib# = i.bib#"
+        );
 
         // Where
         $sqlWhere = array(
-            "borrower_barcode.bbarcode=\"" . addslashes($patron['id']) . "\"");
+            "bb.bbarcode=\"" . addslashes($patron['id']) . "\"");
+
+        // Order by
+        $sqlOrder = array(
+            "i.due_date",
+            "t.processed"
+        );
 
         $sqlArray = array(
-            'expressions' => $sqlExpressions,
-            'from' => $sqlFrom,
-            'join' => $sqlJoin,
+            'expressions'   => $sqlExpressions,
+            'from'          => $sqlFrom,
+            'join'          => $sqlJoin,
             'leftOuterJoin' => $sqlLeftOuterJoin,
-            'where' => $sqlWhere
+            'where'         => $sqlWhere,
+            'order'         => $sqlOrder
         );
 
         return $sqlArray;
@@ -644,7 +788,7 @@ class Horizon extends AbstractBase
             $dueDate = $this->dateFormat->convertToDisplayDate(
                 "M d Y", trim($row['DUEDATE'])
             );
-            $now = time();
+            $now          = time();
             $dueTimeStamp = $this->dateFormat->convertFromDisplayDate(
                 "U", $dueDate
             );
@@ -657,13 +801,17 @@ class Horizon extends AbstractBase
             }
         }
 
-        return array('id' => $row['BIB_NUM'],
-                     'item_id' => $row['ITEM_NUM'],
-                     'duedate' => $dueDate,
-                     'barcode' => $row['ITEM_BARCODE'],
-                     'renew' => $row['RENEW'],
-                     'request' => $row['REQUEST'],
-                     'dueStatus' => $dueStatus
+        return array(
+            'id'               => $row['BIB_NUM'],
+             'item_id'          => $row['ITEM_NUM'],
+             'duedate'          => $dueDate,
+             'barcode'          => $row['ITEM_BARCODE'],
+             'renew'            => $row['RENEW'],
+             'request'          => $row['REQUEST'],
+             'dueStatus'        => $dueStatus,
+             'volume'           => $row['VOLUME'],
+             'publication_year' => $row['PUBLICATION_YEAR'],
+             'title'            => $row['TITLE']
         );
     }
 
@@ -682,8 +830,8 @@ class Horizon extends AbstractBase
     public function getMyTransactions($patron)
     {
         $transList = array();
-        $sqlArray = $this->getTransactionSQL($patron);
-        $sql = $this->buildSqlFromArray($sqlArray);
+        $sqlArray  = $this->getTransactionSQL($patron);
+        $sql       = $this->buildSqlFromArray($sqlArray);
 
         try {
             $sqlStmt = mssql_query($sql);
@@ -694,6 +842,20 @@ class Horizon extends AbstractBase
         } catch (\Exception $e) {
             throw new ILSException($e->getMessage());
         }
+    }
+
+    /**
+     * Get Funds
+     *
+     * Return a list of funds which may be used to limit the getNewItems list.
+     *
+     * @throws ILSException
+     * @return array An associative array with key = fund ID, value = fund name.
+     */
+    public function getFunds()
+    {
+        // No funds for limiting in Horizon.
+        return array();
     }
 
     /**
@@ -801,5 +963,31 @@ class Horizon extends AbstractBase
         }
 
         return $versionOK;
+    }
+
+    /**
+     * Get suppressed records.
+     *
+     * Get a list of Horizon bib numbers that have the staff-only flag set.
+     *
+     * @return array ID numbers of suppressed records in the system.
+     */
+    public function getSuppressedRecords()
+    {
+        $list = array();
+
+        $sql = "select bc.bib#" .
+            "  from bib_control bc" .
+            " where bc.staff_only = 1";
+        try {
+            $sqlStmt = mssql_query($sql);
+            while ($row = mssql_fetch_assoc($sqlStmt)) {
+                $list[] = $row['bib#'];
+            }
+        } catch (\Exception $e) {
+            throw new ILSException($e->getMessage());
+        }
+
+        return $list;
     }
 }
