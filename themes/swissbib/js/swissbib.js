@@ -49,6 +49,8 @@ var swissbib = {
 		this.initTabbed(contextMain);
 
 		this.initHints(contextMain);
+
+		this.initBulkExport();
     },
 
 
@@ -470,6 +472,40 @@ var swissbib = {
 	 */
 	initAdvancedSearch: function() {
 		this.AdvancedSearch.init();
+	},
+
+
+	initBulkExport: function() {
+		$('#pagefunction_save.bulkExport .menu a').click($.proxy(this.onBulkExportFormatClick, this));
+	},
+
+
+
+	/**
+	 * Handle click on bulk export
+	 * Append list of record ids to existing link
+	 *
+	 * @param	{Object}	event
+	 */
+	onBulkExportFormatClick: function(event) {
+		var baseUrl = event.target.href,
+			idArgs	= [],
+			fullUrl,
+			ids		= $('#content .tabbed_selected a.singleLink').map(function(){
+																return 'VuFind|' + this.href.split('/').pop()
+															}).get();
+
+		event.preventDefault();
+
+		$.each(ids, function(index, id) {
+			idArgs.push('i[]=' + id);
+		});
+
+		fullUrl =  baseUrl + '&' + idArgs.join('&');
+
+//		console.log(fullUrl);
+
+		location.href = fullUrl;
 	}
 };
 
