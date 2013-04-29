@@ -34,7 +34,6 @@ return array(
 					)
 				)
 			)
-
 		)
 	),
 	'console'         => array(
@@ -74,7 +73,7 @@ return array(
 				return new HoldingsHelper($ils, $holdingsConfig, $hmac, $authManager);
 			},
 			'Swissbib\Libadmin\Importer' => function ($sm) {
-				$config        = $sm->get('VuFind\Config')->get('Libadmin');
+				$config        = $sm->get('VuFind\Config')->get('config')->Libadmin;
 				$languageCache = $sm->get('VuFind\CacheManager')->getCache('language');
 
 				return new Importer($config, $languageCache);
