@@ -3,6 +3,15 @@
 # Update current project from github repository.
 # Clear cache
 
+if [ "$UID"  -eq 0 ]; then
+
+        echo "Good morning!"
+        echo  "git repository update as root user not allowed!"
+        echo "feel free to try it again"
+        exit 1
+fi
+
+
 TIME=`date +%Y-%m-%d_%H.%M.%S`
 LOG=cli/log/update.${TIME}.log
 
