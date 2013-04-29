@@ -68,32 +68,39 @@ $facetItemsLimitDefault = $facetResultsSettings->get('facet_limit_default');    
 	<!-- Slider widget: Range of publication date  -->
 	<?php
 		$this->headScript()->appendFile('pubdate_slider.js');
-		$title = 'Erscheinungsjahr';
+		$title = 'publishDate';
+		$publishDateFrom= isset($dateFacets['publishDate'][0]) ? $this->escapeHtml($dateFacets['publishDate'][0]) : '1500';
+		$publishDateTo	= isset($dateFacets['publishDate'][1]) ? $this->escapeHtml($dateFacets['publishDate'][1]) : intval(date('Y'))+1;
 	?>
 	<div id="facet_pubdate_slider" class="facet">
-		<h5 id="facet_toggler_publishdate" class="toggler persist expanded" title="adv_search_year">Erscheinungsjahr</h5>
-
-		<form action="" name="<?=$this->escapeHtml($title)?>Filter" id="<?=$this->escapeHtml($title)?>Filter">
-			<?=$results->getUrlQuery()->asHiddenFields(array('filter' => "/^{$title}:.*/"))?>
-			<input type="hidden" name="daterange[]" value="<?=$this->escapeHtml($title)?>"/>
-
-			<fieldset class="publishDateLimit facet_toggler_publishdate" id="publishDateSlider">
-				<div class="values">
-					<div>
-						<label for="<?=$this->escapeHtml($title)?>from"><?=$this->transEsc('date_from')?>:</label>
-						<input type="text" size="4" maxlength="4" class="yearbox" name="<?=$this->escapeHtml($title)?>from" id="<?=$this->escapeHtml($title)?>from" value="<?=isset($dateFacets[$title][0])?$this->escapeHtml($dateFacets[$title][0]):''?>" />
+		<h5 id="facet_toggler_publishdate" onclick="$('#publishDateForceHeight').toggleClass('publishDateForceHeight')" class="toggler persist expanded" title="adv_search_year">Erscheinungsjahr</h5>
+		<form action="" name="publishDateFilter" id="publishDateFilter">
+			<?=$results->getUrlQuery()->asHiddenFields(array('filter' => "/^{publishDate}:.*/"))?>
+			<input type="hidden" name="daterange[]" value="publishDate"/>
+			<div class="publishDateForceHeight" id="publishDateForceHeight">
+				<fieldset class="publishDateLimit facet_toggler_publishdate" id="publishDateSlider">
+					<div class="values">
+						<div>
+							<label for="publishDatefrom"><?=$this->transEsc('date_from')?>:</label>
+							<input type="text" size="4" maxlength="4" class="yearbox" name="publishDatefrom" id="publishDatefrom" value="<?= $publishDateFrom ?>" />
+						</div>
+						<div>
+							<label for="publishDateto"><?=$this->transEsc('date_to')?>:</label>
+							<input type="text" size="4" maxlength="4" class="yearbox" name="publishDateto" id="publishDateto" value="<?= $publishDateTo ?>" />
+						</div>
 					</div>
-					<div>
-						<label for="<?=$this->escapeHtml($title)?>to"><?=$this->transEsc('date_to')?>:</label>
-						<input type="text" size="4" maxlength="4" class="yearbox" name="<?=$this->escapeHtml($title)?>to" id="<?=$this->escapeHtml($title)?>to" value="<?=isset($dateFacets[$title][1])?$this->escapeHtml($dateFacets[$title][1]):''?>" />
-					</div>
-				</div>
-
-				<div id="<?=$this->escapeHtml($title)?>Slider" class="dateSlider"></div>
-
-				<input type="submit" value="<?=$this->transEsc('Set')?>" id="<?=$this->escapeHtml($title)?>goButton"/>
-			</fieldset>
+					<div id="publishDateSlider" class="dateSlider"></div>
+					<input type="submit" value="<?=$this->transEsc('Set')?>" id="<?=$this->escapeHtml($title)?>goButton"/>
+				</fieldset>
+			</div>
 		</form>
+		<script language="javascript">
+			$().ready(function() {
+				if( $('#facet_toggler_publishdate').hasClass('collapsed') ) {
+					$('#publishDateForceHeight').hide();
+				}
+			});
+		</script>
 	</div>
 
 </div>
