@@ -106,7 +106,8 @@ class Bootstrapper
             'Auth', 'Autocomplete', 'Db\Table', 'Hierarchy\Driver',
             'Hierarchy\TreeDataSource', 'Hierarchy\TreeRenderer', 'ILS\Driver',
             'Recommend', 'RecordDriver', 'RecordTab', 'Related', 'Resolver\Driver',
-            'Session', 'Statistics\Driver'
+            'Search\Options', 'Search\Params', 'Search\Results', 'Session',
+            'Statistics\Driver'
         );
         foreach ($namespaces as $ns) {
             $serviceName = 'VuFind\\' . str_replace('\\', '', $ns) . 'PluginManager';
@@ -121,16 +122,6 @@ class Bootstrapper
             };
             $serviceManager->setFactory($serviceName, $factory);
         }
-
-        // Set up search manager a little differently -- it is a more complex class
-        // that doesn't work like the other standard plugin managers.
-        $factory = function ($sm) use ($config) {
-            return new \VuFind\Search\Manager($config['vufind']['search_manager']);
-        };
-        $serviceManager->setFactory('SearchManager', $factory);
-
-        // TODO: factor out static connection manager.
-        \VuFind\Connection\Manager::setServiceLocator($serviceManager);
     }
 
     /**
@@ -362,6 +353,19 @@ class Bootstrapper
             }
         };
         $this->events->attach('dispatch.error', $callback);
+    }
+
+    /**
+     * Set up search subsystem.
+     *
+     * @return void
+     */
+    protected function initSearch()
+    {
+        $sm     = $this->event->getApplication()->getServiceManager();
+        $bm     = $sm->get('VuFind\Search\BackendManager');
+        $events = $sm->get('SharedEventManager');
+        $events->attach('VuFind\Search', 'resolve', array($bm, 'onResolve'));
     }
 
     /**

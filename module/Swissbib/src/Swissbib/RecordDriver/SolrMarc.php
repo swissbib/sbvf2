@@ -799,8 +799,17 @@ class SolrMarc extends VuFindSolrMarc
 	protected function getHoldingsHelper()
 	{
 		if (!$this->holdingsHelper) {
-			/** @var HoldingsHelper $holdingsHelper */
-			$holdingsHelper = $this->getServiceLocator()->getServiceLocator()->get('Swissbib\HoldingsHelper');
+
+            //core record driver in itself doesn't support implmentation of ServiceLocaterAwareInterface with latest merge
+            //alternative to the current solution:
+            //we implement this Interface by ourselve
+            //at the moment I don't know what's the role of the hierachyDriverManager and if it's always initialized
+            //ToDo: more analysis necessary!
+            //$holdingsHelper = $this->getServiceLocator()->getServiceLocator()->get('Swissbib\HoldingsHelper');
+            /** @var HoldingsHelper $holdingsHelper */
+            $holdingsHelper = $this->hierarchyDriverManager->getServiceLocator()->get('Swissbib\HoldingsHelper');
+
+
 			$holdingsData   = isset($this->fields['holdings']) ? $this->fields['holdings'] : '';
 
 			$holdingsHelper->setData($this->getUniqueID(), $holdingsData);

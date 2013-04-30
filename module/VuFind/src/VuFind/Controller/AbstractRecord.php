@@ -509,10 +509,9 @@ class AbstractRecord extends AbstractBase
         // common scenario) and the GET parameters (a fallback used by some
         // legacy routes).
         if (!is_object($this->driver)) {
-            $sm = $this->getServiceLocator()->get('SearchManager');
-            $results = $sm->setSearchClassId($this->searchClassId)->getResults();
-            $this->driver = $results->getRecord(
-                $this->params()->fromRoute('id', $this->params()->fromQuery('id'))
+            $this->driver = $this->getRecordLoader()->load(
+                $this->params()->fromRoute('id', $this->params()->fromQuery('id')),
+                $this->searchClassId
             );
         }
         return $this->driver;
