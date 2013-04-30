@@ -85,18 +85,19 @@ return array(
 			'Authors'                 => 'Swissbib\View\Helper\Authors',
 			'facetItem'               => 'Swissbib\View\Helper\FacetItem',
 			'facetItemLabel'          => 'Swissbib\View\Helper\FacetItemLabel',
-			'lastTabbedSearchUri'     => 'Swissbib\View\Helper\LastTabbedSearchUri',
 			'lastSearchWord'          => 'Swissbib\View\Helper\LastSearchWord',
+			'lastTabbedSearchUri'     => 'Swissbib\View\Helper\LastTabbedSearchUri',
 			'mainTitle'               => 'Swissbib\View\Helper\MainTitle',
 			'myResearchSideBar'       => 'Swissbib\View\Helper\MyResearchSideBar',
+			'noHolding'               => 'Swissbib\View\Helper\NoHolding',
 			'number'                  => 'Swissbib\View\Helper\Number',
 			'pageFunctions'           => 'Swissbib\View\Helper\PageFunctions',
-			'publicationDateMarc'     => 'Swissbib\View\Helper\YearFormatterMarc',
-			'publicationDateWorldCat' => 'Swissbib\View\Helper\YearFormatterWorldCat',
-			'SortAndPrepareFacetList' => 'Swissbib\View\Helper\SortAndPrepareFacetList',
-			'subjectHeadingFormatter' => 'Swissbib\View\Helper\SubjectHeadings',
 			'physicalDescription'     => 'Swissbib\View\Helper\PhysicalDescriptions',
-			'noHolding'               => 'Swissbib\View\Helper\NoHolding',
+			'publicationDateMarc'     => 'Swissbib\View\Helper\YearFormatterMarc',
+			'publicationDateSummon'	  => 'Swissbib\View\Helper\YearFormatterSummon',
+			'publicationDateWorldCat' => 'Swissbib\View\Helper\YearFormatterWorldCat',
+			'subjectHeadingFormatter' => 'Swissbib\View\Helper\SubjectHeadings',
+			'SortAndPrepareFacetList' => 'Swissbib\View\Helper\SortAndPrepareFacetList',
 			'zendTranslate'           => 'Zend\I18n\View\Helper\Translate'
 		)
 	),
@@ -127,6 +128,16 @@ return array(
 						return new \Swissbib\RecordDriver\WorldCat(
 							$baseConfig, // main config
 							$worldcatConfig // record config
+						);
+					},
+					//@todo	check/adjust to summon config
+					'summon' => function ($sm) {
+						$baseConfig   = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
+						$summonConfig = $sm->getServiceLocator()->get('VuFind\Config')->get('Summon');
+
+						return new \VuFind\RecordDriver\Summon(
+							$baseConfig, // main config
+							$summonConfig // record config
 						);
 					},
 					'missing'  => function ($sm) {
@@ -183,12 +194,23 @@ return array(
 				'templates'     => array( // templates for tab content and sidebar (=filters)
 					'tab'     => 'search/tabs/base.phtml', // default
 					'sidebar' => 'global/sidebar/search/facets.swissbib.phtml'
-
 				)
 			),
 			// Secondary tab
+//			'external' => array(
+//				'searchClassId' => 'WorldCat',
+//				'model'         => '\Swissbib\ResultTab\SbResultTab',
+//				'params'        => array(
+//					'id'    => 'external',
+//					'label' => 'Artikel & mehr'
+//				),
+//				'templates'     => array(
+//					'tab'     => 'search/tabs/external.phtml',
+//					'sidebar' => 'global/sidebar/search/facets.external.phtml',
+//				)
+//			),
 			'external' => array(
-				'searchClassId' => 'WorldCat',
+				'searchClassId' => 'Summon',
 				'model'         => '\Swissbib\ResultTab\SbResultTab',
 				'params'        => array(
 					'id'    => 'external',
