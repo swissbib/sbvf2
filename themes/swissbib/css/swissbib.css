@@ -190,3 +190,8 @@ div.facets fieldset#publishDateSlider {
 	text-decoration: underline;
 	background-color: #e6e6e6;
 }
+
+.notFirstMatchWarning {
+	margin-bottom: -10px;
+	padding-top: 20px;
+}

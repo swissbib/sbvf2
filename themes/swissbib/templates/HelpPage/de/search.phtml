@@ -1,0 +1,93 @@
+<h1>Suchen</h1>
+
+<p>
+	<strong>Kombinieren</strong>
+	<br>AND, OR, NOT. Bsp.: <i>art* OR kunst</i>. Wenn Sie nichts eingeben, wird AND benutzt.
+</p>
+
+<p>
+	<strong>Phrasensuche</strong>
+	<br><i>"street art"</i> = die beiden Wörter müssen direkt hintereinander stehen
+	<br><i>"street art"~5</i> = die beiden Wörter müssen innerhalb von 5 Wörtern Abstand vorkommen</p>
+
+<p>
+	<strong>Trunkieren</strong> funktioniert rechts, links und innerhalb von Wörtern:</p>
+<table>
+	<tbody>
+	<tr>
+		<td rowspan="2">*</td>
+		<td rowspan="2">ersetzt beliebig viele Zeichen</td>
+		<td>cultur*</td>
+		<td>culture, cultural, culturally etc.</td>
+	</tr>
+
+	<tr>
+		<td>Fr*ib*urg</td>
+		<td>Fribourg, Freiburg</td>
+	</tr>
+	<tr>
+		<td rowspan="2">?</td>
+		<td rowspan="2">ersetzt genau ein Zeichen</td>
+		<td>wom?n</td>
+		<td>woman, women</td>
+	</tr>
+	<tr>
+		<td>Lind??ist</td>
+		<td>Lindkvist, Lindquist, Lindqvist</td>
+	</tr>
+	<tr>
+		<td>~</td>
+		<td>wenn Sie die genaue Schreibweise nicht kennen</td>
+		<td>meier~</td>
+		<td>meier, maier, meyer, mayer, meijer, meter, meer etc.</td>
+	</tr>
+	</tbody>
+</table>
+
+<p>
+	<strong>ISBN, ISSN etc.</strong>
+	<br>Einfache Suche, Bindestriche weglassen oder Phrasensuche mit Anführungszeichen.</p>
+
+<p>
+	<strong>Signatur</strong>
+	<br>Einfache Suche, Signatur in Anführungszeichen eingeben.</p>
+
+<p>
+	<strong>Erweiterte Suche</strong>
+	<br>Suche in spezifischen Feldern, z.B. Zeitschriftentitel.</p>
+
+<h2>Trefferliste</h2>
+
+<p>
+	<strong>Treffer eingrenzen</strong>
+	<br>Mit den Facetten am linken Rand</p>
+
+<p>
+	<strong>Innerhalb einer Trefferliste suchen</strong>
+	<br><i>My swissbib - Suchhistorie - in die Suche übernehmen</i> - Kriterien anpassen - <i>Suchen</i></p>
+
+
+<p>
+	<strong>Neue Werke zu einer Suche per Atom-Feed gemeldet bekommen</strong>
+	<br><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_pagefunctions_rss.gif') ?>"
+			 alt="Atom Feed abonnieren"> <i>Atom-Feed abonnieren</i></p>
+
+<h2>Anmelden, My swissbib</h2>
+<p>Ausführlichere Informationen im <a href="http://swissbib-baselbern.blogspot.ch/2012/10/anmeldung-mit-switchaai.html">Blog</a>.
+</p>
+<p>Wenn Sie sich anmelden, können Sie zusätzliche <strong>Merklisten</strong> anlegen und
+	<strong>Sucheinstellungen</strong> speichern.</p>
+
+<p><strong>Suchhistorie</strong>
+	<br>Wenn Sie angemeldet sind, werden Ihre letzten 50 Abfragen gespeichert. Sie können diese nochmals ausführen oder
+	via <i>In die Suche übernehmen</i> mit geänderten Parametern nochmals ausführen.</p>
+
+<p><strong>Meine Favoriten</strong>
+	<br>Um eine Bibliothek als Favorit zu markieren, gehen Sie entweder über <i>My swissbib - Meine Favoriten</i> oder
+	Sie klicken in einer Aufnahme auf das <img
+			src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_favorit.gif') ?>"
+			alt="in meinen Favoriten anzeigen">.
+	<br>In der Trefferliste sind die Titel dieser Bibliotheken mit einem <img
+			src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_favorit.gif') ?>"> markiert, kommen bei
+	der Sortierung nach Relevanz zuoberst
+	und können als Facette ausgewählt werden.</p>

@@ -96,6 +96,7 @@ class Bootstrapper
 			/** @var Translator $baseTranslator */
 			$baseTranslator = $sm->get('VuFind\Translator');
 			$locale         = $baseTranslator->getLocale();
+			$baseTranslator->setFallbackLocale('en');
 
 			foreach ($types as $type) {
 				$langFile = $baseDir . '/' . $type . '/' . $locale . '.ini';
