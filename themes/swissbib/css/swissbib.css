@@ -175,6 +175,7 @@ div.facets fieldset#publishDateSlider {
 	right: 5px;
 	position: absolute;
 	border: 1px solid #CCC;
+	z-index: 101; /* over info icon */
 }
 
 #pagefunctions #pagefunction_save .menu li {
