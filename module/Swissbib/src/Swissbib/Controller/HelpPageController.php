@@ -41,7 +41,7 @@ class HelpPageController extends AbstractActionController
 		$layout->setTemplate('HelpPage/layout');
 		$layout->setVariable('pages', $this->getPages());
 		$layout->setVariable('first', !!$template['first']);
-		$layout->setVariable('topic', $template['topic']);
+		$layout->setVariable('topic', strtolower($template['topic']));
 
 		$layout->addChild($content, 'helpContent');
 
