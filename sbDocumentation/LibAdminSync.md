@@ -15,18 +15,18 @@ The generated files are located in local/languages/*
 
 ## The synchronisation
 
-The sync process downloads updated data from the LibAdmin API and replaced the local language files. The synchronisation has
+The sync process downloads updated data from the LibAdmin API and replaces the local language files. The synchronisation has
 to be started manualy or by a cron job.
 
-To start the sync, run the following command on the server in to application (root) directory.
+To start the sync, run the following command on the server in the application (root) directory.
 
 	php public/index.php libadmin sync
 
-This will start the sync process. There will be **NO output** printed on the shell, except a problem occures.
+This will start the sync process. There will be **NO output** printed on the shell, except in case of problems.
 
 ## Special usage
 
-To simlify the call of the sync script, you can call the following shell script which wraps the above command
+To simplify the call of the sync script, you can call the following shell script which wraps the above command
 
 	cli/sync.sh
 
