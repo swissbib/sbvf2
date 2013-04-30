@@ -109,6 +109,7 @@ return array(
 			'publicationDateSummon'	  => 'Swissbib\View\Helper\YearFormatterSummon',
 			'publicationDateWorldCat' => 'Swissbib\View\Helper\YearFormatterWorldCat',
 			'subjectHeadingFormatter' => 'Swissbib\View\Helper\SubjectHeadings',
+			'shorttitleSummon'		  => 'Swissbib\View\Helper\ShortTitleFormatterSummon',
 			'SortAndPrepareFacetList' => 'Swissbib\View\Helper\SortAndPrepareFacetList',
 			'zendTranslate'           => 'Zend\I18n\View\Helper\Translate'
 		)
@@ -133,6 +134,15 @@ return array(
 						);
 						return $driver;
 					},
+					'summon' => function ($sm) {
+						$baseConfig   = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
+						$summonConfig = $sm->getServiceLocator()->get('VuFind\Config')->get('Summon');
+
+						return new \Swissbib\RecordDriver\Summon(
+							$baseConfig, // main config
+							$summonConfig // record config
+						);
+					},
 					'worldcat' => function ($sm) {
 						$baseConfig     = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
 						$worldcatConfig = $sm->getServiceLocator()->get('VuFind\Config')->get('WorldCat');
@@ -140,16 +150,6 @@ return array(
 						return new \Swissbib\RecordDriver\WorldCat(
 							$baseConfig, // main config
 							$worldcatConfig // record config
-						);
-					},
-					//@todo	check/adjust to summon config
-					'summon' => function ($sm) {
-						$baseConfig   = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
-						$summonConfig = $sm->getServiceLocator()->get('VuFind\Config')->get('Summon');
-
-						return new \VuFind\RecordDriver\Summon(
-							$baseConfig, // main config
-							$summonConfig // record config
 						);
 					},
 					'missing'  => function ($sm) {
@@ -195,8 +195,7 @@ return array(
 		'preload_result_tabs_counts' => false, // Fetch(+display) results-count of non-selected tab(s) initially?
 		'default_result_tab'         => 'swissbib', // ID of default selected tab
 		'result_tabs'                => array(
-			// Primary tab: swissbib
-			'swissbib' => array(
+			'swissbib' => array(	// Primary tab: swissbib solr
 				'searchClassId' => 'Solr',
 				'model'         => '\Swissbib\ResultTab\SbResultTabSolr',
 				'params'        => array(
@@ -208,7 +207,18 @@ return array(
 					'sidebar' => 'global/sidebar/search/facets.swissbib.phtml'
 				)
 			),
-			// Secondary tab
+			'summon' => array(
+				'searchClassId' => 'Summon',
+				'model'         => '\Swissbib\ResultTab\SbResultTab', //Summon',
+				'params'        => array(
+					'id'    => 'summon',
+					'label' => 'Artikel & mehr'
+				),
+				'templates'     => array(
+					'tab'     => 'search/tabs/summon.phtml',
+					'sidebar' => 'global/sidebar/search/facets.summon.phtml',
+				)
+			),
 //			'external' => array(
 //				'searchClassId' => 'WorldCat',
 //				'model'         => '\Swissbib\ResultTab\SbResultTab',
@@ -221,18 +231,6 @@ return array(
 //					'sidebar' => 'global/sidebar/search/facets.external.phtml',
 //				)
 //			),
-			'external' => array(
-				'searchClassId' => 'Summon',
-				'model'         => '\Swissbib\ResultTab\SbResultTab',
-				'params'        => array(
-					'id'    => 'external',
-					'label' => 'Artikel & mehr'
-				),
-				'templates'     => array(
-					'tab'     => 'search/tabs/external.phtml',
-					'sidebar' => 'global/sidebar/search/facets.external.phtml',
-				)
-			),
 		)
 	)
 );

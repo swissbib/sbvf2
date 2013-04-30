@@ -1,0 +1,83 @@
+<?php
+/** @var	Swissbib\RecordDriver\WorldCat	$resultItem  */
+$resultItem	= $this->driver;
+/** @var	VuFind\View\Helper\Root\Record		$record  */
+$viewRecord	= $this->record($resultItem);
+
+//$authors	= $this->Authors($resultItem->getDeduplicatedAuthors());
+
+$mediumThumb= $viewRecord->getThumbnail('medium');
+//$largeThumb	= $viewRecord->getThumbnail('large');
+$thumbUrl	= $mediumThumb ? $mediumThumb : $this->url('cover-unavailable');
+
+$subTitle           = $resultItem->getSubtitle(true);
+$titleStatement		= $resultItem->getTitleStatement(true);
+$secondaryAuthors	= $resultItem->getSecondaryAuthors();
+$publishers			= $resultItem->getPublishers();
+$publisher  = (is_array($publishers) && count($publishers)>0) ? str_replace(', , ', ', ', implode(', ', $publishers)) : $publisher;
+$edition			= $resultItem->getEdition();
+$summary			= trim(implode($resultItem->getSummary()));
+
+$groupID            = 'dummy'; //$resultItem->getGroup(true);
+
+$publicationDate    = $this->publicationDateWorldCat($resultItem->getPublicationDates());
+
+?>
+
+<?/* Common parts of recordDriver's core.phtml templates*/?>
+<!-- col -->
+<div class="c25l">
+	<a title="Zur Merkliste hinzufügen" class="icon_notepad_add_link" href="#">
+		<img src="<?=$thumbUrl?>" class="dropshadow"/>
+	</a>
+</div>
+
+<!-- col -->
+<div class="c75l">
+	<h2><?=$this->escapeHtml($resultItem->getShortTitle())?></h2>
+	<?php if($subTitle): ?>
+        <p><?=$this->escapeHtml($subTitle)?></p>
+    <?php endif ?>
+	<!-- details -->
+	<div class="details">
+
+		<?php if($titleStatement): ?>
+		<h4><?=$this->transEsc('Author')?>:</h4>
+		<p><?=$this->escapeHtml($titleStatement)?></p>
+		<?php endif; ?>
+
+		<?php if($publisher): ?>
+		<h4><?=$this->transEsc('Publication')?>:</h4>
+		<p><?=$this->escapeHtml($publisher)?>, <?=$publicationDate?></p>
+		<?php endif; ?>
+
+        <h4><?=$this->transEsc('Description')?>:</h4>
+        <p>statisch, 300 $a, $b, $c, $e</p>
+
+
+		<h4><?=$this->transEsc('Format')?>:</h4>
+		<p>
+		<?php foreach($resultItem->getFormats() as $format): ?>
+			<span class="icon_format_book"><?=$this->escapeHtml($format)?></span>
+		<?php endforeach; ?>
+		</p>
+
+		<?php if($edition): ?>
+		    <h4><?=$this->transEsc('Edition')?>:</h4>
+		    <p><?=$this->escapeHtml($edition)?></p>
+		<?php endif; ?>
+
+		<?php if(!empty($summary)): ?>
+		<h4>Inhalt:</h4>
+		<p><?$this->escapeHtml($summary)?></p>
+		<?php endif; ?>
+
+	</div>
+
+    <?php if(!empty($groupID)): ?>
+	    <a href="#frbr.html" class="linkbutton icon_show" title="<?=$this->transEsc('FRBR_Button')?>">
+			<span><?=$this->transEsc('FRBR_Button')?></span>
+		</a>
+    <?php endif; ?>
+
+</div>
