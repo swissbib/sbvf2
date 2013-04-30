@@ -112,6 +112,45 @@ class SolrMarc extends VuFindSolrMarc
 
 
 	/**
+	 *
+	 * @return	String[]
+	 */
+	public function getISSNs()
+	{
+		$issns	= $this->getISSNsFull();
+		$simple	= array();
+
+		foreach ($issns as $issn) {
+			if (isset($issn['issn'])) {
+				$simple[] = $issn['issn'];
+			}
+		}
+
+		return $simple;
+	}
+
+
+
+	/**
+	 * Get full ISSN marc fields data
+	 *
+	 * @return	Array[]
+	 */
+	public function getISSNsFull()
+	{
+		return $this->getMarcSubFieldMaps('022', array(
+													'a'	=> 'issn',
+													'l'	=> 'issn-l',
+													'_m'	=> 'canceled-l',
+													'_y'	=> 'incorrect',
+													'_z'	=> 'canceled',
+													'2'	=> 'source'
+												));
+	}
+
+
+
+	/**
 	 * Get possible ISBN/ISSN numbers from record
 	 *
 	 * @return String[]

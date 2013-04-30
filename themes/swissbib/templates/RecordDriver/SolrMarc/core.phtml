@@ -22,9 +22,9 @@ $summary				= trim(implode($resultItem->getSummary()));
 $groupID				= $resultItem->getGroup(true);
 
 $publicationDate		= $this->publicationDateMarc($resultItem->getPublicationDates());
+$openUrl				= $this->driver->openURLActive('record') ? $this->driver->getOpenURL() : false;
 
 ?>
-
 <?/* Common parts of recordDriver's core.phtml templates*/?>
 <!-- col -->
 <div class="c25l">
@@ -73,7 +73,12 @@ $publicationDate		= $this->publicationDateMarc($resultItem->getPublicationDates(
 
 		<?php if(!empty($summary)): ?>
 		<h4>Inhalt:</h4>
-		<p><?$this->escapeHtml($summary)?></p>
+		<p><?=$this->escapeHtml($summary)?></p>
+		<?php endif; ?>
+
+		<?php if ($openUrl): ?>
+			<h4>OpenURL:</h4>
+			<p><?=$this->openUrl($openUrl)?></p>
 		<?php endif; ?>
 
 	</div>
