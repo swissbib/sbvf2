@@ -66,6 +66,8 @@ $lastSearchUrl = $this->lastTabbedSearchUri();
 
 			<?=$this->render('record/tabs.phtml')?>
 
+			<span class="Z3988" title="<?=$this->escapeHtml($this->driver->getOpenURL())?>"></span>
+
 			<div class="tools floatbox">
 				<?php if($lastSearchUrl): ?>
 					<a href="<?=$this->escapeHtml($lastSearchUrl)?>" title="Zurück zur swissbib Resultatsliste" class="linkbutton icon_backto">
@@ -88,9 +90,27 @@ $lastSearchUrl = $this->lastTabbedSearchUri();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <?php return; ?>
 
-
+<?php /*=========================== DISABLED CONTENT ======================= */ ?>
 
 
 

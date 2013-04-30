@@ -171,10 +171,34 @@ class Holdings
 
 			// Merge items and holding into the same network/institution structure
 			// (stays separated by items/holdings key at lowest level)
-			$this->extractedData = array_merge_recursive($holdingsData, $itemsData);
+			$this->extractedData =  $this->mergeHoldings($holdingsData, $itemsData);
 		}
 
 		return $this->extractedData;
+	}
+
+
+
+	/**
+	 * Merge two arrays. Extend sub arrays or add missing elements,
+	 * but don't extend existing scalar values (as array_merge_recursive() does)
+	 *
+	 * @param	Array	$resultData
+	 * @param	Array	$newData
+	 * @return	Array
+	 */
+	protected function mergeHoldings(array $resultData, array $newData)
+	{
+		foreach ($newData as $newKey => $newValue) {
+			if (!isset($resultData[$newKey])) {
+				$resultData[$newKey] = $newValue;
+			} elseif (is_array($resultData[$newKey])) {
+				$resultData[$newKey] = $this->mergeHoldings($resultData[$newKey], $newValue);
+			}
+			// else = Already existing scalar value => ignore (keep first items data)
+		}
+
+		return $resultData;
 	}
 
 
