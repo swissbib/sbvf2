@@ -68,7 +68,7 @@ $facetItemsLimitDefault = $facetResultsSettings->get('facet_limit_default');    
 	<!-- Slider widget: Range of publication date  -->
 	<?php
 		$this->headScript()->appendFile('pubdate_slider.js');
-		$publishDateFrom= isset($_GET['publishDatefrom']) ? intval($_GET['publishDatefrom']) : '1500';
+		$publishDateFrom= isset($_GET['publishDatefrom']) ? intval($_GET['publishDatefrom']) : '1450';
 		$publishDateTo	= isset($_GET['publishDateto']) ? intval($_GET['publishDateto']) : intval(date('Y'))+1;
 	?>
 	<div id="facet_pubdate_slider" class="facet">
