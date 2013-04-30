@@ -47,7 +47,7 @@ class SearchController extends VFSearchController
 		// Init all tabs
 		$views = array();
 		foreach ($resultTabsConfig as $idTab => $tabConfig) {
-			$this->searchClassId = $tabConfig['searchClassId']; //'Solr'
+			$this->searchClassId	= $tabConfig['searchClassId'];	// Solr, Summon, WorldCat, ...
 			$this->rememberTabbedSearchURI($idTab);
 
 			if ($idTab === $idSelectedTab) {
