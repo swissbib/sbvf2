@@ -1,0 +1,94 @@
+<h1>Search</h1>
+
+<p>
+	<strong>Combine</strong>
+	<br>AND, OR, NOT. Bsp.: <i>art* OR kunst</i>. Default is AND.
+</p>
+
+<p>
+	<strong>Phrase search</strong>
+	<br><i>"street art"</i> = the words must be adjacent
+	<br><i>"street art"~5</i> = must be present within 5 words</p>
+
+<p>
+	<strong>Truncation</strong></p>
+<table>
+	<tbody>
+	<tr>
+		<td rowspan="2">*</td>
+		<td rowspan="2">replaces any number of letters</td>
+		<td>cultur*</td>
+		<td>culture, cultural, culturally etc.</td>
+	</tr>
+
+	<tr>
+		<td>Fr*ib*urg</td>
+		<td>Fribourg, Freiburg</td>
+	</tr>
+	<tr>
+		<td rowspan="2">?</td>
+		<td rowspan="2">replaces exactly one letter</td>
+		<td>wom?n</td>
+		<td>woman, women</td>
+	</tr>
+	<tr>
+		<td>Lind??ist</td>
+		<td>Lindkvist, Lindquist, Lindqvist</td>
+	</tr>
+	<tr>
+		<td>~</td>
+		<td>fuzzy search</td>
+		<td>meier~</td>
+		<td>meier, maier, meyer, mayer, meijer, meter, meer etc.</td>
+	</tr>
+	</tbody>
+</table>
+
+<p>
+	<strong>ISBN, ISSN etc.</strong>
+	<br>Basic search, type the numbers without hyphen or use quotation marks around the number.</p>
+
+<p>
+	<strong>Call number</strong>
+	<br>Basic search, quotation marks around the call number.</p>
+
+<p>
+	<strong>Advanced search</strong>
+	<br>Search in specific fields, e.g. journal titles</p>
+
+<h2>Results</h2>
+
+<p>
+	<strong>Narrow results</strong>
+	<br>Use the facets in the left hand column</p>
+
+<p>
+	<strong>Notification about new titles that match your search</strong>
+	<br><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_pagefunctions_rss.gif') ?>" alt="subscribe to Atom feed"> <i>subscribe to Atom feed</i>
+</p>
+
+
+<p>
+	<strong>Search within a result list</strong>
+	<br><i>My swissbib - Previous searches - Select for search</i> - add criteria - <i>Search</i></p>
+
+
+<h2>Log in, My swissbib</h2>
+<p>For more details see <a href="http://swissbib-baselbern.blogspot.ch/2012/10/anmeldung-mit-switchaai.html">this blog
+		post</a> (in German).</p>
+
+<p>When you are logged in you can create <strong>additional lists</strong> and save your <strong>search
+		preferences</strong>.</p>
+
+
+<p><strong>Previous searches</strong>
+	<br>When you are logged in your last 50 searches are saved. You can <i>execute</i> them again or - via <i>Select for
+		search</i> - push them to <i>Advanced search</i> to add more parameters.
+</p>
+
+<p><strong>Define favourites</strong>
+	<br>To add a library to <i>My favourites</i> either use <i>My swissbib - Define favourites</i> or click on the <img
+			src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_favorit.gif') ?>" alt="Add to my favourites"> next to <i>Libraryinfo</i>.
+	<br>Titles in those libraries and are marked with a <img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_favorit.gif') ?>">, score
+	higher in relevancy and can be used as facets.
+</p>

@@ -33,6 +33,17 @@ return array(
 						'action'     => 'Searchsettings',
 					)
 				)
+			),
+			'help-page'     => array(
+				'type'    => 'segment',
+				'options' => array(
+					'route'    => '/HelpPage[/:topic]',
+					'defaults' => array(
+						'controller' => 'helppage',
+						'action'     => 'index',
+						'topic'		 => 'search'
+					)
+				)
 			)
 		)
 	),
@@ -55,7 +66,8 @@ return array(
 		'invokables' => array(
 			'search'       => 'Swissbib\Controller\SearchController',
 			'my-research'  => 'Swissbib\Controller\MyResearchController',
-			'libadminsync' => 'Swissbib\Controller\LibadminSyncController'
+			'libadminsync' => 'Swissbib\Controller\LibadminSyncController',
+			'helppage'     => 'Swissbib\Controller\HelpPageController'
 		)
 	),
 	'service_manager' => array(
