@@ -31,7 +31,7 @@ $this->headTitle($this->translate('helppage') . ' - ' . $this->translate('helppa
 		<!-- begin: content -->
 		<div id="content">
 			<?php if (!$first): ?>
-				<p class="notFirstMatchWarning">The requested topic was not available in your language</p>
+				<p class="notFirstMatchWarning"><?=$this->transEsc('helppage.notFirstMatchWarning')?></p>
 			<?php endif; ?>
 
 			<?=$this->helpContent;?>

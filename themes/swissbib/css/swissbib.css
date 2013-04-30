@@ -194,4 +194,6 @@ div.facets fieldset#publishDateSlider {
 .notFirstMatchWarning {
 	margin-bottom: -10px;
 	padding-top: 20px;
+	font-weight: bold;
+	color: #F67F00;
 }
