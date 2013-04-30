@@ -46,20 +46,6 @@ class Options extends \VuFind\Search\Base\Options
     protected $spellingLimit = 3;
 
     /**
-     * Selected spelling dictionary
-     *
-     * @var string
-     */
-    protected $dictionary = 'default';
-
-    /**
-     * Level of spelling correction sophistication
-     *
-     * @var bool
-     */
-    protected $spellSimple = false;
-
-    /**
      * Spell check words with numbers in them?
      *
      * @var bool
@@ -74,24 +60,14 @@ class Options extends \VuFind\Search\Base\Options
     protected $hiddenFilters = array();
 
     /**
-     * Shard fields to strip
+     * Constructor
      *
-     * @var array
+     * @param \VuFind\Config\PluginManager $configLoader Config loader
      */
-    protected $solrShardsFieldsToStrip = array();
-
-    /**
-     * Perform initialization that cannot occur in constructor due to need for
-     * injected dependencies.
-     *
-     * @return void
-     */
-    public function init()
+    public function __construct(\VuFind\Config\PluginManager $configLoader)
     {
-        parent::init();
-
-        $searchSettings = $this->getServiceLocator()->get('VuFind\Config')
-            ->get($this->searchIni);
+        parent::__construct($configLoader);
+        $searchSettings = $configLoader->get($this->searchIni);
         if (isset($searchSettings->General->default_limit)) {
             $this->defaultLimit = $searchSettings->General->default_limit;
         }
@@ -156,8 +132,7 @@ class Options extends \VuFind\Search\Base\Options
         }
 
         // Load facet preferences
-        $facetSettings = $this->getServiceLocator()->get('VuFind\Config')
-            ->get($this->facetsIni);
+        $facetSettings = $configLoader->get($this->facetsIni);
         if (isset($facetSettings->Advanced_Settings->translated_facets)
             && count($facetSettings->Advanced_Settings->translated_facets) > 0
         ) {
@@ -171,15 +146,12 @@ class Options extends \VuFind\Search\Base\Options
         }
 
         // Load Spelling preferences
-        $config = $this->getServiceLocator()->get('VuFind\Config')->get('config');
+        $config = $configLoader->get('config');
         if (isset($config->Spelling->enabled)) {
             $this->spellcheck = $config->Spelling->enabled;
         }
         if (isset($config->Spelling->limit)) {
             $this->spellingLimit = $config->Spelling->limit;
-        }
-        if (isset($config->Spelling->simple)) {
-            $this->spellSimple = $config->Spelling->simple;
         }
         if (isset($config->Spelling->skip_numeric)) {
             $this->spellSkipNumeric = $config->Spelling->skip_numeric;
@@ -193,19 +165,6 @@ class Options extends \VuFind\Search\Base\Options
             ? false : $searchSettings->General->snippets;
         if ($highlight || $snippet) {
             $this->highlight = true;
-        }
-
-        // Apply hidden filters:
-        if (isset($searchSettings->HiddenFilters)) {
-            foreach ($searchSettings->HiddenFilters as $field => $subfields) {
-                $rawFilter = $field.':'.'"'.addcslashes($subfields, '"').'"';
-                $this->addHiddenFilter($rawFilter);
-            }
-        }
-        if (isset($searchSettings->RawHiddenFilters)) {
-            foreach ($searchSettings->RawHiddenFilters as $rawFilter) {
-                $this->addHiddenFilter($rawFilter);
-            }
         }
 
         // Load autocomplete preference:
@@ -240,12 +199,6 @@ class Options extends \VuFind\Search\Base\Options
                 $this->visibleShardCheckboxes
                     = $searchSettings->ShardPreferences->showCheckboxes;
             }
-            // Apply field stripping if applicable:
-            if (isset($searchSettings->StripFields)) {
-                foreach ($searchSettings->StripFields as $k => $v) {
-                    $this->solrShardsFieldsToStrip[$k] = $v;
-                }
-            }
         }
     }
 
@@ -271,36 +224,6 @@ class Options extends \VuFind\Search\Base\Options
         return $this->hiddenFilters;
     }
 
-    /**
-     * Switch the spelling setting to simple
-     *
-     * @return void
-     */
-    public function usesSimpleSpelling()
-    {
-        return $this->spellSimple;
-    }
-
-    /**
-     * Switch the spelling dictionary to basic
-     *
-     * @return void
-     */
-    public function useBasicDictionary()
-    {
-        $this->dictionary = 'basicSpell';
-    }
-
-    /**
-     * Get the selected spelling dictionary
-     *
-     * @return string
-     */
-    public function getSpellingDictionary()
-    {
-        return $this->dictionary;
-    }
-
 
     /**
      * Are we skipping numeric words?
@@ -314,7 +237,7 @@ class Options extends \VuFind\Search\Base\Options
 
 
     /**
-     * Get the selected spelling dictionary
+     * Get the spelling limit.
      *
      * @return int
      */
@@ -343,15 +266,5 @@ class Options extends \VuFind\Search\Base\Options
     public function getAdvancedSearchAction()
     {
         return 'search-advanced';
-    }
-
-    /**
-     * Get details on which Solr fields to strip when sharding is active.
-     *
-     * @return array
-     */
-    public function getSolrShardsFieldsToStrip()
-    {
-        return $this->solrShardsFieldsToStrip;
     }
 }

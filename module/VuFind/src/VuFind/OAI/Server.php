@@ -127,11 +127,18 @@ class Server
     protected $adminEmail;
 
     /**
-     * Search manager
+     * Results plugin manager
      *
-     * @var \VuFind\Search\Manager
+     * @var \VuFind\Search\Results\PluginManager
      */
-    protected $searchManager;
+    protected $resultsManager;
+
+    /**
+     * Record loader
+     *
+     * @var \VuFind\Record\Loader
+     */
+    protected $recordLoader;
 
     /**
      * Table manager
@@ -143,18 +150,23 @@ class Server
     /**
      * Constructor
      *
-     * @param \VuFind\Search\Manager $sm      Search manager for retrieving records
-     * @param \Zend\Config\Config    $config  VuFind configuration
-     * @param string                 $baseURL The base URL for the OAI server
-     * @param array                  $params  The incoming OAI-PMH parameters
-     * (i.e. $_GET)
+     * @param \VuFind\Search\Results\PluginManager $results Search manager for
+     * retrieving records
+     * @param \VuFind\Record\Loader                $loader  Record loader
+     * @param \VuFind\Db\Table\PluginManager       $tables  Table manager
+     * @param \Zend\Config\Config                  $config  VuFind configuration
+     * @param string                               $baseURL The base URL for the OAI
+     * server
+     * @param array                                $params  The incoming OAI-PMH
+     * parameters (i.e. $_GET)
      */
-    public function __construct(\VuFind\Search\Manager $sm,
+    public function __construct(\VuFind\Search\Results\PluginManager $results,
+        \VuFind\Record\Loader $loader, \VuFind\Db\Table\PluginManager $tables,
         \Zend\Config\Config $config, $baseURL, $params
     ) {
-        $this->searchManager = $sm;
-        $this->tableManager = $sm->getServiceLocator()
-            ->get('VuFind\DbTablePluginManager');
+        $this->resultsManager = $results;
+        $this->recordLoader = $loader;
+        $this->tableManager = $tables;
         $this->baseURL = $baseURL;
         $this->params = isset($params) && is_array($params) ? $params : array();
         $this->initializeMetadataFormats(); // Load details on supported formats
@@ -584,10 +596,7 @@ class Server
         // we'll assume that this list is short enough to load in a single response;
         // it may be necessary to implement a resumption token mechanism if this
         // proves not to be the case:
-        $params = $this->searchManager->setSearchClassId($this->searchClassId)
-            ->getParams();
-        $results = $this->searchManager->setSearchClassId($this->searchClassId)
-            ->getResults($params);
+        $results = $this->resultsManager->get($this->searchClassId);
         try {
             $facets = $results->getFullFieldFacets(array($this->setField));
         } catch (\Exception $e) {
@@ -640,8 +649,8 @@ class Server
         $set = ''
     ) {
         // Set up search parameters:
-        $this->searchManager->setSearchClassId($this->searchClassId);
-        $params = $this->searchManager->getParams();
+        $results = $this->resultsManager->get($this->searchClassId);
+        $params = $results->getParams();
         $params->setLimit($limit);
         $params->getOptions()->disableHighlighting();
         $params->getOptions()->spellcheckEnabled(false);
@@ -662,7 +671,6 @@ class Server
         }
 
         // Perform a Solr search:
-        $results = $this->searchManager->getResults($params);
         $results->overrideStartRecord($offset + 1);
 
         // Return our results:
@@ -765,8 +773,7 @@ class Server
         $id = $this->stripID($id);
         if ($id !== false) {
             try {
-                return $this->searchManager->setSearchClassId($this->searchClassId)
-                    ->getResults()->getRecord($id);
+                return $this->recordLoader->load($id, $this->searchClassId);
             } catch (RecordMissingException $e) {
                 return false;
             }

@@ -87,6 +87,11 @@ return array(
                     $sm->getServiceLocator()->get('VuFind\RecordRouter')
                 );
             },
+            'related' => function ($sm) {
+                return new \VuFind\View\Helper\Root\Related(
+                    $sm->getServiceLocator()->get('VuFind\RelatedPluginManager')
+                );
+            },
             'reviews' => function ($sm) {
                 return new \VuFind\View\Helper\Root\Reviews(
                     $sm->getServiceLocator()->get('VuFind\Config')->get('config')
@@ -94,7 +99,7 @@ return array(
             },
             'searchoptions' => function ($sm) {
                 return new VuFind\View\Helper\Root\SearchOptions(
-                    $sm->getServiceLocator()->get('SearchManager')
+                    $sm->getServiceLocator()->get('VuFind\SearchOptionsPluginManager')
                 );
             },
             'syndeticsplus' => function ($sm) {
@@ -116,7 +121,7 @@ return array(
             },
             'worldcat' => function ($sm) {
                 return new \VuFind\View\Helper\Root\WorldCat(
-                    $sm->getServiceLocator()->get('VuFind\WorldCatConnection')
+                    $sm->getServiceLocator()->get('VuFind\Search\BackendManager')->get('WorldCat')->getConnector()
                 );
             }
         ),
@@ -130,7 +135,6 @@ return array(
             'jqueryvalidation' => 'VuFind\View\Helper\Root\JqueryValidation',
             'printms' => 'VuFind\View\Helper\Root\Printms',
             'recommend' => 'VuFind\View\Helper\Root\Recommend',
-            'related' => 'VuFind\View\Helper\Root\Related',
             'renderarray' => 'VuFind\View\Helper\Root\RenderArray',
             'resultfeed' => 'VuFind\View\Helper\Root\ResultFeed',
             'safemoneyformat' => 'VuFind\View\Helper\Root\SafeMoneyFormat',

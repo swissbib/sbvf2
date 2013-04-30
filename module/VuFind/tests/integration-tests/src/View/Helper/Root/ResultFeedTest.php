@@ -25,7 +25,7 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:unit_tests Wiki
  */
-namespace VuFind\IntegrationTest\View\Helper\Root;
+namespace VuFindTest\Integration\View\Helper\Root;
 use VuFind\View\Helper\Root\ResultFeed;
 
 /**
@@ -49,7 +49,8 @@ class ResultFeedTest extends \VuFindTest\Unit\ViewHelperTestCase
         $recordLink = $this->getMock(
             'VuFind\View\Helper\Root\RecordLink', array(),
             array(new \VuFind\Record\Router(
-                new \VuFind\Record\Loader(), new \Zend\Config\Config(array()))
+                $this->getServiceManager()->get('VuFind\RecordLoader'),
+                new \Zend\Config\Config(array()))
             )
         );
         $recordLink->expects($this->any())->method('getUrl')
@@ -75,11 +76,10 @@ class ResultFeedTest extends \VuFindTest\Unit\ViewHelperTestCase
         $request->set('sort', 'title');
         $request->set('view', 'rss');
 
-        $sm = $this->getSearchManager();
-        $params = $sm->setSearchClassId('Solr')->getParams();
-        $params->initFromRequest($request);
+        $results = $this->getServiceManager()
+            ->get('VuFind\SearchResultsPluginManager')->get('Solr');
+        $results->getParams()->initFromRequest($request);
 
-        $results = $sm->setSearchClassId('Solr')->getResults($params);
         $helper = new ResultFeed();
         $helper->setView($this->getPhpRenderer($this->getPlugins()));
         $mockTranslator = function ($str) {

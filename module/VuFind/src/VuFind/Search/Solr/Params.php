@@ -40,65 +40,49 @@ class Params extends \VuFind\Search\Base\Params
 {
     /**
      * Facet result limit
+     *
+     * @var int
      */
     protected $facetLimit = 30;
+
     /**
      * Offset for facet results
+     *
+     * @var int
      */
     protected $facetOffset = null;
+
     /**
      * Prefix for facet searching
+     *
+     * @var string
      */
     protected $facetPrefix = null;
+
     /**
      * Sorting order for facet search results
+     *
+     * @var string
      */
     protected $facetSort = null;
 
     /**
-     * Override Query
-     */
-    protected $overrideQuery = false;
-
-    /**
-     * Perform initialization that cannot occur in constructor due to need for
-     * injected dependencies.
+     * Constructor
      *
-     * @return void
+     * @param \VuFind\Search\Base\Options  $options      Options to use
+     * @param \VuFind\Config\PluginManager $configLoader Config loader
      */
-    public function init()
+    public function __construct($options, \VuFind\Config\PluginManager $configLoader)
     {
-        parent::init();
+        parent::__construct($options, $configLoader);
 
         // Use basic facet limit by default, if set:
-        $config = $this->getServiceLocator()->get('VuFind\Config')->get('facets');
+        $config = $configLoader->get('facets');
         if (isset($config->Results_Settings->facet_limit)
             && is_numeric($config->Results_Settings->facet_limit)
         ) {
             $this->setFacetLimit($config->Results_Settings->facet_limit);
         }
-    }
-
-    /**
-     * Set the override query
-     *
-     * @param string $q Override query
-     *
-     * @return void
-     */
-    public function setOverrideQuery($q)
-    {
-        $this->overrideQuery = $q;
-    }
-
-    /**
-     * Get the override query
-     *
-     * @return string
-     */
-    public function getOverrideQuery()
-    {
-        return $this->overrideQuery;
     }
 
     /**
@@ -170,7 +154,7 @@ class Params extends \VuFind\Search\Base\Params
     {
         // Special case -- did we get a list of IDs instead of a standard query?
         $ids = $request->get('overrideIds', null);
-        if (is_array($ids) && !empty($ids)) {
+        if (is_array($ids)) {
             $this->setQueryIDs($ids);
         } else {
             // Use standard initialization:
@@ -348,45 +332,6 @@ class Params extends \VuFind\Search\Base\Params
     }
 
     /**
-     * Adapt the search query to a spelling query
-     *
-     * @return string Spelling query
-     */
-    protected function buildSpellingQuery()
-    {
-        if ($this->searchType == 'advanced') {
-            return $this->extractAdvancedTerms();
-        }
-        return $this->getDisplayQuery();
-    }
-
-    /**
-     * Get Spelling Query
-     *
-     * @return string
-     */
-    public function getSpellingQuery()
-    {
-        // Build our spellcheck query
-        if ($this->getOptions()->spellcheckEnabled()) {
-            if ($this->getOptions()->usesSimpleSpelling()) {
-                $this->getOptions()->useBasicDictionary();
-            }
-            $spellcheck = $this->buildSpellingQuery();
-
-            // If the spellcheck query is purely numeric, skip it if
-            // the appropriate setting is turned on.
-            if ($this->getOptions()->shouldSkipNumericSpelling()
-                && is_numeric($spellcheck)
-            ) {
-                return '';
-            }
-            return $spellcheck;
-        }
-        return '';
-    }
-
-    /**
      * Load all available facet settings.  This is mainly useful for showing
      * appropriate labels when an existing search has multiple filters associated
      * with it.
@@ -453,8 +398,9 @@ class Params extends \VuFind\Search\Base\Params
      */
     public function setQueryIDs($ids)
     {
-        // No need for spell checking on an ID query!
+        // No need for spell checking or highlighting on an ID query!
         $this->getOptions()->spellcheckEnabled(false);
+        $this->getOptions()->disableHighlighting();
 
         // Special case -- no IDs to set:
         if (empty($ids)) {

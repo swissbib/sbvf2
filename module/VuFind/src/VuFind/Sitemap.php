@@ -26,7 +26,7 @@
  * @link     http://www.vufind.org  Main Page
  */
 namespace VuFind;
-use VuFind\Connection\Manager as ConnectionManager;
+use VuFindSearch\Backend\Solr\Backend, Zend\Config\Config;
 
 /**
  * Class for generating sitemaps
@@ -39,6 +39,13 @@ use VuFind\Connection\Manager as ConnectionManager;
  */
 class Sitemap
 {
+    /**
+     * Search backend from which to retrieve record IDs.
+     *
+     * @var Backend
+     */
+    protected $backend;
+
     /**
      * Base URL for site
      *
@@ -56,7 +63,7 @@ class Sitemap
     /**
      * Sitemap configuration (sitemap.ini)
      *
-     * @var \Zend\Config\Config
+     * @var Config
      */
     protected $config;
 
@@ -98,12 +105,13 @@ class Sitemap
     /**
      * Constructor
      *
-     * @param string              $baseUrl VuFind base URL
-     * @param \Zend\Config\Config $config  Sitemap configuration settings
+     * @param Backend $backend Search backend
+     * @param string  $baseUrl VuFind base URL
+     * @param Config  $config  Sitemap configuration settings
      */
-    public function __construct($baseUrl, \Zend\Config\Config $config)
+    public function __construct(Backend $backend, $baseUrl, Config $config)
     {
-        // Read Config file
+        $this->backend = $backend;
         $this->baseUrl = $baseUrl;
         $this->resultUrl = $this->baseUrl . '/Record/';
         $this->config = $config;
@@ -124,41 +132,25 @@ class Sitemap
      */
     public function generate()
     {
-        $solr = ConnectionManager::connectToIndex();
-
         $currentPage = 1;
         $last_term = '';
 
         while (true) {
-            if ($currentPage == 1) {
-                $fileWhole = $this->fileStart . ".xml";
-            } else {
-                $fileWhole = $this->fileStart . "-" . $currentPage . ".xml";
-            }
-
             // Get
-            $current_page_info_array = $solr->getTerms(
-                'id', $last_term, $this->countPerPage
-            );
-            if (!isset($current_page_info_array)
-                || count($current_page_info_array) < 1
-            ) {
+            $currentPageInfo
+                = $this->backend->terms('id', $last_term, $this->countPerPage)
+                    ->getFieldTerms('id');
+            if (null === $currentPageInfo || count($currentPageInfo) < 1) {
                 break;
             } else {
-                $smf = $this->openSitemapFile($fileWhole, 'urlset');
-                foreach ($current_page_info_array as $item => $count) {
+                $filename = $this->getFilenameForPage($currentPage);
+                $smf = $this->openSitemapFile($filename, 'urlset');
+                foreach ($currentPageInfo as $item => $count) {
                     $loc = htmlspecialchars($this->resultUrl . urlencode($item));
                     if (strpos($loc, 'http') === false) {
                         $loc = 'http://'.$loc;
                     }
-                    fwrite($smf, '<url>' . "\n");
-                    fwrite($smf, '  <loc>' . $loc . '</loc>' . "\n");
-                    fwrite(
-                        $smf,
-                        '  <changefreq>'.htmlspecialchars($this->frequency)
-                        .'</changefreq>'."\n"
-                    );
-                    fwrite($smf, '</url>' . "\n");
+                    $this->writeSitemapEntry($smf, $loc);
                     $last_term = $item;
                 }
 
@@ -230,6 +222,18 @@ class Sitemap
     }
 
     /**
+     * Get the filename for the specified page number.
+     *
+     * @param int $page Page number
+     *
+     * @return string
+     */
+    protected function getFilenameForPage($page)
+    {
+        return $this->fileStart . ($page == 1 ? '' : '-' . $page) . '.xml';
+    }
+
+    /**
      * Start writing a sitemap file (including the top-level open tag).
      *
      * @param string $filename Filename to open.
@@ -259,6 +263,26 @@ class Sitemap
         fwrite($smf, $xml);
 
         return $smf;
+    }
+
+    /**
+     * Write an entry to a sitemap.
+     *
+     * @param int    $smf File handle to write to.
+     * @param string $loc URL to write.
+     *
+     * @return void
+     */
+    protected function writeSitemapEntry($smf, $loc)
+    {
+        fwrite($smf, '<url>' . "\n");
+        fwrite($smf, '  <loc>' . $loc . '</loc>' . "\n");
+        fwrite(
+            $smf,
+            '  <changefreq>'.htmlspecialchars($this->frequency)
+            .'</changefreq>'."\n"
+        );
+        fwrite($smf, '</url>' . "\n");
     }
 
     /**

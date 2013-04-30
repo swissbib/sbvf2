@@ -27,6 +27,7 @@
  */
 namespace VuFind\Recommend;
 use VuFind\I18n\Translator\TranslatorAwareInterface;
+use VuFindSearch\Query\Query;
 
 /**
  * AuthorInfo Recommendations Module
@@ -72,11 +73,11 @@ class AuthorInfo implements RecommendInterface, TranslatorAwareInterface
     protected $lang;
 
     /**
-     * Search manager
+     * Results plugin manager
      *
-     * @var \VuFind\Search\Manager
+     * @var \VuFind\Search\Results\PluginManager
      */
-    protected $searchManager;
+    protected $resultsManager;
 
     /**
      * Should we use VIAF for authorized names?
@@ -103,15 +104,15 @@ class AuthorInfo implements RecommendInterface, TranslatorAwareInterface
     /**
      * Constructor
      *
-     * @param \VuFind\Search\Manager $searchManager Search manager
-     * @param \Zend\Http\Client      $client        HTTP client
-     * @param string                 $sources       Source identifiers (currently,
-     * only 'wikipedia' is supported)
+     * @param \VuFind\Search\Results\PluginManager $results Results plugin manager
+     * @param \Zend\Http\Client                    $client  HTTP client
+     * @param string                               $sources Source identifiers
+     * (currently, only 'wikipedia' is supported)
      */
-    public function __construct(\VuFind\Search\Manager $searchManager,
+    public function __construct(\VuFind\Search\Results\PluginManager $results,
         \Zend\Http\Client $client, $sources = 'wikipedia'
     ) {
-        $this->searchManager = $searchManager;
+        $this->resultsManager = $results;
         $this->client = $client;
         $this->sources = $sources;
     }
@@ -541,7 +542,7 @@ class AuthorInfo implements RecommendInterface, TranslatorAwareInterface
     protected function normalizeNameWithViaf($author)
     {
         // Do authority search:
-        $auth = $this->searchManager->setSearchClassId('SolrAuth')->getResults();
+        $auth = $this->resultsManager->get('SolrAuth');
         $auth->getParams()->setBasicSearch('"' . $author . '"', 'MainHeading');
         $results = $auth->getResults();
 
@@ -567,9 +568,9 @@ class AuthorInfo implements RecommendInterface, TranslatorAwareInterface
      */
     protected function getAuthor()
     {
-        $search = $this->searchObject->getParams()->getSearchTerms();
-        if (isset($search[0]['lookfor'])) {
-            $author = $search[0]['lookfor'];
+        $search = $this->searchObject->getParams()->getQuery();
+        if ($search instanceof Query) {
+            $author = $search->getString();
             // remove quotes
             $author = str_replace('"', '', $author);
             return $this->useViaf

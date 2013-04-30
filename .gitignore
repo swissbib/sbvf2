@@ -5,3 +5,12 @@ local/config/vufind/config.ini
 local/httpd-vufind.conf
 local/cache/*
 public/.htaccess
+
+
+# GNU Emacs temporary files
+
+ChangeLog
+\#*
+.\#*
+TAGS
+*~
