@@ -47,12 +47,20 @@ class Summon extends VuFindSummon
 {
 
 	/**
-	 * @return 	String
+	 * @return 	String	Author name(s)
 	 */
 	public function getAuthor() {
 		$author = array_key_exists('Author', $this->fields) ? $this->fields['Author'] : '-';
 
 		return is_array($author) ? implode(', ', $author) : $author;
+	}
+
+	/**
+	 * @return	String	Direct link URL
+	 */
+	public function getDirectLink() {
+
+		return $this->mainConfig->link;
 	}
 
 }
