@@ -65,6 +65,7 @@ class HelpPageController extends AbstractActionController
 		$template    = null;
 		$activeTopic = null;
 		$firstMatch  = true;
+		$topic		 = strtolower($topic);
 
 		$languages = array($language, 'en');
 		$topics    = array($topic, 'search');
