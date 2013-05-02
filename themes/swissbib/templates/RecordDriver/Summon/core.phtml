@@ -13,8 +13,14 @@ $thumbUrl	= $mediumThumb ? $mediumThumb : $this->url('cover-unavailable');
 $subTitle           = $resultItem->getSubtitle(true);
 $titleStatement		= $resultItem->getTitleStatement(true);
 $secondaryAuthors	= $resultItem->getSecondaryAuthors();
+
 $publishers			= $resultItem->getPublishers();
-$publisher  = (is_array($publishers) && count($publishers)>0) ? str_replace(', , ', ', ', implode(', ', $publishers)) : $publisher;
+if ((is_array($publishers) && count($publishers)>0)) {
+	$publisher	= str_replace(', , ', ', ', implode(', ', $publishers));
+} elseif(!isset($publisher)) {
+	$publisher = '';
+}
+
 $edition			= $resultItem->getEdition();
 $summary			= trim(implode($resultItem->getSummary()));
 

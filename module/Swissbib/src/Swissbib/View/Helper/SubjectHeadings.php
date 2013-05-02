@@ -15,8 +15,10 @@ use Zend\View\Helper\AbstractHelper;
 
 class SubjectHeadings extends AbstractHelper {
 	public function __invoke(array $subjectHeadings = array()) {
+		$title= '';
+		$lcsh = '';
         foreach ($subjectHeadings as $heading) {
-            if ($heading['@ind2'] === '0') {
+            if (array_key_exists('@ind2', $heading) && $heading['@ind2'] === '0') {
                 $title = '<h4>LCSH</h4>';
                 $lcsh = $heading['650a'];
             }
