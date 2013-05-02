@@ -1,33 +1,34 @@
 <?php
+
 namespace Swissbib\Controller;
 
-use VuFind\Controller\SearchController as VFSearchController;
+use VuFind\Controller\SummonController as VFSummonController;
 use Zend\Session\Container as SessionContainer;
-use VuFind\Search\Memory as VFMemory;
 
 use Swissbib\Controller\Helper\Search as SearchHelper;
 
 /**
- * @package       Swissbib
- * @subpackage    Controller
+ * Summon Controller
+ *
+ * @category VuFind2
+ * @package  Controller
+ * @author   Demian Katz <demian.katz@villanova.edu>
+ * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ * @link     http://vufind.org   Main Site
  */
-class SearchController extends VFSearchController
+
+class SummonController extends VFSummonController
 {
 
-	/**
-	 * (Default Action) Get model for home view
-	 *
-	 * @return    \Zend\View\Model\ViewModel
-	 */
-	public function homeAction()
-	{
-		$homeView = parent::homeAction();
-
-		$this->layout()->setTemplate('layout/layout.home');
-
-		return $homeView;
-	}
-
+    /**
+     * Search action
+     *
+     * @return mixed
+     */
+    public function searchAction()
+    {
+        return $this->resultsAction();
+    }
 
 
 	/**
@@ -131,6 +132,28 @@ class SearchController extends VFSearchController
 
 
 	/**
+	 * Get given parameter from (given / or ) swissbib module config
+	 *
+	 * @throws \Exception
+	 * @param   String  $moduleKey
+	 * @param   String  $parameterKey
+	 * @return  Mixed
+	 */
+	private function getModuleConfigParam($parameterKey, $moduleKey = 'swissbib')
+	{
+		$config       = $this->getServiceLocator()->get('Config');
+		$moduleConfig = $config[$moduleKey];
+
+		if (!array_key_exists($parameterKey, $moduleConfig)) {
+			throw new \Exception('swissbib config param missing: ' . $parameterKey);
+		}
+
+		return $moduleConfig[$parameterKey];
+	}
+
+
+
+	/**
 	 * Get ID of selected tab
 	 * User pref: lastly selected tab (cookie set in jquery.tabbed.js)
 	 * Or module config: default tab (if no user pref stored yet)
@@ -178,25 +201,5 @@ class SearchController extends VFSearchController
 		return $tab->getConfig();
 	}
 
-
-
-	/**
-	 * Get given parameter from (given / or ) swissbib module config
-	 *
-	 * @throws \Exception
-	 * @param   String  $moduleKey
-	 * @param   String  $parameterKey
-	 * @return  Mixed
-	 */
-	private function getModuleConfigParam($parameterKey, $moduleKey = 'swissbib')
-	{
-		$config       = $this->getServiceLocator()->get('Config');
-		$moduleConfig = $config[$moduleKey];
-
-		if (!array_key_exists($parameterKey, $moduleConfig)) {
-			throw new \Exception('swissbib config param missing: ' . $parameterKey);
-		}
-
-		return $moduleConfig[$parameterKey];
-	}
 }
+

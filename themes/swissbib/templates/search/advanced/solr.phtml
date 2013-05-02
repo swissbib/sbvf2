@@ -19,18 +19,18 @@ foreach($this->facetList as $field => $list) {
 }
 
 if( isset($this->dateRangeLimit) ) {
-	$this->headScript()->appendFile('pubdate_slider.js');
+//	$this->headScript()->appendFile('pubdate_slider.js');
+	echo '<script type="javascript" src="pubdate_slider.js"></script>';
 }
 
 ?>
-<fieldset>
 
+<fieldset>
 	<h3 class="toggler persist collapsed" id="searchoption_toggler_refine">
 		<?=$this->transEsc('Limit To')?>
 	</h3>
 
 	<div class="searchoption_toggler_refine">
-
 		<?php foreach($facetGroups as $facetGroup): ?>
 			<div class="fieldbox">
 
@@ -104,5 +104,4 @@ if( isset($this->dateRangeLimit) ) {
 		<?php endif; ?>
 
 	</div>
-
 </fieldset>

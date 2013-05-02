@@ -64,10 +64,11 @@ return array(
 	),
 	'controllers'     => array(
 		'invokables' => array(
-			'search'       => 'Swissbib\Controller\SearchController',
-			'my-research'  => 'Swissbib\Controller\MyResearchController',
+			'helppage'     => 'Swissbib\Controller\HelpPageController',
 			'libadminsync' => 'Swissbib\Controller\LibadminSyncController',
-			'helppage'     => 'Swissbib\Controller\HelpPageController'
+			'my-research'  => 'Swissbib\Controller\MyResearchController',
+			'search'       => 'Swissbib\Controller\SearchController',
+			'summon'       => 'Swissbib\Controller\SummonController'
 		)
 	),
 	'service_manager' => array(
