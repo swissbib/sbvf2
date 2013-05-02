@@ -15,8 +15,13 @@ var sbFacets = {
 			event.stopPropagation();
 			event.preventDefault();
 
-			sbAjax.ajaxLoadTabContent(this.href.replace('/Results?', '/Tabcontent?'));
-			sbAjax.ajaxLoadSidebarContent(this.href.replace('/Results?', '/Tabsidebar?'));
+				// Default links in swissbib Solr Tab
+			if( this.href.indexOf("/Results?") != -1 ) {
+				var searchQueryTab		= this.href.replace('/Results?', '/Tabcontent?');
+				var searchQuerySidebar	= this.href.replace('/Results?', '/Tabsidebar?')
+			}
+			sbAjax.ajaxLoadTabContent(searchQueryTab);
+			sbAjax.ajaxLoadSidebarContent(searchQuerySidebar);
 		});
 	}
 };
