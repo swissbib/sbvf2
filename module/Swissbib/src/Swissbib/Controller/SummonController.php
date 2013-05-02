@@ -78,6 +78,60 @@ class SummonController extends VFSummonController
 
 
 	/**
+	 * Returns results content of single tab (called via AJAX)
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function tabcontentAction()
+	{
+		return $this->tabAction();
+	}
+
+
+
+	/**
+	 * Returns sidebar content of single tab (called via AJAX)
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function tabsidebarAction()
+	{
+		return $this->tabAction();
+	}
+
+
+
+	/**
+	 * Wrapper for AJAX "tabbed" actions
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	private function tabAction()
+	{
+		$tabKey = $_REQUEST['tab'];
+
+		// Initialize tab config
+		$resultTabsConfig = $this->getModuleConfigParam('result_tabs');
+		$tabConfig        = $resultTabsConfig[$tabKey];
+		/** @var    $view    \Zend\View\Model\ViewModel */
+		$this->searchClassId = $tabConfig['searchClassId'];
+
+		$view                = parent::resultsAction();
+		$view->tabHeadConfig = $this->getTabConfig($tabConfig, $view);
+		$view->facetsConfig  = $this->getServiceLocator()->get('VuFind\Config')->get('facets');
+
+		// Add view params to layout
+		$this->layout()->resultViewParams = $view->params;
+
+		// Set the model terminal
+		$view->setTerminal(true);
+
+		return $view;
+	}
+
+
+
+	/**
 	 * Get given parameter from (given / or ) swissbib module config
 	 *
 	 * @throws \Exception

@@ -15,10 +15,14 @@ var sbFacets = {
 			event.stopPropagation();
 			event.preventDefault();
 
-				// Default links in swissbib Solr Tab
+			var searchQueryTab, searchQuerySidebar;
+
 			if( this.href.indexOf("/Results?") != -1 ) {
-				var searchQueryTab		= this.href.replace('/Results?', '/Tabcontent?');
-				var searchQuerySidebar	= this.href.replace('/Results?', '/Tabsidebar?')
+				searchQueryTab		= this.href.replace('/Results?', '/Tabcontent?');
+				searchQuerySidebar	= this.href.replace('/Results?', '/Tabsidebar?')
+			} else if( this.href.indexOf("/Summon/Search?") ) {
+				searchQueryTab		= this.href.replace('/Summon/Search?', '/Summon/Tabcontent?tab=summon&');
+				searchQuerySidebar	= this.href.replace('/Summon/Search?', '/Summon/Tabsidebar?tab=summon&')
 			}
 			sbAjax.ajaxLoadTabContent(searchQueryTab);
 			sbAjax.ajaxLoadSidebarContent(searchQuerySidebar);
