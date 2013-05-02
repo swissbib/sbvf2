@@ -32,6 +32,9 @@
 
 namespace Swissbib\RecordDriver;
 
+use Zend\I18n\Translator\Translator;
+use Zend\ServiceManager\ServiceLocatorInterface;
+
 use VuFind\RecordDriver\SolrMarc as VuFindSolrMarc;
 
 use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
@@ -54,6 +57,10 @@ class SolrMarc extends VuFindSolrMarc
 	 */
 	protected $holdingsHelper;
 
+	/**
+	 * @var	Boolean		Change behaviour if getFormats() to return openUrl compatible formats
+	 */
+	protected $useOpenUrlFormats = false;
 
 	/**
 	 * @var    Array    Used also for field 100        _ means repeatable
@@ -173,6 +180,93 @@ class SolrMarc extends VuFindSolrMarc
 				}
 			}
 		}
+	}
+
+
+
+	/**
+	 * Wrapper for getOpenURL()
+	 * Set flag to get special values from getFormats()
+	 *
+	 * @see		getFormats()
+	 * @return	String
+	 */
+	public function getOpenURL()
+	{
+		$oldValue	= $this->useOpenUrlFormats;
+		$this->useOpenUrlFormats = true;
+		$openUrl	= parent::getOpenURL();
+		$this->useOpenUrlFormats = $oldValue;
+
+		return $openUrl;
+	}
+
+
+
+	/**
+	 * Get formats. By default, get translated values
+	 * If flag useOpenUrlFormats in class is set, get prepared formats for openUrl
+	 *
+	 * @return	String[]
+	 */
+	public function getFormats()
+	{
+		if ($this->useOpenUrlFormats) {
+			return $this->getFormatsOpenUrl();
+		} else {
+			return $this->getFormatsTranslated();
+		}
+	}
+
+
+
+	/**
+	 * Get translated formats
+	 *
+	 * @return	String[]
+	 */
+	public function getFormatsTranslated()
+	{
+		$formats	= $this->getFormatsRaw();
+		$translator	= $this->getTranslator();
+
+		foreach ($formats as $index => $format) {
+			$formats[$index] = $translator->translate($format);
+		}
+
+		return $formats;
+	}
+
+
+
+	/**
+	 * Get formats modified to work with openURL
+	 * Formats: Book, Journal, Article
+	 *
+	 * @todo	Currently, all items are marked as "Book", improve detection
+	 * @return	String[]
+	 */
+	public function getFormatsOpenUrl()
+	{
+		$formats	= $this->getFormatsRaw();
+
+			// Dummy fix. Make all books
+		$formats[] = 'Book';
+
+		return $formats;
+	}
+
+
+
+	/**
+	 * Get raw formats as provided by the basic driver
+	 * Wrap for getFormats() because it's overwritten in this driver
+	 *
+	 * @return	String[]
+	 */
+	public function getFormatsRaw()
+	{
+		return parent::getFormats();
 	}
 
 
@@ -846,7 +940,7 @@ class SolrMarc extends VuFindSolrMarc
             //ToDo: more analysis necessary!
             //$holdingsHelper = $this->getServiceLocator()->getServiceLocator()->get('Swissbib\HoldingsHelper');
             /** @var HoldingsHelper $holdingsHelper */
-            $holdingsHelper = $this->hierarchyDriverManager->getServiceLocator()->get('Swissbib\HoldingsHelper');
+            $holdingsHelper = $this->getServiceLocator()->get('Swissbib\HoldingsHelper');
 
 
 			$holdingsData   = isset($this->fields['holdings']) ? $this->fields['holdings'] : '';
@@ -857,5 +951,29 @@ class SolrMarc extends VuFindSolrMarc
 		}
 
 		return $this->holdingsHelper;
+	}
+
+
+
+	/**
+	 * Helper to get service locator
+	 *
+	 * @return	ServiceLocatorInterface
+	 */
+	protected function getServiceLocator()
+	{
+		return $this->hierarchyDriverManager->getServiceLocator();
+	}
+
+
+
+	/**
+	 * Get translator
+	 *
+	 * @return	Translator
+	 */
+	protected function getTranslator()
+	{
+		return $this->getServiceLocator()->get('VuFind/Translator');
 	}
 }
