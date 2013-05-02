@@ -79,6 +79,7 @@ var sbAjax = {
 
 				sbAjax.initAjaxElements();
 				swissbib.initForms(container);
+				swissbib.initToggler(container);
 				return false;
 			} :
 				// Replace element itself from response
@@ -92,6 +93,7 @@ var sbAjax = {
 					// Init JS controlled elements that were updated via AJAX
 				sbAjax.initAjaxElements();
 				swissbib.initForms(container);
+				swissbib.initToggler(container);
 
 				if($('#facet_pubdate_slider').length>0) {
 					sbAjax.initFacetPublicationDateSlider();
