@@ -50,7 +50,7 @@ class Summon extends VuFindSummon
 	 * @return 	String
 	 */
 	public function getAuthor() {
-		$author = $this->fields['Author'];
+		$author = array_key_exists('Author', $this->fields) ? $this->fields['Author'] : '-';
 
 		return is_array($author) ? implode(', ', $author) : $author;
 	}
