@@ -249,9 +249,30 @@ class SolrMarc extends VuFindSolrMarc
 	public function getFormatsOpenUrl()
 	{
 		$formats	= $this->getFormatsRaw();
+		$found		= false;
 
-			// Dummy fix. Make all books
-		$formats[] = 'Book';
+		if (in_array('BK010000000', $formats) || in_array('BK070000000', $formats)) {
+			$formats[] = 'Article';
+			$found		= true;
+		} else {
+			foreach ($formats as $format) {
+				if (stristr($format, 'BK') === 0) {
+					$formats[] = 'Book';
+					$found	= true;
+					break;
+				}
+				if (stristr($format, 'CR') === 0) {
+					$formats[] = 'Journal';
+					$found	= true;
+					break;
+				}
+			}
+		}
+
+			// Fallback: Book
+		if (!$found) {
+			$formats[] = 'Book';
+		}
 
 		return $formats;
 	}
