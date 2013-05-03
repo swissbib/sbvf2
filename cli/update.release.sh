@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Update current project from github repository.
+# Update current project on the branch release from github repository.
 # Clear cache
 
 if [ "$UID"  -eq 0 ]; then
@@ -13,7 +13,7 @@ fi
 
 
 TIME=`date +%Y-%m-%d_%H.%M.%S`
-LOG=cli/log/update.${TIME}.log
+LOG=cli/log/update.release.${TIME}.log
 
 # Write message with timestamp into log file
 function log {
@@ -23,16 +23,16 @@ function log {
 	echo "Log: ${MESSAGE}"
 }
 
-# Update from git
+# Update branch release from git
 
-log "start update VuFind"
+log "start update VuFind release branch"
 
 git stash
-git checkout development
-git pull origin development
+git checkout release
+git pull origin release
 git stash pop
 
-log "finish update VuFind"
+log "finish update VuFind release branch"
 
 
 
