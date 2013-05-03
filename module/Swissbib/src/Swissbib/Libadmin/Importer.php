@@ -97,10 +97,11 @@ class Importer implements ServiceLocatorAwareInterface
 
 				if ($storeStatus) {
 					$this->result->addSuccess('All data files were stored successfully');
+
+					$this->clearLanguageCache();
 				} else {
 					$this->result->addError('Not all data was imported successfully');
 				}
-
 			} catch (Exceptions\Store $e) {
 				return $this->result->addError($e->getMessage());
 			}
@@ -108,7 +109,7 @@ class Importer implements ServiceLocatorAwareInterface
 			$this->result->addInfo('Skipped storing of data on local system (dry run)');
 		}
 
-		$this->clearLanguageCache();
+
 
 		$this->result->addSuccess('Import completed at ' . date('r'));
 
