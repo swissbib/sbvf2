@@ -330,7 +330,10 @@ class SolrMarc extends VuFindSolrMarc
 		$data = $this->getMarcSubFieldMap(100, $this->personFieldMap);
 
 		if ($asString) {
-			return isset($data['name']) ? trim($data['name'] . ' ' . $data['forname']) : '';
+			$name = isset($data['name']) ? $data['name'] : '';
+			$name .= isset($data['forname']) ? $data['forname'] : '';
+
+			return trim($name);
 		}
 
 		return $data;
