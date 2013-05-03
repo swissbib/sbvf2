@@ -352,7 +352,7 @@ class Importer implements ServiceLocatorAwareInterface
 			$responseBody = $response->getBody();
 
 			if (!$this->storeDownloadedData($responseBody)) {
-				throw new Exceptions\Fetch('Was not able to store downloaded data in a local cache (data/cache/libadmin.json');
+				throw new Exceptions\Fetch('Was not able to store downloaded data in a local cache (data/cache/libadmin.json)');
 			}
 
 			return $responseBody;
