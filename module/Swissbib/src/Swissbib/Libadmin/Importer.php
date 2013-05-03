@@ -109,9 +109,11 @@ class Importer implements ServiceLocatorAwareInterface
 			$this->result->addInfo('Skipped storing of data on local system (dry run)');
 		}
 
-
-
-		$this->result->addSuccess('Import completed at ' . date('r'));
+		if ($this->result->isSuccess()) {
+			$this->result->addSuccess('Import successfully completed at ' . date('r'));
+		} else {
+			$this->result->addError('Import was NOT successful. Finished at ' . date('r'));
+		}
 
 		return $this->result;
 	}
