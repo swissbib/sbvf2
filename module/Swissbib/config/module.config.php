@@ -78,12 +78,13 @@ return array(
 		),
 		'factories'  => array(
 			'Swissbib\HoldingsHelper'    => function ($sm) {
-				$ils            = $sm->get('VuFind\ILSConnection');
-				$holdingsConfig = $sm->get('VuFind\Config')->get('Holdings');
+				$ilsConnection  = $sm->get('VuFind\ILSConnection');
 				$hmac           = $sm->get('VuFind\HMAC');
 				$authManager    = $sm->get('VuFind\AuthManager');
+				$config			= $sm->get('VuFind\Config');
+				$translator		= $sm->get('VuFind\Translator');
 
-				return new HoldingsHelper($ils, $holdingsConfig, $hmac, $authManager);
+				return new HoldingsHelper($ilsConnection, $hmac, $authManager, $config, $translator);
 			},
 			'Swissbib\Libadmin\Importer' => function ($sm) {
 				$config        = $sm->get('VuFind\Config')->get('config')->Libadmin;
