@@ -574,11 +574,57 @@ class SolrMarc extends VuFindSolrMarc
 	public function getAllSubjectHeadings()
 	{
 		$retval = array();
-		// These are the fields that may contain (controlled or local) subject headings:
+		// These are the fields that may contain (controlled or local) subject headings and classifications:
 		$fields = array(
 			'600', '610', '611', '630', '648', '650', '651', '655', '656', '690', '691',
 		);
+        foreach ($fields as $field) {
+            $subjects = $this->getMarcFields($field);
+            if ($subjects) {
+                foreach ($subjects as $subject) {
+                    $ind2 = $subject->getIndicator(2);
+                    $sf2  = $subject->getSubfield('2')->getData();
+                    $current = array();
 
+                    if ($ind2 === '0') {
+                        $lcsh = $subject->getMarcSubFieldMaps($field, array(
+                            'a' => $field . 'a',
+                            'b' => $field . 'b',
+                            'c' => $field . 'c',
+                            'd' => $field . 'd',
+                            'e' => $field . 'e',
+                            'f' => $field . 'f',
+                            'g' => $field . 'g',
+                            'h' => $field . 'h',
+                            'v' => $field . 'v',
+                            'x' => $field . 'x',
+                            '0' => $field . '0',
+                            '2' => $field . '2',
+                        ));
+                    }
+                    if ($ind2 === '7' && $sf2 === 'gnd') {
+                        $tag = $subject->getTag();
+                        $gnd = $subject->getMarcSubFieldMaps(array(
+                            'a' => $tag . 'a',
+                            'b' => $tag . 'b',
+                            'c' => $tag . 'c',
+                            'd' => $tag . 'd',
+                            'e' => $tag . 'e',
+                            'f' => $tag . 'f',
+                            'g' => $tag . 'g',
+                            'h' => $tag . 'h',
+                            'v' => $tag . 'v',
+                            'x' => $tag . 'x',
+                            '0' => $tag . '0',
+                            '2' => $tag . '2',
+                        ));
+                    }
+                }
+            }
+            if (!empty($field)) {
+                continue;
+            }
+    }
 		// Try each MARC field one at a time:
 		foreach ($fields as $field) {
 			$results = $this->getMarcSubFieldMaps($field, array(
