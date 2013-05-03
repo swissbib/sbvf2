@@ -68,15 +68,63 @@ class Writer
 		}
 
 			// Replace double quotes, because they're invalid for ini format in zend
-		foreach ($data as $key => $value) {
-			$data[$key] = str_replace('"', '', $value);
-		}
-
+		$data	= $this->cleanData($data);
 		$config	= new Config($data, false);
 		$writer	= new IniWriter();
 
 		$writer->toFile($pathFile, $config);
 
 		return $pathFile;
+	}
+
+
+
+	/**
+	 * Save configuration file
+	 *
+	 * @param	Array	$data
+	 * @param	String	$filename
+	 * @return	String
+	 * @throws	\Exception
+	 */
+	public function saveConfigFile(array $data, $filename)
+	{
+		$pathFile = $this->basePath . '/' . $filename . '.ini';
+		$pathDir  = dirname($pathFile);
+		$dirStatus= is_dir($pathDir) || mkdir($pathDir, 0777, true);
+
+		if (!$dirStatus) {
+			throw new \Exception('Cannot create config folder ' . $filename);
+		}
+
+		$data	= $this->cleanData($data);
+		$config	= new Config($data, false);
+		$writer	= new IniWriter();
+
+		$writer->toFile($pathFile, $config);
+
+		return $pathFile;
+	}
+
+
+
+	/**
+	 * Clean data
+	 * Cleanup: Remove double quotes
+	 *
+	 * @param	Array	$data
+	 * @return	Array
+	 */
+	protected function cleanData(array $data)
+	{
+		foreach ($data as $key => $value) {
+			if (is_array($value)) {
+				$data[$key] = $this->cleanData($value);
+			} else {
+				$data[$key] = str_replace('"', '', $value);
+			}
+		}
+
+		return $data;
 	}
 }

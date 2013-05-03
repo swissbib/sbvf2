@@ -1,15 +1,5 @@
 <?php
 
-/** @var	 VuFind\Auth\Manager	$account  */
-//$account		= $this->auth()->getManager();
-
-/** @var	Boolean|Object			$user  */
-//$user			= $account->isLoggedIn();
-//$holdings		= $this->driver->getRealTimeHoldings($account);
-
-/** @var	VuFind\ILS\Connection	$ilsConnection  */
-//$ilsConnection	= $this->ils();
-
 /** @var	Swissbib\RecordDriver\SolrMarc	$recordDriver  */
 $recordDriver	= $this->driver;
 $holdings		= $recordDriver->getHoldings();
@@ -18,52 +8,52 @@ $holdings		= $recordDriver->getHoldings();
 
 <?= $this->render('RecordTab/mylibraries.phtml') ?>
 
-<?php foreach($holdings as $networkCode => $network): ?>
-	<!-- begin: innerbox <?=$networkCode?> -->
+<?php foreach($holdings as $groupCode => $group): ?>
+	<!-- begin: innerbox <?=$groupCode?> -->
 	<div class="innerbox grey">
 		<?php
 			$expandLib	= isset($_GET['expandlib']) ? $_GET['expandlib'] : '';
 			$expandedOrCollapsedClass = 'collapsed';
 			$expandOnLoad = '';
-			if( array_key_exists('institutions', $network) && count($network['institutions']) > 0 ) {
-				foreach($network['institutions'] as $institutionSysCode => $institution) {
+			if (isset($group['institutions']) && sizeof($group['institutions'])) {
+				foreach($group['institutions'] as $institutionSysCode => $institution) {
 					if ($institutionSysCode == $expandLib) {
 						$expandedOrCollapsedClass	= 'expanded';
-						$expandOnLoad= $networkCode;
+						$expandOnLoad= $groupCode;
 					}
 				}
 			}
 		?>
 
 		<? if($expandOnLoad != ''): ?>
-<script type="text/javascript">
-		// On DOM-ready: expand selected library even if it's collapsed via cookie
-	$(document).ready(function() {
-		var elItem	= $('.toggler#library_toggler_<?= $expandOnLoad ?>')['0'];
-		var cname	= "toggler_" + jQuery(elItem).attr("id");
-		cname 		= encodeURI(cname);
-		if(jQuery.cookie(cname)) {
-			if(jQuery.cookie(cname) != "expanded") {
-				expandedLibItem.click();
-			}
-		}
-	});
-</script>
+			<script type="text/javascript">
+					// On DOM-ready: expand selected library even if it's collapsed via cookie
+				$(document).ready(function() {
+					var elItem	= $('.toggler#library_toggler_<?= $expandOnLoad ?>')['0'];
+					var cname	= "toggler_" + jQuery(elItem).attr("id");
+					cname 		= encodeURI(cname);
+					if(jQuery.cookie(cname)) {
+						if(jQuery.cookie(cname) != "expanded") {
+							expandedLibItem.click();
+						}
+					}
+				});
+			</script>
 		<? endif; ?>
 
-		<h3 class="toggler persist <?= $expandedOrCollapsedClass ?>" id="library_toggler_<?=$networkCode?>">
-			<?=$this->escapeHtml('UNTRANSLATED: ' . $network['label']) /*IDS Basel / Bern*/ ?>
+		<h3 class="toggler persist <?= $expandedOrCollapsedClass ?>" id="library_toggler_<?=$groupCode?>">
+			<?=$this->zendTranslate($group['label'], 'group')?>
 		</h3>
-		<div class="library_toggler_<?=$networkCode?>">
+		<div class="library_toggler_<?=$groupCode?>">
 
 			<div class="innerbox">
-				<?php foreach($network['institutions'] as $institutionCode => $institution): ?>
+				<?php foreach($group['institutions'] as $institutionCode => $institution): ?>
 					<h4>
 						<?=$this->escapeHtml($this->zendTranslate($institution['label'], 'institution'))?>
 					</h4>
 
 					<ul class="actions">
-						<?php if(array_key_exists('backlink', $institution)): ?>
+						<?php if (isset($institution['backlink'])): ?>
 						<li>
 							<a href="<?=$this->escapeHtml($institution['backlink'])?>" class="linkbutton primary icon_link_primary" title="Zum Bestand" target="_blank">
 								<span>Zum Bestand</span>
@@ -73,27 +63,26 @@ $holdings		= $recordDriver->getHoldings();
 							<li>Kein Institutions-Backlink.</li>
 						<?php endif; ?>
 						<li>
-							<a href="#" class="linkbutton icon_show toggler collapsed" title="Informationen zum Bestand" id="stock_toggler_<?=$networkCode?>_<?=$institutionCode?>">
+							<a href="#" class="linkbutton icon_show toggler collapsed" title="Informationen zum Bestand" id="stock_toggler_<?=$groupCode?>_<?=$institutionCode?>">
 								<span>Informationen zum Bestand</span>
 							</a>
 						</li>
 					</ul>
-					<ul class="miniactions boxed">
+<!--					<ul class="miniactions boxed">-->
+					<ul class="miniactions">
 						<li class="miniaction_favorite_remove">
 							<a href="#" title="Bibliothek aus Favoriten entfernen">Bibliothek aus Favoriten entfernen</a>
 						</li>
-						<?php if( array_key_exists('link', $network)): ?>
-						<li class="miniaction_link">
-							<a href="<?=$this->escapeHtml($network['link'])?>" class="externallink" title="Bibliothek Historisches Seminar">
-								<?=$this->escapeHtml($network['link'])?>
-							</a>
-						</li>
-						<?php else: ?>
-							<li>Kein Netzwerklink.</li>
+						<?php if (isset($institution['bibinfolink']) && $institution['bibinfolink']): ?>
+							<li class="miniaction_link">
+								<a href="<?=$this->escapeHtml($institution['bibinfolink']['url'])?>" class="externallink" title="<?=$this->escapeHtml($this->zendTranslate($institution['label'], 'institution'))?>">
+									<?=$this->escapeHtml($institution['bibinfolink']['host'])?>
+								</a>
+							</li>
 						<?php endif; ?>
 					</ul>
 
-					<div class="stock_toggler_<?=$networkCode?>_<?=$institutionCode?>">
+					<div class="stock_toggler_<?=$groupCode?>_<?=$institutionCode?>">
 						<table>
 							<thead>
 								<tr>
@@ -133,6 +122,6 @@ $holdings		= $recordDriver->getHoldings();
 			</div>
 		</div>
 	</div>
-	<!-- end: innerbox <?=$networkCode?> -->
+	<!-- end: innerbox <?=$groupCode?> -->
 
 <?php endforeach; ?>

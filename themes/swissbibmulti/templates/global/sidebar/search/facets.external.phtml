@@ -1,3 +1,11 @@
+<?php
+
+if( isset($this->dateRangeLimit) ) {
+	$this->headScript()->appendFile('pubdate_slider.js');
+}
+
+?>
+
 <div class="tabbed tabbed_external">
 	<!-- begin: facets -->
 	<h3>Treffer eingrenzen</h3>
