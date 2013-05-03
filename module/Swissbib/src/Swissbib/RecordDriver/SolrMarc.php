@@ -32,6 +32,9 @@
 
 namespace Swissbib\RecordDriver;
 
+use Zend\I18n\Translator\Translator;
+use Zend\ServiceManager\ServiceLocatorInterface;
+
 use VuFind\RecordDriver\SolrMarc as VuFindSolrMarc;
 
 use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
@@ -54,6 +57,10 @@ class SolrMarc extends VuFindSolrMarc
 	 */
 	protected $holdingsHelper;
 
+	/**
+	 * @var	Boolean		Change behaviour if getFormats() to return openUrl compatible formats
+	 */
+	protected $useOpenUrlFormats = false;
 
 	/**
 	 * @var    Array    Used also for field 100        _ means repeatable
@@ -178,6 +185,114 @@ class SolrMarc extends VuFindSolrMarc
 
 
 	/**
+	 * Wrapper for getOpenURL()
+	 * Set flag to get special values from getFormats()
+	 *
+	 * @see		getFormats()
+	 * @return	String
+	 */
+	public function getOpenURL()
+	{
+		$oldValue	= $this->useOpenUrlFormats;
+		$this->useOpenUrlFormats = true;
+		$openUrl	= parent::getOpenURL();
+		$this->useOpenUrlFormats = $oldValue;
+
+		return $openUrl;
+	}
+
+
+
+	/**
+	 * Get formats. By default, get translated values
+	 * If flag useOpenUrlFormats in class is set, get prepared formats for openUrl
+	 *
+	 * @return	String[]
+	 */
+	public function getFormats()
+	{
+		if ($this->useOpenUrlFormats) {
+			return $this->getFormatsOpenUrl();
+		} else {
+			return $this->getFormatsTranslated();
+		}
+	}
+
+
+
+	/**
+	 * Get translated formats
+	 *
+	 * @return	String[]
+	 */
+	public function getFormatsTranslated()
+	{
+		$formats	= $this->getFormatsRaw();
+		$translator	= $this->getTranslator();
+
+		foreach ($formats as $index => $format) {
+			$formats[$index] = $translator->translate($format);
+		}
+
+		return $formats;
+	}
+
+
+
+	/**
+	 * Get formats modified to work with openURL
+	 * Formats: Book, Journal, Article
+	 *
+	 * @todo	Currently, all items are marked as "Book", improve detection
+	 * @return	String[]
+	 */
+	public function getFormatsOpenUrl()
+	{
+		$formats = $this->getFormatsRaw();
+		$found   = false;
+		$mapping = array(
+			'BK0100' => 'Article',
+			'BK0700' => 'Article',
+			'BK'     => 'Book',
+			'CR'     => 'Journal'
+		);
+
+		// Check each format for all patterns
+		foreach ($formats as $rawFormat) {
+			foreach ($mapping as $pattern => $targetFormat) {
+					// Test for begin of string
+				if (stristr($rawFormat, $pattern) === 0) {
+					$formats[] = $targetFormat;
+					$found     = true;
+					break 2; // Stop both loops
+				}
+			}
+		}
+
+		// Fallback: Book
+		if (!$found) {
+			$formats[] = 'Book';
+		}
+
+		return $formats;
+	}
+
+
+
+	/**
+	 * Get raw formats as provided by the basic driver
+	 * Wrap for getFormats() because it's overwritten in this driver
+	 *
+	 * @return	String[]
+	 */
+	public function getFormatsRaw()
+	{
+		return parent::getFormats();
+	}
+
+
+
+	/**
 	 * Get years and datetype from field 008 for display
 	 *
 	 * @return  Array
@@ -215,7 +330,10 @@ class SolrMarc extends VuFindSolrMarc
 		$data = $this->getMarcSubFieldMap(100, $this->personFieldMap);
 
 		if ($asString) {
-			return isset($data['name']) ? trim($data['name'] . ' ' . $data['forname']) : '';
+			$name = isset($data['name']) ? $data['name'] : '';
+			$name .= isset($data['forname']) ? $data['forname'] : '';
+
+			return trim($name);
 		}
 
 		return $data;
@@ -459,11 +577,57 @@ class SolrMarc extends VuFindSolrMarc
 	public function getAllSubjectHeadings()
 	{
 		$retval = array();
-		// These are the fields that may contain (controlled or local) subject headings:
+		// These are the fields that may contain (controlled or local) subject headings and classifications:
 		$fields = array(
 			'600', '610', '611', '630', '648', '650', '651', '655', '656', '690', '691',
 		);
+        foreach ($fields as $field) {
+            $subjects = $this->getMarcFields($field);
+            if ($subjects) {
+                foreach ($subjects as $subject) {
+                    $ind2 = $subject->getIndicator(2);
+                    $sf2  = $subject->getSubfield('2')->getData();
+                    $current = array();
 
+                    if ($ind2 === '0') {
+                        $lcsh = $subject->getMarcSubFieldMaps($field, array(
+                            'a' => $field . 'a',
+                            'b' => $field . 'b',
+                            'c' => $field . 'c',
+                            'd' => $field . 'd',
+                            'e' => $field . 'e',
+                            'f' => $field . 'f',
+                            'g' => $field . 'g',
+                            'h' => $field . 'h',
+                            'v' => $field . 'v',
+                            'x' => $field . 'x',
+                            '0' => $field . '0',
+                            '2' => $field . '2',
+                        ));
+                    }
+                    if ($ind2 === '7' && $sf2 === 'gnd') {
+                        $tag = $subject->getTag();
+                        $gnd = $subject->getMarcSubFieldMaps(array(
+                            'a' => $tag . 'a',
+                            'b' => $tag . 'b',
+                            'c' => $tag . 'c',
+                            'd' => $tag . 'd',
+                            'e' => $tag . 'e',
+                            'f' => $tag . 'f',
+                            'g' => $tag . 'g',
+                            'h' => $tag . 'h',
+                            'v' => $tag . 'v',
+                            'x' => $tag . 'x',
+                            '0' => $tag . '0',
+                            '2' => $tag . '2',
+                        ));
+                    }
+                }
+            }
+            if (!empty($field)) {
+                continue;
+            }
+    }
 		// Try each MARC field one at a time:
 		foreach ($fields as $field) {
 			$results = $this->getMarcSubFieldMaps($field, array(
@@ -846,7 +1010,7 @@ class SolrMarc extends VuFindSolrMarc
             //ToDo: more analysis necessary!
             //$holdingsHelper = $this->getServiceLocator()->getServiceLocator()->get('Swissbib\HoldingsHelper');
             /** @var HoldingsHelper $holdingsHelper */
-            $holdingsHelper = $this->hierarchyDriverManager->getServiceLocator()->get('Swissbib\HoldingsHelper');
+            $holdingsHelper = $this->getServiceLocator()->get('Swissbib\HoldingsHelper');
 
 
 			$holdingsData   = isset($this->fields['holdings']) ? $this->fields['holdings'] : '';
@@ -857,5 +1021,29 @@ class SolrMarc extends VuFindSolrMarc
 		}
 
 		return $this->holdingsHelper;
+	}
+
+
+
+	/**
+	 * Helper to get service locator
+	 *
+	 * @return	ServiceLocatorInterface
+	 */
+	protected function getServiceLocator()
+	{
+		return $this->hierarchyDriverManager->getServiceLocator();
+	}
+
+
+
+	/**
+	 * Get translator
+	 *
+	 * @return	Translator
+	 */
+	protected function getTranslator()
+	{
+		return $this->getServiceLocator()->get('VuFind/Translator');
 	}
 }
