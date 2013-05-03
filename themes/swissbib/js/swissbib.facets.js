@@ -15,8 +15,17 @@ var sbFacets = {
 			event.stopPropagation();
 			event.preventDefault();
 
-			sbAjax.ajaxLoadTabContent(this.href.replace('/Results?', '/Tabcontent?'));
-			sbAjax.ajaxLoadSidebarContent(this.href.replace('/Results?', '/Tabsidebar?'));
+			var searchQueryTab, searchQuerySidebar;
+
+			if( this.href.indexOf("/Results?") != -1 ) {
+				searchQueryTab		= this.href.replace('/Results?', '/Tabcontent?');
+				searchQuerySidebar	= this.href.replace('/Results?', '/Tabsidebar?')
+			} else if( this.href.indexOf("/Summon/Search?") ) {
+				searchQueryTab		= this.href.replace('/Summon/Search?', '/Summon/Tabcontent?tab=summon&');
+				searchQuerySidebar	= this.href.replace('/Summon/Search?', '/Summon/Tabsidebar?tab=summon&')
+			}
+			sbAjax.ajaxLoadTabContent(searchQueryTab);
+			sbAjax.ajaxLoadSidebarContent(searchQuerySidebar);
 		});
 	}
 };

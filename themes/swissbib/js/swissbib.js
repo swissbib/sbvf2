@@ -492,8 +492,8 @@ var swissbib = {
 			idArgs	= [],
 			fullUrl,
 			ids		= $('#content .tabbed_selected a.singleLink').map(function(){
-																return 'VuFind|' + this.href.split('/').pop()
-															}).get();
+				return 'VuFind|' + this.href.split('/').pop()
+			}).get();
 
 		event.preventDefault();
 
