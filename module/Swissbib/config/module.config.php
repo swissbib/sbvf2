@@ -1,8 +1,11 @@
 <?php
 namespace Swissbib\Module\Config;
 
+use Zend\Config\Config;
+
 use Swissbib\Libadmin\Importer;
 use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
+use Swissbib\View\Helper\InstitutionSorter;
 
 return array(
 	'router'          => array(
@@ -114,6 +117,19 @@ return array(
 			'shorttitleSummon'		  => 'Swissbib\View\Helper\ShortTitleFormatterSummon',
 			'SortAndPrepareFacetList' => 'Swissbib\View\Helper\SortAndPrepareFacetList',
 			'zendTranslate'           => 'Zend\I18n\View\Helper\Translate'
+		),
+		'factories' => array(
+			'institutionSorter' => function ($sm) {
+				/** @var Config $relationConfig */
+				$relationConfig	= $sm->getServiceLocator()->get('VuFind\Config')->get('libadmin-groups');
+				$institutionList= array();
+
+				if ($relationConfig->count() !== null) {
+					$institutionList = array_keys($relationConfig->institutions->toArray());
+				}
+
+				return new InstitutionSorter($institutionList);
+			}
 		)
 	),
 	'vufind'          => array(
