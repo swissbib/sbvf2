@@ -508,7 +508,10 @@ table.data td.nodivider, table.data th.nodivider {
  	border-right:none;
 	padding-right:0;
 }
- 
+table.noborder, table.noborder td {
+	border:none;
+}
+
  
 /* reset fonts */
 table h3 {
