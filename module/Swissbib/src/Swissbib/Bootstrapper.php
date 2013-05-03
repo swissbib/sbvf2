@@ -56,9 +56,6 @@ class Bootstrapper
 	 */
 	protected function initFilterChain()
 	{
-//		echo "OK";
-//		return;
-
 		if (!$this->event->getRequest() instanceof ConsoleRequest) {
 			$sm = $this->event->getApplication()->getServiceManager();
 
@@ -93,20 +90,20 @@ class Bootstrapper
 
 		$callback = function ($event) use ($baseDir, $types) {
 			$sm = $event->getApplication()->getServiceManager();
-			/** @var Translator $baseTranslator */
-			$baseTranslator = $sm->get('VuFind\Translator');
-			$locale         = $baseTranslator->getLocale();
-			$baseTranslator->setFallbackLocale('en');
+			/** @var Translator $translator */
+			$translator = $sm->get('VuFind\Translator');
+			$locale     = $translator->getLocale();
+			$translator->setFallbackLocale('en');
 
 			foreach ($types as $type) {
 				$langFile = $baseDir . '/' . $type . '/' . $locale . '.ini';
 
-					// File not available, add empty file to prevent problems
+				// File not available, add empty file to prevent problems
 				if (!is_file($langFile)) {
 					$langFile = $baseDir . '/empty_fallback.ini';
 				}
 
-				$baseTranslator->addTranslationFile('ExtendedIni', $langFile, $type, $locale)
+				$translator->addTranslationFile('ExtendedIni', $langFile, $type, $locale)
 						->setLocale($locale);
 			}
 		};

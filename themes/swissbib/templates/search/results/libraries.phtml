@@ -1,10 +1,14 @@
 <?php
-	/** @var	\Swissbib\RecordDriver\SolrMarc	$driver */
-	$institutions	= $driver->getInstitutions();
+
+/** @var    \Swissbib\RecordDriver\SolrMarc    $driver */
+$institutions = $driver->getInstitutions();
+
+if (sizeof($institutions) > 1) {
+	$institutions = $this->institutionSorter()->sortInstitutions($institutions);
+}
 
 ?>
-
-<? if (count($institutions) > 0): ?>
+<?php if (count($institutions) > 0): ?>
 	<span class="info rollover right">
 		<ul class="infolist">
 			<?php foreach($institutions as $institutionSysCode): ?>
@@ -14,4 +18,4 @@
 			<?php endforeach; ?>
 		</ul>
 	</span>
-<? endif; ?>
+<?php endif; ?>

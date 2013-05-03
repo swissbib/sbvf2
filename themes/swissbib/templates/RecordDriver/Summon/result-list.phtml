@@ -6,10 +6,15 @@ $viewRecord		= $this->record($this->driver);
 $thumbnail		= $viewRecord->getThumbnail('small');
 $thumbnailSrc	= $thumbnail ? $thumbnail : $this->url('cover-unavailable');
 $detailLink		= $this->recordLink()->getUrl($resultItem);
+
 //$title			= $resultItem->getShortTitle();
-$title			= $this->mainTitle($resultItem->getShortTitle());
+$title			= $this->shorttitleSummon( $this->mainTitle($resultItem->getShortTitle()) );
+
 $edition		= $resultItem->getEdition();
-$publicationDate= $this->publicationDateMarc($resultItem->getPublicationDates())
+$publicationDate= $this->publicationDateSummon($resultItem->getPublicationDates());
+
+$openURL	= $resultItem->getOpenURL();
+$directLink	= $resultItem->getDirectLink();
 
 ?>
 
@@ -23,15 +28,11 @@ $publicationDate= $this->publicationDateMarc($resultItem->getPublicationDates())
     <!-- Column 3: Teaser-image / Thumbnail -->
 	<td class="right nodivider">
 		<a href="<?=$detailLink?>" title="<?=$title?>">
-            <? /** ---------------------------------------------------- */ ?>
-            <? /** temporary fix params over here, @todo: fix in driver */ ?>
-            <? if(is_array($title)) $title = implode(' ', $title); ?>
-            <? /** ---------------------------------------------------- */ ?>
 			<img src="<?=$thumbnailSrc?>" alt="<?=$title?>" class="dropshadow"/>
 		</a>
 	</td>
-    <!-- Column 4: Title and author details => links to full-view -->
-	<td>
+    <!-- Column 4 + 5 + 6: Title and author details => links to full-view -->
+	<td colspan="3">
 		<h3><a href="<?=$detailLink?>" title="<?=$title?>" class="color singleLink"><?=$title?></a></h3>
 		<p>
 			<?php /*var_dump($solrRecord->getSummary())*/?>
@@ -40,7 +41,7 @@ $publicationDate= $this->publicationDateMarc($resultItem->getPublicationDates())
 		<div class="meta">
             <span><?=$resultItem->getSubtitle()?></span><br />
             <h6><?=$this->transEsc('Author')?>:</h6>
-            <span><?=$resultItem->getTitleStatement()?></span><br/>
+            <span><?= $resultItem->getAuthor() ?></span><br/>
         </div>
         <div class="meta">
 			<h6><?=$this->transEsc('Year')?>:</h6>
@@ -60,14 +61,18 @@ $publicationDate= $this->publicationDateMarc($resultItem->getPublicationDates())
 				</a>
             <?php endif; ?>
 		</div>
-		<span class="Z3988" title="<?=$this->escapeHtml($this->driver->getOpenURL())?>"></span>
+
+		<table class="nodivider noborder">
+			<tr>
+				<td>
+					<a class="color singleLink" target="_blank" href="<?= $openURL ?>">Open URL</a>
+				</td>
+				<td>
+					<a class="color singleLink" target="_blank" href="<?= $directLink ?>">Direct&nbsp;Link</a>
+				</td>
+			</tr>
+		</table>
+
 	</td>
 
-    <!-- Column 5 & 6 : libraries, links, info -->
-	<td class="small right nodivider colholdingscounter">
-		<?=$this->render('search/results/available.phtml')?>
-	</td>
-	<td class="right">
-		<?=$this->render('search/results/libraries.phtml')?>
-	</td>
 </tr>

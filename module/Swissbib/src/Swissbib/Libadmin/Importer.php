@@ -97,10 +97,11 @@ class Importer implements ServiceLocatorAwareInterface
 
 				if ($storeStatus) {
 					$this->result->addSuccess('All data files were stored successfully');
+
+					$this->clearLanguageCache();
 				} else {
 					$this->result->addError('Not all data was imported successfully');
 				}
-
 			} catch (Exceptions\Store $e) {
 				return $this->result->addError($e->getMessage());
 			}
@@ -108,9 +109,11 @@ class Importer implements ServiceLocatorAwareInterface
 			$this->result->addInfo('Skipped storing of data on local system (dry run)');
 		}
 
-		$this->clearLanguageCache();
-
-		$this->result->addSuccess('Import completed at ' . date('r'));
+		if ($this->result->isSuccess()) {
+			$this->result->addSuccess('Import successfully completed at ' . date('r'));
+		} else {
+			$this->result->addError('Import was NOT successful. Finished at ' . date('r'));
+		}
 
 		return $this->result;
 	}
@@ -156,7 +159,10 @@ class Importer implements ServiceLocatorAwareInterface
 		$this->result->addInfo('Store group labels');
 		$statusGroups = $this->storeGroupLabels($data);
 
-		return $statusInstitution && $statusInfoLinks && $statusGroups;
+		$this->result->addInfo('Store group -> institution relations');
+		$statusRelations = $this->storeGroupInstitutionRelations($data);
+
+		return $statusInstitution && $statusInfoLinks && $statusGroups && $statusRelations;
 	}
 
 
@@ -218,6 +224,61 @@ class Importer implements ServiceLocatorAwareInterface
 				$this->result->addError($e->getMessage());
 				$status = false;
 			}
+		}
+
+		return $status;
+	}
+
+
+
+	/**
+	 * Store institution group mapping
+	 * Store relation of each institution to a group as flat list
+	 * Config file: local/config/vufind/groups.ini
+	 *
+	 * @param	Array		$data
+	 * @return	Boolean
+	 */
+	protected function storeGroupInstitutionRelations(array $data)
+	{
+		$writer    = new LibadminWriter(LOCAL_OVERRIDE_DIR . '/config/vufind');
+		$relations = array(
+			'institutions' => array(),
+			'groups'       => array()
+		);
+		$institutionRaw	= array();
+		$status    = true;
+
+		foreach ($data as $group) {
+				// Add group in order of appearance for sorting
+			$relations['groups'][] = strtolower($group['group']['code']);
+
+				// Add a mapping to a group for each institution
+			foreach ($group['institutions'] as $institution) {
+					// Build a sort key but prevent duplications when invalid position values are provided
+				$sortKey                  = $institution['position'] . '_' . $institution['id'];
+				$institutionRaw[$sortKey] = array(
+					'institution' => strtolower($institution['bib_code']),
+					'group'       => strtolower($group['group']['code'])
+				);
+			}
+		}
+
+			// Sort and extract institution-group relation
+		ksort($institutionRaw);
+		foreach ($institutionRaw as $sortKey => $relation) {
+			$relations['institutions'][$relation['institution']] = $relation['group'];
+		}
+
+			// Write cofig file
+		try {
+			$storageFile = $writer->saveConfigFile($relations, 'libadmin-groups');
+
+			$this->result->addSuccess('Saved group->institution relation config file to ' . $storageFile);
+		} catch (\Exception $e) {
+			$this->result->addError('Failed saving group->institution relation config');
+			$this->result->addError($e->getMessage());
+			$status = false;
 		}
 
 		return $status;
@@ -294,7 +355,7 @@ class Importer implements ServiceLocatorAwareInterface
 			$responseBody = $response->getBody();
 
 			if (!$this->storeDownloadedData($responseBody)) {
-				throw new Exceptions\Fetch('Was not able to store downloaded data in a local cache (data/cache/libadmin.json');
+				throw new Exceptions\Fetch('Was not able to store downloaded data in a local cache (data/cache/libadmin.json)');
 			}
 
 			return $responseBody;
