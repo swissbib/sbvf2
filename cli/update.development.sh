@@ -6,8 +6,8 @@
 if [ "$UID"  -eq 0 ]; then
 
         echo "Good morning!"
-        echo  "git repository update as root user not allowed!"
-        echo "feel free to try it again"
+        echo "git repository update as root user not allowed!"
+        echo "feel free to try it again with user vfsb"
         exit 1
 fi
 
@@ -34,8 +34,13 @@ git stash pop
 
 log "finish update VuFind release branch"
 
+# set access rights of local cache to full
 
+log "set full access rights to cache"
 
+chmod 777 ../local/cache
+
+log "full access rights to cache set"
 
 # Clear cache
 
@@ -43,4 +48,4 @@ log "finish update VuFind release branch"
 
 #rm -rf local/cache/*
 
-log "Local cache not cleared - please use root account"
+log "Local cache not cleared - please use root account and script removeLocalCache.sh"

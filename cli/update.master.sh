@@ -34,8 +34,13 @@ git stash pop
 
 log "finish update VuFind master branch"
 
+# set access rights of local cache to full
 
+log "set full access rights to cache"
 
+chmod 777 ../local/cache
+
+log "full access rights to cache set"
 
 # Clear cache
 
@@ -43,4 +48,4 @@ log "finish update VuFind master branch"
 
 #rm -rf local/cache/*
 
-log "Local cache not cleared - please use root account"
+log "Local cache not cleared - please use root account and script removeLocalCache.sh"
