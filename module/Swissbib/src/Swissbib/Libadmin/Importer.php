@@ -156,7 +156,10 @@ class Importer implements ServiceLocatorAwareInterface
 		$this->result->addInfo('Store group labels');
 		$statusGroups = $this->storeGroupLabels($data);
 
-		return $statusInstitution && $statusInfoLinks && $statusGroups;
+		$this->result->addInfo('Store group -> institution relations');
+		$statusRelations = $this->storeGroupInstitutionRelations($data);
+
+		return $statusInstitution && $statusInfoLinks && $statusGroups && $statusRelations;
 	}
 
 
@@ -218,6 +221,61 @@ class Importer implements ServiceLocatorAwareInterface
 				$this->result->addError($e->getMessage());
 				$status = false;
 			}
+		}
+
+		return $status;
+	}
+
+
+
+	/**
+	 * Store institution group mapping
+	 * Store relation of each institution to a group as flat list
+	 * Config file: local/config/vufind/groups.ini
+	 *
+	 * @param	Array		$data
+	 * @return	Boolean
+	 */
+	protected function storeGroupInstitutionRelations(array $data)
+	{
+		$writer    = new LibadminWriter(LOCAL_OVERRIDE_DIR . '/config/vufind');
+		$relations = array(
+			'institutions' => array(),
+			'groups'       => array()
+		);
+		$institutionRaw	= array();
+		$status    = true;
+
+		foreach ($data as $group) {
+				// Add group in order of appearance for sorting
+			$relations['groups'][] = strtolower($group['group']['code']);
+
+				// Add a mapping to a group for each institution
+			foreach ($group['institutions'] as $institution) {
+					// Build a sort key but prevent duplications when invalid position values are provided
+				$sortKey                  = $institution['position'] . '_' . $institution['id'];
+				$institutionRaw[$sortKey] = array(
+					'institution' => strtolower($institution['bib_code']),
+					'group'       => strtolower($group['group']['code'])
+				);
+			}
+		}
+
+			// Sort and extract institution-group relation
+		ksort($institutionRaw);
+		foreach ($institutionRaw as $sortKey => $relation) {
+			$relations['institutions'][$relation['institution']] = $relation['group'];
+		}
+
+			// Write cofig file
+		try {
+			$storageFile = $writer->saveConfigFile($relations, 'libadmin-groups');
+
+			$this->result->addSuccess('Saved group->institution relation config file to ' . $storageFile);
+		} catch (\Exception $e) {
+			$this->result->addError('Failed saving group->institution relation config');
+			$this->result->addError($e->getMessage());
+			$status = false;
 		}
 
 		return $status;
