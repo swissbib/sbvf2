@@ -1,8 +1,11 @@
 <?php
 namespace Swissbib\Module\Config;
 
+use Zend\Config\Config;
+
 use Swissbib\Libadmin\Importer;
 use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
+use Swissbib\View\Helper\InstitutionSorter;
 
 return array(
 	'router'          => array(
@@ -78,12 +81,13 @@ return array(
 		),
 		'factories'  => array(
 			'Swissbib\HoldingsHelper'    => function ($sm) {
-				$ils            = $sm->get('VuFind\ILSConnection');
-				$holdingsConfig = $sm->get('VuFind\Config')->get('Holdings');
+				$ilsConnection  = $sm->get('VuFind\ILSConnection');
 				$hmac           = $sm->get('VuFind\HMAC');
 				$authManager    = $sm->get('VuFind\AuthManager');
+				$config			= $sm->get('VuFind\Config');
+				$translator		= $sm->get('VuFind\Translator');
 
-				return new HoldingsHelper($ils, $holdingsConfig, $hmac, $authManager);
+				return new HoldingsHelper($ilsConnection, $hmac, $authManager, $config, $translator);
 			},
 			'Swissbib\Libadmin\Importer' => function ($sm) {
 				$config        = $sm->get('VuFind\Config')->get('config')->Libadmin;
@@ -113,6 +117,19 @@ return array(
 			'shorttitleSummon'		  => 'Swissbib\View\Helper\ShortTitleFormatterSummon',
 			'SortAndPrepareFacetList' => 'Swissbib\View\Helper\SortAndPrepareFacetList',
 			'zendTranslate'           => 'Zend\I18n\View\Helper\Translate'
+		),
+		'factories' => array(
+			'institutionSorter' => function ($sm) {
+				/** @var Config $relationConfig */
+				$relationConfig	= $sm->getServiceLocator()->get('VuFind\Config')->get('libadmin-groups');
+				$institutionList= array();
+
+				if ($relationConfig->count() !== null) {
+					$institutionList = array_keys($relationConfig->institutions->toArray());
+				}
+
+				return new InstitutionSorter($institutionList);
+			}
 		)
 	),
 	'vufind'          => array(

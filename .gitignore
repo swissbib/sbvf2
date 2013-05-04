@@ -2,6 +2,7 @@
 .idea
 build
 local/config/vufind/config.ini
+local/config/vufind/libadmin-groups.ini
 local/httpd-vufind.conf
 local/cache/*
 public/.htaccess
