@@ -33,10 +33,12 @@
 namespace Swissbib\RecordDriver\Helper;
 
 use Zend\Config\Config;
+use Zend\I18n\Translator\Translator;
 
 use VuFind\Crypt\HMAC;
 use VuFind\ILS\Connection as IlsConnection;
 use VuFind\Auth\Manager as AuthManager;
+use VuFind\Config\PluginManager as ConfigManager;
 
 use Swissbib\VuFind\ILS\Driver\Aleph;
 
@@ -110,32 +112,66 @@ class Holdings
 	/**
 	 * @var    Config
 	 */
-	protected $config;
+	protected $configHoldings;
 
 	/**
-	 * @var    \VuFind\Crypt\HMAC    $hmac
+	 * @var    HMAC
 	 */
 	protected $hmac;
+
+	/**
+	 * @var    Array
+	 */
+	protected $institution2group = array();
+
+	/**
+	 * @var		Array
+	 */
+	protected $groupSorting = array();
+
+	/**
+	 * @var		Translator
+	 */
+	protected $translator;
 
 
 
 	/**
 	 * Initialize helper with dependencies
 	 *
-	 * @param    IlsConnection      $ils
-	 * @param    Config             $holdingsConfig
-	 * @param    HMAC               $hmac
-	 * @param    AuthManager        $authManager
+	 * @param    IlsConnection         $ilsConnection
+	 * @param    HMAC                  $hmac
+	 * @param    AuthManager           $authManager
+	 * @param    ConfigManager         $configManager
+	 * @param    Translator            $translator
+	 * @throws    \Exception
 	 */
-	public function __construct(IlsConnection $ils, Config $holdingsConfig, HMAC $hmac, AuthManager $authManager)
+	public function __construct(
+		IlsConnection $ilsConnection,
+		HMAC $hmac,
+		AuthManager $authManager,
+		ConfigManager $configManager,
+		Translator $translator)
 	{
-		$this->ils         = $ils;
-		$this->config      = $holdingsConfig;
-		$this->hmac        = $hmac;
-		$this->authManager = $authManager;
+		$this->ils            = $ilsConnection;
+		$this->configHoldings = $configManager->get('Holdings');
+		$this->hmac           = $hmac;
+		$this->authManager    = $authManager;
+		$this->translator     = $translator;
+
+
+		/** @var Config $relationConfig */
+		$relationConfig			= $configManager->get('libadmin-groups');
+
+			// Just ignore missing config to prevent a crashing frontend
+		if ($relationConfig->count() !== null) {
+			$this->institution2group = $relationConfig->institutions->toArray();
+			$this->groupSorting      = $relationConfig->groups->toArray();
+		} elseif (APPLICATION_ENV == 'development') {
+			throw new \Exception('Missing config file libadmin-groups.ini. Run libadmin sync to solve this problem');
+		}
 
 		$holdsIlsConfig = $this->ils->checkFunction('Holds');
-
 		$this->hmacKeys = $holdsIlsConfig['HMACKeys'];
 
 		$this->initNetworks();
@@ -171,11 +207,61 @@ class Holdings
 
 			// Merge items and holding into the same network/institution structure
 			// (stays separated by items/holdings key at lowest level)
-			$this->extractedData =  $this->mergeHoldings($holdingsData, $itemsData);
+			$merged              = $this->mergeHoldings($holdingsData, $itemsData);
+			$this->extractedData = $this->sortHoldings($merged);
 		}
 
 		return $this->extractedData;
 	}
+
+
+
+	/**
+	 * Sort holdings by group based on position in $this->groupSorting
+	 * Sort institutions based on position in institution2group
+	 *
+	 * @param	Array	$holdings
+	 * @return	Array
+	 */
+	protected function sortHoldings(array $holdings)
+	{
+		$sortedHoldings	= array();
+
+			// Add holdings in sorted order
+		foreach ($this->groupSorting as $groupCode) {
+			if (isset($holdings[$groupCode])) {
+				if (sizeof($this->institution2group)) {
+					$sortedInstitutions = array();
+
+					foreach ($this->institution2group as $institutionCode => $groupCodeAgain) {
+						if (isset($holdings[$groupCode]['institutions'][$institutionCode])) {
+							$sortedInstitutions[$institutionCode] = $holdings[$groupCode]['institutions'][$institutionCode];
+						}
+					}
+				} else {
+						// No sorting available, just use available data
+					$sortedInstitutions = $holdings[$groupCode]['institutions'];
+				}
+
+
+					// Add group to sorted list
+				$sortedHoldings[$groupCode] = $holdings[$groupCode];
+					// Add sorted institution list
+				$sortedHoldings[$groupCode]['institutions'] = $sortedInstitutions;
+
+					// Remove group
+				unset($holdings[$groupCode]);
+			}
+		}
+
+			// Add all the others (missing data because of misconfiguration?)
+		foreach ($holdings as $groupCode => $group) {
+			$sortedHoldings[$groupCode] = $group;
+		}
+
+		return $sortedHoldings;
+	}
+
 
 
 
@@ -215,12 +301,13 @@ class Holdings
 			$configName = ucfirst($networkName) . 'Networks';
 
 			/** @var Config $networkConfigs */
-			$networkConfigs = $this->config->get($configName);
+			$networkConfigs = $this->configHoldings->get($configName);
 
-			foreach ($networkConfigs as $network => $networkConfig) {
+			foreach ($networkConfigs as $networkCode => $networkConfig) {
 				list($domain, $library) = explode(',', $networkConfig, 2);
+				$networkCode	= strtolower($networkCode);
 
-				$this->networks[$network] = array(
+				$this->networks[$networkCode] = array(
 					'domain'  => $domain,
 					'library' => $library,
 					'type'    => $networkName
@@ -267,17 +354,18 @@ class Holdings
 		$structuredElements = $this->getStructuredHoldingData($fieldName, $this->fieldMapping, 'items');
 
 		// Add hold link and availability for all items
-		foreach ($structuredElements as $networkCode => $network) {
-			$structuredElements[$networkCode]['link'] = $this->getNetworkLink($networkCode);
-
-			foreach ($network['institutions'] as $institutionCode => $institution) {
-				// Add backlink
-				$structuredElements[$networkCode]['institutions'][$institutionCode]['backlink']
-						= $this->getBackLink($networkCode, $institutionCode, $institution['items'][0]);
+		foreach ($structuredElements as $groupCode => $group) {
+			foreach ($group['institutions'] as $institutionCode => $institution) {
+					// Add backlink
+				$structuredElements[$groupCode]['institutions'][$institutionCode]['backlink']
+						= $this->getBackLink($group['networkCode'], $institutionCode, $institution['items'][0]);
+					// Add bib-info link
+				$structuredElements[$groupCode]['institutions'][$institutionCode]['bibinfolink']
+						= $this->getBibInfoLink($institutionCode);
 
 				foreach ($institution['items'] as $index => $item) {
 					// Add extra information for item
-					$structuredElements[$networkCode]['institutions'][$institutionCode]['items'][$index]
+					$structuredElements[$groupCode]['institutions'][$institutionCode]['items'][$index]
 							= $this->extendWithActionLinks($item);
 				}
 			}
@@ -296,7 +384,7 @@ class Holdings
 	 */
 	protected function isRestfulNetwork($network)
 	{
-		return isset($this->config->Restful->{$network});
+		return isset($this->configHoldings->Restful->{$network});
 	}
 
 
@@ -432,10 +520,10 @@ class Holdings
 		$method = false;
 		$data   = array();
 
-		if (isset($this->config->Backlink->{$networkCode})) { // Has the network its own backlink type
+		if (isset($this->configHoldings->Backlink->{$networkCode})) { // Has the network its own backlink type
 			$method = 'getBackLink' . ucfirst($networkCode);
 			$data   = array(
-				'pattern' => $this->config->Backlink->{$networkCode}
+				'pattern' => $this->configHoldings->Backlink->{$networkCode}
 			);
 		} else { // no custom type
 			if (isset($this->networks[$networkCode])) { // is network even configured?
@@ -444,9 +532,9 @@ class Holdings
 
 				// Has the network type (aleph, virtua, etc) a general link?
 				$typeNetwork = ucfirst($type);
-				if (isset($this->config->Backlink->{$typeNetwork})) {
+				if (isset($this->configHoldings->Backlink->{$typeNetwork})) {
 					$data = array(
-						'pattern' => $this->config->Backlink->{$typeNetwork}
+						'pattern' => $this->configHoldings->Backlink->{$typeNetwork}
 					);
 				}
 			}
@@ -605,14 +693,28 @@ class Holdings
 
 
 	/**
-	 * Get aleph domain link for network
+	 * Get bib info link
+	 * Get false if not found
+	 * Array contains url and host value
 	 *
-	 * @param    String        $network
-	 * @return    String|Boolean
+	 * @param	String	$institutionCode
+	 * @return	Array|Boolean
 	 */
-	protected function getNetworkLink($network)
+	protected function getBibInfoLink($institutionCode)
 	{
-		return isset($this->networks[$network]['domain']) ? $this->networks[$network]['domain'] : false;
+		$bibInfoLink = $this->translator->translate($institutionCode, 'bibinfo');
+
+		if ($bibInfoLink === $institutionCode) {
+			$bibInfoLink = false;
+		} else {
+			$url	= parse_url($bibInfoLink);
+			$bibInfoLink = array(
+				'url'	=> $bibInfoLink,
+				'host'	=> $url['host']
+			);
+		}
+
+		return $bibInfoLink;
 	}
 
 
@@ -694,7 +796,7 @@ class Holdings
 
 
 	/**
-	 * Get structured elements (grouped by network and institution)
+	 * Get structured elements (grouped by group and institution)
 	 *
 	 * @param    String        $fieldName
 	 * @param    Array         $mapping
@@ -709,30 +811,45 @@ class Holdings
 		if (is_array($fields)) {
 			foreach ($fields as $index => $field) {
 				$item        = $this->extractFieldData($field, $mapping);
-				$network     = $item['network'];
-				$institution = $item['institution'];
+				$networkCode = strtolower($item['network']);
+				$institution = strtolower($item['institution']);
+				$groupCode   = $this->getGroup($institution);
 
-				// Make sure network is present
-				if (!isset($data[$network])) {
-					$data[$network] = array(
-						'label'        => strtolower($network),
+				// Make sure group is present
+				if (!isset($data[$groupCode])) {
+					$data[$groupCode] = array(
+						'label'        => strtolower($groupCode),
+						'networkCode'  => $networkCode,
 						'institutions' => array()
 					);
 				}
 
 				// Make sure institution is present
-				if (!isset($data[$network]['institutions'][$institution])) {
-					$data[$network]['institutions'][$institution] = array(
+				if (!isset($data[$groupCode]['institutions'][$institution])) {
+					$data[$groupCode]['institutions'][$institution] = array(
 						'label'     => strtolower($institution),
 						$elementKey => array()
 					);
 				}
 
-				$data[$network]['institutions'][$institution][$elementKey][] = $item;
+				$data[$groupCode]['institutions'][$institution][$elementKey][] = $item;
 			}
 		}
 
 		return $data;
+	}
+
+
+
+	/**
+	 * Get group code for institution based on mapping data
+	 *
+	 * @param	String		$institutionCode
+	 * @return	String
+	 */
+	protected function getGroup($institutionCode)
+	{
+		return isset($this->institution2group[$institutionCode]) ? $this->institution2group[$institutionCode] : 'unknown';
 	}
 
 

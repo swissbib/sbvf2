@@ -40,17 +40,3 @@ else
         echo "you have to be root to start this script ..."
         exit 1
 fi
-
-
-
-
-
-
-
-
-
-
-
-
-
-

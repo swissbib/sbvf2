@@ -197,3 +197,9 @@ div.facets fieldset#publishDateSlider {
 	font-weight: bold;
 	color: #F67F00;
 }
+
+
+#tab-holdings .miniactions {
+	float: right;
+	margin-top: -40px;
+}
