@@ -1,19 +1,40 @@
-<?
+<?php
+
+use VuFindSearch\Query\QueryGroup;
+use VuFindSearch\Query\Query;
+
+
+
     	// Set page title
     $this->headTitle($this->translate('Advanced Search'));
 
-    	// Disable top search box -- this page has a special layout.
-//  $this->layout()->searchbox = false;
+    // Set up saved search details:
 
-    // Set up breadcrumbs
-//  $this->layout()->breadcrumbs = '<em>' . $this->transEsc('Advanced') . '</em>';
+	$jsSearchDetails = array();
 
-    	// Set up saved search details
     if (isset($this->saved) && is_object($this->saved)) {
-        $searchDetails = $this->saved->getParams()->getSearchTerms();
+		/** @var QueryGroup $searchDetails */
+		/** @var QueryGroup $searchGroup */
+		/** @var Query $searchQuery */
+        $searchDetails = $this->saved->getParams()->getQuery();
+        $groups = $searchDetails->getQueries();
         $searchFilters = $this->saved->getParams()->getFilterList();
+
+		if (is_object($searchDetails)) {
+			foreach ($searchDetails->getQueries() as $searchGroup) {
+				$groupData = array();
+				foreach ($searchGroup->getQueries() as $searchQuery) {
+					$groupData[] = array(
+						'lookfor'	=> $searchQuery->getString(),
+						'field'		=> $searchQuery->getHandler(),
+						'bool'		=> $searchGroup->isNegated() ? 'NOT' : $searchGroup->getOperator()
+					);
+				}
+				$jsSearchDetails[] = $groupData;
+			}
+		}
     } else {
-        $searchDetails = $searchFilters = false;
+        $searchDetails = $searchFilters = $groups = false;
     }
 
     	// Set up Javascript
@@ -26,7 +47,7 @@
     // Step 3: Build the page
 //    $this->headScript()->appendScript($this->partial('search/advanced/build_page.phtml', array('searchDetails' => $searchDetails)));
 		// Replace build_page
-	$this->headScript()->appendScript('swissbib.AdvancedSearch.searchDetails = ' . json_encode($searchDetails) . ';');
+	$this->headScript()->appendScript('swissbib.AdvancedSearch.searchDetails = ' . json_encode($jsSearchDetails) . ';');
 	$this->headScript()->appendScript($this->render('search/advanced/globals.phtml'));
 
 	$lastSort = $this->options->getLastSort();
@@ -67,7 +88,7 @@
 							<label for="groupJoinOptions"><?=$this->transEsc("search_match")?>:</label>
 							<select id="groupJoinOptions" name="join">
 								<option value="AND"><?=$this->transEsc("group_AND")?></option>
-								<option value="OR"<?=(isset($searchDetails[0]['join']) && $searchDetails[0]['join'] == 'OR') ? ' selected="selected"' : ''?>><?=$this->transEsc("group_OR")?></option>
+								<option value="OR"<?=(isset($searchDetails) && is_object($searchDetails) && $searchDetails->getOperator() == 'OR') ? ' selected="selected"' : ''?>><?=$this->transEsc("group_OR")?></option>
 							</select>
 						</div>
 						<strong><?=$this->transEsc("search_groups")?></strong>:
