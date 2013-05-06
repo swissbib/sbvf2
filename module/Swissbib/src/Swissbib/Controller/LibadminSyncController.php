@@ -32,9 +32,19 @@ class LibadminSyncController extends AbstractActionController
 		$dryRun     = $request->getParam('dry', false) || $request->getParam('d', false);
 
 		/** @var Importer $importer */
-		$importer = $this->getServiceLocator()->get('Swissbib\Libadmin\Importer');
-		$result   = $importer->import($dryRun);
-		$hasErrors= $result->hasErrors();
+		try {
+			$importer = $this->getServiceLocator()->get('Swissbib\Libadmin\Importer');
+			$result   = $importer->import($dryRun);
+			$hasErrors= $result->hasErrors();
+		} catch (\Exception $e) {
+			echo "- Fatal error\n";
+			echo "- Stopped with exception: " . get_class($e);
+			echo "====================================================================";
+			echo $e->getMessage();
+
+			return;
+		}
+
 
 
 			// Show all messages?
