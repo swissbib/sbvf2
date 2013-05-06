@@ -272,9 +272,13 @@ class Importer implements ServiceLocatorAwareInterface
 
 			// Write cofig file
 		try {
-			$storageFile = $writer->saveConfigFile($relations, 'libadmin-groups');
+			$storageFile     = $writer->saveConfigFile($relations, 'libadmin-groups');
+			$numInstitutions = sizeof($relations['institutions']);
+			$numGroups       = sizeof($relations['groups']);
+			$message		= 'Saved group->institution relation (I' . $numInstitutions . '/g:' . $numGroups . ')'
+							. ' config file to ' . $storageFile;
 
-			$this->result->addSuccess('Saved group->institution relation config file to ' . $storageFile);
+			$this->result->addSuccess($message);
 		} catch (\Exception $e) {
 			$this->result->addError('Failed saving group->institution relation config');
 			$this->result->addError($e->getMessage());
@@ -315,8 +319,9 @@ class Importer implements ServiceLocatorAwareInterface
 		foreach ($translations as $locale => $labels) {
 			try {
 				$storageFile = $writer->saveLanguageFile($labels, $type, $locale);
+				$numLabels   = sizeof($labels);
 
-				$this->result->addSuccess('Saved [' . $locale . '] ' . $type . ' label file to ' . $storageFile);
+				$this->result->addSuccess('Saved ' . $numLabels . ' [' . $locale . '] ' . $type . ' label file to ' . $storageFile);
 			} catch (\Exception $e) {
 				$this->result->addError('Failed saving [' . $locale . '] ' . $type . ' label file');
 				$this->result->addError($e->getMessage());
