@@ -74,7 +74,8 @@ $facetItemsLimitDefault = $facetResultsSettings->get('facet_limit_default');    
 	<div id="facet_pubdate_slider" class="facet">
 		<h5 id="facet_toggler_publishdate" onclick="$('#publishDateForceHeight').toggleClass('publishDateForceHeight')" class="toggler persist expanded" title="adv_search_year">Erscheinungsjahr</h5>
 		<form action="" name="publishDateFilter" id="publishDateFilter">
-			<?=$results->getUrlQuery()->asHiddenFields(array('filter' => "/^{publishDate}:.*/"))?>
+			<?php /* Pass on other filter criteria via hidden fields, remove last publishDate */ ?>
+			<?=$results->getUrlQuery()->asHiddenFields(array('filter' => "/publishDate:.*/"))?>
 			<input type="hidden" name="daterange[]" value="publishDate"/>
 			<div class="publishDateForceHeight" id="publishDateForceHeight">
 				<fieldset class="publishDateLimit facet_toggler_publishdate" id="publishDateSlider">
