@@ -43,8 +43,7 @@ return array(
 					'route'    => '/HelpPage[/:topic]',
 					'defaults' => array(
 						'controller' => 'helppage',
-						'action'     => 'index',
-						'topic'		 => 'search'
+						'action'     => 'index'
 					)
 				)
 			)

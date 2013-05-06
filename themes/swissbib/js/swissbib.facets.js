@@ -8,8 +8,10 @@ var sbFacets = {
 	 */
 	init: function() {
 		var facets	= $('#sidebar div.facets a');
-			// Exclude facets own options
+			// Exclude facets own options and publication date slider
 		facets	= facets.not('li.facet_more a');
+		facets	= facets.not('a.ui-slider-handle');
+
 			// Setup re-routing
 		facets.click(function(event) {
 			event.stopPropagation();

@@ -505,7 +505,9 @@ var swissbib = {
 
 //		console.log(fullUrl);
 
-		location.href = fullUrl;
+		window.open(fullUrl);
+
+//		location.href = fullUrl;
 	}
 };
 
