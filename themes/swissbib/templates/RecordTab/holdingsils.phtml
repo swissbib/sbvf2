@@ -29,13 +29,10 @@ $holdings		= $recordDriver->getHoldings();
 			<script type="text/javascript">
 					// On DOM-ready: expand selected library even if it's collapsed via cookie
 				$(document).ready(function() {
-					var elItem	= $('.toggler#library_toggler_<?= $expandOnLoad ?>')['0'];
-					var cname	= "toggler_" + jQuery(elItem).attr("id");
-					cname 		= encodeURI(cname);
-					if(jQuery.cookie(cname)) {
-						if(jQuery.cookie(cname) != "expanded") {
-							expandedLibItem.click();
-						}
+					var toggleButton= $('#library_toggler_<?=$expandOnLoad?>').get(0),
+						cookieName	= encodeURI("toggler_" + jQuery(toggleButton).attr("id"));
+					if(jQuery.cookie(cookieName) && jQuery.cookie(cookieName) != "expanded") {
+						toggleButton.click();
 					}
 				});
 			</script>
