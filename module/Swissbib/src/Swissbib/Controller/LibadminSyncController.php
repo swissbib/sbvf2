@@ -39,10 +39,11 @@ class LibadminSyncController extends AbstractActionController
 		} catch (\Exception $e) {
 			echo "- Fatal error\n";
 			echo "- Stopped with exception: " . get_class($e);
-			echo "====================================================================";
-			echo $e->getMessage();
+			echo "====================================================================\n";
+			echo $e->getMessage() . "\n";
+			echo $e->getPrevious()->getMessage() . "\n";
 
-			return;
+			return false;
 		}
 
 
