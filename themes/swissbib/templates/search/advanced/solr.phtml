@@ -19,8 +19,7 @@ foreach($this->facetList as $field => $list) {
 }
 
 if( isset($this->dateRangeLimit) ) {
-//	$this->headScript()->appendFile('pubdate_slider.js');
-	echo '<script type="javascript" src="pubdate_slider.js"></script>';
+	$this->headScript()->appendFile('pubdate_slider.js');
 }
 
 ?>
@@ -47,8 +46,12 @@ if( isset($this->dateRangeLimit) ) {
 							// along with the foreach below to display facet options in the
 							// correct order.
 							$sorted = array();
+							$customTranslate = array(
+								'institution' => 'institution',
+								'union'		  => 'group'
+							);
 							foreach($facet['list']['list'] as $index => $value) {
-								$sorted[$index] = $value['displayText'];
+								$sorted[$index] = isset($customTranslate[$facet['field']]) ? $this->zendTranslate($value['displayText'], $customTranslate[$facet['field']]) : $this->translate($value['displayText']);
 							}
 							natcasesort($sorted);
 						?>
