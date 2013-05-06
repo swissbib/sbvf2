@@ -5,6 +5,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Console\Request as ConsoleRequest;
 
 use Swissbib\Libadmin\Importer;
+use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 
 /**
  * Synchronize VuFind with LibAdmin
@@ -32,9 +33,21 @@ class LibadminSyncController extends AbstractActionController
 		$dryRun     = $request->getParam('dry', false) || $request->getParam('d', false);
 
 		/** @var Importer $importer */
-		$importer = $this->getServiceLocator()->get('Swissbib\Libadmin\Importer');
-		$result   = $importer->import($dryRun);
-		$hasErrors= $result->hasErrors();
+		try {
+			$importer = $this->getServiceLocator()->get('Swissbib\Libadmin\Importer');
+			$result   = $importer->import($dryRun);
+			$hasErrors= $result->hasErrors();
+		} catch (ServiceNotCreatedException $e) {
+				// handle service exception
+			echo "- Fatal error\n";
+			echo "- Stopped with exception: " . get_class($e) . "\n";
+			echo "====================================================================\n";
+			echo $e->getMessage() . "\n";
+			echo $e->getPrevious()->getMessage() . "\n";
+
+			return false;
+		}
+
 
 
 			// Show all messages?

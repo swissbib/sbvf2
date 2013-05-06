@@ -298,7 +298,7 @@ class Holdings
 		$networkNames = array('aleph', 'virtua');
 
 		foreach ($networkNames as $networkName) {
-			$configName = ucfirst($networkName) . 'Networks';
+			$configName = ucfirst(strtolower($networkName)) . 'Networks';
 
 			/** @var Config $networkConfigs */
 			$networkConfigs = $this->configHoldings->get($configName);
@@ -379,12 +379,14 @@ class Holdings
 	/**
 	 * Check whether network is supported
 	 *
-	 * @param    String        $network
+	 * @param    String        $networkCode
 	 * @return    Boolean
 	 */
-	protected function isRestfulNetwork($network)
+	protected function isRestfulNetwork($networkCode)
 	{
-		return isset($this->configHoldings->Restful->{$network});
+		$networkCode = strtolower($networkCode);
+
+		return isset($this->configHoldings->Restful->{$networkCode});
 	}
 
 
@@ -398,8 +400,10 @@ class Holdings
 	 */
 	protected function extendWithActionLinks(array $item)
 	{
+		$networkCode	= isset($item['network']) ? strtolower($item['network']) : '';
+
 			// Only add links for supported networks
-		if ($this->isAlephNetwork($item['network']) && $this->isRestfulNetwork($item['network'])) {
+		if ($this->isAlephNetwork($networkCode) && $this->isRestfulNetwork($networkCode)) {
 			// Add hold link for item
 			$item['holdLink'] = $this->getHoldLink($item);
 
@@ -500,6 +504,8 @@ class Holdings
 	 */
 	protected function isAlephNetwork($network)
 	{
+		$network	= strtolower($network);
+
 		return isset($this->networks[$network]) ? $this->networks[$network]['type'] === 'aleph' : false;
 	}
 
@@ -517,8 +523,9 @@ class Holdings
 	 */
 	protected function getBackLink($networkCode, $institutionCode, $item)
 	{
-		$method = false;
-		$data   = array();
+		$method      = false;
+		$data        = array();
+		$networkCode = strtolower($networkCode);
 
 		if (isset($this->configHoldings->Backlink->{$networkCode})) { // Has the network its own backlink type
 			$method = 'getBackLink' . ucfirst($networkCode);
@@ -527,14 +534,13 @@ class Holdings
 			);
 		} else { // no custom type
 			if (isset($this->networks[$networkCode])) { // is network even configured?
-				$type   = $this->networks[$networkCode]['type'];
-				$method = 'getBackLink' . ucfirst($type);
+				$networkType= strtolower($this->networks[$networkCode]['type']);
+				$method 	= 'getBackLink' . ucfirst($networkType);
 
 				// Has the network type (aleph, virtua, etc) a general link?
-				$typeNetwork = ucfirst($type);
-				if (isset($this->configHoldings->Backlink->{$typeNetwork})) {
+				if (isset($this->configHoldings->Backlink->$networkType)) {
 					$data = array(
-						'pattern' => $this->configHoldings->Backlink->{$typeNetwork}
+						'pattern' => $this->configHoldings->Backlink->$networkType
 					);
 				}
 			}

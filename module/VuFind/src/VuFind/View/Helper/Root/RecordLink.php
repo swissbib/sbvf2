@@ -151,8 +151,8 @@ class RecordLink extends \Zend\View\Helper\AbstractHelper
             }
         }
         // Make sure everything is properly HTML encoded:
-        $escaper = $this->getView()->plugin('escapehtml');
-        return $escaper($finalUrl);
+		$escaper = $this->getView()->plugin('escapehtml');
+		return $escaper($finalUrl);
     }
     /**
      * Given a record driver, get a URL for that record.
