@@ -14,7 +14,6 @@ $edition		= $resultItem->getEdition();
 $publicationDate= $this->publicationDateSummon($resultItem->getPublicationDates());
 
 $openURL= $resultItem->getOpenURL();
-
 $urls	= $resultItem->getURLs();
 
 ?>
@@ -65,7 +64,7 @@ $urls	= $resultItem->getURLs();
 
 		<table class="nodivider noborder">
 			<tr>
-				<td>OpenURL: <?= $this->openUrl($openURL) ?></td>
+				<td>OpenURL: <?= str_replace('<a ', '<a target="_blank" ', $this->openUrl($openURL)) ?></td>
 				<td>
 					<?php foreach($urls as $url): ?>
 						<a class="color singleLink" target="_blank" href="<?= $url['url'] ?>"><?= $url['desc'] ?></a>
