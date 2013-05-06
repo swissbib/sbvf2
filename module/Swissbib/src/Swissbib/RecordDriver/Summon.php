@@ -55,12 +55,4 @@ class Summon extends VuFindSummon
 		return is_array($author) ? implode(', ', $author) : $author;
 	}
 
-	/**
-	 * @return	String	Direct link URL
-	 */
-	public function getDirectLink() {
-
-		return $this->mainConfig->link;
-	}
-
 }
