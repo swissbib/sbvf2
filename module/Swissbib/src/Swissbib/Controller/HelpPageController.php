@@ -54,7 +54,7 @@ class HelpPageController extends AbstractActionController
 	 * Find matching template
 	 * Fall back to search topic and english if not available
 	 *
-	 * @param    String        $topic
+	 * @param    String|null        $topic
 	 * @return    Array    [template,first]
 	 */
 	protected function getTemplate($topic)
@@ -65,7 +65,7 @@ class HelpPageController extends AbstractActionController
 		$template    = null;
 		$activeTopic = null;
 		$firstMatch  = true;
-		$topic		 = strtolower($topic);
+		$topic		 = $topic ? strtolower($topic) : $this->getDefaultTopic();
 
 		$languages = array($language, 'en');
 		$topics    = array($topic, 'search');
@@ -94,6 +94,21 @@ class HelpPageController extends AbstractActionController
 
 
 	/**
+	 * Get default topic
+	 * Get first item of pages
+	 *
+	 * @return	String
+	 */
+	protected function getDefaultTopic()
+	{
+		$pages	= $this->getPages();
+
+		return isset($pages[0]) ? $pages[0] : 'about';
+	}
+
+
+
+	/**
 	 * Get current active language
 	 *
 	 * @return    String
@@ -112,6 +127,15 @@ class HelpPageController extends AbstractActionController
 	 */
 	protected function getPages()
 	{
-		return $this->serviceLocator->get('VuFind/Config')->get('config')->HelpPages->pages->toArray();
+		$config = $this->serviceLocator->get('VuFind/Config')->get('config');
+		$pages	= array();
+
+		if ($config) {
+			if ($config->HelpPages && $config->HelpPages->pages) {
+				$pages = $config->HelpPages->pages->toArray();
+			}
+		}
+
+		return $pages;
 	}
 }
