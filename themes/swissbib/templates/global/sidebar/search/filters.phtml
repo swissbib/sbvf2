@@ -19,8 +19,9 @@ $urlQuery	= $results->getUrlQuery();
 		<h4 class="filters_indicator"><span>B&uuml;cher & mehr</span></h4>
 		<?php foreach($filters as $filterLabel => $filterValues): ?>
 			<?php
-				$firstItem	= reset($filterValues);
-				$filterType	= $firstItem['field'];
+				$firstItem		= reset($filterValues);
+				$filterType		= $firstItem['field'];
+				$filterLabel	= $this->translate($filterLabel);
 			?>
 			<!-- filter -->
 			<div class="filter" id="filter_<?=$filterType?>">
