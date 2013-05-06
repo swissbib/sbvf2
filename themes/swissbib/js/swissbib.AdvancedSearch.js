@@ -40,7 +40,7 @@ swissbib.AdvancedSearch = {
 	initFromSearchDetails: function() {
 		var firstGroupIndex, newField, that = this;
 
-		if( this.searchDetails ) {
+		if( this.searchDetails.length ) {
 			jQuery.each(this.searchDetails, function(groupIndex, searchGroup) {
 				jQuery.each(searchGroup, function(searchIndex, search) {
 					if( searchIndex == 0 ) {
