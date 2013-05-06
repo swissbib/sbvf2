@@ -583,6 +583,7 @@ class SolrMarc extends VuFindSolrMarc
 		);
         foreach ($fields as $field) {
             $subjects = $this->getMarcFields($field);
+            $subjects = Null;
             if ($subjects) {
                 foreach ($subjects as $subject) {
                     $ind2 = $subject->getIndicator(2);
@@ -607,7 +608,7 @@ class SolrMarc extends VuFindSolrMarc
                     }
                     if ($ind2 === '7' && $sf2 === 'gnd') {
                         $tag = $subject->getTag();
-                        $gnd = $subject->getMarcSubFieldMaps(array(
+                        /*$gnd = $subject->getMarcSubFieldMaps(array(
                             'a' => $tag . 'a',
                             'b' => $tag . 'b',
                             'c' => $tag . 'c',
@@ -621,6 +622,7 @@ class SolrMarc extends VuFindSolrMarc
                             '0' => $tag . '0',
                             '2' => $tag . '2',
                         ));
+                        */
                     }
                 }
             }
