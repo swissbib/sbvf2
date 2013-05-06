@@ -1,5 +1,5 @@
 <?php
-	/** @var	Swissbib\RecordDriver\SolrMarc	$resultItem  */
+	/** @var	Swissbib\RecordDriver\Summon		$resultItem  */
 	/** @var	VuFind\View\Helper\Root\Record		$viewRecord  */
 $resultItem		= $this->driver;
 $viewRecord		= $this->record($this->driver);
@@ -13,8 +13,9 @@ $title			= $this->shorttitleSummon( $this->mainTitle($resultItem->getShortTitle(
 $edition		= $resultItem->getEdition();
 $publicationDate= $this->publicationDateSummon($resultItem->getPublicationDates());
 
-$openURL	= $resultItem->getOpenURL();
-$directLink	= $resultItem->getDirectLink();
+$openURL= $resultItem->getOpenURL();
+
+$urls	= $resultItem->getURLs();
 
 ?>
 
@@ -64,11 +65,12 @@ $directLink	= $resultItem->getDirectLink();
 
 		<table class="nodivider noborder">
 			<tr>
+				<td>OpenURL: <?= $this->openUrl($openURL) ?></td>
 				<td>
-					<a class="color singleLink" target="_blank" href="<?= $openURL ?>">Open URL</a>
-				</td>
-				<td>
-					<a class="color singleLink" target="_blank" href="<?= $directLink ?>">Direct&nbsp;Link</a>
+					<?php foreach($urls as $url): ?>
+						<a class="color singleLink" target="_blank" href="<?= $url['url'] ?>"><?= $url['desc'] ?></a>
+						<br />
+					<?php endforeach; ?>
 				</td>
 			</tr>
 		</table>
