@@ -127,8 +127,10 @@
 }
 
 
+.tabbed_summon #facet_pubdate_slider { display:none; }	 /*hide publication date slider in summons, next user story: fix it */
 
-#facet_publishdate { display:none; }
+#facet_publishdate,
+#facet_publicationdate { display:none; }
 
 div.facets fieldset#publishDateSlider {
 	margin:5px 0 0 5px!important;
