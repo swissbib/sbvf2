@@ -9,7 +9,8 @@ if( isset($item['userActions']) ) {
 	if( $item['userActions']['hold'] ) {
 		$actions[] = array(
 			'label'	=> 'ausleihen',
-			'action'=> $this->recordLink()->getHoldUrl($item['holdLink'])
+			'action'=> $this->recordLink()->getHoldUrl($item['holdLink']),
+			'escape'=> false
 		);
 	}
 	if( $item['userActions']['shortLoan'] ) {
@@ -33,7 +34,8 @@ if( isset($item['userActions']) ) {
 } elseif( isset($item['holdLink']) ) {
 	$actions[] = array(
 		'label'	=> 'ausleihen',
-		'action'=> $this->recordLink()->getHoldUrl($item['holdLink'])
+		'action'=> $this->recordLink()->getHoldUrl($item['holdLink']),
+		'escape'=> false
 	);
 }
 
@@ -47,7 +49,8 @@ if( isset($item['userActions']) ) {
 	<td>
 		<ul>
 			<?php foreach($actions as $action): ?>
-                <li><a href="<?=$this->escapeHtml($action['action'])?>" ><?=$this->escapeHtml($action['label'])?></a></li>
+				<?php $href = !isset($action['escape']) || $action['escape'] ? $this->escapeHtml($action['action']) : $action['action']; ?>
+                <li><a href="<?=$href?>" ><?=$this->escapeHtml($action['label'])?></a></li>
 			<?php endforeach; ?>
 		</ul>
 	</td>
