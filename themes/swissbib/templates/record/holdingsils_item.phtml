@@ -47,7 +47,7 @@ if( isset($item['userActions']) ) {
 	<td>
 		<ul>
 			<?php foreach($actions as $action): ?>
-				<li><a href="<?=$this->escapeHtml($action['action'])?>" target="_blank"><?=$this->escapeHtml($action['label'])?></a></li>
+                <li><a href="<?=$this->escapeHtml($action['action'])?>" ><?=$this->escapeHtml($action['label'])?></a></li>
 			<?php endforeach; ?>
 		</ul>
 	</td>
