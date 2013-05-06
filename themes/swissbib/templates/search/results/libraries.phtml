@@ -11,9 +11,9 @@ if (sizeof($institutions) > 1) {
 <?php if (count($institutions) > 0): ?>
 	<span class="info rollover right">
 		<ul class="infolist">
-			<?php foreach($institutions as $institutionSysCode): ?>
-				<li><a href="<?=$this->recordLink()->getUrl($driver)?>?expandlib=<?= $institutionSysCode ?>#tab-holdings">
-						<?= $institutionSysCode ?>
+			<?php foreach($institutions as $institutionCode): ?>
+				<li><a href="<?=$this->recordLink()->getUrl($driver)?>?expandlib=<?= $institutionCode ?>#tab-holdings">
+						<?=$this->escapeHtml($this->zendTranslate($institutionCode, 'institution'));?>
 				</a></li>
 			<?php endforeach; ?>
 		</ul>
