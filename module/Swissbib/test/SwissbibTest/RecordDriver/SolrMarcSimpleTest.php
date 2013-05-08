@@ -20,7 +20,7 @@ class SolrMarcSimpleTest extends SolrMarcTestCase
 
 	public function testPrimaryAuthor()
 	{
-		$primaryAuthor = $this->driver->getPrimaryAuthor();
+		$primaryAuthor = $this->driver->getPrimaryAuthor(false);
 
 		$this->assertInternalType('array', $primaryAuthor);
 		$this->assertEquals('Telemann', $primaryAuthor['name']);
@@ -96,7 +96,7 @@ class SolrMarcSimpleTest extends SolrMarcTestCase
 		$institutions = $this->driver->getInstitutions();
 
 		$this->assertInternalType('array', $institutions);
-		$this->assertEquals('LUMH1', $institutions[0]);
+		$this->assertEquals('lumh1', $institutions[0]);
 	}
 
 
@@ -136,7 +136,7 @@ class SolrMarcSimpleTest extends SolrMarcTestCase
 
 	public function testGetPublisher()
 	{
-		$publishers = $this->driver->getPublishers();
+		$publishers = $this->driver->getPublishers(false);
 
 		$this->assertInternalType('array', $publishers);
 		$this->assertEquals(1, sizeof($publishers));
