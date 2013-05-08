@@ -11,32 +11,53 @@ $basicSearch= $options->getSearchAction();
     // Facet results settings: settings for items limit per facet
 $facetItemsMaxAmount	= $this->facetsConfig->get('facet_limit');               // full
 $facetItemsLimitDefault = $this->facetsConfig->get('facet_limit_default');    // initially shown
+$checkboxFilters		= $results->getParams()->getCheckboxFacets();
 
 ?>
-
 <h3><?=$this->transEsc('Narrow Search')?></h3>
 
 <div class="facets">
+
+	<!-- start checkbox facet -->
+	<? if (count($checkboxFilters) > 0): ?>
+		<div class="facet" id="facet_checkbox">
+			<h5 class="toggler persist expanded" id="facet_toggler_checkbox">Eingrenzen</h5>
+			<ul class="facet_toggler_checkbox">
+			<? foreach ($checkboxFilters as $current): ?>
+				<li>
+					<?php
+						$idCurCheckbox	= $this->escapeHtml(str_replace(' ', '', $current['desc']));
+						$hrefCurCheckbox= $current['selected'] ? $results->getUrlQuery()->removeFilter($current['filter']) : $results->getUrlQuery()->addFilter($current['filter']);
+					?>
+					<input type="checkbox" name="filter[]" value="<?=$this->escapeHtml($current['filter'])?>" <?=$current['selected'] ? 'checked="checked"' : ''?> id="<?=$idCurCheckbox?>" onclick="document.location.href='<?= $hrefCurCheckbox ?>';" />
+					<label for="<?=$idCurCheckbox?>"><?=$this->transEsc($current['desc'])?></label>
+				</li>
+			<? endforeach; ?>
+		</div>
+	<? endif; ?>
+	<!-- end checkbox facet -->
+
 	<?php foreach($facetList as $facetGroup => $facetGroupData): /* Iterate over facet groups (topic, author, language, ... */ ?>
 		<?php
 			$facetId		= strtolower($facetGroup);
 			$facetGroupLabel= $facetGroupData['label'];
-			$facetGroupItems= $this->SortAndPrepareFacetList($results, $facetGroup, $facetGroupData['list'], $basicSearch, array('tab'=>ucfirst($this->activeTabKey)));
+			$facetGroupItems= $this->SortAndPrepareFacetList($results, $facetGroup, $facetGroupData['list'], $basicSearch, array('tab'=>ucfirst($this->activeTabKey));
 		?>
 		<!-- facet start: <?=$facetGroup?> -->
 		<div class="facet" id="facet_<?=$facetId?>">
 			<h5 class="toggler persist expanded" id="facet_toggler_<?=$facetId?>"><?=$this->escapeHtml($facetGroupLabel)?></h5>
 			<ul class="facet_toggler_<?=$facetId?>">
 
-<?php
-        // Get limit of initially shown items per facet
-    $amountItems        = count($facetGroupItems);
-    $amountItemsShown   = intval($this->facetsConfig->get('facet_limit_' . $facetGroup));
-    if( $amountItemsShown === 0 ) {
-        $amountItemsShown = $facetItemsLimitDefault;
-    }
-    $itemsCount = 0;
-?>		    <?php foreach($facetGroupItems as $facet): ?>
+			<?php
+					// Get limit of initially shown items per facet
+				$amountItems        = count($facetGroupItems);
+				$amountItemsShown   = intval($facetResultsSettings->get('facet_limit_' . $facetGroup));
+				if( $amountItemsShown === 0 ) {
+					$amountItemsShown = $facetItemsLimitDefault;
+				}
+				$itemsCount = 0;
+			?>
+			<?php foreach($facetGroupItems as $facet): ?>
                 <?php if($itemsCount >= $amountItemsShown) break; /* Limit initially shown items per facet*/ ?>
                 <?php $itemsCount++; ?>
                 <?= $this->facetItem($facet, $facetGroup) ?>

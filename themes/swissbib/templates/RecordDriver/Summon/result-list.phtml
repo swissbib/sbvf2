@@ -1,20 +1,23 @@
 <?php
 	/** @var	Swissbib\RecordDriver\Summon		$resultItem  */
-	/** @var	VuFind\View\Helper\Root\Record		$viewRecord  */
 $resultItem		= $this->driver;
+	/** @var	VuFind\View\Helper\Root\Record		$viewRecord  */
 $viewRecord		= $this->record($this->driver);
 $thumbnail		= $viewRecord->getThumbnail('small');
 $thumbnailSrc	= $thumbnail ? $thumbnail : $this->url('cover-unavailable');
 $detailLink		= $this->recordLink()->getUrl($resultItem);
 
-//$title			= $resultItem->getShortTitle();
 $title			= $this->shorttitleSummon( $this->mainTitle($resultItem->getShortTitle()) );
-
 $edition		= $resultItem->getEdition();
 $publicationDate= $this->publicationDateSummon($resultItem->getPublicationDates());
 
-$openURL= $resultItem->getOpenURL();
-$urls	= $resultItem->getURLs();
+	// OpenURL: shown always
+$openURL		= $resultItem->getOpenURL();
+	// Direct link: shown only if summons record's 'LinkModel' attr. is 'DirectLink'
+$hasDirectLink	= $resultItem->hasDirectLink();
+$directLinkUris	= $hasDirectLink ? $resultItem->getURI() : '';
+
+$hasFullText	= $resultItem->hasFulltext();
 
 ?>
 
@@ -27,9 +30,13 @@ $urls	= $resultItem->getURLs();
 	</td>
     <!-- Column 3: Teaser-image / Thumbnail -->
 	<td class="right nodivider">
-		<a href="<?=$detailLink?>" title="<?=$title?>">
+		<?php if($hasFullText === true ): ?>
+			<a href="<?=$detailLink?>" title="<?=$title?>">
+				<img src="<?=$thumbnailSrc?>" alt="<?=$title?>" class="dropshadow"/>
+			</a>
+		<?php else: ?>
 			<img src="<?=$thumbnailSrc?>" alt="<?=$title?>" class="dropshadow"/>
-		</a>
+		<?php endif; ?>
 	</td>
     <!-- Column 4 + 5 + 6: Title and author details => links to full-view -->
 	<td colspan="3">
@@ -65,12 +72,12 @@ $urls	= $resultItem->getURLs();
 		<table class="nodivider noborder">
 			<tr>
 				<td>OpenURL: <?= str_replace('<a ', '<a target="_blank" ', $this->openUrl($openURL)) ?></td>
-				<td>
-					<?php foreach($urls as $url): ?>
-						<a class="color singleLink" target="_blank" href="<?= $url['url'] ?>"><?= $url['desc'] ?></a>
-						<br />
-					<?php endforeach; ?>
-				</td>
+				<?php if($hasDirectLink && !empty($directLinkUris)): ?>
+					<td><?php foreach($directLinkUris as $directUri): ?>
+							<a class="color singleLink" target="_blank" href="<?= $directUri ?>">Direct Link</a><br />
+						<?php endforeach; ?>
+					</td>
+				<?php endif; ?>
 			</tr>
 		</table>
 
