@@ -41,7 +41,7 @@ $checkboxFilters		= $results->getParams()->getCheckboxFacets();
 		<?php
 			$facetId		= strtolower($facetGroup);
 			$facetGroupLabel= $facetGroupData['label'];
-			$facetGroupItems= $this->SortAndPrepareFacetList($results, $facetGroup, $facetGroupData['list'], $basicSearch, array('tab'=>ucfirst($this->activeTabKey));
+			$facetGroupItems= $this->SortAndPrepareFacetList($results, $facetGroup, $facetGroupData['list'], $basicSearch, array('tab'=>ucfirst($this->activeTabKey)));
 		?>
 		<!-- facet start: <?=$facetGroup?> -->
 		<div class="facet" id="facet_<?=$facetId?>">
@@ -51,7 +51,7 @@ $checkboxFilters		= $results->getParams()->getCheckboxFacets();
 			<?php
 					// Get limit of initially shown items per facet
 				$amountItems        = count($facetGroupItems);
-				$amountItemsShown   = intval($facetResultsSettings->get('facet_limit_' . $facetGroup));
+				$amountItemsShown   = intval($this->facetsConfig->get('facet_limit_' . $facetGroup));
 				if( $amountItemsShown === 0 ) {
 					$amountItemsShown = $facetItemsLimitDefault;
 				}
