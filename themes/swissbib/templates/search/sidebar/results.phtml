@@ -1,4 +1,4 @@
 <div>
-	<?=$this->render('search/sidebar/filters.phtml')?>
-	<?=$this->render('search/sidebar/facets.phtml')?>
+	<?=$this->render($this->tabTemplate('search/sidebar/filters', $this->activeTabKey))?>
+	<?=$this->render($this->tabTemplate('search/sidebar/facets', $this->activeTabKey))?>
 </div>

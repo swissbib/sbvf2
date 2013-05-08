@@ -231,3 +231,7 @@ ul.facet_toggler_checkbox li {
 	float: right;
 	margin-top: -40px;
 }
+
+#tabbed .selected a span {
+	cursor: default;
+}
