@@ -1,3 +1,14 @@
+#content table th,
+#content table td {
+	font-size: 12px;
+}
+
+#content table tr.link td {
+	cursor: pointer;
+}
+
+/** ------------ Login form ------------  */
+
 #loginForm label {
 	width: 100px;
 }
@@ -18,17 +29,7 @@
 	margin-top: -20px;
 }
 
-#content table th,
-#content table td {
-	font-size: 12px;
-}
-
-#content table tr.link td {
-	cursor: pointer;
-}
-
-
-/** Advanced search */
+/** ------------ Advanced search ------------ */
 
 #advSearchForm .group {
 	border: 1px solid #CCC;
@@ -63,7 +64,6 @@
 	margin: -10px 0 20px -10px;
 }
 
-
 #advSearchForm .advRow {
 	clear: both;
 }
@@ -95,6 +95,8 @@
 	padding-left: 18px;
 }
 
+/** ------------ adv. search: year/dates box, slider, etc. ------------  */
+
 #advSearchForm input.yearbox {
 	clear: none;
 	width: 30px;
@@ -110,6 +112,7 @@
 	background-repeat: repeat-x;
 }
 
+/** ------------ adv. search: jump navi ------------  */
 
 #advancedSearchJumpNavi {
 	background-color: #E8E8E8;
@@ -126,8 +129,11 @@
 	height: auto;
 }
 
+/** ------------ facets ------------  */
 
-.tabbed_summon #facet_pubdate_slider { display:none; }	 /*hide publication date slider in summons, next user story: fix it */
+.tabbed_summon #facet_pubdate_slider {
+	display:none; /*hide publication date slider in summons, next user story: fix it */
+}
 
 #facet_publishdate,
 #facet_publicationdate { display:none; }
@@ -135,25 +141,31 @@
 div.facets fieldset#publishDateSlider {
 	margin:5px 0 0 5px!important;
 }
+
 .publishDateForceHeight {
 	clear:both;
 	height:83px;
 }
+
 #facet_pubdate_slider label {
 	color:#ffffff;
 	font-size:11px;
 }
+
 #facet_pubdate_slider div.values {
 	margin:5px;
 }
+
 #facet_pubdate_slider div.values div {
 	float:left;
 	padding:20px 4px 3px 0;
 }
+
 #facet_pubdate_slider input[type=text] {
-	width:35px;
+	width:28px;
 	font-size:11px;
 }
+
 #facet_pubdate_slider input[type=submit] {
 	color:#ffffff;
 	font-size:11px;
@@ -161,10 +173,24 @@ div.facets fieldset#publishDateSlider {
 	float:right;
 	margin:5px;
 }
+
 #facet_pubdate_slider div.dateSlider {
 	margin:0 0 0 5px;
 }
 
+/** ------------ facet: checkbox ------------ */
+#facet_checkbox ul li label {
+	color:#fff;
+	font-size:11px;
+	line-height:13px;
+	padding:1px 2px;
+	width:122px;
+}
+ul.facet_toggler_checkbox li {
+	line-height:normal !important; /* FF bugfix */
+}
+
+/** ------------ page function ------------ */
 
 #pagefunction_save .menu {
 	display: none;
@@ -200,7 +226,6 @@ div.facets fieldset#publishDateSlider {
 	font-weight: bold;
 	color: #F67F00;
 }
-
 
 #tab-holdings .miniactions {
 	float: right;

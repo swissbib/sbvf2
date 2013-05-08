@@ -73,8 +73,7 @@ $hasFullText	= $resultItem->hasFulltext();
 			<tr>
 				<td>OpenURL: <?= str_replace('<a ', '<a target="_blank" ', $this->openUrl($openURL)) ?></td>
 				<?php if($hasDirectLink && !empty($directLinkUris)): ?>
-					<td>
-						<?php foreach($directLinkUris as $directUri): ?>
+					<td><?php foreach($directLinkUris as $directUri): ?>
 							<a class="color singleLink" target="_blank" href="<?= $directUri ?>">Direct Link</a><br />
 						<?php endforeach; ?>
 					</td>
