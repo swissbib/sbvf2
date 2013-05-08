@@ -20,6 +20,7 @@ if( $resultViewParams ) {
 }
 
 $isAdvancedSearch	= $searchBoxParams && $searchBoxParams['searchType'] == 'advanced';
+$tab				= $searchBoxParams && isset($searchBoxParams['tab']) ? ucfirst($searchBoxParams['tab']) : null;
 
 ?>
 
@@ -36,7 +37,7 @@ $isAdvancedSearch	= $searchBoxParams && $searchBoxParams['searchType'] == 'advan
 		</div>
 
 	<?php else: ?>
-		<form id="form_search" name="form_search" action="<?=$this->url('search-results')?>" method="get">
+		<form id="form_search" name="form_search" action="<?=$this->url('search-results', array('tab'=>$tab))?>" method="get">
 			<h3>
                 <label for="lookfor"><?=$this->transEsc('Search For')?></label>
             </h3>
@@ -45,7 +46,7 @@ $isAdvancedSearch	= $searchBoxParams && $searchBoxParams['searchType'] == 'advan
 			<input type="submit" class="submit primary" id="search_submit" value="<?=$this->transEsc('Find')?>"/>
 			<label for="search_favorites" class="checker">Nur in Favoriten</label>
 			<input type="checkbox" class="hidden" id="search_favorites" name="search_favorites" />
-			<a href="<?=$this->url('search-advanced')?>" title="<?=$this->transEsc('Advanced Search')?>" id="search_extended"><?=$this->transEsc('Advanced Search')?></a>
+			<a href="<?=$this->url('search-advanced', array('tab'=>$tab))?>" title="<?=$this->transEsc('Advanced Search')?>" id="search_extended"><?=$this->transEsc('Advanced Search')?></a>
 
 			<?php /* Load hidden limit preference from Session */ ?>
 			<?php if( !empty($lastLimit)): ?>

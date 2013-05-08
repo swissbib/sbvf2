@@ -44,10 +44,6 @@ return array(
         'autocomplete.base.js', //used for current highlighting based on java servlet, probably replaced by default VuFind mechanism
         'swissbib.ajax.js', // general AJAX helpers
         'swissbib.js',
-        'swissbib.pagination.js', // AJAX pagination
-        'swissbib.jumpmenu.js',
-        'swissbib.filters.js',
-        'swissbib.facets.js',
         'swissbib.AdvancedSearch.js',
         'swissbib.searchsettings.js',
 

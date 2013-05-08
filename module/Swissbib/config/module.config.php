@@ -26,6 +26,29 @@ return array(
 					),
 				)
 			),
+			// Search results with tab
+			'search-results' => array(
+				'type' => 'segment',
+				'options' => array(
+					'route'    => '/Search/Results[/:tab]',
+					'defaults' => array(
+						'controller' => 'Search',
+						'action'     => 'results'
+					)
+				)
+			),
+				// Advanced search results with tab
+			'search-advanced' => array(
+				'type' => 'segment',
+				'options' => array(
+					'route'    => '/Search/Advanced[/:tab]',
+					'defaults' => array(
+						'controller' => 'Search',
+						'action'     => 'advanced',
+						'tab'		 => 'swissbib'
+					)
+				)
+			),
 			// (local) Search User Settings
 			'search-settings'     => array(
 				'type'    => 'Zend\Mvc\Router\Http\Literal',
@@ -187,14 +210,14 @@ return array(
 			)
 		)
 	),
-	'swissbib'        => array(
-		'ignore_assets'              => array(
+	'swissbib' => array(
+		'ignore_assets' => array(
 			'blueprint/screen.css',
 			'jquery-ui.css'
 		),
 		// This section contains service manager configurations for all Swissbib
 		// pluggable components:
-		'plugin_managers'            => array(
+		'plugin_managers' => array(
 			'db_table' => array(
 				'factories'  => array(
 					'userlocaldata' => function ($sm) {
@@ -207,47 +230,31 @@ return array(
 				),
 			),
 		),
-
 		// Search result tabs
-		'preload_result_tabs_counts' => false, // Fetch(+display) results-count of non-selected tab(s) initially?
-		'default_result_tab'         => 'swissbib', // ID of default selected tab
-		'result_tabs'                => array(
-			'swissbib' => array(	// Primary tab: swissbib solr
-				'searchClassId' => 'Solr',
-				'model'         => '\Swissbib\ResultTab\SbResultTabSolr',
-				'params'        => array(
-					'id'    => 'swissbib',
-					'label' => 'Bücher & mehr',
+		'resultTabs' => array(
+				// Active tabs for a theme
+			'themes' => array(
+				'swissbibmulti' => array(
+					'swissbib',
+					'summon'
 				),
-				'templates'     => array( // templates for tab content and sidebar (=filters)
-					'tab'     => 'search/tabs/base.phtml', // default
-					'sidebar' => 'global/sidebar/search/facets.swissbib.phtml'
+				'swissbibsingle' => array(
+					'swissbib'
 				)
 			),
-			'summon' => array(
-				'searchClassId' => 'Summon',
-				'model'         => '\Swissbib\ResultTab\SbResultTab', //Summon',
-				'params'        => array(
-					'id'    => 'summon',
-					'label' => 'Artikel & mehr'
+				// Configuration of tabs
+			'tabs' => array(
+				'swissbib' => array(
+					'searchClassId' => 'Solr',			// VuFind searchClassId
+					'label'			=> 'tab.swissbib',	// Label
+					'type'			=> 'swissbibsolr'	// Key for custom templates
 				),
-				'templates'     => array(
-					'tab'     => 'search/tabs/summon.phtml',
-					'sidebar' => 'global/sidebar/search/facets.summon.phtml',
+				'summon' => array(
+					'searchClassId' => 'Summon',
+					'label'			=> 'tab.summon',
+					'type'			=> 'summon'
 				)
-			),
-//			'external' => array(
-//				'searchClassId' => 'WorldCat',
-//				'model'         => '\Swissbib\ResultTab\SbResultTab',
-//				'params'        => array(
-//					'id'    => 'external',
-//					'label' => 'Artikel & mehr'
-//				),
-//				'templates'     => array(
-//					'tab'     => 'search/tabs/external.phtml',
-//					'sidebar' => 'global/sidebar/search/facets.external.phtml',
-//				)
-//			),
+			)
 		)
 	)
 );

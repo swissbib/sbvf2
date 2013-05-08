@@ -1,0 +1,24 @@
+<?php
+$lookFor = $this->params->getDisplayQuery();
+$lookForQuery = $lookFor ? '?lookfor=' . $this->escapeHtml($lookFor) : '';
+?>
+<div id="tabbed" rel="catalog">
+	<ul>
+		<?php foreach($this->allTabsConfig as $tabKey => $tab): ?>
+			<?php
+				$isActive = isset($tab['active']) && $tab['active'];
+				$tabUrl		= $isActive ? 'javascript:void(0)' : $this->url('search-results', array('tab'=>ucfirst($tabKey))) . $lookForQuery;
+			?>
+			<li id="tab_<?=$tabKey?>" class="<?=($isActive ? 'selected' : '')?>">
+				<a href="<?=$tabUrl?>">
+					<span>
+						<?=$this->transEsc($tab['label'])?>
+						<?php if($tabKey === $this->activeTabKey && isset($tab['count'])): ?>
+							<em>(<?=$this->number($tab['count'])?>)</em>
+						<?php endif; ?>
+					</span>
+				</a>
+			</li>
+		<?php endforeach; ?>
+	</ul>
+</div>

@@ -2,10 +2,12 @@
 namespace Swissbib\Controller;
 
 use VuFind\Controller\SearchController as VFSearchController;
+use Zend\Config\Config;
 use Zend\Session\Container as SessionContainer;
 use VuFind\Search\Memory as VFMemory;
 
 use Swissbib\Controller\Helper\Search as SearchHelper;
+use Zend\View\Resolver\ResolverInterface;
 
 /**
  * @package       Swissbib
@@ -13,6 +15,14 @@ use Swissbib\Controller\Helper\Search as SearchHelper;
  */
 class SearchController extends VFSearchController
 {
+
+	/**
+	 * @var	Boolean		Forced tab key by controller
+	 */
+	protected $forceTabKey = false;
+
+
+
 
 	/**
 	 * (Default Action) Get model for home view
@@ -37,166 +47,109 @@ class SearchController extends VFSearchController
 	 */
 	public function resultsAction()
 	{
-		// Initialize tab(s) config
-		$preloadNonSelectedTabResultCounts = !!$this->getModuleConfigParam('preload_result_tabs_counts');
-		$idSelectedTab                     = $this->getIdSelectedTab();
-		$resultTabsConfig                  = $this->getModuleConfigParam('result_tabs');
+		$allTabsConfig  	= $this->getThemeTabsConfig();
+		$activeTabKey   	 = trim(strtolower($this->params()->fromRoute('tab')));
+		$resultsFacetConfig	= $this->getServiceLocator()->get('VuFind\Config')->get('facets')->get('Results_Settings');
 
-		// Init all tabs
-		$views = array();
-		foreach ($resultTabsConfig as $idTab => $tabConfig) {
-			$this->searchClassId	= $tabConfig['searchClassId'];	// Solr, Summon, WorldCat, ...
-			SearchHelper::rememberTabbedSearchURI($idTab, $this->request->getRequestUri());
-
-			if ($idTab === $idSelectedTab) {
-				// Selected tab
-				$views[$idTab]                   = parent::resultsAction();
-				$selectedView                    = $views[$idTab];
-				$tabConfig['params']['selected'] = true;
-			} else {
-				// Non-selected tabs (preload results optionally)
-				if ($preloadNonSelectedTabResultCounts) {
-					$views[$idTab] = parent::resultsAction();
-				} else {
-					$views[$idTab] = null;
-				}
+		if ($this->forceTabKey) {
+			$activeTabKey = $this->forceTabKey;
+		} else {
+			if (empty($activeTabKey) && isset($_COOKIE['tab'])) {
+				$activeTabKey = trim(strtolower($_COOKIE['tab']));
 			}
+			if (empty($activeTabKey) || !isset($allTabsConfig[$activeTabKey])) {
+				$activeTabKey = key($allTabsConfig);
+			}
+		}
+		$activeTabConfig = $allTabsConfig[$activeTabKey];
 
-			$resultTabsConfig[$idTab] = $this->getTabConfig($tabConfig, $views[$idTab]);
+		setcookie('tab', $activeTabKey, strtotime('+1 month'));
+
+
+		$this->searchClassId = $activeTabConfig['searchClassId'];
+		$resultViewModel     = parent::resultsAction();
+
+		$allTabsConfig[$activeTabKey]['active'] = true;
+		$allTabsConfig[$activeTabKey]['count'] = $resultViewModel->results->getResultTotal();
+
+		$this->layout()->setVariable('resultViewParams', $resultViewModel->getVariable('params'));
+
+		$sideBarTemplate	= $this->getTabTemplate($activeTabConfig['type'], 'search/sidebar/results');
+
+		$resultViewModel->setVariable('allTabsConfig', $allTabsConfig);
+		$resultViewModel->setVariable('activeTabKey', $activeTabKey);
+		$resultViewModel->setVariable('activeTabConfig', $activeTabConfig);
+		$resultViewModel->setVariable('facetsConfig', $resultsFacetConfig);
+		$resultViewModel->setVariable('sidebarTemplate', $sideBarTemplate);
+
+		return $resultViewModel;
+	}
+
+
+
+	/**
+	 * Get template for tab
+	 * A tab template always contains a tab-key postfox
+	 *
+	 * @example
+	 * TabKey: foobar
+	 * Base Template: path/to/base-template.phtml
+	 * Tab Template:  path/to/base-template.foobar.phtml
+	 *
+	 * Returns the path to the tab template if available. Else return base template
+	 *
+	 * @param	String		$tab
+	 * @param	String		$baseTemplate
+	 * @return	String
+	 */
+	protected function getTabTemplate($tab, $baseTemplate)
+	{
+		/** @var ResolverInterface $resolver */
+		$resolver          = $this->serviceLocator->get('Zend\View\Renderer\PhpRenderer')->resolver();
+		$pathInfo          = pathInfo($baseTemplate);
+		$tab               = strtolower($tab);
+		$customTemplate	   = $pathInfo['dirname'] .
+							'/' . $pathInfo['basename'] .
+							'.' . $tab .
+							(isset($pathInfo['extension'])? '.' . $pathInfo['extension']:'');
+
+		return $resolver->resolve($customTemplate) !== false ? $customTemplate : $baseTemplate;
+	}
+
+
+
+	/**
+	 * Get all configuration for theme tabs
+	 *
+	 * @return	Array[]
+	 */
+	protected function getThemeTabsConfig()
+	{
+		$theme			= $this->getTheme();
+		$tabs			= array();
+		$moduleConfig	= $this->getServiceLocator()->get('Config');
+		$tabsConfig		= $moduleConfig['swissbib']['resultTabs'];
+		$allTabs		= $tabsConfig['tabs'];
+		$themeTabs		= isset($tabsConfig['themes'][$theme]) ? $tabsConfig['themes'][$theme] : array();
+
+		foreach ($themeTabs as $themeTab) {
+			if (isset($allTabs[$themeTab])) {
+				$tabs[$themeTab] = $allTabs[$themeTab];
+			}
 		}
 
-		// Add view params
-		/** @var    $selectedView    \Zend\View\Model\ViewModel */
-		$selectedView->tabHeadConfigs     = $resultTabsConfig;
-		$selectedView->facetsConfig       = $this->getServiceLocator()->get('VuFind\Config')->get('facets');
-		$this->layout()->resultViewParams = $selectedView->params;
-
-		return $selectedView;
+		return $tabs;
 	}
 
 
 
 	/**
-	 * Returns results content of single tab (called via AJAX)
+	 * Get active theme
 	 *
-	 * @return \Zend\View\Model\ViewModel
+	 * @return	String
 	 */
-	public function tabcontentAction()
+	protected function getTheme()
 	{
-		return $this->tabAction();
-	}
-
-
-
-	/**
-	 * Returns sidebar content of single tab (called via AJAX)
-	 *
-	 * @return \Zend\View\Model\ViewModel
-	 */
-	public function tabsidebarAction()
-	{
-		return $this->tabAction();
-	}
-
-
-
-	/**
-	 * Wrapper for AJAX "tabbed" actions
-	 *
-	 * @return \Zend\View\Model\ViewModel
-	 */
-	private function tabAction()
-	{
-		$tabKey = $_REQUEST['tab'];
-
-		// Initialize tab config
-		$resultTabsConfig = $this->getModuleConfigParam('result_tabs');
-		$tabConfig        = $resultTabsConfig[$tabKey];
-		/** @var    $view    \Zend\View\Model\ViewModel */
-		$this->searchClassId = $tabConfig['searchClassId'];
-
-		$view                = parent::resultsAction();
-		$view->tabHeadConfig = $this->getTabConfig($tabConfig, $view);
-		$view->facetsConfig  = $this->getServiceLocator()->get('VuFind\Config')->get('facets');
-
-		// Add view params to layout
-		$this->layout()->resultViewParams = $view->params;
-
-		// Set the model terminal
-		$view->setTerminal(true);
-
-		return $view;
-	}
-
-
-
-	/**
-	 * Get ID of selected tab
-	 * User pref: lastly selected tab (cookie set in jquery.tabbed.js)
-	 * Or module config: default tab (if no user pref stored yet)
-	 *
-	 * @return  String  ID of the previously selected / default tab
-	 */
-	private function getIdSelectedTab()
-	{
-		$idTab = null;
-
-		// Get selected tab from cookie if set
-		if (isset($_COOKIE[SearchHelper::COOKIENAME_SELECTED_TAB])) {
-			$cookieContent = $_COOKIE[SearchHelper::COOKIENAME_SELECTED_TAB];
-			$idTab         = str_replace('tabbed_', '', $cookieContent);
-		}
-
-		return !empty($idTab) ? $idTab : $this->getModuleConfigParam('default_result_tab');
-	}
-
-
-
-	/**
-	 * Get built SbResultsTab config
-	 *
-	 * @param   Array                       $tabConfig
-	 * @param   \Zend\View\Model\ViewModel  $view
-	 * @return  Array
-	 */
-	private function getTabConfig($tabConfig, $view = null)
-	{
-		if (is_null($view)) {
-			$this->searchClassId = $tabConfig['searchClassId'];
-			$view                = null; //parent::resultsAction();
-		}
-
-		/** @var $tabModel \Swissbib\ResultTab\SbResultTab */
-		$tabModel  = $tabConfig['model'];
-		$tabParams = $tabConfig['params'];
-
-		$templates = array_key_exists('templates', $tabConfig) ? $tabConfig['templates'] : array();
-
-		/** @var    \Swissbib\ResultTab\SbResultTab     $tab */
-		$tab = new $tabModel($view, $tabParams, $templates);
-
-		return $tab->getConfig();
-	}
-
-
-
-	/**
-	 * Get given parameter from (given / or ) swissbib module config
-	 *
-	 * @throws \Exception
-	 * @param   String  $moduleKey
-	 * @param   String  $parameterKey
-	 * @return  Mixed
-	 */
-	private function getModuleConfigParam($parameterKey, $moduleKey = 'swissbib')
-	{
-		$config       = $this->getServiceLocator()->get('Config');
-		$moduleConfig = $config[$moduleKey];
-
-		if (!array_key_exists($parameterKey, $moduleConfig)) {
-			throw new \Exception('swissbib config param missing: ' . $parameterKey);
-		}
-
-		return $moduleConfig[$parameterKey];
+		return $this->getServiceLocator()->get('Vufind\Config')->get('config')->Site->theme;
 	}
 }
