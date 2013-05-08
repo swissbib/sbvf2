@@ -26,7 +26,7 @@
 	<div id="col1_content" class="clearfix">
 		<!-- begin: sidebar -->
 		<div id="sidebar">
-			<?=$this->render($this->sidebarTemplate);?>
+			<?=$this->render($this->tabTemplate('search/sidebar/results', $this->activeTabKey));?>
 		</div>
 		<!-- end: sidebar -->
 	</div>
@@ -40,11 +40,11 @@
 
 			<!-- begin: inlay -->
 			<div id="inlay">
-				<?=$this->render('search/results/inlay.phtml');?>
+				<?=$this->render($this->tabTemplate('search/results/inlay', $this->activeTabKey));?>
 			</div><!-- end: inlay -->
 
 			<!-- begin: tabbed view -->
-			<?=$this->render('search/results/content.phtml')?>
+			<?=$this->render($this->tabTemplate('search/results/content', $this->activeTabKey))?>
 			<!-- end: tabbed view -->
 
 			<!-- begin: pagefunctions -->

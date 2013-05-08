@@ -138,6 +138,7 @@ return array(
 			'subjectHeadingFormatter' => 'Swissbib\View\Helper\SubjectHeadings',
 			'shorttitleSummon'		  => 'Swissbib\View\Helper\ShortTitleFormatterSummon',
 			'SortAndPrepareFacetList' => 'Swissbib\View\Helper\SortAndPrepareFacetList',
+			'tabTemplate'			  => 'Swissbib\View\Helper\TabTemplate',
 			'zendTranslate'           => 'Zend\I18n\View\Helper\Translate'
 		),
 		'factories' => array(

@@ -1,152 +1,44 @@
 <?php
 
 /** @var $results VuFind\Search\Solr\Results */
-$results    = $this->results;
+$results	= $this->results;
 $facetList	= $results->getFacetList();
 
-/** @var $options VuFind\Search\Solr\Options  */
-$options	= $this->searchOptions($this->searchClassId);
-$basicSearch= $options->getSearchAction();
-
-    // Facet results settings: settings for items limit per facet
-$facetItemsMaxAmount	= $this->facetsConfig->get('facet_limit');               // full
-$facetItemsLimitDefault = $this->facetsConfig->get('facet_limit_default');    // initially shown
-$checkboxFilters		= $results->getParams()->getCheckboxFacets();
+/** @var $options VuFind\Search\Solr\Options */
+$options = $this->searchOptions($this->searchClassId);
+$basicSearch = $options->getSearchAction();
+// Facet results settings: settings for items limit per facet
+$facetConfig	= $this->facetsConfig;
+$checkboxFilters = $results->getParams()->getCheckboxFacets();
 
 ?>
-<h3><?=$this->transEsc('Narrow Search')?></h3>
+<h3><?= $this->transEsc('Narrow Search') ?></h3>
 
 <div class="facets">
 
 	<!-- start checkbox facet -->
-	<? if (count($checkboxFilters) > 0): ?>
-		<div class="facet" id="facet_checkbox">
-			<h5 class="toggler persist expanded" id="facet_toggler_checkbox">Eingrenzen</h5>
-			<ul class="facet_toggler_checkbox">
-			<? foreach ($checkboxFilters as $current): ?>
-				<li>
-					<?php
-						$idCurCheckbox	= $this->escapeHtml(str_replace(' ', '', $current['desc']));
-						$hrefCurCheckbox= $current['selected'] ? $results->getUrlQuery()->removeFilter($current['filter']) : $results->getUrlQuery()->addFilter($current['filter']);
-					?>
-					<input type="checkbox" name="filter[]" value="<?=$this->escapeHtml($current['filter'])?>" <?=$current['selected'] ? 'checked="checked"' : ''?> id="<?=$idCurCheckbox?>" onclick="document.location.href='<?= $hrefCurCheckbox ?>';" />
-					<label for="<?=$idCurCheckbox?>"><?=$this->transEsc($current['desc'])?></label>
-				</li>
-			<? endforeach; ?>
-		</div>
-	<? endif; ?>
+	<?=$this->render($this->tabTemplate('search/sidebar/facet.checkbox', $this->activeTabKey), array(
+																				   'results'		=> $results,
+																				   'checkboxFilters'=> $checkboxFilters
+																			  ));?>
 	<!-- end checkbox facet -->
 
-	<?php foreach($facetList as $facetGroup => $facetGroupData): /* Iterate over facet groups (topic, author, language, ... */ ?>
-		<?php
-			$facetId		= strtolower($facetGroup);
-			$facetGroupLabel= $facetGroupData['label'];
-			$facetGroupItems= $this->SortAndPrepareFacetList($results, $facetGroup, $facetGroupData['list'], $basicSearch, array('tab'=>ucfirst($this->activeTabKey)));
-		?>
-		<!-- facet start: <?=$facetGroup?> -->
-		<div class="facet" id="facet_<?=$facetId?>">
-			<h5 class="toggler persist expanded" id="facet_toggler_<?=$facetId?>"><?=$this->escapeHtml($facetGroupLabel)?></h5>
-			<ul class="facet_toggler_<?=$facetId?>">
-
-			<?php
-					// Get limit of initially shown items per facet
-				$amountItems        = count($facetGroupItems);
-				$amountItemsShown   = intval($this->facetsConfig->get('facet_limit_' . $facetGroup));
-				if( $amountItemsShown === 0 ) {
-					$amountItemsShown = $facetItemsLimitDefault;
-				}
-				$itemsCount = 0;
-			?>
-			<?php foreach($facetGroupItems as $facet): ?>
-                <?php if($itemsCount >= $amountItemsShown) break; /* Limit initially shown items per facet*/ ?>
-                <?php $itemsCount++; ?>
-                <?= $this->facetItem($facet, $facetGroup) ?>
-            <?php endforeach; ?>
-            <? if($amountItems > $amountItemsShown): /* Show "more facets" link if there are more */ ?>
-                <?php $amountMore = $amountItems - $amountItemsShown ?>
-                    <li id="more<?=$facetId?>" class="facet_more">
-                        <a href="#" onclick="moreFacets('<?=$facetId?>'); return false" title="<?=$this->transEsc('more_info_toggle')?>"><?=$this->transEsc('more_info_toggle')?> (<?= $amountMore ?>)</a>
-                    </li>
-            <div id="narrowGroupHidden_<?=$facetId?>" class="offscreen">
-                <?php while($itemsCount < $amountItems) {
-                    $facet  = $facetGroupItems[$itemsCount];
-                ?>
-                    <?= $this->facetItem($facet, $facetGroup) ?>
-                    <?php $itemsCount++; ?>
-                <?php } ?>
-                <li id="less<?=$facetId?>" class="facet_more">
-                    <a href="#" onclick="lessFacets('<?=$facetId?>'); return false" title="<?=$this->transEsc('more_info_toggle')?>"><?=$this->transEsc('more_info_toggle')?> (<?= $amountMore ?>)</a>
-                </li>
-            </div>
-            <? endif; ?>
-            </ul>
-		</div>
-		<!-- facet -->
-	<?php endforeach; ?>
-
+	<?=$this->render($this->tabTemplate('search/sidebar/facet.basic', $this->activeTabKey), array(
+																					'results'			=> $results,
+																					'facetList'			=> $facetList,
+																					'basicSearch'		=> $basicSearch,
+																					'facetConfig'		=> $facetConfig
+																				   ));?>
 
 	<!-- Slider widget: Range of publication date  -->
-	<?php
-		$this->headScript()->appendFile('pubdate_slider.js');
-		$publishDateFrom= isset($_GET['publishDatefrom']) ? intval($_GET['publishDatefrom']) : '1450';
-		$publishDateTo	= isset($_GET['publishDateto']) ? intval($_GET['publishDateto']) : intval(date('Y'))+1;
-	?>
-	<div id="facet_pubdate_slider" class="facet">
-		<h5 id="facet_toggler_publishdate" onclick="$('#publishDateForceHeight').toggleClass('publishDateForceHeight')" class="toggler persist expanded" title="adv_search_year">Erscheinungsjahr</h5>
-		<form action="" name="publishDateFilter" id="publishDateFilter">
-			<?php /* Pass on other filter criteria via hidden fields, remove last publishDate */ ?>
-			<?=$results->getUrlQuery()->asHiddenFields(array('filter' => "/publishDate:.*/"))?>
-			<input type="hidden" name="daterange[]" value="publishDate"/>
-			<div class="publishDateForceHeight" id="publishDateForceHeight">
-				<fieldset class="publishDateLimit facet_toggler_publishdate" id="publishDateSlider">
-					<div class="values">
-						<div>
-							<label for="publishDatefrom"><?=$this->transEsc('date_from')?>:</label>
-							<input type="text" size="4" maxlength="4" class="yearbox" name="publishDatefrom" id="publishDatefrom" value="<?= $publishDateFrom ?>" />
-						</div>
-						<div>
-							<label for="publishDateto"><?=$this->transEsc('date_to')?>:</label>
-							<input type="text" size="4" maxlength="4" class="yearbox" name="publishDateto" id="publishDateto" value="<?= $publishDateTo ?>" />
-						</div>
-					</div>
-					<div id="publishDateSlider" class="dateSlider"></div>
-					<input type="submit" value="<?=$this->transEsc('Set')?>" id="publishDategoButton"/>
-				</fieldset>
-			</div>
-		</form>
-		<script language="javascript">
-			$().ready(function() {
-				if( $('#facet_toggler_publishdate').hasClass('collapsed') ) {
-					$('#publishDateForceHeight').hide();
-				}
-			});
-		</script>
-	</div>
+	<?=$this->render($this->tabTemplate('search/sidebar/facet.dateslider', $this->activeTabKey), array(
+																					 'results'	=> $results
+																				));?>
 
 </div>
 
-<h3 class="facet_more"><a href="#" class="toggler persist collapsed" id="toggler_facet_more"
-						  title="Mehr Suchfilter anzeigen $ Weniger Suchfilter anzeigen">Mehr Suchfilter anzeigen</a>
-</h3>
-<div class="facets toggler_facet_more">
-	<!-- facet -->
-	<div class="facet" id="facet_country">
-		<h5 class="toggler persist collapsed" id="facet_toggler_country">Land</h5>
-		<ul class="facet_toggler_country">
-			<li><a href="#" title="Schweiz (6)">Schweiz (6)&nbsp;&raquo;</a></li>
-			<li><a href="#" title="Rumänien (3)">Rumänien (3)&nbsp;&raquo;</a></li>
-		</ul>
-	</div>
-	<!-- facet -->
-	<div class="facet" id="facet_publisher">
-		<h5 class="toggler persist collapsed" id="facet_toggler_publisher">Verlag</h5>
-		<ul class="facet_toggler_publisher">
-			<li><a href="#" title="Diogenes (6)">Diogenes (6)&nbsp;&raquo;</a></li>
-			<li><a href="#" title="Rowohlt (6)">Rowohlt (6)&nbsp;&raquo;</a></li>
-			<li><a href="#" title="Reclam (1)">Reclam (1)&nbsp;&raquo;</a></li>
-			<li class="facet_more">
-				<a href="#" title="Mehr anzeigen">Mehr anzeigen</a>
-			</li>
-		</ul>
-	</div>
-</div>
+<?php
+//$this->render($this->tabTemplate('search/sidebar/facet.more', $this->activeTabKey), array(
+//
+//																					   ));
+?>
