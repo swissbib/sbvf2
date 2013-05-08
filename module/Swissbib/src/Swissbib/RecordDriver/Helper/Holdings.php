@@ -358,7 +358,7 @@ class Holdings
 			foreach ($group['institutions'] as $institutionCode => $institution) {
 					// Add backlink
 				$structuredElements[$groupCode]['institutions'][$institutionCode]['backlink']
-						= $this->getBackLink($group['networkCode'], $institutionCode, $institution['items'][0]);
+						= $this->getBackLink($group['networkCode'], strtoupper($institutionCode), $institution['items'][0]);
 					// Add bib-info link
 				$structuredElements[$groupCode]['institutions'][$institutionCode]['bibinfolink']
 						= $this->getBibInfoLink($institutionCode);
