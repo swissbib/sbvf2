@@ -5,7 +5,7 @@ namespace SwissbibTest\RecordDriver;
  * [Description]
  *
  */
-class SolrMarcSubjectHeadingsTest extends SolrMarcTestCase
+class SolrMarcZeroFieldTest extends SolrMarcTestCase
 {
 
 	public function setUp()
@@ -22,7 +22,7 @@ class SolrMarcSubjectHeadingsTest extends SolrMarcTestCase
 			// This item contains a zero field
 		$testItem	= $subjectHeadings[5];
 
-		$this->assertEquals('Indianer', $testItem['650a']);
-		$this->assertEquals('(DE-588)4026718-0', $testItem['6500']);
+		$this->assertEquals('Indianer', $testItem[0]);
+//		$this->assertEquals('(DE-588)4026718-0', $testItem['6500']);
 	}
 }

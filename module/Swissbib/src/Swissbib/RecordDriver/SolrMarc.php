@@ -580,87 +580,92 @@ class SolrMarc extends VuFindSolrMarc
 
 
 
-	public function getAllSubjectHeadings()
+	/**
+	 * Get structured subject vacabularies from predefined fields
+	 * Extended version of getAllSubjectHeadings()
+	 *
+	 * @see	getAllSubjectHeadings
+	 * @return	Array[]
+	 */
+	public function getAllSubjectVocabularies()
 	{
-		$retval = array();
-		// These are the fields that may contain (controlled or local) subject headings and classifications:
-		$fields = array(
-			'600', '610', '611', '630', '648', '650', '651', '655', '656', '690', '691',
+		$subjectVocabularies = array();
+		$fieldIndexes        = array(600, 610, 611, 630, 648, 650, 651, 655, 656, 690, 691);
+		$vocabConfigs        = array(
+			'lcsh'        => array(
+				'ind' => 0
+			),
+			'mesh'        => array(
+				'ind' => 2
+			),
+			'gnd'         => array(
+				'ind'   => 7,
+				'field' => 'gnd'
+			),
+			'rero'        => array(
+				'ind'   => 7,
+				'field' => 'rero'
+			),
+			'unspecified' => array(
+				'ind' => 4
+			),
+			'local'       => array(
+				'ind'    => 7,
+				'detect' => true
+			)
 		);
-        foreach ($fields as $field) {
-            $subjects = $this->getMarcFields($field);
-            $subjects = Null;
-            if ($subjects) {
-                foreach ($subjects as $subject) {
-                    $ind2 = $subject->getIndicator(2);
-                    $sf2  = $subject->getSubfield('2')->getData();
-                    $current = array();
+		$fieldMapping        = array(
+			'a' => 'a',
+			'b' => 'b',
+			'c' => 'c',
+			'd' => 'd',
+			'e' => 'e',
+			'f' => 'f',
+			'g' => 'g',
+			'h' => 'h',
+			'v' => 'v',
+			'x' => 'x',
+			'0' => '0',
+			'2' => '2'
+		);
 
-                    if ($ind2 === '0') {
-                        $lcsh = $subject->getMarcSubFieldMaps($field, array(
-                            'a' => $field . 'a',
-                            'b' => $field . 'b',
-                            'c' => $field . 'c',
-                            'd' => $field . 'd',
-                            'e' => $field . 'e',
-                            'f' => $field . 'f',
-                            'g' => $field . 'g',
-                            'h' => $field . 'h',
-                            'v' => $field . 'v',
-                            'x' => $field . 'x',
-                            '0' => $field . '0',
-                            '2' => $field . '2',
-                        ));
-                    }
-                    if ($ind2 === '7' && $sf2 === 'gnd') {
-                        $tag = $subject->getTag();
-                        /*$gnd = $subject->getMarcSubFieldMaps(array(
-                            'a' => $tag . 'a',
-                            'b' => $tag . 'b',
-                            'c' => $tag . 'c',
-                            'd' => $tag . 'd',
-                            'e' => $tag . 'e',
-                            'f' => $tag . 'f',
-                            'g' => $tag . 'g',
-                            'h' => $tag . 'h',
-                            'v' => $tag . 'v',
-                            'x' => $tag . 'x',
-                            '0' => $tag . '0',
-                            '2' => $tag . '2',
-                        ));
-                        */
-                    }
-                }
-            }
-            if (!empty($field)) {
-                continue;
-            }
-    }
-		// Try each MARC field one at a time:
-		foreach ($fields as $field) {
-			$results = $this->getMarcSubFieldMaps($field, array(
-															   'a' => $field . 'a',
-															   'b' => $field . 'b',
-															   'c' => $field . 'c',
-															   'd' => $field . 'd',
-															   'e' => $field . 'e',
-															   'f' => $field . 'f',
-															   'g' => $field . 'g',
-															   'h' => $field . 'h',
-															   'v' => $field . 'v',
-															   'x' => $field . 'x',
-															   '0' => $field . '0',
-															   '2' => $field . '2',
-														  ));
+		foreach ($fieldIndexes as $fieldIndex) {
+			$indexFields = $this->getMarcFields($fieldIndex);
 
-			foreach ($results as $result) {
-				$retval[] = $result;
+			foreach ($indexFields as $indexField) {
+				foreach ($vocabConfigs as $vocabKey => $vocabConfig) {
+					$fieldData     = false;
+					$useAsVocabKey = $vocabKey;
+
+					if (isset($vocabConfig['ind']) && $indexField->getIndicator(2) == (string)$vocabConfig['ind']) {
+						if (isset($vocabConfig['field'])) { // is there a field check required?
+							$subField2 = $indexField->getSubfield('2');
+							if ($subField2 && $subField2->getData() === $vocabConfig['field']) { // Check field
+								$fieldData = $this->getMappedFieldData($indexField, $fieldMapping);
+							}
+						} else { // only indicator required, add data
+							$fieldData = $this->getMappedFieldData($indexField, $fieldMapping);
+						}
+					}
+
+					// Found something?
+					if ($fieldData) {
+						if (isset($vocabConfig['detect']) && $vocabConfig['detect']) {
+							$subField2 = $indexField->getSubfield('2');
+							if ($subField2) {
+								$useAsVocabKey = $subField2->getData();
+							}
+						}
+
+						$subjectVocabularies[$useAsVocabKey][$fieldIndex][] = $fieldData;
+						break; // Found vocabulary, stop search
+					}
+				}
 			}
-			if (!empty($field)) {
-				continue;
-			}
+
 		}
-		return $retval;
+
+		return $subjectVocabularies;
 	}
 
 
@@ -867,7 +872,7 @@ class SolrMarc extends VuFindSolrMarc
 	 * Multiple values are possible for the field
 	 *
 	 * @param    Integer        $index
-	 * @return    \File_MARC_Field[]|\File_MARC_List
+	 * @return    \File_MARC_Data_Field[]|\File_MARC_List
 	 */
 	protected function getMarcFields($index)
 	{
