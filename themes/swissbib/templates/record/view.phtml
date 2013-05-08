@@ -12,15 +12,9 @@ if ($this->export()->recordSupportsFormat($this->driver, 'RDF')) {
 	$this->headLink()->appendAlternate($this->recordLink()->getActionUrl($this->driver, 'RDF'), 'application/rdf+xml', 'RDF Representation');
 }
 
-    // Set up breadcrumbs
-//$this->layout()->breadcrumbs = $this->getLastSearchLink($this->transEsc('Search'), '', '<span>&gt;</span>') .
-//	$this->recordLink()->getBreadcrumb($this->driver);
-
-//$lastSearchUrl = VuFind\Search\Memory::retrieve();
-$lastSearchUrl = $this->lastTabbedSearchUri();
+$lastSearchUrl = VuFind\Search\Memory::retrieve();
 
 ?>
-
 <!-- begin: col1 (sidebar)  -->
 <div id="col1" class="sidebar">
 	<div id="col1_content" class="clearfix">
@@ -87,86 +81,3 @@ $lastSearchUrl = $this->lastTabbedSearchUri();
 	</div>
 </div>
 <!-- end: col3 (content) -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<?php return; ?>
-
-<?php /*=========================== DISABLED CONTENT ======================= */ ?>
-
-
-
-<div class="<?=$this->layoutClass('mainbody')?>">
-  <?=$this->record($this->driver)->getToolbar()?>
-
-  <div class="record recordId source<?=$this->escapeHtml($this->driver->getResourceSource())?>" id="record">
-    <input type="hidden" value="<?=$this->escapeHtml($this->driver->getUniqueId())?>" class="hiddenId" id="record_id" />
-    <?=$this->flashmessages()?>
-    <? if (isset($this->scrollData) && ($this->scrollData['previousRecord'] || $this->scrollData['nextRecord'])): ?>
-      <div class="resultscroller">
-        <? if ($this->scrollData['previousRecord']): ?><a href="<?=$this->recordLink()->getUrl($this->scrollData['previousRecord'])?>">&laquo; <?=$this->transEsc('Prev')?></a><? endif; ?>
-        #<?=$this->escapeHtml($this->scrollData['currentPosition']) . ' ' . $this->transEsc('of') . ' ' . $this->escapeHtml($this->scrollData['resultTotal'])?>
-        <? if ($this->scrollData['nextRecord']): ?><a href="<?=$this->recordLink()->getUrl($this->scrollData['nextRecord'])?>"><?=$this->transEsc('Next')?> &raquo;</a><? endif; ?>
-      </div>
-    <? endif; ?>
-    <?=$this->record($this->driver)->getCoreMetadata()?>
-  </div>
-
-  <? if (count($this->tabs) > 0): ?>
-  <div id="tabnav">
-    <ul>
-      <? foreach ($this->tabs as $tab => $obj): ?>
-      <? // Add current tab to breadcrumbs if applicable:
-         $desc = $obj->getDescription();
-         $isCurrent = (strtolower($this->activeTab) == strtolower($tab));
-         if ($isCurrent) {
-             $this->layout()->breadcrumbs .= '<span>&gt;</span><em>' . $this->transEsc($desc) . '</em>';
-             $activeTabObj = $obj;
-         }
-      ?>
-      <li<?=$isCurrent ? ' class="active"' : ''?>>
-        <a href="<?=$this->recordLink()->getTabUrl($this->driver, $tab)?>#tabnav"><?=$this->transEsc($desc)?></a>
-      </li>
-      <? endforeach; ?>
-    </ul>
-    <div class="clear"></div>
-  </div>
-  <? endif; ?>
-
-
-  <div class="recordsubcontent">
-    <?=isset($activeTabObj) ? $this->record($this->driver)->getTab($activeTabObj) : '' ?>
-  </div>
-
-  <span class="Z3988" title="<?=$this->escapeHtml($this->driver->getOpenURL())?>"></span>
-</div>
-
-
-<div class="<?=$this->layoutClass('sidebar')?>">
-<?php /** MORE LIKE THIS BREAKS AT THE MOMENT
-  <? foreach ($this->driver->getRelated() as $current): ?>
-    <?=$this->related($current)?>
-  <? endforeach; ?>
- */ ?>
-</div>
-
-
-<div class="clear"></div>

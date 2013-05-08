@@ -10,6 +10,7 @@
 	    // Set up search box
     $this->layout()->searchboxParams = array(
 		'lookfor'           => $lookFor,
+		'tab'				=> $this->activeTabKey,
 		'searchIndex'       => $this->params->getSearchHandler(),
 		'searchType'        => $this->params->getSearchType(),
 		'searchId'          => $this->results->getSearchId(),
@@ -19,21 +20,13 @@
 		'selectedShards'    => $this->params->getSelectedShards()
     );
 
-      // Set up breadcrumbs
-//    if (isset($this->overrideTitle)) {
-//        $this->layout()->breadcrumbs = '<em>' . $this->escapeHtml($this->overrideTitle) . '</em>';
-//    } else {
-//        $this->layout()->breadcrumbs = '<em>' . $this->transEsc('Search') . ': ' .
-//            $this->escapeHtml($lookfor) . '</em>';
-//    }
 ?>
-
 <!-- begin: col1 (sidebar)  -->
 <div id="col1" class="sidebar">
 	<div id="col1_content" class="clearfix">
 		<!-- begin: sidebar -->
 		<div id="sidebar">
-			<?=$this->render('global/sidebar/search/results.phtml')?>
+			<?=$this->render($this->sidebarTemplate);?>
 		</div>
 		<!-- end: sidebar -->
 	</div>
@@ -47,23 +40,15 @@
 
 			<!-- begin: inlay -->
 			<div id="inlay">
-
-				<!-- begin: tabbed -->
-				<?=$this->render('search/tab-heads.phtml', array('tabs' => $this->tabHeadConfigs))?>
-				<!-- end: tabbed -->
-
-				<!-- begin: notepad -->
-				<?=$this->render('global/notepad.phtml')?>
-				<!-- end: notepad -->
-
+				<?=$this->render('search/results/inlay.phtml');?>
 			</div><!-- end: inlay -->
 
 			<!-- begin: tabbed view -->
-			<?=$this->render('search/result-tabs.phtml')?>
+			<?=$this->render('search/results/content.phtml')?>
 			<!-- end: tabbed view -->
 
 			<!-- begin: pagefunctions -->
-			<?=$this->pageFunctions($this->driver, true, true)?>
+			<?=$this->pageFunctions(null, true, true)?>
 			<!-- end: pagefunctions -->
 
 		</div>

@@ -45,9 +45,6 @@ var swissbib = {
 		this.initModalNBImages(contextMain);
 		this.initAdvancedSearch();
 
-			// Init tabs (if present =after search)
-		this.initTabbed(contextMain);
-
 		this.initHints(contextMain);
 
 		this.initBulkExport();
@@ -137,41 +134,10 @@ var swissbib = {
 
     /**
      * Initializes the tabs.
-	 *
-	  @param	{Element}	ctx		Selector context
+	 * @param	{Element}	ctx		Selector context
      */
     initTabs: function(ctx) {
         $(".tabs").tabs({cookie:{expires:30}});
-    },
-
-
-
-    /**
-     * Initialize "tabbed" elements
-	 *
-	 * @param	{Element}	ctx
-     */
-    initTabbed: function(ctx) {
-		if( !$('#tabbed').is('*') ) {
-			return;
-		}
-
-			// Register already loaded tab: store it's AJAX URL (content, sidebar)
-		var containerIDs= ['content', 'sidebar'];
-
-		$.each(containerIDs, function(index, containerId) {
-			var tabId	= swissbib.getIdSelectedTab();
-			var url		= ''; //sbAjax.getTabbedUrl(tabId, "Tab" + containerId);
-
-			var fieldId	= 'ajaxuri_' + tabId + '_' + containerId;
-			$('#' + containerId + ' .' + tabId).append(
-				swissbib.createHiddenField(fieldId, url)
-			);
-		});
-			// Init "tabbed" containers
-        $("#tabbed").each(function(i, tabbed){
-            $(tabbed).tabbed({"animate":!swissbib.ie});
-        });
     },
 
 

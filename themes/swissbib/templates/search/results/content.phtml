@@ -7,13 +7,15 @@
 
 	$recordTotal= $results->getResultTotal();
 	$lookFor	= $params->getDisplayQuery();
+	$view		= $results->getParams()->getView();
 
 ?>
+<div>
 
-    <h1>
-        <?=$this->number($recordTotal)?> Treffer für ihre Suchanfrage
-        <cite><?=$this->escapeHtml($lookFor)?></cite>
-    </h1>
+	<h1>
+		<?=$this->number($recordTotal)?> Treffer für ihre Suchanfrage
+		<cite><?=$this->escapeHtml($lookFor)?></cite>
+	</h1>
 
 	<?php if($recordTotal): ?>
 		<!-- begin: tools -->
@@ -24,13 +26,13 @@
 			<!-- display -->
 			<?=$this->render('search/controls/limit.phtml')?>
 			<!-- paging -->
-			<?=$this->paginationControl($results->getPaginator(), 'Sliding', 'search/pagination.phtml', array('results' => $results))?>
+			<?=$this->paginationControl($results->getPaginator(), 'Sliding', 'search/pagination.phtml', array('results' => $this->results))?>
 		</div>
 		<!-- end: tools -->
 	<?php endif; ?>
 
 	<!-- data -->
-	<?=$this->render('search/list-' . $results->getParams()->getView() . '.phtml')?>
+	<?=$this->render('search/list-' . $view . '.phtml')?>
 
 	<?php if($recordTotal): ?>
 		<!-- begin: tools -->
@@ -39,3 +41,5 @@
 			<?=$this->partial('search/controls/view.phtml')?>
 		</div><!-- end: tools -->
 	<?php endif; ?>
+
+</div>

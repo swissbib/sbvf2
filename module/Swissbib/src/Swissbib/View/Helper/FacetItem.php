@@ -23,6 +23,6 @@ class FacetItem extends AbstractHelper
 			'type'	=> $facetType
 		);
 
-		return $this->getView()->render('global/sidebar/search/facet.item.phtml', $facetData);
+		return $this->getView()->render('search/sidebar/facet.item.phtml', $facetData);
 	}
 }
