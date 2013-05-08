@@ -27,8 +27,8 @@ $tab				= $searchBoxParams && isset($searchBoxParams['tab']) ? ucfirst($searchBo
 <div id="search" class="<?=$isAdvancedSearch?'advSearch':''?>">
 	<?php if( $isAdvancedSearch ): ?>
 		<div id="advancedSearchJumpNavi">
-			<a href="<?=$this->url($advSearch)?>?edit=<?=$this->escapeHtml($searchBoxParams['searchId'])?>"><?=$this->transEsc("Edit this Advanced Search")?></a> |
-			<a href="<?=$this->url($advSearch)?>"><?=$this->transEsc("Start a new Advanced Search")?></a> |
+			<a href="<?=$this->url($advSearch, array('tab'=>$tab))?>?edit=<?=$this->escapeHtml($searchBoxParams['searchId'])?>"><?=$this->transEsc("Edit this Advanced Search")?></a> |
+			<a href="<?=$this->url($advSearch, array('tab'=>$tab))?>"><?=$this->transEsc("Start a new Advanced Search")?></a> |
 			<a href="<?=$this->url($searchHome)?>"><?=$this->transEsc("Start a new Basic Search")?></a>
 
 			<div class="advSearchQuery">
