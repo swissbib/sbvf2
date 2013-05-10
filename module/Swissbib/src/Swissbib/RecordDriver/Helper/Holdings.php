@@ -777,12 +777,18 @@ class Holdings
 	 */
 	protected function getItemCirculationStatuses($sysNumber)
 	{
-		$circulationStatuses = $this->ils->getDriver()->getCirculationStatus($sysNumber);
-		$data                = array();
+        $data                = array();
+        try {
+            $circulationStatuses = $this->ils->getDriver()->getCirculationStatus($sysNumber);
 
-		foreach ($circulationStatuses as $circulationStatus) {
-			$data[$circulationStatus['barcode']] = $circulationStatus;
-		}
+
+            foreach ($circulationStatuses as $circulationStatus) {
+                $data[$circulationStatus['barcode']] = $circulationStatus;
+            }
+
+        } catch (\Exception $e) {
+            //todo: GH get logging service
+        }
 
 		return $data;
 	}
