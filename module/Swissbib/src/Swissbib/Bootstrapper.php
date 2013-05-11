@@ -114,10 +114,6 @@ class Bootstrapper
 
 
 
-	public function initSwissbibDBs()
-	{
-
-	}
 
 
 
@@ -132,7 +128,7 @@ class Bootstrapper
 
 		// Use naming conventions to set up a bunch of services based on namespace:
 		$namespaces = array(
-			'Db\Table'
+			'Db\Table','Search\Results','Search\Options', 'Search\Params'
 		);
 		foreach ($namespaces as $ns) {
 			$serviceName = 'Swissbib\\' . str_replace('\\', '', $ns) . 'PluginManager';
