@@ -119,7 +119,7 @@ class SearchController extends VFSearchController
 	public function advancedAction()
 	{
 		$allTabsConfig = $this->getThemeTabsConfig();
-		$activeTabKey  = $this->getActiveTab();
+		$activeTabKey  = $this->getActiveTab(false);
 		$viewModel     = parent::advancedAction();
 
 		$viewModel->setVariable('allTabsConfig', $allTabsConfig);
@@ -133,17 +133,17 @@ class SearchController extends VFSearchController
 	/**
 	 * Find active tab
 	 *
-	 * @param	Boolean		$saveCookie		Save active tab as cookie
+	 * @param	Boolean		$useCookie		Check and save active tab as cookie
 	 * @return	String
 	 */
-	protected function getActiveTab($saveCookie = true)
+	protected function getActiveTab($useCookie = true)
 	{
 		if ($this->forceTabKey) {
 			$activeTabKey = $this->forceTabKey;
 		} else {
 			$activeTabKey  = trim(strtolower($this->params()->fromRoute('tab')));
 			$allTabsConfig = $this->getThemeTabsConfig();
-			if (empty($activeTabKey) && isset($_COOKIE['tab'])) {
+			if (empty($activeTabKey) && $useCookie && isset($_COOKIE['tab'])) {
 				$activeTabKey = trim(strtolower($_COOKIE['tab']));
 			}
 			if (empty($activeTabKey) || !isset($allTabsConfig[$activeTabKey])) {
@@ -151,8 +151,8 @@ class SearchController extends VFSearchController
 			}
 		}
 
-		if ($saveCookie) {
-			setcookie('tab', $activeTabKey, strtotime('+1 month'));
+		if ($useCookie) {
+			setcookie('tab', $activeTabKey, strtotime('+1 month'), '/');
 		}
 
 		return $activeTabKey;
