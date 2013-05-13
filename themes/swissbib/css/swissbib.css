@@ -178,6 +178,10 @@ div.facets fieldset#publishDateSlider {
 	margin:0 0 0 5px;
 }
 
+.facets label {
+	cursor:pointer;
+}
+
 /** ------------ facet: checkbox ------------ */
 #facet_checkbox ul li label {
 	color:#fff;

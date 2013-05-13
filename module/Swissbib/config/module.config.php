@@ -3,6 +3,7 @@ namespace Swissbib\Module\Config;
 
 use Zend\Config\Config;
 
+use Swissbib\TargetsProxy\TargetsProxy;
 use Swissbib\Libadmin\Importer;
 use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
 use Swissbib\View\Helper\InstitutionSorter;
@@ -110,6 +111,11 @@ return array(
 				$translator		= $sm->get('VuFind\Translator');
 
 				return new HoldingsHelper($ilsConnection, $hmac, $authManager, $config, $translator);
+			},
+			'Swissbib\TargetsProxy\TargetsProxy' => function ($sm) {
+				$config        = $sm->get('VuFind\Config')->get('TargetsProxy')->get('TargetsProxy');
+
+				return new TargetsProxy($config);
 			},
 			'Swissbib\Libadmin\Importer' => function ($sm) {
 				$config        = $sm->get('VuFind\Config')->get('config')->Libadmin;
