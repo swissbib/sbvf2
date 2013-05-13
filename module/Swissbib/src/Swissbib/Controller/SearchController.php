@@ -21,8 +21,10 @@ class SearchController extends VFSearchController
 	 */
 	protected $forceTabKey = false;
 
-
-    protected $extendedTargets = array();
+	/**
+	 * @var	Array
+	 */
+	protected $extendedTargets = array();
 
 	/**
 	 * (Default Action) Get model for home view
@@ -47,7 +49,6 @@ class SearchController extends VFSearchController
 	 */
 	public function resultsAction()
 	{
-
         $tExtended = $this->getServiceLocator()->get('Vufind\Config')->get('config')->Index->extendedTargets;
 
         if (!empty($tExtended)) {
@@ -180,10 +181,13 @@ class SearchController extends VFSearchController
 		return $this->getServiceLocator()->get('Vufind\Config')->get('config')->Site->theme;
 	}
 
-    protected function getResultsManager()
+
+
+	/**
+	 * @return array|object|\VuFind\Search\Results\PluginManager
+	 */
+	protected function getResultsManager()
     {
-
-
         if (!empty($this->extendedTargets)  && in_array(strtolower($this->searchClassId),$this->extendedTargets)) {
             return $this->getServiceLocator()->get('Swissbib\SearchResultsPluginManager');
         } else {
