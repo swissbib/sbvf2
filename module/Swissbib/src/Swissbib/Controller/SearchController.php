@@ -58,22 +58,11 @@ class SearchController extends VFSearchController
             });
         }
 
-        //$this->extendedTargets
+		$allTabsConfig	= $this->getThemeTabsConfig();
 
-		$allTabsConfig  	= $this->getThemeTabsConfig();
-		$activeTabKey   	 = trim(strtolower($this->params()->fromRoute('tab')));
 		$resultsFacetConfig	= $this->getServiceLocator()->get('VuFind\Config')->get('facets')->get('Results_Settings');
 
-		if ($this->forceTabKey) {
-			$activeTabKey = $this->forceTabKey;
-		} else {
-			if (empty($activeTabKey) && isset($_COOKIE['tab'])) {
-				$activeTabKey = trim(strtolower($_COOKIE['tab']));
-			}
-			if (empty($activeTabKey) || !isset($allTabsConfig[$activeTabKey])) {
-				$activeTabKey = key($allTabsConfig);
-			}
-		}
+		$activeTabKey 	= $this->getActiveTabKey($allTabsConfig);
 		$activeTabConfig = $allTabsConfig[$activeTabKey];
 
 		setcookie('tab', $activeTabKey, strtotime('+1 month'));
@@ -96,6 +85,31 @@ class SearchController extends VFSearchController
 		$resultViewModel->setVariable('sidebarTemplate', $sideBarTemplate);
 
 		return $resultViewModel;
+	}
+
+
+	/**
+	 * Get key of active tab
+	 * Fallback strategy: Extract tab key from route / forced key (if) / cookie / first configured
+	 *
+	 * @param	Array	$allTabsConfig
+	 * @return	String
+	 */
+	private function getActiveTabKey($allTabsConfig) {
+		$activeTabKey	= trim(strtolower($this->params()->fromRoute('tab')));
+
+		if ($this->forceTabKey) {
+			$activeTabKey = $this->forceTabKey;
+		} else {
+			if (empty($activeTabKey) && isset($_COOKIE['tab'])) {
+				$activeTabKey = trim(strtolower($_COOKIE['tab']));
+			}
+			if (empty($activeTabKey) || !isset($allTabsConfig[$activeTabKey])) {
+				$activeTabKey = isset($allTabsConfig) ? key($allTabsConfig) : '';
+			}
+		}
+
+		return $activeTabKey;
 	}
 
 
