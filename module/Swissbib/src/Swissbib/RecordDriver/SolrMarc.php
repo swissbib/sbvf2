@@ -584,6 +584,14 @@ class SolrMarc extends VuFindSolrMarc
 	 * Get structured subject vacabularies from predefined fields
 	 * Extended version of getAllSubjectHeadings()
 	 *
+	 * $fieldIndexes contains keys of fields to check
+	 * $vocabConfigs contains checks for vocabulary detection
+	 *
+	 * $vocabConfigs:
+	 * - ind: Value for indicator 2 in tag
+	 * - field: sub field 2 in tag
+	 * - detect: The vocabulary key is defined in sub field 2. Don't use the key in the config (only used for local)
+	 *
 	 * @see	getAllSubjectHeadings
 	 * @return	Array[]
 	 */
@@ -611,7 +619,7 @@ class SolrMarc extends VuFindSolrMarc
 			),
 			'local'       => array(
 				'ind'    => 7,
-				'detect' => true
+				'detect' => true // extract vocabulary from sub field 2
 			)
 		);
 		$fieldMapping        = array(
@@ -629,10 +637,13 @@ class SolrMarc extends VuFindSolrMarc
 			'2' => '2'
 		);
 
+			// Iterate over all indexes to check the available fields
 		foreach ($fieldIndexes as $fieldIndex) {
 			$indexFields = $this->getMarcFields($fieldIndex);
 
+				// iterate over all fields found for the current index
 			foreach ($indexFields as $indexField) {
+					// check all vocabularies for matching
 				foreach ($vocabConfigs as $vocabKey => $vocabConfig) {
 					$fieldData     = false;
 					$useAsVocabKey = $vocabKey;
@@ -641,6 +652,7 @@ class SolrMarc extends VuFindSolrMarc
 						if (isset($vocabConfig['field'])) { // is there a field check required?
 							$subField2 = $indexField->getSubfield('2');
 							if ($subField2 && $subField2->getData() === $vocabConfig['field']) { // Check field
+									// sub field 2 matches the config
 								$fieldData = $this->getMappedFieldData($indexField, $fieldMapping);
 							}
 						} else { // only indicator required, add data
@@ -648,8 +660,9 @@ class SolrMarc extends VuFindSolrMarc
 						}
 					}
 
-					// Found something?
+					// Found something? Add to list, stop vocab check and proceed with next field
 					if ($fieldData) {
+							// Is detect option set, replace vocab key with value from sub field 2 if present
 						if (isset($vocabConfig['detect']) && $vocabConfig['detect']) {
 							$subField2 = $indexField->getSubfield('2');
 							if ($subField2) {
@@ -662,7 +675,6 @@ class SolrMarc extends VuFindSolrMarc
 					}
 				}
 			}
-
 		}
 
 		return $subjectVocabularies;
