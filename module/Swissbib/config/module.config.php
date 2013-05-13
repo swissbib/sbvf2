@@ -38,18 +38,6 @@ return array(
 					)
 				)
 			),
-				// Advanced search results with tab
-			'search-advanced' => array(
-				'type' => 'segment',
-				'options' => array(
-					'route'    => '/Search/Advanced[/:tab]',
-					'defaults' => array(
-						'controller' => 'Search',
-						'action'     => 'advanced',
-						'tab'		 => 'swissbib'
-					)
-				)
-			),
 			// (local) Search User Settings
 			'search-settings'     => array(
 				'type'    => 'Zend\Mvc\Router\Http\Literal',
@@ -267,12 +255,14 @@ return array(
 				'swissbib' => array(
 					'searchClassId' => 'Solr',			// VuFind searchClassId
 					'label'			=> 'tab.swissbib',	// Label
-					'type'			=> 'swissbibsolr'	// Key for custom templates
+					'type'			=> 'swissbibsolr',	// Key for custom templates
+					'advSearch'		=> 'search-advanced'
 				),
 				'summon' => array(
 					'searchClassId' => 'Summon',
 					'label'			=> 'tab.summon',
-					'type'			=> 'summon'
+					'type'			=> 'summon',
+					'advSearch'		=> 'summon-advanced'
 				)
 			)
 		)

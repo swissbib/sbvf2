@@ -106,7 +106,7 @@
 	width: 480px;
 }
 
-#advSearchForm #publishDateSlider {
+#advSearchForm .dateSlider {
 	margin-top: 5px;
 	width: 450px;
 	background-repeat: repeat-x;

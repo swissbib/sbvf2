@@ -1,8 +1,7 @@
 <?php
 
 /** @var VuFind\Search\Solr\Options	 $options  */
-$options 		= $this->searchOptions();
-
+$options 		= $this->searchOptions($this->searchClassId);
 $lastSort		= $options->getLastSort();
 $lastLimit		= $options->getLastLimit();
 $basicSearch	= $options->getSearchAction();
@@ -46,7 +45,7 @@ $tab				= $searchBoxParams && isset($searchBoxParams['tab']) ? ucfirst($searchBo
 			<input type="submit" class="submit primary" id="search_submit" value="<?=$this->transEsc('Find')?>"/>
 			<label for="search_favorites" class="checker">Nur in Favoriten</label>
 			<input type="checkbox" class="hidden" id="search_favorites" name="search_favorites" />
-			<a href="<?=$this->url('search-advanced', array('tab'=>$tab))?>" title="<?=$this->transEsc('Advanced Search')?>" id="search_extended"><?=$this->transEsc('Advanced Search')?></a>
+			<a href="<?=$this->url($advSearch)?>" title="<?=$this->transEsc('Advanced Search')?>" id="search_extended"><?=$this->transEsc('Advanced Search')?></a>
 
 			<?php /* Load hidden limit preference from Session */ ?>
 			<?php if( !empty($lastLimit)): ?>

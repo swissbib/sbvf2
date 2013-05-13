@@ -28,7 +28,7 @@ swissbib.AdvancedSearch = {
 	 * @return	{Boolean}
 	 */
 	isInAdvancedSearch: function() {
-		return location.pathname.indexOf('/Search/Advanced') >= 0;
+		return location.pathname.indexOf('/Advanced') >= 0;
 	},
 
 
