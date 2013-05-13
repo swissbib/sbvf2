@@ -9,7 +9,8 @@ $detailLink		= $this->recordLink()->getUrl($resultItem);
 //$title			= $resultItem->getShortTitle();
 $title			= $this->mainTitle($resultItem->getShortTitle());
 $edition		= $resultItem->getEdition();
-$publicationDate= $this->publicationDateMarc($resultItem->getPublicationDates())
+$publicationDate= $this->publicationDateMarc($resultItem->getPublicationDates());
+$groupID				= $resultItem->getGroup(true);
 
 ?>
 
@@ -54,8 +55,12 @@ $publicationDate= $this->publicationDateMarc($resultItem->getPublicationDates())
 		<div class="format">
 			<?=$viewRecord->getFormatList()?>
         <!-- <h6 class="icon_format_book">Buch</h6> -->
-            <?php if(!empty($groupID)): ?>
-                <a href="#frbr.html" class="linkbutton icon_show" title="<?=$this->transEsc('FRBR_Button')?>">
+            <?php if(!empty($groupID) && !strcmp($results->getParams()->getSearchHandler(),'FRBR') == 0   ) : ?>
+
+
+
+
+                <a href="<?= $this->url($results->getOptions()->getSearchAction()) .  "?lookfor=" . $groupID . "&type=FRBR&limit=" . $results->getParams()->getLimit()  ?>" class="linkbutton icon_show" title="<?=$this->transEsc('FRBR_Button')?>">
 					<span><?=$this->transEsc('FRBR_Button')?></span>
 				</a>
             <?php endif; ?>

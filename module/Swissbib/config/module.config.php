@@ -231,6 +231,18 @@ return array(
 					'userlocaldata' => 'Swissbib\Db\Table\UserLocalData',
 				),
 			),
+
+            'search_options' => array(
+                'abstract_factories' => array('Swissbib\Search\Options\PluginFactory'),
+            ),
+            'search_params' => array(
+                'abstract_factories' => array('Swissbib\Search\Params\PluginFactory'),
+            ),
+
+            'search_results' => array(
+                'abstract_factories' => array('Swissbib\Search\Results\PluginFactory'),
+            ),
+
 		),
 		// Search result tabs
 		'resultTabs' => array(
