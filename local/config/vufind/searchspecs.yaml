@@ -242,7 +242,7 @@ JournalTitle:
 
 FRBR:
   QueryFields:
-    sfrbr:
+    group_id:
       - [onephrase, 750]
 
 
