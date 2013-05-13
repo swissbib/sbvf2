@@ -1,5 +1,5 @@
-<?
-	// Set page title.
+<?php
+// Set page title.
 $this->headTitle($this->translate('Description') . ': ' . $this->driver->getBreadcrumb());
 
 // Grab clean ISBN for convenience:
@@ -10,6 +10,9 @@ if ($this->syndeticsPlus()->isActive()) {
     $this->headScript()->appendFile($this->syndeticsPlus()->getScript());
 }
 
+$resultItem	= $this->driver;
+$subjectVocabularies	= $resultItem->getAllSubjectVocabularies();
+$subjects = $this->driver->getAllSubjectHeadings();
 ?>
 
 
@@ -24,7 +27,6 @@ if ($this->syndeticsPlus()->isActive()) {
 <h4>diverse 500</h4>
 <p>diverse 500</p>
 
-    <? $subjectHeadings = $this->driver->getAllSubjectHeadings() ?>
-    <? if (sizeof($subjectHeadings) > 0) :?>
-    <?=$subjectHeadingsDisplay = $this->subjectHeadingFormatter($subjectHeadings); ?>
-    <? endif; ?>
+<?php if(sizeof($subjectVocabularies)): ?>
+    <?=$this->subjectVocabularies($subjectVocabularies)?>
+<?php endif; ?>
