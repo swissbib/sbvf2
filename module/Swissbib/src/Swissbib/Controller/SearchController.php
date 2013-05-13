@@ -1,6 +1,7 @@
 <?php
 namespace Swissbib\Controller;
 
+use Swissbib\Libadmin\Exception\Exception;
 use VuFind\Controller\SearchController as VFSearchController;
 use Zend\Config\Config;
 use Zend\Session\Container as SessionContainer;
@@ -8,6 +9,7 @@ use VuFind\Search\Memory as VFMemory;
 
 use Swissbib\Controller\Helper\Search as SearchHelper;
 use Zend\View\Resolver\ResolverInterface;
+use Swissbib\TargetsProxy\TargetsProxy;
 
 /**
  * @package       Swissbib
@@ -52,19 +54,46 @@ class SearchController extends VFSearchController
         $tExtended = $this->getServiceLocator()->get('Vufind\Config')->get('config')->Index->extendedTargets;
 
         if (!empty($tExtended)) {
-            $this->extendedTargets = explode(",", $tExtended);
+            $this->extendedTargets = explode(',', $tExtended);
 
             array_walk($this->extendedTargets, function(&$v) {
                 $v = strtolower($v);
             });
         }
 
+		$vfConfig			= $this->getServiceLocator()->get('VuFind\Config');
+		$resultsFacetConfig	= $vfConfig->get('facets')->get('Results_Settings');
+
 		$allTabsConfig	= $this->getThemeTabsConfig();
-
-		$resultsFacetConfig	= $this->getServiceLocator()->get('VuFind\Config')->get('facets')->get('Results_Settings');
-
 		$activeTabKey 	= $this->getActiveTabKey($allTabsConfig);
+
 		$activeTabConfig = $allTabsConfig[$activeTabKey];
+
+
+
+		/**
+		 * Detect target to switch to according to proxy configuration
+		 */
+		/** @var	\Zend\Config\Config	$proxyConfig */
+		$proxyConfig	= $vfConfig->get('TargetsProxy')->get('TargetsProxy');	// file + section
+		$proxyTabKey	= $proxyConfig->get('tabkey');
+
+		if( $activeTabKey === $proxyTabKey ) {
+			/** @var	TargetsProxy	$targetsProxy */
+			try {
+				$targetsProxy = $this->getServiceLocator()->get('Swissbib\TargetsProxy\TargetsProxy');
+				$targetConfig = $targetsProxy->getTarget();
+			} catch (Exception $e) {
+					// handle exceptions
+				echo "- Fatal error\n";
+				echo "- Stopped with exception: " . get_class($e) . "\n";
+				echo "====================================================================\n";
+				echo $e->getMessage() . "\n";
+				echo $e->getPrevious()->getMessage() . "\n";
+
+				return false;
+			}
+		}
 
 		setcookie('tab', $activeTabKey, strtotime('+1 month'));
 
