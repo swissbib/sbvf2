@@ -67,7 +67,7 @@ class SearchController extends VFSearchController
 		$resultsFacetConfig = $this->getFacetConfig();
 		$activeTabConfig    = $allTabsConfig[$activeTabKey];
 
-		$vfConfig			= $this->getServiceLocator()->get('VuFind\Config');
+		$vfConfig	= $this->getServiceLocator()->get('VuFind\Config');
 
 		/**
 		 * Detect target to switch to according to proxy configuration
