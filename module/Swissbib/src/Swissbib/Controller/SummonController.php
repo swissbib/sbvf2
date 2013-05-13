@@ -4,6 +4,8 @@ namespace Swissbib\Controller;
 
 use Zend\Session\Container as SessionContainer;
 
+use VuFind\Solr\Utils as SolrUtils;
+
 use Swissbib\Controller\Helper\Search as SearchHelper;
 use Swissbib\Controller\SearchController;
 
@@ -17,28 +19,9 @@ class SummonController extends SearchController
 	{
 		$this->useResultScroller = false;
 		$this->forceTabKey       = 'summon';
+		$this->searchClassId	 = 'Summon';
 
 		parent::__construct();
-	}
-
-
-
-	/**
-	 * Handle an advanced search
-	 *
-	 * @return mixed
-	 */
-	public function advancedAction()
-	{
-		// Standard setup from base class:
-		$view = parent::advancedAction();
-
-		// Set up facet information:
-		$view->facetList = $this->processAdvancedFacets(
-			$this->getAdvancedFacets()->getFacetList(), $view->saved
-		);
-
-		return $view;
 	}
 
 
@@ -65,6 +48,40 @@ class SummonController extends SearchController
 	public function searchAction()
 	{
 		return $this->resultsAction();
+	}
+
+
+
+	/**
+	 * Get date range settings for summon
+	 * Field is named PublicationDate instead publishDate
+	 *
+	 * @param	Boolean		$savedSearch
+	 * @return	Array
+	 */
+	protected function getDateRangeSettings($savedSearch = false)
+	{
+		// Default to blank strings:
+		$from = $to = '';
+
+		// Check to see if there is an existing range in the search object:
+		if ($savedSearch) {
+			$filters = $savedSearch->getParams()->getFilters();
+			if (isset($filters['PublicationDate'])) {
+				foreach ($filters['PublicationDate'] as $current) {
+					if ($range = SolrUtils::parseRange($current)) {
+						$from = $range['from'] == '*' ? '' : $range['from'];
+						$to = $range['to'] == '*' ? '' : $range['to'];
+						$savedSearch->getParams()
+							->removeFilter('PublicationDate:' . $current);
+						break;
+					}
+				}
+			}
+		}
+
+		// Send back the settings:
+		return array($from, $to);
 	}
 
 

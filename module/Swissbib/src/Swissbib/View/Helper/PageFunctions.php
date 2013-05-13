@@ -20,7 +20,7 @@ class PageFunctions extends AbstractHelper
 	 * @param    Boolean         $addBulkExport
 	 * @return    String
 	 */
-	public function __invoke($driver, $offset = true, $addBulkExport = false)
+	public function __invoke($driver = null, $offset = true, $addBulkExport = false)
 	{
 		$data = array(
 			'boxClass' => $offset ? 'offset' : '',

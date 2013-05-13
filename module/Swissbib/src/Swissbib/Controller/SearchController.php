@@ -1,14 +1,15 @@
 <?php
 namespace Swissbib\Controller;
 
-use Swissbib\Libadmin\Exception\Exception;
-use VuFind\Controller\SearchController as VFSearchController;
 use Zend\Config\Config;
 use Zend\Session\Container as SessionContainer;
+use Zend\View\Model\ViewModel;
+use Zend\View\Resolver\ResolverInterface;
+
+use VuFind\Controller\SearchController as VFSearchController;
 use VuFind\Search\Memory as VFMemory;
 
 use Swissbib\Controller\Helper\Search as SearchHelper;
-use Zend\View\Resolver\ResolverInterface;
 use Swissbib\TargetsProxy\TargetsProxy;
 
 /**
@@ -53,38 +54,35 @@ class SearchController extends VFSearchController
 	{
         $tExtended = $this->getServiceLocator()->get('Vufind\Config')->get('config')->Index->extendedTargets;
 
-        if (!empty($tExtended)) {
-            $this->extendedTargets = explode(',', $tExtended);
+		if (!empty($tExtended)) {
+			$this->extendedTargets = explode(",", $tExtended);
 
-            array_walk($this->extendedTargets, function(&$v) {
-                $v = strtolower($v);
-            });
-        }
+			array_walk($this->extendedTargets, function (&$v) {
+				$v = strtolower($v);
+			});
+		}
+
+		$allTabsConfig      = $this->getThemeTabsConfig();
+		$activeTabKey       = $this->getActiveTab();
+		$resultsFacetConfig = $this->getFacetConfig();
+		$activeTabConfig    = $allTabsConfig[$activeTabKey];
 
 		$vfConfig			= $this->getServiceLocator()->get('VuFind\Config');
-		$resultsFacetConfig	= $vfConfig->get('facets')->get('Results_Settings');
-
-		$allTabsConfig	= $this->getThemeTabsConfig();
-		$activeTabKey 	= $this->getActiveTabKey($allTabsConfig);
-
-		$activeTabConfig = $allTabsConfig[$activeTabKey];
-
-
 
 		/**
 		 * Detect target to switch to according to proxy configuration
 		 */
-		/** @var	\Zend\Config\Config	$proxyConfig */
-		$proxyConfig	= $vfConfig->get('TargetsProxy')->get('TargetsProxy');	// file + section
-		$proxyTabKey	= $proxyConfig->get('tabkey');
+		/** @var \Zend\Config\Config $proxyConfig */
+		$proxyConfig = $vfConfig->get('TargetsProxy')->get('TargetsProxy'); // file + section
+		$proxyTabKey = $proxyConfig->get('tabkey');
 
-		if( $activeTabKey === $proxyTabKey ) {
-			/** @var	TargetsProxy	$targetsProxy */
+		if ($activeTabKey === $proxyTabKey) {
+			/** @var TargetsProxy $targetsProxy */
 			try {
 				$targetsProxy = $this->getServiceLocator()->get('Swissbib\TargetsProxy\TargetsProxy');
 				$targetConfig = $targetsProxy->getTarget();
-			} catch (Exception $e) {
-					// handle exceptions
+			} catch (\Exception $e) {
+				// handle exceptions
 				echo "- Fatal error\n";
 				echo "- Stopped with exception: " . get_class($e) . "\n";
 				echo "====================================================================\n";
@@ -95,9 +93,6 @@ class SearchController extends VFSearchController
 			}
 		}
 
-		setcookie('tab', $activeTabKey, strtotime('+1 month'));
-
-
 		$this->searchClassId = $activeTabConfig['searchClassId'];
 		$resultViewModel     = parent::resultsAction();
 
@@ -106,37 +101,58 @@ class SearchController extends VFSearchController
 
 		$this->layout()->setVariable('resultViewParams', $resultViewModel->getVariable('params'));
 
-		$sideBarTemplate	= $this->getTabTemplate($activeTabConfig['type'], 'search/sidebar/results');
-
 		$resultViewModel->setVariable('allTabsConfig', $allTabsConfig);
 		$resultViewModel->setVariable('activeTabKey', $activeTabKey);
 		$resultViewModel->setVariable('activeTabConfig', $activeTabConfig);
 		$resultViewModel->setVariable('facetsConfig', $resultsFacetConfig);
-		$resultViewModel->setVariable('sidebarTemplate', $sideBarTemplate);
 
 		return $resultViewModel;
 	}
 
 
+
 	/**
-	 * Get key of active tab
-	 * Fallback strategy: Extract tab key from route / forced key (if) / cookie / first configured
+	 * Render advanced search
 	 *
-	 * @param	Array	$allTabsConfig
+	 * @return	ViewModel
+	 */
+	public function advancedAction()
+	{
+		$allTabsConfig = $this->getThemeTabsConfig();
+		$activeTabKey  = $this->getActiveTab();
+		$viewModel     = parent::advancedAction();
+
+		$viewModel->setVariable('allTabsConfig', $allTabsConfig);
+		$viewModel->setVariable('activeTabKey', $activeTabKey);
+
+		return $viewModel;
+	}
+
+
+
+	/**
+	 * Find active tab
+	 *
+	 * @param	Boolean		$saveCookie		Save active tab as cookie
 	 * @return	String
 	 */
-	private function getActiveTabKey($allTabsConfig) {
-		$activeTabKey	= trim(strtolower($this->params()->fromRoute('tab')));
-
+	protected function getActiveTab($saveCookie = true)
+	{
 		if ($this->forceTabKey) {
 			$activeTabKey = $this->forceTabKey;
 		} else {
+			$activeTabKey  = trim(strtolower($this->params()->fromRoute('tab')));
+			$allTabsConfig = $this->getThemeTabsConfig();
 			if (empty($activeTabKey) && isset($_COOKIE['tab'])) {
 				$activeTabKey = trim(strtolower($_COOKIE['tab']));
 			}
 			if (empty($activeTabKey) || !isset($allTabsConfig[$activeTabKey])) {
-				$activeTabKey = isset($allTabsConfig) ? key($allTabsConfig) : '';
+				$activeTabKey = key($allTabsConfig);
 			}
+		}
+
+		if ($saveCookie) {
+			setcookie('tab', $activeTabKey, strtotime('+1 month'));
 		}
 
 		return $activeTabKey;
@@ -213,16 +229,43 @@ class SearchController extends VFSearchController
 
 
 	/**
+	 * Get base view model
+	 * Inject search class id into layout
+	 *
+	 * @param	Array|null	$params
+	 * @return	ViewModel
+	 */
+	protected function createViewModel($params = null)
+	{
+		$this->layout()->setVariable('searchClassId', $this->searchClassId);
+
+		return parent::createViewModel($params);
+	}
+
+
+
+	/**
+	 * Get facet config
+	 *
+	 * @return	Config
+	 */
+	protected function getFacetConfig()
+	{
+		return $this->getServiceLocator()->get('VuFind\Config')->get('facets')->get('Results_Settings');
+	}
+
+
+
+	/**
+	 *
 	 * @return array|object|\VuFind\Search\Results\PluginManager
 	 */
 	protected function getResultsManager()
-    {
-        if (!empty($this->extendedTargets)  && in_array(strtolower($this->searchClassId),$this->extendedTargets)) {
-            return $this->getServiceLocator()->get('Swissbib\SearchResultsPluginManager');
-        } else {
-            return parent::getResultsManager();
-        }
-
-    }
-
+	{
+		if (!empty($this->extendedTargets) && in_array(strtolower($this->searchClassId), $this->extendedTargets)) {
+			return $this->getServiceLocator()->get('Swissbib\SearchResultsPluginManager');
+		} else {
+			return parent::getResultsManager();
+		}
+	}
 }
