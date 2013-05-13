@@ -3,6 +3,7 @@ namespace Swissbib\Module\Config;
 
 use Zend\Config\Config;
 
+use Swissbib\TargetsProxy\TargetsProxy;
 use Swissbib\Libadmin\Importer;
 use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
 use Swissbib\View\Helper\InstitutionSorter;
@@ -34,18 +35,6 @@ return array(
 					'defaults' => array(
 						'controller' => 'Search',
 						'action'     => 'results'
-					)
-				)
-			),
-				// Advanced search results with tab
-			'search-advanced' => array(
-				'type' => 'segment',
-				'options' => array(
-					'route'    => '/Search/Advanced[/:tab]',
-					'defaults' => array(
-						'controller' => 'Search',
-						'action'     => 'advanced',
-						'tab'		 => 'swissbib'
 					)
 				)
 			),
@@ -110,6 +99,11 @@ return array(
 				$translator		= $sm->get('VuFind\Translator');
 
 				return new HoldingsHelper($ilsConnection, $hmac, $authManager, $config, $translator);
+			},
+			'Swissbib\TargetsProxy\TargetsProxy' => function ($sm) {
+				$config        = $sm->get('VuFind\Config')->get('TargetsProxy')->get('TargetsProxy');
+
+				return new TargetsProxy($config);
 			},
 			'Swissbib\Libadmin\Importer' => function ($sm) {
 				$config        = $sm->get('VuFind\Config')->get('config')->Libadmin;
@@ -261,12 +255,14 @@ return array(
 				'swissbib' => array(
 					'searchClassId' => 'Solr',			// VuFind searchClassId
 					'label'			=> 'tab.swissbib',	// Label
-					'type'			=> 'swissbibsolr'	// Key for custom templates
+					'type'			=> 'swissbibsolr',	// Key for custom templates
+					'advSearch'		=> 'search-advanced'
 				),
 				'summon' => array(
 					'searchClassId' => 'Summon',
 					'label'			=> 'tab.summon',
-					'type'			=> 'summon'
+					'type'			=> 'summon',
+					'advSearch'		=> 'summon-advanced'
 				)
 			)
 		)

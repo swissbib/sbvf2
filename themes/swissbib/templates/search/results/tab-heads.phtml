@@ -1,6 +1,9 @@
 <?php
-$lookFor = $this->params->getDisplayQuery();
-$lookForQuery = $lookFor ? '?lookfor=' . $this->escapeHtml($lookFor) : '';
+use VuFindSearch\Query\Query;
+
+$query			= $this->params->getQuery();
+$lookFor		= $query instanceof Query ? $query->getString() : '';
+$lookForQuery	= $lookFor ? '?lookfor=' . $this->escapeHtml($lookFor) : '';
 ?>
 <div id="tabbed" rel="catalog">
 	<ul>
