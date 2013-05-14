@@ -16,6 +16,7 @@ class SubjectVocabularies extends AbstractHelper
 	 * @param    Array        $subjectVocabularies
 	 * @return   String
 	 */
+
 	public function __invoke(array $subjectVocabularies)
 	{
         foreach ($subjectVocabularies as $vocab => $subjectVocabulary) {
@@ -23,6 +24,7 @@ class SubjectVocabularies extends AbstractHelper
                 case 'gnd':
                     $gndtitle = '<h4>gnd</h4>';
                     foreach ($subjectVocabulary as $fields) {
+                        $subject = '';
                         foreach ($fields as $field) {
                             //if (!is_numeric($field->getKey()));
                         };
@@ -34,13 +36,13 @@ class SubjectVocabularies extends AbstractHelper
                 case 'mesh':
                     $meshtitle = '<h4>MESH</h4>';
                     break;
-                // to be continued
                 case 'bisacsh':
                     $bisacshtitle = '<h4>bisacsh</h4>';
                     break;
                 case 'ids zbz':
-                    $idszbztitle = '<h4>IDS ZB Z&uuml;rich</h4>';
+                    $idszbztitle = '<h4>ZBZ-Schlagworte</h4>';
                     break;
+                // to be continued
             }
             continue;
         }
