@@ -30,3 +30,19 @@ $subjects = $this->driver->getAllSubjectHeadings();
 <?php if(sizeof($subjectVocabularies)): ?>
     <?=$this->subjectVocabularies($subjectVocabularies)?>
 <?php endif; ?>
+
+<? $subjects = $this->driver->getAllSubjectHeadings(); if (!empty($subjects)): ?>
+
+<h4><?=$this->transEsc('Subjects')?>: </h4>
+<? foreach ($subjects as $field): ?>
+    <? $subject = ''; ?>
+    <p>
+    <? $i = 0; foreach ($field as $subfield): ?>
+            <?=($i++ == 0) ? '' : ' &gt; '?>
+        <? $subject = trim($subject . ' ' . $subfield); ?>
+        <?=$this->escapeHtml($subfield)?>
+        <? endforeach; ?>
+    </p>
+    <? endforeach; ?>
+
+<? endif; ?>
