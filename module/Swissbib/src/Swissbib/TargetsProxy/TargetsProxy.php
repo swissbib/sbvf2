@@ -107,7 +107,7 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 	/**
 	 * @return \Zend\Uri\Http
 	 */
-	public function getClientUri()
+	public function getClientUrl()
 	{
 		return $this->clientUri;
 	}
@@ -167,9 +167,13 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 
 			// Check whether the current IP address matches against any of the configured targets' IP / sub domain patterns
 		$ipAddress	= $this->getClientIpV6();
+		$url		= $this->getClientUrl();
 
 		$vfConfig	= $this->getServiceLocator()->get('VuFind\Config');
+
 		$IpMatcher	= new IpMatcher();
+		$UrlMatcher	= new UrlMatcher();
+
 		foreach($targetKeys as $targetKey) {
 			/** @var	\Zend\Config\Config	$targetConfig */
 			$targetConfig		= $vfConfig->get('TargetsProxy')->get($targetKey);
@@ -177,12 +181,20 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 			$ipPatterns	= $targetConfig->get('patterns_ip');
 			if( !empty($ipPatterns) ) {
 				$targetPatternsIp	= explode(',', $ipPatterns);
-				$isMatching	= $IpMatcher->isMatching($ipAddress, $targetPatternsIp);
-
-//				echo 'ip lottery... ' . ($isMatching ? 'WE HAVE A WINNER' : 'YOU LOSE');
+				$isMatchingIP	= $IpMatcher->isMatching($ipAddress, $targetPatternsIp);
 			}
 
-//			$targetPatternsUrl	= explode(',', $targetConfig->get('patterns_url'));
+			$urlPatterns	= $targetConfig->get('patterns_url');
+			if( !empty($ipPatterns) ) {
+				$targetPatternsUrl	= explode(',', $urlPatterns);
+				$isMatchingUrl		= $UrlMatcher->isMatching($url->getHost(), $targetPatternsUrl);
+			}
+
+			if(     (empty($ipPatterns) || $isMatchingIP === true)
+				 && (empty($urlPatterns) || $isMatchingUrl === true) ) {
+				// Matching target config detected
+				echo 'matched: ' . $targetKey;
+			}
 		}
 
 		return array();
