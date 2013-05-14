@@ -19,15 +19,13 @@ if( $resultViewParams ) {
 }
 
 $isAdvancedSearch	= $searchBoxParams && $searchBoxParams['searchType'] == 'advanced';
-$tab				= $searchBoxParams && isset($searchBoxParams['tab']) ? ucfirst($searchBoxParams['tab']) : null;
 
 ?>
-
 <div id="search" class="<?=$isAdvancedSearch?'advSearch':''?>">
 	<?php if( $isAdvancedSearch ): ?>
 		<div id="advancedSearchJumpNavi">
-			<a href="<?=$this->url($advSearch, array('tab'=>$tab))?>?edit=<?=$this->escapeHtml($searchBoxParams['searchId'])?>"><?=$this->transEsc("Edit this Advanced Search")?></a> |
-			<a href="<?=$this->url($advSearch, array('tab'=>$tab))?>"><?=$this->transEsc("Start a new Advanced Search")?></a> |
+			<a href="<?=$this->url($advSearch)?>?edit=<?=$this->escapeHtml($searchBoxParams['searchId'])?>"><?=$this->transEsc("Edit this Advanced Search")?></a> |
+			<a href="<?=$this->url($advSearch)?>"><?=$this->transEsc("Start a new Advanced Search")?></a> |
 			<a href="<?=$this->url($searchHome)?>"><?=$this->transEsc("Start a new Basic Search")?></a>
 
 			<div class="advSearchQuery">
@@ -36,7 +34,7 @@ $tab				= $searchBoxParams && isset($searchBoxParams['tab']) ? ucfirst($searchBo
 		</div>
 
 	<?php else: ?>
-		<form id="form_search" name="form_search" action="<?=$this->url('search-results', array('tab'=>$tab))?>" method="get">
+		<form id="form_search" name="form_search" action="<?=$this->url($basicSearch)?>" method="get">
 			<h3>
                 <label for="lookfor"><?=$this->transEsc('Search For')?></label>
             </h3>
