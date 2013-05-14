@@ -2,16 +2,16 @@
 namespace Swissbib\Controller;
 
 use Zend\Config\Config;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Resolver\ResolverInterface;
+
+use VuFind\Controller\AbstractBase as BaseController;
 
 /**
  * Display help pages located in templates/HelpPages/LOCALE/*
  *
  */
-class HelpPageController extends AbstractActionController
+class HelpPageController extends BaseController
 {
 
 	/** @var  ResolverInterface */
@@ -34,18 +34,21 @@ class HelpPageController extends AbstractActionController
 			throw new \Exception('Can\'t find matching help page');
 		}
 
-		$content = new ViewModel();
-		$content->setTemplate($template['template']);
+		$helpContent = $this->createViewModel();
+		$helpContent->setTemplate($template['template']);
 
-		$layout = new ViewModel();
-		$layout->setTemplate('HelpPage/layout');
-		$layout->setVariable('pages', $this->getPages());
-		$layout->setVariable('first', !!$template['first']);
-		$layout->setVariable('topic', strtolower($template['topic']));
+		$helpLayout = $this->createViewModel(array(
+											  'pages'	=> $this->getPages(),
+											  'first'	=> !!$template['first'],
+											  'topic'	=> strtolower($template['topic'])
+										 ));
+		$helpLayout->setTemplate('HelpPage/layout');
+		$helpLayout->addChild($helpContent, 'helpContent');
 
-		$layout->addChild($content, 'helpContent');
+			// Set Solr search for help pages
+		$this->layout()->setVariable('searchClassId', 'Solr');
 
-		return $layout;
+		return $helpLayout;
 	}
 
 
