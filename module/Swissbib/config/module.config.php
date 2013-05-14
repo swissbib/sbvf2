@@ -5,6 +5,7 @@ use Zend\Config\Config;
 
 use Swissbib\TargetsProxy\TargetsProxy;
 use Swissbib\TargetsProxy\IpMatcher;
+use Swissbib\TargetsProxy\UrlMatcher;
 use Swissbib\Libadmin\Importer;
 use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
 use Swissbib\View\Helper\InstitutionSorter;
@@ -108,6 +109,9 @@ return array(
 			},
 			'Swissbib\TargetsProxy\IpMatcher' => function ($sm) {
 				return new IpMatcher();
+			},
+			'Swissbib\TargetsProxy\UrlMatcher' => function ($sm) {
+				return new UrlMatcher();
 			},
 			'Swissbib\Libadmin\Importer' => function ($sm) {
 				$config        = $sm->get('VuFind\Config')->get('config')->Libadmin;
