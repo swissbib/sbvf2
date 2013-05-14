@@ -1,6 +1,9 @@
 <?php
 
 /** @var VuFind\Search\Solr\Options	 $options  */
+if (!isset($this->searchClassId)) {
+	$this->searchClassId = 'Solr';
+}
 $options 		= $this->searchOptions($this->searchClassId);
 $lastSort		= $options->getLastSort();
 $lastLimit		= $options->getLastLimit();
