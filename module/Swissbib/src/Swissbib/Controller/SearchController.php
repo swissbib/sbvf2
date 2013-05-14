@@ -81,6 +81,7 @@ class SearchController extends VFSearchController
 			try {
 				$targetsProxy = $this->getServiceLocator()->get('Swissbib\TargetsProxy\TargetsProxy');
 				$targetConfig = $targetsProxy->getTarget();
+
 			} catch (\Exception $e) {
 				// handle exceptions
 				echo "- Fatal error\n";
