@@ -93,7 +93,12 @@ class Bootstrapper
 			/** @var Translator $translator */
 			$translator = $sm->get('VuFind\Translator');
 			$locale     = $translator->getLocale();
-			$translator->setFallbackLocale('en');
+			$fallback	= 'en';
+			$translator->setFallbackLocale($fallback);
+				// Add file for fallback locale if not already en
+			if ($locale !== 'en') {
+				$translator->addTranslationFile('ExtendedIni', $baseDir . '/en.ini', 'default', $fallback);
+			}
 
 			foreach ($types as $type) {
 				$langFile = $baseDir . '/' . $type . '/' . $locale . '.ini';
