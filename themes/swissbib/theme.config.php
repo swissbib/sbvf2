@@ -15,7 +15,6 @@ return array(
 
         'lib/jquery-1.9.1.min.js',
         'lib/jquery-migrate-1.1.1.js',
-        //'lib/jquery.js', (blueprint)
         'lib/ui/jquery.ui.core.js', //already included in blueprint -> we have chosen only the used components not the whole stack - how is this done by VuFind?
         //'bibtip_swissbib.js', only used in fullview lazy load for this specific code?
         //'favorites.js', probably only used on one page - lazy load?
@@ -28,11 +27,10 @@ return array(
         'lib/ui/jquery.ui.tabs.js',
         'lib/ui/jquery.ui.autocomplete.js',
         'lib/jquery.debug.js',
-//        'lib/jquery.1.9.js',
-//        'lib/jquery-migrate-1.1.1.js',
+        'lib/jquery.sb.validate.min.js',
         'lib/jquery.cookie.js',
         'lib/jquery.easing.js',
-        'lib/jquery.hoverintent.js',
+        //'lib/jquery.hoverintent.js',
         'lib/jquery.tabbed.js',
         'lib/jquery.toggler.js',
         'lib/jquery.checker.js',
@@ -45,6 +43,7 @@ return array(
         'lib/colorbox/jquery.colorbox.js', //popup dialog solution
         'lib/jquery.enhancedsearch.js',
         'commonFromBluePrint.js',
+        'blueprint/record.js',
         'autocomplete.base.js', //used for current highlighting based on java servlet, probably replaced by default VuFind mechanism
         'swissbib.ajax.js', // general AJAX helpers
         'swissbib.js',
@@ -55,25 +54,6 @@ return array(
 
         'autocomplete.initialize.swissbib.js',
 
-        //can be deleted once JavaScript environment is more stable
-		//'lib/jquery.cookie.js',
-		//'lib/jquery.easing.js',
-		//'lib/jquery.hoverintent.js',
-		//'lib/jquery.tabbed.js',
-		//'lib/jquery.toggler.js',
-		//'lib/jquery.checker.js',
-		//'lib/jquery.menunav.js',
-		//'lib/jquery.dropdown.js',
-		//'lib/jquery.hint.js',
-		//'lib/jquery.info.js',
-		//'lib/jquery.info.rollover.js',
-		//'lib/jquery.nyromodal.js', (no nyromodal in the future, currently popup dialogs are based on colorbox)
-		//'lib/jquery.bgiframe.js::IE 6', (no longer used)
-
-		//'check_item_statuses.js',
-		//'check_save_statuses.js',
-
-		//'swissbib.js',
     ),
 	'favicon' => 'favicon.ico'
 );
