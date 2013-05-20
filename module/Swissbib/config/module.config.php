@@ -214,11 +214,30 @@ return array(
 			)
 		)
 	),
-	'swissbib' => array(
-		'ignore_assets' => array(
-			'blueprint/screen.css',
-			'jquery-ui.css'
-		),
+	//'swissbib' => array(
+	//	'ignore_assets' => array(
+	//		'blueprint/screen.css',
+	//		'jquery-ui.css'
+	//	),
+
+    'swissbib' => array(
+        'ignore_css_assets' => array(
+            'blueprint/screen.css',
+            'jquery-ui.css'
+        ),
+
+        'ignore_js_assets' => array(
+            'jquery.min.js',
+            'jquery.form.js',
+            'jquery.metadata.js',
+            'jquery.validate.min.js',
+            'jquery-ui/js/jquery-ui.js',
+            'lightbox.js',
+            'common.js',
+            //has a dependency to jQuery so has to be linked after this general component
+            //move it into the swissbib libs
+        ),
+
 		// This section contains service manager configurations for all Swissbib
 		// pluggable components:
 		'plugin_managers' => array(
