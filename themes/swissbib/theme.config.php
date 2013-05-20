@@ -43,7 +43,7 @@ return array(
         'lib/colorbox/jquery.colorbox.js', //popup dialog solution
         'lib/jquery.enhancedsearch.js',
         'commonFromBluePrint.js',
-        'blueprint/record.js',
+        //'blueprint/record.js',
         'autocomplete.base.js', //used for current highlighting based on java servlet, probably replaced by default VuFind mechanism
         'swissbib.ajax.js', // general AJAX helpers
         'swissbib.js',
