@@ -29,7 +29,7 @@ var swissbib = {
         var contextAll		= $("#header, #search, #main");
 
         	// Init UI elements
-        this.initBrowserFlags();
+        //this.initBrowserFlags();
 		this.initNavigation(contextHeader);
 
 //        swissbib.initAutocomplete(ctxAll);

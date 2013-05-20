@@ -12,6 +12,9 @@ return array(
 		'swissbib.css'
     ),
     'js' => array(
+
+        'lib/jquery-1.9.1.min.js',
+        'lib/jquery-migrate-1.1.1.js',
         //'lib/jquery.js', (blueprint)
         'lib/ui/jquery.ui.core.js', //already included in blueprint -> we have chosen only the used components not the whole stack - how is this done by VuFind?
         //'bibtip_swissbib.js', only used in fullview lazy load for this specific code?
@@ -41,6 +44,7 @@ return array(
 		'lib/jquery.spritely.js',	// sprite animation, e.g. for ajax spinner
         'lib/colorbox/jquery.colorbox.js', //popup dialog solution
         'lib/jquery.enhancedsearch.js',
+        'commonFromBluePrint.js',
         'autocomplete.base.js', //used for current highlighting based on java servlet, probably replaced by default VuFind mechanism
         'swissbib.ajax.js', // general AJAX helpers
         'swissbib.js',
