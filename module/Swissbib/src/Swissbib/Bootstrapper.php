@@ -18,31 +18,42 @@ class Bootstrapper
 	protected $events;
 
 
+	/**
+	 * @var \Zend\Mvc\ApplicationInterface
+	 */
+	protected $application;
+
+	/**
+	 * @var \Zend\ServiceManager\ServiceLocatorInterface
+	 */
+	protected $serviceManager;
+
 
 	/**
 	 * @param MvcEvent $event
 	 */
 	public function __construct(MvcEvent $event)
 	{
-		$application = $this->config = $event->getApplication();
+		$this->application = $event->getApplication();
+		$this->serviceManager	= $this->application->getServiceManager();
 
-		$this->config = $application->getServiceManager()->get('VuFind\Config')->get('config');
+		$this->config = $this->serviceManager->get('VuFind\Config')->get('config');
 		$this->event  = $event;
-		$this->events = $application->getEventManager();
-
+		$this->events = $this->application->getEventManager();
 	}
 
 
 
 	/**
 	 * Bootstrap
+	 * Automatically discovers and evokes all class methods with names starting with 'init'
 	 */
 	public function bootstrap()
 	{
 		$methods = get_class_methods($this);
 
 		foreach ($methods as $method) {
-			if (substr($method, 0, 4) == "init") {
+			if (substr($method, 0, 4) == 'init') {
 				$this->$method();
 			}
 		}
@@ -52,7 +63,6 @@ class Bootstrapper
 
 	/**
 	 * Add template path filter to filter chain
-	 *
 	 */
 	protected function initFilterChain()
 	{
@@ -119,9 +129,6 @@ class Bootstrapper
 
 
 
-
-
-
 	/**
 	 * Set up plugin managers.
 	 */
@@ -150,4 +157,5 @@ class Bootstrapper
 			$serviceManager->setFactory($serviceName, $factory);
 		}
 	}
+
 }
