@@ -5,6 +5,7 @@ use Zend\Config\Config;
 
 use Swissbib\TargetsProxy\TargetsProxy;
 use Swissbib\TargetsProxy\IpMatcher;
+use Swissbib\TargetsProxy\UrlMatcher;
 use Swissbib\Libadmin\Importer;
 use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
 use Swissbib\View\Helper\InstitutionSorter;
@@ -109,6 +110,9 @@ return array(
 			'Swissbib\TargetsProxy\IpMatcher' => function ($sm) {
 				return new IpMatcher();
 			},
+			'Swissbib\TargetsProxy\UrlMatcher' => function ($sm) {
+				return new UrlMatcher();
+			},
 			'Swissbib\Libadmin\Importer' => function ($sm) {
 				$config        = $sm->get('VuFind\Config')->get('config')->Libadmin;
 				$languageCache = $sm->get('VuFind\CacheManager')->getCache('language');
@@ -210,11 +214,30 @@ return array(
 			)
 		)
 	),
-	'swissbib' => array(
-		'ignore_assets' => array(
-			'blueprint/screen.css',
-			'jquery-ui.css'
-		),
+	//'swissbib' => array(
+	//	'ignore_assets' => array(
+	//		'blueprint/screen.css',
+	//		'jquery-ui.css'
+	//	),
+
+    'swissbib' => array(
+        'ignore_css_assets' => array(
+            'blueprint/screen.css',
+            'jquery-ui.css'
+        ),
+
+        'ignore_js_assets' => array(
+            'jquery.min.js',
+            'jquery.form.js',
+            'jquery.metadata.js',
+            'jquery.validate.min.js',
+            'jquery-ui/js/jquery-ui.js',
+            'lightbox.js',
+            'common.js',
+            //has a dependency to jQuery so has to be linked after this general component
+            //move it into the swissbib libs
+        ),
+
 		// This section contains service manager configurations for all Swissbib
 		// pluggable components:
 		'plugin_managers' => array(
