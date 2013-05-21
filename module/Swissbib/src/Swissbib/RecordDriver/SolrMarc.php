@@ -865,6 +865,19 @@ class SolrMarc extends VuFindSolrMarc
 
 
 	/**
+	 * Get hierarchy type
+	 * Directly use driver config
+	 *
+	 * @return bool|string
+	 */
+	public function getHierarchyType()
+	{
+		return $this->mainConfig->Hierarchy->driver;
+	}
+
+
+
+	/**
 	 * Get marc field
 	 *
 	 * @param    Integer        $index
