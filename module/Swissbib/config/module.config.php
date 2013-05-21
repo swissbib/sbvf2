@@ -166,6 +166,13 @@ return array(
 		// This section contains service manager configurations for all VuFind
 		// pluggable components:
 		'plugin_managers' => array(
+			'search_backend'	=> array(
+				'factories'	=> array(
+//					'Solr' => 'VuFind\Search\Factory\SolrDefaultBackendFactory',
+					'Summon'	=> 'Swissbib\Search\Factory\SummonBackendFactory',
+//					'WorldCat' => 'VuFind\Search\Factory\WorldCatBackendFactory',
+				)
+			),
 			'recorddriver' => array(
 				'factories' => array(
 					'solrmarc' => function ($sm) {
