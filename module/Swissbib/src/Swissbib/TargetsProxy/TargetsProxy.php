@@ -39,6 +39,19 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 	 */
 	protected $clientUri;
 
+
+	/**
+	 * @var	Boolean|String
+	 */
+	protected $targetKey	= false;
+
+	/**
+	 * @var	Boolean|String
+	 */
+	protected $targetSearchClassId	= false;
+
+
+
 	/**
 	 * Initialize proxy with config
 	 *
@@ -129,7 +142,8 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 	 * @param	String		$allowPatterns		List of allow-patterns, possible types: IP / IP wildcard / IP mask / IP section
 	 * @return	Boolean
 	 */
-	private function isMatchingIp($ipAddress, $allowPatterns) {
+	private function isMatchingIp($ipAddress, $allowPatterns)
+	{
 		$matches	= false;
 
 		try {
@@ -155,26 +169,38 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 	}
 
 
-
 	/**
 	 * Get target to be used for the client's IP range + sub domain
 	 *
-	 * @return    Array
+	 * @param    String            $overrideIP        Simulate request from given instead of detecting real IP
+	 * @param    String            $overrideHost    Simulate request from given instead of detecting from real URL
 	 */
-	public function getTarget()
+	public function detectTarget($overrideIP = '', $overrideHost = '')
 	{
+		$this->targetKey = false;
+		$this->targetSearchClassId	= false;
+
 		$targetKeys	= explode(',', $this->config->get('targetKeys'));
 
 			// Check whether the current IP address matches against any of the configured targets' IP / sub domain patterns
-		$ipAddress	= $this->getClientIpV6();
-		$url		= $this->getClientUrl();
+		$ipAddress	= !empty($overrideIP) ? $overrideIP : $this->getClientIpV6();
+		if( empty($overrideHost) ) {
+			$url		= $this->getClientUrl();
+		} else {
+			$url		= new \Zend\Uri\Http();
+			$url->setHost($overrideHost);
+		}
 
 		$vfConfig	= $this->getServiceLocator()->get('VuFind\Config');
 
 		$IpMatcher	= new IpMatcher();
 		$UrlMatcher	= new UrlMatcher();
 
+
 		foreach($targetKeys as $targetKey) {
+			$isMatchingIP	= false;
+			$isMatchingUrl	= false;
+
 			/** @var	\Zend\Config\Config	$targetConfig */
 			$targetConfig		= $vfConfig->get('TargetsProxy')->get($targetKey);
 
@@ -193,11 +219,28 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 			if(     (empty($ipPatterns) || $isMatchingIP === true)
 				 && (empty($urlPatterns) || $isMatchingUrl === true) ) {
 				// Matching target config detected
-				echo 'matched: ' . $targetKey;
+				$this->targetKey = $targetKey;
+				$this->targetSearchClassId	= $targetConfig->get('searchClassId');
 			}
 		}
+	}
 
-		return array();
+
+
+	/**
+	 * @return bool|String
+	 */
+	public function getTargetKey()
+	{
+		return $this->targetKey;
+	}
+
+	/**
+	 * @return bool|String
+	 */
+	public function getTargetSearchClassId()
+	{
+		return $this->targetSearchClassId;
 	}
 
 }
