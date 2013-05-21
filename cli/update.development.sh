@@ -3,13 +3,15 @@
 # Update current project on the branch development from github repository.
 # Clear cache
 
-if [ "$UID"  -eq 0 ]; then
+BASE_DIR=/usr/local/vufind/httpd
 
-        echo "Good morning!"
-        echo "git repository update as root user not allowed!"
-        echo "feel free to try it again with user vfsb"
+if [ "$UID"  -ne 0 ]; then
+
+        echo "you have to be root to use the git update script because cache will be cleared"
         exit 1
 fi
+
+cd $BASE_DIR
 
 
 TIME=`date +%Y-%m-%d_%H.%M.%S`
@@ -27,10 +29,10 @@ function log {
 
 log "start update VuFind development branch"
 
-git stash
-git checkout development
-git pull origin development
-git stash pop
+su -c "git stash" vfsb >> $LOG 2>&1
+su -c "git checkout development" vfsb >> $LOG 2>&1
+su -c "git pull origin development" vfsb >> $LOG 2>&1
+su -c "git stash pop" vfsb >> $LOG 2>&1
 
 log "finish update VuFind release branch"
 
@@ -38,14 +40,24 @@ log "finish update VuFind release branch"
 
 log "set full access rights to cache"
 
-chmod 777 ../local/cache
-
-log "full access rights to cache set"
 
 # Clear cache
 
-#log "Clear local cache"
+log "Clear local cache"
 
-#rm -rf local/cache/*
+rm -rf $BASE_DIR/local/cache/*
 
-log "Local cache not cleared - please use root account and script removeLocalCache.sh"
+
+chmod 777 $BASE_DIR/local/cache/
+
+log "full access rights to cache set"
+
+
+log "restarting the httpd service..."
+service httpd restart
+
+chown vfsb:vf $LOG
+
+
+log "git update process for development branch has finished"
+

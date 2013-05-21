@@ -15,7 +15,7 @@ use Swissbib\Libadmin\Exception\Exception;
  *
  * Usage:
  * 	$patterns	= array('172.0.*.*', '126.1.0.0/255.255.0.0')
- * 	$matching	= new IPFilter()->isMatching('126.1.0.2', $patterns);
+ * 	$matching	= new IpMatcher()->isMatching('126.1.0.2', $patterns);
  *
  * 	Result: 	true
  */
