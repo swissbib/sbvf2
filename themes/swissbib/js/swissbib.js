@@ -21,6 +21,8 @@ var swissbib = {
     initOnReady: function() {
         window.DEBUG = false;	// debug flag
 
+		jQuery.migrateMute = true;
+
         	// Context elements
         var contextHeader	= $("#header");
 //        var contextSearch	= $("#search");
