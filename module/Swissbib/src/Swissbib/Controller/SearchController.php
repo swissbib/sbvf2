@@ -10,7 +10,6 @@ use VuFind\Controller\SearchController as VFSearchController;
 use VuFind\Search\Memory as VFMemory;
 
 use Swissbib\Controller\Helper\Search as SearchHelper;
-use Swissbib\TargetsProxy\TargetsProxy;
 
 /**
  * @package       Swissbib
@@ -37,7 +36,7 @@ class SearchController extends VFSearchController
 		parent::__construct();
 
 		$this->forceTabKey       = 'swissbib';
-		$this->searchClassId	 = 'Swissbib';
+		$this->searchClassId	 = 'Solr';
 	}
 
 
@@ -83,9 +82,6 @@ class SearchController extends VFSearchController
 			// Set default target
 		$this->searchClassId = $activeTabConfig['searchClassId'];
 
-			// Detect + reroute to proxy target
-		$this->doProxyRouting($activeTabKey);
-
 		$resultViewModel     = parent::resultsAction();
 
 		$allTabsConfig[$activeTabKey]['active'] = true;
@@ -99,43 +95,6 @@ class SearchController extends VFSearchController
 		$resultViewModel->setVariable('facetsConfig', $resultsFacetConfig);
 
 		return $resultViewModel;
-	}
-
-
-
-	/**
-	 * Detect target to possibly switch to according to (searchClassId of detected) proxy configuration
-	 *
-	 * @param	String	$activeTabKey
-	 */
-	protected function doProxyRouting($activeTabKey) {
-		$vfConfig	= $this->getServiceLocator()->get('VuFind\Config');
-
-		/** @var \Zend\Config\Config $proxyConfig */
-		$proxyConfig = $vfConfig->get('TargetsProxy')->get('TargetsProxy'); // file + section
-		$proxyTabKey = $proxyConfig->get('tabkey');
-
-		if ($activeTabKey === $proxyTabKey) {
-			/** @var TargetsProxy $targetsProxy */
-			try {
-				$targetsProxy = $this->getServiceLocator()->get('Swissbib\TargetsProxy\TargetsProxy');
-
-				$targetsProxy->detectTarget();
-//				$targetsProxy->detectTarget('171.0.1.5', 'unibas.swissbib.ch');
-
-				if( $targetsProxy->getTargetKey() !== false ) {
-					$this->searchClassId	 = $targetsProxy->getTargetSearchClassId(); //'Solr';
-					$this->createViewModel();
-				}
-			} catch (\Exception $e) {
-				// handle exceptions
-				echo "- Fatal error\n";
-				echo "- Stopped with exception: " . get_class($e) . "\n";
-				echo "====================================================================\n";
-				echo $e->getMessage() . "\n";
-				echo $e->getPrevious()->getMessage() . "\n";
-			}
-		}
 	}
 
 

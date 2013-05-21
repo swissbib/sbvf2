@@ -25,6 +25,10 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 	protected $serviceLocator;
 
 	/**
+	 * @var string
+	 */
+	protected $searchClass	= 'Summon';
+	/**
 	 * @var Config
 	 */
 	protected $config;
@@ -48,7 +52,7 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 	/**
 	 * @var	Boolean|String
 	 */
-	protected $targetSearchClassId	= false;
+	protected $targetApiKey	= false;
 
 
 
@@ -71,6 +75,13 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 
 		$Request	= new Request();
 		$this->clientUri= $Request->getUri();
+	}
+
+	/**
+	 * @param string $className
+	 */
+	public function setSearchClass($className = 'Summon') {
+		$this->searchClass	= $className;
 	}
 
 	/**
@@ -144,8 +155,6 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 	 */
 	private function isMatchingIp($ipAddress, $allowPatterns)
 	{
-		$matches	= false;
-
 		try {
 			/**
 			 * @var	\Swissbib\TargetsProxy\IpMatcher	$IpMatcher
@@ -172,15 +181,16 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 	/**
 	 * Get target to be used for the client's IP range + sub domain
 	 *
-	 * @param    String            $overrideIP        Simulate request from given instead of detecting real IP
-	 * @param    String            $overrideHost    Simulate request from given instead of detecting from real URL
+	 * @param   String     $overrideIP      Simulate request from given instead of detecting real IP
+	 * @param   String	   $overrideHost    Simulate request from given instead of detecting from real URL
+	 * @return	Boolean   Target detected or not?
 	 */
 	public function detectTarget($overrideIP = '', $overrideHost = '')
 	{
 		$this->targetKey = false;
-		$this->targetSearchClassId	= false;
+		$this->targetApiKey	= false;
 
-		$targetKeys	= explode(',', $this->config->get('targetKeys'));
+		$targetKeys	= explode(',', $this->config->get('targetKeys' . $this->searchClass));
 
 			// Check whether the current IP address matches against any of the configured targets' IP / sub domain patterns
 		$ipAddress	= !empty($overrideIP) ? $overrideIP : $this->getClientIpV6();
@@ -218,16 +228,22 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 
 			if(     (empty($ipPatterns) || $isMatchingIP === true)
 				 && (empty($urlPatterns) || $isMatchingUrl === true) ) {
-				// Matching target config detected
+					// Matching target config detected
 				$this->targetKey = $targetKey;
-				$this->targetSearchClassId	= $targetConfig->get('searchClassId');
+				$this->targetApiKey	= $targetConfig->get('apiKey');
+
+				return true;
 			}
 		}
+
+		return false;
 	}
 
 
 
 	/**
+	 * Get key of detected target to be rerouted to
+	 *
 	 * @return bool|String
 	 */
 	public function getTargetKey()
@@ -238,9 +254,9 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 	/**
 	 * @return bool|String
 	 */
-	public function getTargetSearchClassId()
+	public function getTargetApiKey()
 	{
-		return $this->targetSearchClassId;
+		return $this->targetApiKey;
 	}
 
 }
