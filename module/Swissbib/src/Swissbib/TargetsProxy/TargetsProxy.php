@@ -187,7 +187,7 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 	 */
 	public function detectTarget($overrideIP = '', $overrideHost = '')
 	{
-		$this->targetKey = false;
+		$this->targetKey = false;	// Key of detected target config
 		$this->targetApiKey	= false;
 
 		$targetKeys	= explode(',', $this->config->get('targetKeys' . $this->searchClass));
