@@ -25,6 +25,10 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 	protected $serviceLocator;
 
 	/**
+	 * @var string
+	 */
+	protected $searchClass	= 'Summon';
+	/**
 	 * @var Config
 	 */
 	protected $config;
@@ -38,6 +42,19 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 	 * @var \Zend\Uri\Http
 	 */
 	protected $clientUri;
+
+
+	/**
+	 * @var	Boolean|String
+	 */
+	protected $targetKey	= false;
+
+	/**
+	 * @var	Boolean|String
+	 */
+	protected $targetApiKey	= false;
+
+
 
 	/**
 	 * Initialize proxy with config
@@ -58,6 +75,13 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 
 		$Request	= new Request();
 		$this->clientUri= $Request->getUri();
+	}
+
+	/**
+	 * @param string $className
+	 */
+	public function setSearchClass($className = 'Summon') {
+		$this->searchClass	= $className;
 	}
 
 	/**
@@ -129,9 +153,8 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 	 * @param	String		$allowPatterns		List of allow-patterns, possible types: IP / IP wildcard / IP mask / IP section
 	 * @return	Boolean
 	 */
-	private function isMatchingIp($ipAddress, $allowPatterns) {
-		$matches	= false;
-
+	private function isMatchingIp($ipAddress, $allowPatterns)
+	{
 		try {
 			/**
 			 * @var	\Swissbib\TargetsProxy\IpMatcher	$IpMatcher
@@ -155,26 +178,39 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 	}
 
 
-
 	/**
 	 * Get target to be used for the client's IP range + sub domain
 	 *
-	 * @return    Array
+	 * @param   String     $overrideIP      Simulate request from given instead of detecting real IP
+	 * @param   String	   $overrideHost    Simulate request from given instead of detecting from real URL
+	 * @return	Boolean   Target detected or not?
 	 */
-	public function getTarget()
+	public function detectTarget($overrideIP = '', $overrideHost = '')
 	{
-		$targetKeys	= explode(',', $this->config->get('targetKeys'));
+		$this->targetKey = false;	// Key of detected target config
+		$this->targetApiKey	= false;
+
+		$targetKeys	= explode(',', $this->config->get('targetKeys' . $this->searchClass));
 
 			// Check whether the current IP address matches against any of the configured targets' IP / sub domain patterns
-		$ipAddress	= $this->getClientIpV6();
-		$url		= $this->getClientUrl();
+		$ipAddress	= !empty($overrideIP) ? $overrideIP : $this->getClientIpV6();
+		if( empty($overrideHost) ) {
+			$url		= $this->getClientUrl();
+		} else {
+			$url		= new \Zend\Uri\Http();
+			$url->setHost($overrideHost);
+		}
 
 		$vfConfig	= $this->getServiceLocator()->get('VuFind\Config');
 
 		$IpMatcher	= new IpMatcher();
 		$UrlMatcher	= new UrlMatcher();
 
+
 		foreach($targetKeys as $targetKey) {
+			$isMatchingIP	= false;
+			$isMatchingUrl	= false;
+
 			/** @var	\Zend\Config\Config	$targetConfig */
 			$targetConfig		= $vfConfig->get('TargetsProxy')->get($targetKey);
 
@@ -192,12 +228,35 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 
 			if(     (empty($ipPatterns) || $isMatchingIP === true)
 				 && (empty($urlPatterns) || $isMatchingUrl === true) ) {
-				// Matching target config detected
-				echo 'matched: ' . $targetKey;
+					// Matching target config detected
+				$this->targetKey = $targetKey;
+				$this->targetApiKey	= $targetConfig->get('apiKey');
+
+				return true;
 			}
 		}
 
-		return array();
+		return false;
+	}
+
+
+
+	/**
+	 * Get key of detected target to be rerouted to
+	 *
+	 * @return bool|String
+	 */
+	public function getTargetKey()
+	{
+		return $this->targetKey;
+	}
+
+	/**
+	 * @return bool|String
+	 */
+	public function getTargetApiKey()
+	{
+		return $this->targetApiKey;
 	}
 
 }
