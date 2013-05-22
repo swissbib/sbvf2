@@ -17,11 +17,11 @@ class SummonController extends SearchController
 	 */
 	public function __construct()
 	{
+		parent::__construct();
+
 		$this->useResultScroller = false;
 		$this->forceTabKey       = 'summon';
 		$this->searchClassId	 = 'Summon';
-
-		parent::__construct();
 	}
 
 
