@@ -50,7 +50,7 @@ class SearchController extends VFSearchController
 	{
 		$homeView = parent::homeAction();
 
-		$this->layout()->setTemplate('layout/layout.home');
+		$this->layout()->setVariable('pageClass', 'template_home');
 
 		return $homeView;
 	}

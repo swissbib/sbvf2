@@ -6,10 +6,12 @@
 	</head>
 	<body>
 		<div class="page_margins">
-			<div class="page">
+			<div class="page <?=(isset($pageClass)?$pageClass:'')?>">
 				<?=$this->render('global/header.phtml')?>
 				<?=$this->render('global/searchbox.phtml')?>
-				<div id="main"><?=$this->layout()->content?></div>
+				<div id="main">
+					<?=$this->layout()->content?>
+				</div>
 			</div>
 		</div>
 	</body>
