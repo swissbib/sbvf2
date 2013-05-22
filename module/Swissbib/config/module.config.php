@@ -6,6 +6,7 @@ use Zend\Config\Config;
 use Swissbib\TargetsProxy\TargetsProxy;
 use Swissbib\TargetsProxy\IpMatcher;
 use Swissbib\TargetsProxy\UrlMatcher;
+use Swissbib\Theme\Theme;
 use Swissbib\Libadmin\Importer;
 use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
 use Swissbib\View\Helper\InstitutionSorter;
@@ -113,6 +114,9 @@ return array(
 			'Swissbib\TargetsProxy\UrlMatcher' => function ($sm) {
 				return new UrlMatcher();
 			},
+			'Swissbib\Theme\Theme' => function () {
+				return new Theme();
+			},
 			'Swissbib\Libadmin\Importer' => function ($sm) {
 				$config        = $sm->get('VuFind\Config')->get('config')->Libadmin;
 				$languageCache = $sm->get('VuFind\CacheManager')->getCache('language');
@@ -162,6 +166,13 @@ return array(
 		// This section contains service manager configurations for all VuFind
 		// pluggable components:
 		'plugin_managers' => array(
+			'search_backend'	=> array(
+				'factories'	=> array(
+//					'Solr' => 'VuFind\Search\Factory\SolrDefaultBackendFactory',
+					'Summon'	=> 'Swissbib\Search\Factory\SummonBackendFactory',
+//					'WorldCat' => 'VuFind\Search\Factory\WorldCatBackendFactory',
+				)
+			),
 			'recorddriver' => array(
 				'factories' => array(
 					'solrmarc' => function ($sm) {
