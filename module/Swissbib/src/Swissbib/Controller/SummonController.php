@@ -21,7 +21,6 @@ class SummonController extends SearchController
 
 		$this->useResultScroller = false;
 		$this->forceTabKey       = 'summon';
-		$this->searchClassId	 = 'Summon';
 	}
 
 
