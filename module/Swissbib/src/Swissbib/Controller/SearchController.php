@@ -10,7 +10,6 @@ use VuFind\Controller\SearchController as VFSearchController;
 use VuFind\Search\Memory as VFMemory;
 
 use Swissbib\Controller\Helper\Search as SearchHelper;
-use Swissbib\TargetsProxy\TargetsProxy;
 
 /**
  * @package       Swissbib
@@ -28,6 +27,19 @@ class SearchController extends VFSearchController
 	 * @var	Array
 	 */
 	protected $extendedTargets = array();
+
+	/**
+	 * Constructor
+	 * Init proxy: detect and switch target for configured IP range / URLs
+	 */
+	public function __construct() {
+		parent::__construct();
+
+		$this->forceTabKey       = 'swissbib';
+		$this->searchClassId	 = 'Solr';
+	}
+
+
 
 	/**
 	 * (Default Action) Get model for home view
@@ -55,7 +67,7 @@ class SearchController extends VFSearchController
         $tExtended = $this->getServiceLocator()->get('Vufind\Config')->get('config')->Index->extendedTargets;
 
 		if (!empty($tExtended)) {
-			$this->extendedTargets = explode(",", $tExtended);
+			$this->extendedTargets = explode(',', $tExtended);
 
 			array_walk($this->extendedTargets, function (&$v) {
 				$v = strtolower($v);
@@ -67,34 +79,9 @@ class SearchController extends VFSearchController
 		$resultsFacetConfig = $this->getFacetConfig();
 		$activeTabConfig    = $allTabsConfig[$activeTabKey];
 
-		$vfConfig	= $this->getServiceLocator()->get('VuFind\Config');
-
-		/**
-		 * Detect target to switch to according to proxy configuration
-		 */
-		/** @var \Zend\Config\Config $proxyConfig */
-		$proxyConfig = $vfConfig->get('TargetsProxy')->get('TargetsProxy'); // file + section
-		$proxyTabKey = $proxyConfig->get('tabkey');
-
-		if ($activeTabKey === $proxyTabKey) {
-			/** @var TargetsProxy $targetsProxy */
-			try {
-				$targetsProxy = $this->getServiceLocator()->get('Swissbib\TargetsProxy\TargetsProxy');
-				$targetConfig = $targetsProxy->getTarget();
-
-			} catch (\Exception $e) {
-				// handle exceptions
-				echo "- Fatal error\n";
-				echo "- Stopped with exception: " . get_class($e) . "\n";
-				echo "====================================================================\n";
-				echo $e->getMessage() . "\n";
-				echo $e->getPrevious()->getMessage() . "\n";
-
-				return false;
-			}
-		}
-
+			// Set default target
 		$this->searchClassId = $activeTabConfig['searchClassId'];
+
 		$resultViewModel     = parent::resultsAction();
 
 		$allTabsConfig[$activeTabKey]['active'] = true;
@@ -199,32 +186,7 @@ class SearchController extends VFSearchController
 	 */
 	protected function getThemeTabsConfig()
 	{
-		$theme			= $this->getTheme();
-		$tabs			= array();
-		$moduleConfig	= $this->getServiceLocator()->get('Config');
-		$tabsConfig		= $moduleConfig['swissbib']['resultTabs'];
-		$allTabs		= $tabsConfig['tabs'];
-		$themeTabs		= isset($tabsConfig['themes'][$theme]) ? $tabsConfig['themes'][$theme] : array();
-
-		foreach ($themeTabs as $themeTab) {
-			if (isset($allTabs[$themeTab])) {
-				$tabs[$themeTab] = $allTabs[$themeTab];
-			}
-		}
-
-		return $tabs;
-	}
-
-
-
-	/**
-	 * Get active theme
-	 *
-	 * @return	String
-	 */
-	protected function getTheme()
-	{
-		return $this->getServiceLocator()->get('Vufind\Config')->get('config')->Site->theme;
+		return $this->getServiceLocator()->get('Swissbib\Theme\Theme')->getThemeTabsConfig();
 	}
 
 
