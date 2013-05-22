@@ -9,6 +9,7 @@ return array(
 		'patches/patch_ie7.css:all:IE 7',
 		//'patches/patch_ie6.css:all:IE 6', (we don't support IE6 in the future)
 		'blueprint-overrides.css',
+		'blueprint.css',
 		'swissbib.css'
     ),
     'js' => array(

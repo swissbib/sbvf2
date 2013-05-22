@@ -239,3 +239,13 @@ ul.facet_toggler_checkbox li {
 #tabbed .selected a span {
 	cursor: default;
 }
+
+#treeSearch #treeSearchText {
+	width: 70%;
+	padding: 1px;
+}
+
+
+#hierarchyTree {
+	min-height: 0;
+}
