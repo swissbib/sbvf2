@@ -94,9 +94,11 @@ class SearchController extends VFSearchController
 	 */
 	public function advancedAction()
 	{
-		$allTabsConfig = $this->getThemeTabsConfig();
-		$activeTabKey  = $this->getActiveTab();
-		$viewModel     = parent::advancedAction();
+		$allTabsConfig       = $this->getThemeTabsConfig();
+		$activeTabKey        = $this->getActiveTab();
+		$activeTabConfig     = $allTabsConfig[$activeTabKey];
+		$this->searchClassId = $activeTabConfig['searchClassId'];
+		$viewModel           = parent::advancedAction();
 
 		$viewModel->setVariable('allTabsConfig', $allTabsConfig);
 		$viewModel->setVariable('activeTabKey', $activeTabKey);
