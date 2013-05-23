@@ -187,10 +187,24 @@ class IpMatcher
 		$begin	= ip2long($begin);
 		$end	= ip2long($end);
 		$ip		= ip2long($ip);
+//		$begin	= self::ip2toUnsignedLong($begin);
+//		$end	= self::ip2toUnsignedLong($end);
+//		$ip		= self::ip2toUnsignedLong($ip);
 
 		return ($ip >= $begin && $ip <= $end);
 	}
 
+
+
+	private static function ip2toUnsignedLong($ipAddress) {
+		$ipLong	=ip2long($ipAddress);
+		if ($ipLong < 0)
+		{
+			$ipLong += 4294967296 ;
+		}
+
+		return $ipLong;
+	}
 }
 
 ?>

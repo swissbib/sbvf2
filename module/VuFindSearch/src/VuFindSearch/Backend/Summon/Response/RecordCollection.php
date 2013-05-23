@@ -119,7 +119,7 @@ class RecordCollection extends AbstractRecordCollection
      */
     public function getDatabaseRecommendations()
     {
-        return isset($this->response['recommendationLists']['database']) ?
+		return isset($this->response['recommendationLists']['database']) ?
             $this->response['recommendationLists']['database'] : false;
     }
 }
