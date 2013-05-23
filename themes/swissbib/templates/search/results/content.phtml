@@ -34,6 +34,11 @@
 	<!-- data -->
 	<?=$this->render('search/list-' . $view . '.phtml')?>
 
+	<? if ($activeTabKey === 'summon'): ?>
+		<!-- $this->render('Recommend/SummonResults.phtml') -->
+
+	<?php endif; ?>
+
 	<?php if($recordTotal): ?>
 		<!-- begin: tools -->
 		<div class="tools floatbox">
