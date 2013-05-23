@@ -473,9 +473,18 @@ class SolrMarc extends VuFindSolrMarc
 		return $this->getFirstFieldValue('250', array('a'));
 	}
 
+    /**
+     * Get alternative title
+     *
+     * @return array
+     */
+    public function getAltTitle()
+    {
+        return $this->getFieldArray('246', '247');
+    }
 
 
-	/**
+    /**
 	 * get subject headings from GND subject headings
 	 * build an array (multidimensional?) from all GND headings
 	 * GND headings
