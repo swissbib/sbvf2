@@ -243,3 +243,10 @@ ul.facet_toggler_checkbox li {
 #tabbed .selected a span {
 	cursor: default;
 }
+
+/** ------------ Recommendations --------------- */
+div.summondbrecommendations {
+	padding:5px 10px 10px 10px;
+	margin-bottom:10px;
+	background-color:#fff;
+}
