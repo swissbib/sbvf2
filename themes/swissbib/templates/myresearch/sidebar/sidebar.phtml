@@ -90,3 +90,7 @@ $menuItems = $staticItems + $locationItems;
 
 	</ul>
 </div>
+
+<?php foreach ($this->results->getRecommendations('side') as $current): ?>
+  <?=$this->recommend($current)?>
+<?php endforeach; ?>

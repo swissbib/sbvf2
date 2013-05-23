@@ -1,0 +1,181 @@
+<?
+    // Set up some convenience variables:
+    $id = $this->driver->getUniqueId();
+    $source = $this->driver->getResourceSource();
+    if (isset($this->list) && is_object($this->list)) {
+        $list_id = $this->list->id;
+        $user_id = $this->list->user_id;
+    } else {
+        $list_id = null;
+        $user_id = $this->user ? $this->user->id : null;
+    }
+
+	$listThumb = $this->record($this->driver)->getThumbnail();
+	$thumbSrc	= $listThumb ? $this->escapeHtml($listThumb) : $this->url('cover-unavailable');
+	$thumbAlt	= $listThumb ? 'Cover Image' : 'No Cover Image';
+	$title		= $this->driver->getTitle();
+	$listTitle	= empty($title) ? $this->transEsc('Title not available') : $title;
+	$description= $this->driver->getSummary()
+
+?>
+<tr>
+	<td class="small center nodivider">
+		<?=$this->driver->position?>
+	</td>
+	<td class="nodivider">
+		<ul class="editing">
+			<li>
+				<a href="#" title="löschen">löschen</a>
+			</li>
+			<li>
+				<a href="#" title="kopieren">kopieren</a>
+			</li>
+			<li>
+				<a href="#" title="verschieben">verschieben</a>
+			</li>
+			<li>
+				<?= $this->record($driver)->getCheckbox() ?>
+			</li>
+		</ul>
+	</td>
+	<td class="nodivider right">
+		<a href="#" title="The Sirens of Titan">
+			<img	src="<?=$thumbSrc?>"
+					alt="<?=$thumbAlt?>" class="dropshadow"/>
+		</a>
+	</td>
+	<td>
+		<h3>
+			<a href="<?=$this->recordLink()->getUrl($this->driver)?>" title="<?=$this->escapeHtml($listTitle)?>" class="color">
+				<?=$this->escapeHtml($this->truncate($listTitle, 180))?>
+			</a>
+		</h3>
+		<?php if(sizeof($description)): ?>
+			<p><?=$description[0]?></p>
+		<?php endif; ?>
+		<!-- meta -->
+		<div class="meta">
+			<h6>Autor:</h6>
+			<span>Kurt Vonnegut</span>
+			<br/>
+			<h6>Jahr:</h6>
+			<span>2008</span>
+			<h6>Auflage:</h6>
+			<span>[3. Aufl.]</span>
+		</div>
+		<!-- format -->
+		<div class="format">
+			<h6 class="icon_format_book">Buch</h6>
+			<a href="#" class="linkbutton icon_show"
+			   title="Weitere Ausgaben und Formate anzeigen"><span>Weitere Ausgaben und Formate</span></a>
+		</div>
+	</td>
+	<td class="right">
+		<p class="small">
+			10 Bibliotheken
+		</p>
+		<ul class="lending">
+			<li>
+				<span class="icon_lending_online" title="Online Ausleihbar">3</span>
+			</li>
+			<li>
+				<span class="icon_lending_onplace" title="Vor Ort konsultierbar">3</span>
+			</li>
+			<li>
+				<span class="icon_lending_notavailable" title="Nicht zugänglich">4</span>
+			</li>
+		</ul>
+	</td>
+</tr>
+
+<?php return; ?>
+
+<div class="listentry recordId source<?=$this->escapeHtml($source)?><?=$this->driver->supportsAjaxStatus()?' ajaxItemId':''?>" id="record<?=$this->escapeHtml($id)?>">
+  <input type="hidden" value="<?=$this->escapeHtml($this->driver->getUniqueID())?>" class="hiddenId" />
+  <div class="span-2">
+    <? if ($listThumb = $this->record($this->driver)->getThumbnail()): ?>
+      <img src="<?=$this->escapeHtml($listThumb)?>" class="summcover" alt="<?=$this->transEsc('Cover Image')?>"/>
+    <? else: ?>
+      <img src="<?=$this->url('cover-unavailable')?>" class="summcover" alt="<?=$this->transEsc('No Cover Image')?>"/>
+    <? endif; ?>
+  </div>
+  <div class="span-10">
+    <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="title"><?
+      $listTitle = $this->driver->getTitle();
+      if (!empty($listTitle)) {
+          echo $this->escapeHtml($this->truncate($listTitle, 180));
+      } else {
+          echo $this->transEsc('Title not available');
+      }
+    ?></a><br/>
+    <? $listAuthor = $this->driver->getPrimaryAuthor(); if (!empty($listAuthor)): ?>
+      <?=$this->transEsc('by')?>:
+      <a href="<?=$this->record($this->driver)->getLink('author', $listAuthor)?>"><?=$this->escapeHtml($listAuthor)?></a><br/>
+    <? endif; ?>
+    <? $listTags = $this->driver->getTags(
+        $list_id, // get tags for all lists if no single list is selected
+        $user_id, 'tag'
+       );
+    ?>
+    <? if (count($listTags) > 0): ?>
+      <strong><?=$this->transEsc('Your Tags')?>:</strong>
+      <? $i = 0; foreach ($listTags as $tag): ?><?=($i++ == 0)?'':', '?><a href="<?=$this->url('tag-home')?>?lookfor=<?=urlencode($tag->tag)?>"><?=$this->escapeHtml($tag->tag)?></a><? endforeach; ?>
+      <br/>
+    <? endif; ?>
+    <? $listNotes = $this->driver->getListNotes($list_id, $user_id); ?>
+    <? if (count($listNotes) > 0): ?>
+      <strong><?=$this->transEsc('Notes')?>:</strong>
+      <? if (count($listNotes) > 1): ?><br/><? endif; ?>
+      <? foreach ($listNotes as $note): ?>
+        <?=$this->escapeHtml($note)?><br/>
+      <? endforeach; ?>
+    <? endif; ?>
+    
+    <? if (count($this->lists) > 0): ?>
+        <strong><?=$this->transEsc('Saved in')?>:</strong>
+        <? $i=0;foreach($this->lists as $current): ?>
+            <a href="<?=$this->url('userList', array('id' => $current->id))?>"><?=$current->title?></a><? if($i++ < count($this->lists)-1): ?>,<? endif; ?>
+        <? endforeach; ?>
+        <br/>
+    <? endif; ?>
+
+    <div class="callnumAndLocation">
+      <? if ($this->driver->supportsAjaxStatus()): ?>
+        <strong class="hideIfDetailed"><?=$this->transEsc('Call Number')?>:</strong>
+        <span class="callnumber ajax_availability hide">
+          <?=$this->transEsc('Loading')?>...
+        </span><br class="hideIfDetailed"/>
+        <strong><?=$this->transEsc('Located')?>:</strong>
+        <span class="location ajax_availability hide">
+          <?=$this->transEsc('Loading')?>...
+        </span>
+        <div class="locationDetails hide"></div>
+      <? else: ?>
+        <? $summCallNo = $this->driver->getCallNumber(); if (!empty($summCallNo)): ?>
+          <strong><?=$this->transEsc('Call Number')?>:</strong> <?=$this->escapeHtml($summCallNo)?>
+        <? endif; ?>
+      <? endif; ?>
+    </div>
+    <?=$this->record($this->driver)->getFormatList()?>
+    <? if ($this->driver->supportsAjaxStatus()): ?>
+      <div class="status ajax_availability hide"><?=$this->transEsc('Loading')?>...</div>
+    <? endif; ?>
+  </div>
+
+  <? // Allow editing if a list is selected and edit is allowed OR if no list is selected
+     // and a user is logged in (which means we are viewing all of the user's favorites)
+     if ((isset($list) && $list->editAllowed($this->user)) || (!isset($list) && $this->user)): ?>
+    <div class="floatright">
+      <a href="<?=$this->url('myresearch-edit')?>?id=<?=urlencode($id)?>&amp;source=<?=urlencode($source)?><? if (!is_null($list_id)):?>&amp;list_id=<?=urlencode($list_id)?><? endif; ?>" class="edit tool"><?=$this->transEsc('Edit')?></a>
+      <? /* Use a different delete URL if we're removing from a specific list or the overall favorites: */ 
+        $deleteUrl = is_null($list_id)
+            ? $this->url('myresearch-favorites')
+            : $this->url('userList', array('id' => $list_id));
+        $deleteUrl .= '?delete=' . urlencode($id) . '&amp;source=' . urlencode($source);
+      ?>
+      <a href="<?=$deleteUrl?>" title="<?=$this->transEsc('confirm_delete_brief')?>" class="delete tool source<?=$this->escapeHtml($source)?>"><?=$this->transEsc('Delete')?></a>
+    </div>
+  <? endif; ?>
+
+  <div class="clear"></div>
+</div>

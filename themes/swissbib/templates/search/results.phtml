@@ -43,6 +43,8 @@
 				<?=$this->render($this->tabTemplate('search/results/inlay', $this->activeTabKey));?>
 			</div><!-- end: inlay -->
 
+			<?=$this->flashmessages()?>
+
 			<!-- begin: tabbed view -->
 			<?=$this->render($this->tabTemplate('search/results/content', $this->activeTabKey))?>
 			<!-- end: tabbed view -->

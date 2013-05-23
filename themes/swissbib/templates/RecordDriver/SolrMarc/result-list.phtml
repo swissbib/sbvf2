@@ -6,20 +6,20 @@ $viewRecord		= $this->record($this->driver);
 $thumbnail		= $viewRecord->getThumbnail('small');
 $thumbnailSrc	= $thumbnail ? $thumbnail : $this->url('cover-unavailable');
 $detailLink		= $this->recordLink()->getUrl($resultItem);
-//$title			= $resultItem->getShortTitle();
+//$title		= $resultItem->getShortTitle();
 $title			= $this->mainTitle($resultItem->getShortTitle());
 $edition		= $resultItem->getEdition();
 $publicationDate= $this->publicationDateMarc($resultItem->getPublicationDates());
-$groupID				= $resultItem->getGroup(true);
+$groupID		= $resultItem->getGroup(true);
+$favoriteLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
 
 ?>
-
 <tr>
     <!-- Column 1: Index -->
 	<td class="small center nodivider"><?=$this->recordIndex?></td>
     <!-- Column 2: Memo list -->
 	<td class="nodivider">
-		<a href="#" class="icon_notepad_add" title="Zur Merkliste hinzufügen">Zur Merkliste hinzufügen</a>
+		<a href="<?=$favoriteLink?>" class="icon_notepad_add"><?=$this->transEsc('Add to favorites')?></a>
 	</td>
     <!-- Column 3: Teaser-image / Thumbnail -->
 	<td class="right nodivider">
