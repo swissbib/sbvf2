@@ -1,3 +1,7 @@
+#content table.data {
+	width:760px;
+}
+
 #content table th,
 #content table td {
 	font-size: 12px;
