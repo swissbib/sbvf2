@@ -59,11 +59,11 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 	/**
 	 * Initialize proxy with config
 	 *
-	 * @param Config           $config
+	 * @param	Config	$config
 	 */
 	public function __construct(Config $config)
 	{
-		$this->config        = $config;
+		$this->config = $config;
 
 			// Populate client info properties from request
 		$RemoteAddress	= new RemoteAddress();
@@ -190,7 +190,7 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 		$this->targetKey = false;	// Key of detected target config
 		$this->targetApiKey	= false;
 
-		$targetKeys	= explode(',', $this->config->get('targetKeys' . $this->searchClass));
+		$targetKeys	= explode(',', $this->config->get('TargetsProxy')->get('targetKeys' . $this->searchClass));
 
 			// Check whether the current IP address matches against any of the configured targets' IP / sub domain patterns
 		$ipAddress	= !empty($overrideIP) ? $overrideIP : $this->getClientIpV6();
@@ -201,33 +201,37 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 			$url->setHost($overrideHost);
 		}
 
-		$vfConfig	= $this->getServiceLocator()->get('VuFind\Config');
-
 		$IpMatcher	= new IpMatcher();
 		$UrlMatcher	= new UrlMatcher();
-
 
 		foreach($targetKeys as $targetKey) {
 			$isMatchingIP	= false;
 			$isMatchingUrl	= false;
 
 			/** @var	\Zend\Config\Config	$targetConfig */
-			$targetConfig		= $vfConfig->get('TargetsProxy')->get($targetKey);
+			$targetConfig	= $this->config->get($targetKey);
+			$patternsIP		= '';
+			$patternsURL	= '';
 
-			$ipPatterns	= $targetConfig->get('patterns_ip');
-			if( !empty($ipPatterns) ) {
-				$targetPatternsIp	= explode(',', $ipPatterns);
-				$isMatchingIP	= $IpMatcher->isMatching($ipAddress, $targetPatternsIp);
+				// Check match of IP address if any pattern configured
+			if ($targetConfig->offsetExists('patterns_ip')) {
+				$patternsIP	= $targetConfig->get('patterns_ip');
+				if( !empty($patternsIP) ) {
+					$targetPatternsIp	= explode(',', $patternsIP);
+					$isMatchingIP	= $IpMatcher->isMatching($ipAddress, $targetPatternsIp);
+				}
+			}
+				// Check match of URL hostname if any pattern configured
+			if ($targetConfig->offsetExists('patterns_url')) {
+				$patternsURL	= $targetConfig->get('patterns_url');
+				if( !empty($patternsIP) ) {
+					$targetPatternsUrl	= explode(',', $patternsURL);
+					$isMatchingUrl		= $UrlMatcher->isMatching($url->getHost(), $targetPatternsUrl);
+				}
 			}
 
-			$urlPatterns	= $targetConfig->get('patterns_url');
-			if( !empty($ipPatterns) ) {
-				$targetPatternsUrl	= explode(',', $urlPatterns);
-				$isMatchingUrl		= $UrlMatcher->isMatching($url->getHost(), $targetPatternsUrl);
-			}
-
-			if(     (empty($ipPatterns) || $isMatchingIP === true)
-				 && (empty($urlPatterns) || $isMatchingUrl === true) ) {
+			if(     (empty($patternsIP) || $isMatchingIP === true)
+				 && (empty($patternsURL) || $isMatchingUrl === true) ) {
 					// Matching target config detected
 				$this->targetKey = $targetKey;
 				$this->targetApiKey	= $targetConfig->get('apiKey');
