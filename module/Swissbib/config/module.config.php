@@ -104,7 +104,7 @@ return array(
 				return new HoldingsHelper($ilsConnection, $hmac, $authManager, $config, $translator);
 			},
 			'Swissbib\TargetsProxy\TargetsProxy' => function ($sm) {
-				$config        = $sm->get('VuFind\Config')->get('TargetsProxy')->get('TargetsProxy');
+				$config        = $sm->get('VuFind\Config')->get('TargetsProxy');
 
 				return new TargetsProxy($config);
 			},

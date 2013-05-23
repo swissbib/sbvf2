@@ -20,8 +20,13 @@ The proxy definition is defined in the section [TargetsProxy], with the followin
                             2. add dependency injection of the factory in module.config.php (analogous to summon)
 
 For each of the keys listed in targetKeys<TabKey> there must be a section of that name,
-defining match-patterns for detecting that target from IP range and/or URL:
+defining match-patterns for detecting that target from IP range and/or URL.
 
+### Match Conditions Logic
+There are two conditions, 'pattern_ip' and 'pattern_url' which both optional, one being required for the detection.
+If both are given (not empty) than both must be validated true for the target to be detected (logical AND)
+
+### Target Configuration Example
 	[Example_Target]
 	patterns_ip		Comma-separated IP address patterns, see section "IP pattern types" for examples
 	patterns_url	Comma-separated strings of which one must equal to- / be contained in- the hostname
