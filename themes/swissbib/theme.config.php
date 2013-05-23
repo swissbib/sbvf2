@@ -30,7 +30,7 @@ return array(
         'lib/jquery.sb.validate.min.js',
         'lib/jquery.cookie.js',
         'lib/jquery.easing.js',
-        //'lib/jquery.hoverintent.js',
+        'lib/jquery.hoverintent.js',
         'lib/jquery.tabbed.js',
         'lib/jquery.toggler.js',
         'lib/jquery.checker.js',
