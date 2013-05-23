@@ -89,7 +89,7 @@ class SummonBackendFactory extends \VuFind\Search\Factory\SummonBackendFactory
 			$targetsProxy->setSearchClass('Summon');
 
 			$proxyDetected = $targetsProxy->detectTarget();
-//			$proxyDetected = $targetsProxy->detectTarget('171.0.1.5', 'unibas.swissbib.ch');
+//			$proxyDetected = $targetsProxy->detectTarget('0.4.4.4', 'unibas.swissbib.ch');
 
 			if( $proxyDetected !== false ) {
 				return $targetsProxy->getTargetApiKey();
