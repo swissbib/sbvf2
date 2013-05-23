@@ -243,3 +243,31 @@ ul.facet_toggler_checkbox li {
 #tabbed .selected a span {
 	cursor: default;
 }
+
+/* Status messages */
+#content div.info,
+#content div.error {
+	display: block;
+	width: 80%;
+	margin-top: 20px;
+	padding: 5px;
+	font-size: 12px;
+	text-indent: 30px;
+	line-height: 14px;
+	background-position: 5px 5px;
+	font-weight: bold;
+}
+#content div.error {
+	background-color: red;
+}
+#content div.info {
+	background-color: green;
+	color: white;
+}
+
+#sidebar .listWithCounter ul li a {
+	display: inline-block;
+}
+#sidebar .listWithCounter ul li .counter {
+	color:#fff;
+}
