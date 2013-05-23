@@ -251,10 +251,14 @@ abstract class AbstractBase implements \VuFind\Db\Table\DbTableAwareInterface,
             $this->getUniqueId(), $this->getResourceSource(), true, $this
         );
 
+		// Parse tags
+		$tagParser = $this->getServiceLocator()->get('VuFind\Tags');
+		$tags = isset($params['mytags']) ? $tagParser->parse($params['mytags']) : array();
+
         // Add the information to the user's account:
         $user->saveResource(
             $resource, $list,
-            isset($params['mytags']) ? $params['mytags'] : array(),
+			$tags,
             isset($params['notes']) ? $params['notes'] : ''
         );
     }
