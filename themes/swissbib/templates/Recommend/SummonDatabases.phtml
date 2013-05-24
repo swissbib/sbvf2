@@ -7,7 +7,7 @@ if (!empty($summonDatabases)): ?>
 		  <h2><?=$this->transEsc('summon_database_recommendations')?></h2>
 		  <? foreach ($summonDatabases as $current): ?>
 			<p>
-				<a class="color singleLink" href="<?=$this->escapeHtml($current['link'])?>" title="<?=$this->escapeHtml($current['title'])?>">
+				<a target="_blank" class="color singleLink" href="<?=$this->escapeHtml($current['link'])?>" title="<?=$this->escapeHtml($current['title'])?>">
 					<?=$this->escapeHtml($current['title'])?>
 				</a><br/>
 				<?=$this->escapeHtml($current['description'])?>
