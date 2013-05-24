@@ -32,10 +32,11 @@
 	<?php endif; ?>
 
 
-
+	<!-- Recommendations -->
 	<? if ($activeTabKey === 'summon'): ?>
 		<?=$this->render('Recommend\SummonDatabases.phtml')?>
 	<? endif; ?>
+
 
 	<!-- data -->
 	<?=$this->render('search/list-' . $view . '.phtml')?>
