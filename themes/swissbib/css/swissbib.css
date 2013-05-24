@@ -257,7 +257,7 @@ div.summondbrecommendations h2 {
 
 div.summondbrecommendations a.singleLink {
 	font-weight:bold;
-}}
+}
 
 /* Status messages */
 #content div.info,
@@ -280,9 +280,18 @@ div.summondbrecommendations a.singleLink {
 	color: white;
 }
 
+/* MyList sidebar */
 #sidebar .listWithCounter ul li a {
 	display: inline-block;
 }
 #sidebar .listWithCounter ul li .counter {
 	color:#fff;
+}
+#sidebar .subnavigation .filters {
+	background-image: none;
+	border: none;
+}
+#sidebar .subnavigation .tagList li a,
+#sidebar .subnavigation .filters li a {
+	display: inline-block;
 }
