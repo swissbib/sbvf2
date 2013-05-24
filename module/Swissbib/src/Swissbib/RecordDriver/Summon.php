@@ -47,12 +47,49 @@ class Summon extends VuFindSummon
 {
 
 	/**
+	 * @param	String	$fieldName
+	 * @param	String	$fallbackValue
+	 * @return	String
+	 */
+	private function getField($fieldName, $fallbackValue = '') {
+		return array_key_exists($fieldName, $this->fields) ? $this->fields[$fieldName] : $fallbackValue;
+	}
+
+	/**
 	 * @return 	String	Author name(s)
 	 */
 	public function getAuthor() {
-		$author = array_key_exists('Author', $this->fields) ? $this->fields['Author'] : '-';
+		$author = $this->getField('Author', '-');
 
 		return is_array($author) ? implode(', ', $author) : $author;
+	}
+
+	/**
+	 * @return	Array
+	 */
+	private function getLinkModel() {
+		return $this->getField('LinkModel');
+	}
+
+	/**
+	 * @return	Array
+	 */
+	public function getURI() {
+		return $this->getField('URI');
+	}
+
+	/**
+	 * @return	Boolean
+	 */
+	public function hasDirectLink() {
+		return in_array('DirectLink', $this->getLinkModel());
+	}
+
+	/**
+	 * @return	Boolean
+	 */
+	public function hasFulltext() {
+		return 1 === intval($this->getField('hasFullText'));
 	}
 
 }

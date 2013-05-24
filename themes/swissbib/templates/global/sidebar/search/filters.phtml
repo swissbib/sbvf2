@@ -1,10 +1,10 @@
 <?php
 
-$filters	= $this->params->getFilterList();
-/** @var	Vufind\Search\Base\Results	$results  */
-$results	= $this->results;
-/** @var	VuFind\Search\UrlQueryHelper	$urlQuery  */
-$urlQuery	= $results->getUrlQuery();
+	$filters	= $this->params->getFilterList();
+	/** @var	Vufind\Search\Base\Results	$results  */
+	$results	= $this->results;
+	/** @var	VuFind\Search\UrlQueryHelper	$urlQuery  */
+	$urlQuery	= $results->getUrlQuery();
 
 ?>
 
@@ -21,6 +21,7 @@ $urlQuery	= $results->getUrlQuery();
 			<?php
 				$firstItem	= reset($filterValues);
 				$filterType	= $firstItem['field'];
+				$filterLabel= $this->translate($filterLabel);
 			?>
 			<!-- filter -->
 			<div class="filter" id="filter_<?=$filterType?>">

@@ -38,12 +38,11 @@ swissbib.AdvancedSearch = {
 	 *
 	 */
 	initFromSearchDetails: function() {
-		var firstGroupIndex, newField, firstGroup,
-			that = this;
+		var firstGroupIndex, newField, that = this;
 
-		if( this.searchDetails ) {
+		if( this.searchDetails.length ) {
 			jQuery.each(this.searchDetails, function(groupIndex, searchGroup) {
-				jQuery.each(searchGroup.group, function(searchIndex, search) {
+				jQuery.each(searchGroup, function(searchIndex, search) {
 					if( searchIndex == 0 ) {
 						groupIndex	= that.addGroup(search.lookfor, search.field, search.bool);
 					} else {

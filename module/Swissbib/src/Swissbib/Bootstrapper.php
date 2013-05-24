@@ -56,6 +56,7 @@ class Bootstrapper
 	 */
 	protected function initFilterChain()
 	{
+		return; // Disabled because of IE problem
 		if (!$this->event->getRequest() instanceof ConsoleRequest) {
 			$sm = $this->event->getApplication()->getServiceManager();
 
