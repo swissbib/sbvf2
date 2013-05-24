@@ -253,7 +253,7 @@ abstract class AbstractBase implements \VuFind\Db\Table\DbTableAwareInterface,
 
 		// Parse tags (workaround until updated to latest release)
 		// @todo Remove after update (use their code on merge!)
-		$tagParser = $this->getServiceLocator()->get('VuFind\Tags');
+		$tagParser = new \VuFind\Tags;
 		$tags = isset($params['mytags']) ? is_array($params['mytags']) ? $params['mytags'] : $tagParser->parse($params['mytags']) : array();
 
         // Add the information to the user's account:

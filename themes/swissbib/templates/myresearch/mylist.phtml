@@ -111,10 +111,9 @@ $this->render('myresearch/sidebar/wrap.phtml', array(
 							</tr>
 							</thead>
 							<tbody>
-							<?php $i = 0; ?>
-							<?php foreach ($this->results->getResults() as $index => $current): ?>
-								<?php $current->position = $this->results->getStartRecord() + $index; ?>
-								<?= $this->record($current)->getListEntry($list, $account->isLoggedIn()) ?>
+							<?php foreach ($this->results->getResults() as $index => $favoriteItem): ?>
+								<?php $favoriteItem->position = $this->results->getStartRecord() + $index; ?>
+								<?= $this->record($favoriteItem)->getListEntry($list, $account->isLoggedIn()) ?>
 							<?php endforeach; ?>
 							</tbody>
 						</table>
