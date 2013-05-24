@@ -265,6 +265,8 @@ div.summondbrecommendations a.singleLink {
 	display: block;
 	width: 80%;
 	margin-top: 20px;
+	margin-bottom: 20px;
+	margin-right: 100px;
 	padding: 5px;
 	font-size: 12px;
 	text-indent: 30px;
@@ -280,6 +282,33 @@ div.summondbrecommendations a.singleLink {
 	color: white;
 }
 
+/* MyList */
+input.selectAllCheckboxes {
+	float: left;
+	margin-right: 10px;
+}
+
+form[name="editListForm"] > label,
+form[name="saveRecord"] label,
+form[name="newList"] label {
+	float: none;
+}
+form[name="editListForm"] fieldset input,
+form[name="newList"] fieldset input {
+	float: left;
+}
+
+form[name="bulkActionForm"] span,
+form[name="bulkActionForm"] label {
+	font-size: 12px;
+}
+
+form[name="bulkActionForm"] .mail {
+	margin-left: 20px;
+}
+
+
+
 /* MyList sidebar */
 #sidebar .listWithCounter ul li a {
 	display: inline-block;
@@ -294,4 +323,18 @@ div.summondbrecommendations a.singleLink {
 #sidebar .subnavigation .tagList li a,
 #sidebar .subnavigation .filters li a {
 	display: inline-block;
+}
+
+
+
+
+
+.noLink {
+	cursor: default;
+}
+.floatleft {
+	float: left;
+}
+.displayBlock {
+	display:block;
 }
