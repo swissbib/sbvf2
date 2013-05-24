@@ -55,7 +55,7 @@ $sideFacetSet = $this->recommend->getFacetSet();
 			<?php foreach ($sideFacetSet['tags']['list'] as $thisFacet): ?>
 				<li>
 					<?php if ($thisFacet['isApplied']): ?>
-						<?= $this->escapeHtml($thisFacet['displayText']) ?>
+						<a href="javascript:void(0)" class="noLink"><?= $this->escapeHtml($thisFacet['displayText']) ?></a>
 						<img src="<?= $this->imageLink('silk/tick.png') ?>"	alt="<?= $this->transEsc('Selected') ?>"/>
 					<?php else: ?>
 						<a href="<?= $this->currentPath() . $results->getUrlQuery()->addFacet('tags', $thisFacet['value']) ?>"><?= $this->escapeHtml($thisFacet['displayText']) ?></a>
