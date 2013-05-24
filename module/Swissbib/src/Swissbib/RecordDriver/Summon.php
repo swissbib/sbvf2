@@ -100,4 +100,11 @@ class Summon extends VuFindSummon
 		return array();
 	}
 
+	/**
+	 * @todo	implement
+	 * @return string
+	 */
+	public function getAltTitle() {
+		return '';
+	}
 }
