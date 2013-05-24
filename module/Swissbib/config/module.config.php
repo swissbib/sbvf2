@@ -162,7 +162,19 @@ return array(
 			}
 		)
 	),
-	'vufind'          => array(
+	'vufind'	=> array(
+		'recorddriver_tabs'	=> array(
+			'VuFind\RecordDriver\SolrMarc' => array(
+				'tabs' => array(
+					'UserComments'	=> null // Disable user comments tab
+				)
+			),
+			'VuFind\RecordDriver\Summon' => array(
+				'tabs' => array(
+					'UserComments'	=> null // Disable user comments tab
+				)
+			)
+		),
 		// This section contains service manager configurations for all VuFind
 		// pluggable components:
 		'plugin_managers' => array(
