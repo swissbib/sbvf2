@@ -224,15 +224,16 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 				// Check match of URL hostname if any pattern configured
 			if ($targetConfig->offsetExists('patterns_url')) {
 				$patternsURL	= $targetConfig->get('patterns_url');
-				if( !empty($patternsIP) ) {
+				if( !empty($patternsURL) ) {
 					$targetPatternsUrl	= explode(',', $patternsURL);
 					$isMatchingUrl		= $UrlMatcher->isMatching($url->getHost(), $targetPatternsUrl);
 				}
 			}
 
+				// Do all given conditions match?
 			if(     (empty($patternsIP) || $isMatchingIP === true)
 				 && (empty($patternsURL) || $isMatchingUrl === true) ) {
-					// Matching target config detected
+					// Target detected
 				$this->targetKey = $targetKey;
 				$this->targetApiKey	= $targetConfig->get('apiKey');
 

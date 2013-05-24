@@ -31,13 +31,16 @@
 		<!-- end: tools -->
 	<?php endif; ?>
 
+
+	<!-- Recommendations -->
+	<? if ($activeTabKey === 'summon'): ?>
+		<?=$this->render('Recommend\SummonDatabases.phtml')?>
+	<? endif; ?>
+
+
 	<!-- data -->
 	<?=$this->render('search/list-' . $view . '.phtml')?>
 
-	<? if ($activeTabKey === 'summon'): ?>
-		<!-- $this->render('Recommend/SummonResults.phtml') -->
-
-	<?php endif; ?>
 
 	<?php if($recordTotal): ?>
 		<!-- begin: tools -->

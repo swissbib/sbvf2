@@ -1,6 +1,6 @@
 <h1>FAQ</h1>
 
-<h2>Suchen</h2>
+<h2>Suche</h2>
 <ul class="list">
     <!--
         <li><strong><i>Artikel &amp; mehr</i>: keine Treffer für Suche mit ? und ~.</strong>
@@ -25,15 +25,20 @@
                     href="http://baselbern.swissbib.ch/mobile/data/bibliotheksliste-bern.html">Bern</a>. Sucht nur in <i>Bücher
                 &amp; mehr</i>.
         </li>
+             <li><strong>Suche mit Bindestrich findet zu viele Treffer.</strong>
+            <br>Setzen Sie Anführungszeichen um die Wortkombination.
+        </li>
     -->
-    <li><strong>Suche mit Bindestrich findet zu viele Treffer.</strong>
-        <br>Setzen Sie Anführungszeichen um die Wortkombination.
+    <li><strong>Welche Felder werden in der einfachen Suche bzw. über <i>Alle Felder</i> durchsucht?<strong>
+        <br>[Noch in Arbeit].
     </li>
+
 </ul>
 
 
 <h2>Anzeige</h2>
 <ul class="list">
+    <!--
     <li><strong>Das Feld <i>Informationen zum Bestand</i> ist immer leer.</strong>
         <br>Einige Funktionen benötigen JavaScript, das scheint bei Ihnen deaktiviert zu sein?
     </li>
@@ -43,20 +48,20 @@
         oder nicht.
     </li>
 
-    <!--
-       <li><strong>Der QR-Code funktioniert nicht.</strong>
-           <br>Auf das Icon klicken, damit der Code grösser angezeigt wird.
-       </li>
-   -->
+    <li><strong>Der QR-Code funktioniert nicht.</strong>
+        <br>Auf das Icon klicken, damit der Code grösser angezeigt wird.
+    </li>
+-->
 
     <li><strong>Warum muss ich so oft klicken, bis ich die <i>Informationen zum Bestand</i> sehe?</strong>
         <br>Abkürzung: in der Trefferliste rechts die Maus über das <img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_info.gif') ?>"> halten, aus
         der angezeigten Liste auf diejenige Bibliothek klicken, die Sie interessiert.
     </li>
-
-    <li><strong>Warum sehe ich unter <i>Bücher &amp; mehr</i> Titel mit der Facette <i>Artikel</i>?</strong>
-        <br><i>Bücher &amp; mehr</i> und <i>Artikel &amp; mehr</i> sind zwei getrennte Kataloge, siehe <i><a href="about.phtml">Über swissbib</a></i>.
-    </li>
+    <!--
+      <li><strong>Warum sehe ich unter <i>Bücher &amp; mehr</i> Titel mit der Facette <i>Artikel</i>?</strong>
+          <br><i>Bücher &amp; mehr</i> und <i>Artikel &amp; mehr</i> sind zwei getrennte Kataloge, siehe <i><a href="about.phtml">Über swissbib</a></i>.
+      </li>
+    -->
 
     <li><strong>Was ist Sortierung nach Relevanz?</strong>
         <br><i>Bücher &amp; mehr:</i> Treffer in Titeln, insbesondere Zeitschriftentiteln, kommen vor solchen in
@@ -66,18 +71,19 @@
         Artikel durchsucht. Die Gewichtung kommt zusammen mit den Daten von Summon und kann von uns nicht
         beeinflusst werden.
     </li>
-    <br></ul>
+</ul>
 
-
+<!--
 <h2>Bestellen</h2>
 <ul class="list">
-    <li><strong><i>get it - sfx</i> behauptet "Full text provided ...", wenn ich auf <i>GO</i> klicke, bekomme ich aber
-        die Antwort "No results were found".</strong>
-        <br>Versuchen Sie, die Angabe bei <i>Year Volume Issue Start Page</i> zu kürzen, also z.B. nur das Jahr stehen
-        zu lassen. Oft kommen Sie dann zu einer Übersicht, aus der Sie den gesuchten Band auswählen können.<br>Wenn Sie
-        nicht im Netz der Universität Basel oder Bern angemeldet sind, führt nur der <i>get it</i>-Link zum Artikel.
-    </li>
+	<li><strong><i>get it - sfx</i> behauptet "Full text provided ...", wenn ich auf <i>GO</i> klicke, bekomme ich aber
+			die Antwort "No results were found".</strong>
+		<br>Versuchen Sie, die Angabe bei <i>Year Volume Issue Start Page</i> zu kürzen, also z.B. nur das Jahr stehen
+		zu lassen. Oft kommen Sie dann zu einer Übersicht, aus der Sie den gesuchten Band auswählen können.<br>Wenn Sie
+		nicht im Netz der Universität Basel oder Bern angemeldet sind, führt nur der <i>get it</i>-Link zum Artikel.
+	</li>
 </ul>
+-->
 
 <div class="example">Ist Ihre Frage nicht dabei? Melden Sie sich via <a href="http://swissbib-baselbern.blogspot.com">Blog</a>,
     <a href="mailto:swissbib-baselbern@unibas.ch">Email</a> oder <a href="https://twitter.com/swissbibBB">@swissbibBB</a>.
