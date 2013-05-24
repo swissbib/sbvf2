@@ -317,6 +317,10 @@ form[name="bulkActionForm"] .mail {
 	margin-left: 20px;
 }
 
+.bulkActionButtons .mail {
+	display: none; // not implemented yet
+}
+
 
 
 /* MyList sidebar */
