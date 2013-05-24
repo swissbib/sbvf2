@@ -51,6 +51,13 @@ body {
 	background-image:url(../../images/bg_header-home.gif);
 }
 
+.footer.buildnum {
+	margin:-16px auto 0;
+	width:990px;
+	color:#a4a4a4;
+	text-align:right;
+}
+
 div#search {
 	width:775px;
 	padding:20px 20px 20px 205px;
