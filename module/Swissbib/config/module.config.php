@@ -162,7 +162,22 @@ return array(
 			}
 		)
 	),
-	'vufind'          => array(
+	'vufind'	=> array(
+		'recorddriver_tabs'	=> array(
+			'VuFind\RecordDriver\SolrMarc' => array(
+				'tabs' => array(
+					'Holdings'		=> 'HoldingsILS',
+					'Description'	=> 'Description',
+					'TOC'			=> 'TOC',
+					'UserComments'	=> null, //'UserComments',
+					'Reviews'		=> 'Reviews',
+					'Excerpt'		=> 'Excerpt',
+					'HierarchyTree' => 'HierarchyTree',
+					'Map'			=> 'Map',
+					'Details'		=> 'StaffViewMARC',
+				),
+			),
+		),
 		// This section contains service manager configurations for all VuFind
 		// pluggable components:
 		'plugin_managers' => array(
