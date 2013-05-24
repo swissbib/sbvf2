@@ -1,4 +1,6 @@
-<? $searchObject = $this->recommend->getResults(); $results = $searchObject->getResults(); if (!empty($results)): ?>
+<?	$searchObject = $this->params; //recommend->getResults();
+	//$results = $searchObject->getResults();
+	if (!empty($results)): ?>
 <div class="sidegroup">
   <h4><?=$this->transEsc('Summon Results')?></h4>
   
@@ -34,6 +36,10 @@
     </li>
     <? endforeach; ?>
   </ul>
-  <p><a href="<?=$this->url($searchObject->getOptions()->getSearchAction()) . $searchObject->getUrlQuery()->setLimit($searchObject->getOptions()->getDefaultLimit())?>"><?=$this->transEsc('More Summon results')?>...</a></p>
+  <p>
+	  <a href="<?=$this->url($searchObject->getOptions()->getSearchAction()) . $results->getUrlQuery()->setLimit($searchObject->getOptions()->getDefaultLimit())?>">
+		  <?=$this->transEsc('More Summon results')?>...
+	  </a>
+  </p>
 </div>
 <? endif ?>

@@ -1,4 +1,11 @@
 <div>
 	<?=$this->render($this->tabTemplate('search/sidebar/filters', $this->activeTabKey))?>
 	<?=$this->render($this->tabTemplate('search/sidebar/facets', $this->activeTabKey))?>
+
+	<? if ($activeTabConfig['searchClassId'] === 'Summon'): ?>
+			<?=$this->render('Recommend\SummonResults.phtml')?>
+		<? endif; ?>
+	<div>
+
+	</div>
 </div>
