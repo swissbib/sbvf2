@@ -1,5 +1,5 @@
 <?php
-namespace SwissbibTest\RecordDriver;
+namespace SwissbibTest\TargetsProxy;
 
 use SwissbibTest\TargetsProxy\TargetsProxyTestCase;
 
@@ -12,7 +12,8 @@ class IpMatcherTest extends TargetsProxyTestCase
 
 	public function setUp()
 	{
-		$this->initialize('C:/xampp/htdocs/vufind/module/Swissbib/test/SwissbibTest/TargetsProxy/config_detect_ip.ini');
+		$path	= getcwd() . '/SwissbibTest/TargetsProxy';
+		$this->initialize( $path . '/config_detect_ip.ini');
 	}
 
 	/**
@@ -65,10 +66,6 @@ class IpMatcherTest extends TargetsProxyTestCase
 		$this->assertEquals('apiKeyIpSection', $this->targetsProxy->getTargetApiKey());
 	}
 
-
-
-
-
 	/**
 	 * Test single IP address match (exact) from comma separated list of patterns
 	 */
@@ -80,6 +77,32 @@ class IpMatcherTest extends TargetsProxyTestCase
 		$this->assertTrue($proxyDetected);
 		$this->assertEquals('Target_Ip_Single_CSV', $this->targetsProxy->getTargetKey());
 		$this->assertEquals('apiKeyIpSingleCSV', $this->targetsProxy->getTargetApiKey());
+	}
+
+	/**
+	 * Test wildcard IP address match from comma separated list of patterns
+	 */
+	public function testIpAddressWildcardCSV()
+	{
+		$proxyDetected = $this->targetsProxy->detectTarget('125.0.2.3', 'unibas.swissbib.ch');
+
+		$this->assertInternalType('bool', $proxyDetected);
+		$this->assertTrue($proxyDetected);
+		$this->assertEquals('Target_Ip_Wildcard_CSV', $this->targetsProxy->getTargetKey());
+		$this->assertEquals('apiKeyIpWildcardCSV', $this->targetsProxy->getTargetApiKey());
+	}
+
+	/**
+	 * Test wildcard IP address match from comma separated list of patterns
+	 */
+	public function testIpAddressSectionCSV()
+	{
+		$proxyDetected = $this->targetsProxy->detectTarget('150.0.0.0', 'unibas.swissbib.ch');
+
+		$this->assertInternalType('bool', $proxyDetected);
+		$this->assertTrue($proxyDetected);
+		$this->assertEquals('Target_Ip_Section_CSV', $this->targetsProxy->getTargetKey());
+		$this->assertEquals('apiKeyIpSectionCSV', $this->targetsProxy->getTargetApiKey());
 	}
 
 }
