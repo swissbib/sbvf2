@@ -248,5 +248,13 @@ ul.facet_toggler_checkbox li {
 div.summondbrecommendations {
 	padding:5px 10px 10px 10px;
 	margin-bottom:10px;
-	background-color:#fff;
+	background-color:#d4d4d4;
+}
+
+div.summondbrecommendations h2 {
+	margin-bottom:14px;
+}
+
+div.summondbrecommendations a.singleLink {
+	font-weight:bold;
 }
