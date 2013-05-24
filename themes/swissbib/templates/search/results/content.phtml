@@ -31,27 +31,15 @@
 		<!-- end: tools -->
 	<?php endif; ?>
 
+
+
 	<? if ($activeTabKey === 'summon'): ?>
-		<!-- Summons Database Recommendations -->
-		<?	/** @var	\VuFind\Search\Summon\Results	$results */
-		$summonDatabases = $results->getDatabaseRecommendations(); if (!empty($summonDatabases)): ?>
-		<?php if(count($summonDatabases)>0): ?>
-			<div class="authorbox summondbrecommendations">
-			  <h3><?=$this->transEsc('summon_database_recommendations')?></h3>
-			  <? foreach ($summonDatabases as $current): ?>
-				<p>
-					<a href="<?=$this->escapeHtml($current['link'])?>"><?=$this->escapeHtml($current['title'])?></a><br/>
-					<?=$this->escapeHtml($current['description'])?>
-				</p>
-			  <? endforeach; ?>
-			</div>
-		<? endif; ?>
+		<?=$this->render('Recommend\SummonDatabases.phtml')?>
 	<? endif; ?>
 
 	<!-- data -->
 	<?=$this->render('search/list-' . $view . '.phtml')?>
 
-	<?php endif; ?>
 
 	<?php if($recordTotal): ?>
 		<!-- begin: tools -->
