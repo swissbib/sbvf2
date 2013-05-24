@@ -244,6 +244,16 @@ ul.facet_toggler_checkbox li {
 	cursor: default;
 }
 
+#treeSearch #treeSearchText {
+	width: 70%;
+	padding: 1px;
+}
+
+
+#hierarchyTree {
+	min-height: 0;
+}
+
 /** ------------ Recommendations --------------- */
 div.summondbrecommendations {
 	padding:5px 10px 10px 10px;

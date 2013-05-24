@@ -33,9 +33,7 @@ if( isset($this->dateRangeLimit) ) {
 			<div class="fieldbox">
 
 				<?php foreach($facetGroup as $facet): ?>
-					<?php
-						$fieldKey	= str_replace(' ', '', $facet['field']);
-					?>
+					<?php $fieldKey	= str_replace(' ', '', $facet['field']); ?>
 
 					<label for="limit_<?=$this->escapeHtml($fieldKey)?>" class="label"><?=$this->transEsc($facet['list']['label'])?></label>
 					<select id="limit_<?=$this->escapeHtml($fieldKey)?>" name="filter[]" class="select multiple" multiple="multiple">
@@ -44,19 +42,26 @@ if( isset($this->dateRangeLimit) ) {
 							// Sort the current facet list alphabetically; we'll use this data
 							// along with the foreach below to display facet options in the
 							// correct order.
-							$sorted = array();
+							// These facet items will be translated using the translation mechanism
+							// of ZF2 instead of the translation mechanism of VuFind.
+							$sorted	= array();
 							$customTranslate = array(
 								'institution' => 'institution',
 								'union'		  => 'group'
 							);
 							foreach($facet['list']['list'] as $index => $value) {
-								$sorted[$index] = isset($customTranslate[$facet['field']]) ? $this->zendTranslate($value['displayText'], $customTranslate[$facet['field']]) : $this->translate($value['displayText']);
+								$sorted[$index] = isset($customTranslate[$facet['field']]) ?
+									$this->zendTranslate($value['displayText'], $customTranslate[$facet['field']])
+								:	$this->translate($value['displayText']);
 							}
 							natcasesort($sorted);
 						?>
-						<?php foreach($sorted as $index => $display): ?>
+
+						<?php foreach($sorted as $index => $display): /* Render options of current facet's selector */ ?>
 							<?php $value = $facet['list']['list'][$index]; ?>
-							<option value='<?=$this->escapeHtml($facet['field'] . ':"' . $value['value'] . '"')?>' <?=(isset($value['selected']) && $value['selected']) ? ' selected="selected"' : ''?>><?=$this->escapeHtml($display)?></option>
+							<option value='<?=$this->escapeHtml($facet['field'] . ':"' . $value['value'] . '"')?>' <?=(isset($value['selected']) && $value['selected']) ? ' selected="selected"' : ''?>>
+								<?=$this->escapeHtml($display)?>
+							</option>
 						<?php endforeach; ?>
 
 					</select>
