@@ -146,7 +146,8 @@ return array(
 			'SortAndPrepareFacetList' => 'Swissbib\View\Helper\SortAndPrepareFacetList',
 			'subjectVocabularies'	  => 'Swissbib\View\Helper\SubjectVocabularies',
 			'tabTemplate'			  => 'Swissbib\View\Helper\TabTemplate',
-			'zendTranslate'           => 'Zend\I18n\View\Helper\Translate'
+			'zendTranslate'           => 'Zend\I18n\View\Helper\Translate',
+			'latestGitTag'            => 'Swissbib\View\Helper\LatestGitTag'
 		),
 		'factories' => array(
 			'institutionSorter' => function ($sm) {
