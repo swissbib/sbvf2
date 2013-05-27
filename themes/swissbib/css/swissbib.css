@@ -319,7 +319,7 @@ form[name="bulkActionForm"] .mail {
 }
 
 .bulkActionButtons .mail {
-	display: none; // not implemented yet
+	display: none; /* not implemented yet */
 }
 
 
