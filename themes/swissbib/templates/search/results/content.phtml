@@ -32,7 +32,7 @@
 
 
 	<!-- Recommendations -->
-	<? if ($activeTabConfig['searchClassId'] === 'Summon'): ?>
+	<? if (isset($activeTabConfig) && $activeTabConfig['searchClassId'] === 'Summon'): ?>
 		<?=$this->render('Recommend/SummonDatabases.phtml')?>
 	<? endif; ?>
 

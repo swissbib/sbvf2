@@ -1,11 +1,18 @@
 <?php
-$facetDefaultLimit = $this->facetConfig->get('facet_limit_default'); // initially shown
-?>
-<?php foreach ($facetList as $facetGroup => $facetGroupData): /* Iterate over facet groups (topic, author, language, ... */ ?>
+
+	$facetDefaultLimit = $this->facetConfig ? $this->facetConfig->get('facet_limit_default') : 20; // initially shown
+	foreach ($facetList as $facetGroup => $facetGroupData): /* Iterate over facet groups (topic, author, language, ... */ ?>
+
 	<?php
 	$facetId         = strtolower($facetGroup);
 	$facetGroupLabel = $facetGroupData['label'];
-	$facetGroupItems = $this->SortAndPrepareFacetList($results, $facetGroup, $facetGroupData['list'], $basicSearch, array('tab' => ucfirst($this->activeTabKey)));
+	$facetGroupItems = $this->SortAndPrepareFacetList(
+		$results,
+		$facetGroup,
+		$facetGroupData['list'],
+		$basicSearch,
+		array('tab' => ucfirst($this->activeTabKey))
+	);
 	?>
 	<!-- facet start: <?=$facetGroup?> -->
 	<div class="facet" id="facet_<?= $facetId ?>">
