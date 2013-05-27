@@ -11,3 +11,16 @@
 #contextHelp {
 	display: none;
 }
+
+.noLink {
+	cursor: default;
+}
+.floatleft {
+	float: left;
+}
+.floatright {
+	float: right;
+}
+.displayBlock {
+	display:block;
+}
