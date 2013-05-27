@@ -66,8 +66,7 @@ class Bootstrapper
 	 */
 	protected function initFilterChain()
 	{
-		return;
-		if (!$this->event->getRequest() instanceof ConsoleRequest) {
+		if (APPLICATION_ENV == 'development' && !$this->event->getRequest() instanceof ConsoleRequest) {
 			$sm = $this->event->getApplication()->getServiceManager();
 
 			$widgetFilter = new TemplateFilenameFilter();
