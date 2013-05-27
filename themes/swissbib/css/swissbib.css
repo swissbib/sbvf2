@@ -350,16 +350,10 @@ form[name="bulkActionForm"] .mail {
 
 
 
-
-.noLink {
-	cursor: default;
+/* Disable favorites search in search box */
+#search_favorites {
+	display: none;
 }
-.floatleft {
-	float: left;
-}
-.floatright {
-	float: right;
-}
-.displayBlock {
-	display:block;
+label[for="search_favorites"] {
+	display: none !important;
 }
