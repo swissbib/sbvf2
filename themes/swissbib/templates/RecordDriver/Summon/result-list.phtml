@@ -18,6 +18,7 @@ $hasDirectLink	= $resultItem->hasDirectLink();
 $directLinkUris	= $hasDirectLink ? $resultItem->getURI() : '';
 
 $hasFullText	= $resultItem->hasFulltext();
+$favoriteLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
 
 ?>
 
@@ -26,7 +27,7 @@ $hasFullText	= $resultItem->hasFulltext();
 	<td class="small center nodivider"><?=$this->recordIndex?></td>
     <!-- Column 2: Memo list -->
 	<td class="nodivider">
-		<a href="#" class="icon_notepad_add" title="Zur Merkliste hinzufügen">Zur Merkliste hinzufügen</a>
+		<a href="<?=$favoriteLink?>" class="icon_notepad_add"><?=$this->transEsc('Add to favorites')?></a>
 	</td>
     <!-- Column 3: Teaser-image / Thumbnail -->
 	<td class="right nodivider">

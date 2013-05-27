@@ -1,4 +1,8 @@
 <?php
+if (!isset($active)) {
+	$active = '';
+}
+
 $staticItems = array(
     'searchSettings' => array(
         'route'	=> 'search-settings',
@@ -16,16 +20,17 @@ $staticItems = array(
 		'class'	=> ''
 	)
 );
-if( isset($staticItems[$this->active]) ) {
-	$staticItems[$this->active]['class'] = 'selected';
+
+if( isset($staticItems[$active]) ) {
+	$staticItems[$active]['class'] = 'selected';
 }
 
 $locationItems	= array();
-$activeLocation	= !isset($staticItems[$this->active]) && isset($this->location) ? $this->location : '';
+$activeLocation	= !isset($staticItems[$active]) && isset($this->location) ? $this->location : '';
 
 $locations	= array(
 	'baselbern'	=> 'Basel / Bern',
-	'luzern'	=> 'Luzern'
+//	'luzern'	=> 'Luzern'
 );
 
 $locationSubItems = array(
@@ -59,7 +64,7 @@ foreach($locations as $locationKey => $locationLabel) {
 				)
 			), $subItem);
 
-			if( $subKey === $this->active ) {
+			if( $subKey === $active ) {
 				$locationMenuItem['sub'][$subKey]['class'] .= 'selected';
 			}
 		}
@@ -90,3 +95,9 @@ $menuItems = $staticItems + $locationItems;
 
 	</ul>
 </div>
+
+<?php if (isset($results)): ?>
+	<?php  foreach ($this->results->getRecommendations('side') as $current): ?>
+	  <?=$this->recommend($current)?>
+	<?php endforeach; ?>
+<?php endif; ?>

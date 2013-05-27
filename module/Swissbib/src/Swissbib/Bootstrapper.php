@@ -66,6 +66,7 @@ class Bootstrapper
 	 */
 	protected function initFilterChain()
 	{
+		return;
 		if (!$this->event->getRequest() instanceof ConsoleRequest) {
 			$sm = $this->event->getApplication()->getServiceManager();
 

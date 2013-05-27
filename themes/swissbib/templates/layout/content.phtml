@@ -1,0 +1,26 @@
+<!-- begin: col1 (sidebar)  -->
+<div id="col1" class="sidebar">
+	<div id="col1_content" class="clearfix">
+		<!-- begin: sidebar -->
+		<?php if (isset($sidebarTemplate)): ?>
+			<?php $tabKey = isset($activeTabKey) ? $this->activeTabKey : ''; ?>
+			<?=$this->render($this->tabTemplate($sidebarTemplate, $tabKey));?>
+		<?php endif; ?>
+		<!-- end: sidebar -->
+	</div>
+</div>
+<!-- end: col1 (sidebar) -->
+
+<!-- begin: col3 (content) -->
+<div id="col3" class="content">
+	<div id="col3_content" class="clearfix">
+		<!-- begin: content -->
+		<div id="content">
+			<?=$this->content?>
+		</div>
+		<!-- end: content -->
+	</div>
+	<div id="ie_clearing">
+		&nbsp;
+	</div>
+</div>

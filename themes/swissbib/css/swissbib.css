@@ -268,3 +268,98 @@ div.summondbrecommendations h2 {
 div.summondbrecommendations a.singleLink {
 	font-weight:bold;
 }
+
+/* Status messages */
+#content div.info,
+#content div.error {
+	display: block;
+	width: 80%;
+	margin-bottom: 20px;
+	margin-right: 100px;
+	padding: 5px;
+	font-size: 12px;
+	text-indent: 30px;
+	line-height: 14px;
+	background-position: 5px 5px;
+	font-weight: bold;
+	float: none;
+	cursor: default;
+}
+#content div.error {
+	background-color: red;
+}
+#content div.info {
+	background-color: green;
+	color: white;
+}
+
+/* MyList */
+input.selectAllCheckboxes {
+	float: left;
+	margin-right: 10px;
+}
+
+form[name="editListForm"] > label,
+form[name="saveRecord"] label,
+form[name="newList"] label {
+	float: none;
+}
+form[name="editListForm"] fieldset input,
+form[name="newList"] fieldset input {
+	float: left;
+}
+
+form[name="bulkActionForm"] span,
+form[name="bulkActionForm"] label {
+	font-size: 12px;
+}
+
+form[name="bulkActionForm"] .mail {
+	margin-left: 20px;
+}
+
+.bulkActionButtons .mail {
+	display: none; // not implemented yet
+}
+
+
+
+/* MyList sidebar */
+#sidebar .listWithCounter ul li a {
+	display: inline-block;
+}
+#sidebar .listWithCounter ul li .counter {
+	color:#fff;
+}
+#sidebar .subnavigation .filters {
+	background-image: none;
+	border: none;
+}
+#sidebar .subnavigation .tagList li a,
+#sidebar .subnavigation .filters li a {
+	display: inline-block;
+}
+
+#popupDetails {
+	padding-top: 20px;
+}
+
+#popupDetails .info {
+	height: auto;
+}
+
+
+
+
+.noLink {
+	cursor: default;
+}
+.floatleft {
+	float: left;
+}
+.floatright {
+	float: right;
+}
+.displayBlock {
+	display:block;
+}

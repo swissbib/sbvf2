@@ -1,0 +1,112 @@
+<?
+// Set page title.
+$this->headTitle($this->translate('Save'));
+
+// Set up breadcrumbs:
+//    $this->layout()->breadcrumbs = $this->getLastSearchLink($this->transEsc('Search'), '', '<span>&gt;</span>') .
+//        $this->recordLink()->getBreadcrumb($this->driver) . '<span>&gt;</span><em>' . $this->transEsc('Save') . '</em>';
+
+$showLists = (!empty($this->nonContainingLists) || (empty($this->containingLists) && empty($this->nonContainingLists)));
+
+?>
+<!-- begin: col1 (sidebar)  -->
+<div id="col1" class="sidebar">
+	<div id="col1_content" class="clearfix">
+		<!-- begin: sidebar -->
+		Sidebar für Record
+		<!-- end: sidebar -->
+	</div>
+</div>
+<!-- end: col1 (sidebar) -->
+
+<!-- begin: col3 (content) -->
+<div id="col3" class="content">
+	<div id="col3_content" class="clearfix">
+		<!-- begin: content -->
+		<div id="content">
+
+			<h1><?= $this->transEsc("add_favorite_prefix") ?> <?= $this->escapeHtml($this->driver->getBreadcrumb()) ?> <?= $this->transEsc("add_favorite_suffix") ?></h1>
+
+			<form method="post" action="" name="saveRecord">
+				<input type="hidden" name="submit" value="1"/>
+				<input type="hidden" name="id" value="<?= $this->escapeHtml($this->driver->getUniqueId()) ?>"/>
+				<input type="hidden" name="source" value="<?= $this->escapeHtml($this->driver->getResourceSource()) ?>"/>
+
+				<?php if (!empty($this->containingLists)): ?>
+					<div class="fieldbox"></div>
+						<p><?= $this->transEsc('This item is already part of the following list/lists') ?>:</p>
+						<ul>
+							<?php foreach ($this->containingLists as $list): ?>
+								<li>
+									<a href="<?= $this->url('userList', array('id' => $list['id'])) ?>"><?= $this->escapeHtml($list['title']) ?></a>
+								</li>
+							<?php endforeach; ?>
+						</ul>
+					</div>
+				<?php endif; ?>
+
+				<?php /* Only display the list drop-down if the user has lists that do not contain
+			  this item OR if they have no lists at all and need to create a default list */
+				?>
+
+				<fieldset>
+					<?php if ($showLists): ?>
+						<div class="fieldbox">
+							<label class="displayBlock" for="save_list"><?= $this->transEsc('Choose a List') ?></label>
+							<select id="save_list" name="list">
+								<?php if ($this->nonContainingLists): ?>
+									<?php foreach ($this->nonContainingLists as $list): ?>
+										<option value="<?= $list['id'] ?>"<?php if ($list['id'] == $this->userList()->lastUsed()): ?> selected="selected"<?php endif; ?>><?= $this->escapeHtml($list['title']) ?></option>
+									<?php endforeach; ?>
+								<?php else: ?>
+									<option value=""><?= $this->transEsc('My Favorites') ?></option>
+								<?php endif; ?>
+							</select>
+						</div>
+					<?php endif; ?>
+
+					<?php
+						$createUrl = $this->url('editList', array('id' => 'NEW'))
+									. '?recordId=' . urlencode($this->driver->getUniqueId())
+									. '&amp;recordSource=' . urlencode($this->driver->getResourceSource());
+						$createLabel = $showLists ? $this->transEsc('or create a new list') : $this->transEsc('Create a List');
+					?>
+					<div class="fieldbox">
+						<a 	href="<?=$createUrl?>"
+							class="listEdit controller<?= $this->record($this->driver)->getController() ?>"
+							title="<?= $this->transEsc('Create a List') ?>"><?=$createLabel?></a>
+					</div>
+				</fieldset>
+
+				<?php if ($showLists): ?>
+					<fieldset>
+						<div class="fieldbox">
+							<label class="displayBlock" for="add_mytags"><?= $this->transEsc('Add Tags') ?></label>
+							<input class="mainFocus" id="add_mytags" type="text" name="mytags" value="" size="50"/>
+							<p><?= $this->transEsc("add_tag_note") ?></p>
+
+							<br/>
+
+						</div>
+					</fieldset>
+
+					<fieldset>
+						<div class="fieldbox">
+							<label class="displayBlock" for="add_notes"><?= $this->transEsc('Add a Note') ?></label>
+							<textarea id="add_notes" name="notes" rows="3" cols="50"></textarea>
+						</div>
+					</fieldset>
+
+					<fieldset class="actions">
+						<input class="button" type="submit" value="<?= $this->transEsc('Save') ?>"/>
+					</fieldset>
+				<?php endif; ?>
+			</form>
+
+		</div>
+		<!-- end: content -->
+	</div>
+	<div id="ie_clearing">
+		&nbsp;
+	</div>
+</div>
