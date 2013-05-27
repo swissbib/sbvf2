@@ -93,10 +93,13 @@ class Bootstrapper
 		}
 
 		$baseDir = LOCAL_OVERRIDE_DIR . '/languages';
+
+		// Custom namespaces for zendTranslate
 		$types   = array(
-			'institution',
+			'bibinfo',
 			'group',
-			'bibinfo'
+			'institution',
+			'union'
 		);
 
 		$callback = function ($event) use ($baseDir, $types) {
