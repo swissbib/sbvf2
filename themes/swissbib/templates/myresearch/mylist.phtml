@@ -35,7 +35,9 @@ $this->render('myresearch/sidebar/wrap.phtml', array(
 		<!-- begin: content -->
 		<div id="content">
 
-			<?= $this->flashmessages() ?>
+			<div id="popupDetails">
+				<?= $this->flashmessages() ?>
+			</div>
 
 			<div>
 				<?php if (isset($list)): ?>
@@ -62,7 +64,6 @@ $this->render('myresearch/sidebar/wrap.phtml', array(
 					<h1 class="fav"><?= $this->transEsc("Your Favorites") ?></h1>
 				<?php endif; ?>
 
-
 				<?php if ($recordTotal > 0): ?>
 					<div class="tools floatbox">
 						<div class="resulthead">
@@ -75,6 +76,7 @@ $this->render('myresearch/sidebar/wrap.phtml', array(
 							<div class="floatright">
 								<?= $this->render('search/controls/sort.phtml') ?>
 							</div>
+							<?= $this->paginationControl($this->results->getPaginator(), 'Sliding', 'search/pagination.phtml', array('results' => $this->results)) ?>
 							<div class="clear"></div>
 						</div>
 					</div>
@@ -123,7 +125,7 @@ $this->render('myresearch/sidebar/wrap.phtml', array(
 						</div>
 
 					</form>
-					<?= $this->paginationControl($this->results->getPaginator(), 'Sliding', 'search/pagination.phtml', array('results' => $this->results)) ?>
+
 				<?php else: ?>
 					<p><?= $this->transEsc('You do not have any saved resources') ?></p>
 				<?php endif; ?>

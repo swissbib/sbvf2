@@ -8,10 +8,10 @@
 		<? foreach ($this->extras as $extra => $value): ?>
 			<input type="hidden" name="<?= $this->escapeHtml($extra) ?>" value="<?= $this->escapeHtml($value) ?>"/>
 		<? endforeach; ?>
-		<input type="submit" name="confirm" value="<?= $this->transEsc('confirm_dialog_yes') ?>"/>
+		<input type="submit" name="confirm" value="<?= $this->transEsc('confirm_dialog_yes') ?>" class="button" />
 	</form>
 	<form action="<?= $this->escapeHtml($this->cancel) ?>" method="post">
-		<input type="submit" name="cancel" value="<?= $this->transEsc('confirm_dialog_no') ?>"/>
+		<input type="submit" name="cancel" value="<?= $this->transEsc('confirm_dialog_no') ?>" class="button" />
 	</form>
 
 </div>
