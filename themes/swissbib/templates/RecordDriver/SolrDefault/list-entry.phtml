@@ -52,12 +52,13 @@
 			$listNotes= $this->driver->getListNotes($list_id, $user_id);
 			$listLinks= array();
 
-
 			foreach ($listTags as $tag) {
 				$tagLinks[] = '<a href="' . $this->url('tag-home') . '?lookfor=' . urlencode($tag->tag) . '">' . $this->escapeHtml($tag->tag) . '</a>';
 			}
-			foreach ($this->lists as $current) {
-				$listLinks[] = '<a href="' . $this->url('userList', array('id' => $current->id)) . '">' . $this->escapeHtml($current->title) . '</a>';
+			if (isset($this->lists) && is_array($this->lists)) {
+				foreach ($this->lists as $current) {
+					$listLinks[] = '<a href="' . $this->url('userList', array('id' => $current->id)) . '">' . $this->escapeHtml($current->title) . '</a>';
+				}
 			}
 			?>
 			<?php if (count($tagLinks)): ?>
