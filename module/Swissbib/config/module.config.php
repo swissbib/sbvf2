@@ -147,7 +147,7 @@ return array(
 			'subjectVocabularies'	  => 'Swissbib\View\Helper\SubjectVocabularies',
 			'tabTemplate'			  => 'Swissbib\View\Helper\TabTemplate',
 			'zendTranslate'           => 'Zend\I18n\View\Helper\Translate',
-			'latestGitTag'            => 'Swissbib\View\Helper\LatestGitTag'
+			'getVersion'              => 'Swissbib\View\Helper\GetVersion'
 		),
 		'factories' => array(
 			'institutionSorter' => function ($sm) {
