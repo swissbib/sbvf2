@@ -235,6 +235,11 @@ return array(
 						);
 					}
 				)
+			),
+			'hierarchy_treerenderer' => array(
+				'invokables' => array(
+					'jstree' => 'Swissbib\VuFind\Hierarchy\TreeRenderer\JSTree',
+				)
 			)
 		)
 	),
