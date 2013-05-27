@@ -23,12 +23,13 @@ $groupID				= $resultItem->getGroup(true);
 
 $publicationDate		= $this->publicationDateMarc($resultItem->getPublicationDates());
 $openUrl				= $this->driver->openURLActive('record') ? $this->driver->getOpenURL() : false;
+$favoriteLink			= $this->recordLink()->getActionUrl($this->driver, 'Save');
 
 ?>
 <?/* Common parts of recordDriver's core.phtml templates*/?>
 <!-- col -->
 <div class="c25l">
-	<a title="Zur Merkliste hinzufügen" class="icon_notepad_add_link" href="#">
+	<a title="<?=$this->transEsc('Add to favorites')?>" class="icon_notepad_add_link" href="<?=$favoriteLink?>">
 		<img src="<?=$thumbnailSrc?>" class="dropshadow"/>
 	</a>
 </div>

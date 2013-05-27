@@ -1,0 +1,69 @@
+<?php
+$results = $this->recommend->getResults();
+$sideFacetSet = $this->recommend->getFacetSet();
+
+?>
+
+<?php if (isset($sideFacetSet['lists']) && !empty($sideFacetSet['lists']['list'])): ?>
+	<h3 class="list"><?= $this->transEsc($sideFacetSet['lists']['label']) ?></h3>
+
+	<div class="subnavigation favorites listWithCounter">
+		<ul>
+			<?php foreach ($sideFacetSet['lists']['list'] as $current): ?>
+				<li class="<?=($current['isApplied']?'selected':'')?>">
+					<?php if ($current['isApplied']): ?>
+						<a href="javascript:void(0)" style="cursor:default;"><?= $this->escapeHtml($current['displayText']) ?></a>
+					<?php else: ?>
+						<a href="<?= $this->url('userList', array('id' => $current['value'])) ?>"><?= $this->escapeHtml($current['displayText']) ?></a>
+					<?php endif; ?>
+					<span class="counter">(<?= $this->escapeHtml($current['count']) ?>)</span>
+				</li>
+			<?php endforeach; ?>
+		</ul>
+	</div>
+<?php endif; ?>
+
+<?php if (isset($sideFacetSet['tags']) && !empty($sideFacetSet['tags']['list'])): ?>
+	<?php
+		$filterList 	= $results->getParams()->getFilterList(true);
+		$tagFilterList  = isset($filterList[$sideFacetSet['tags']['label']]) ? $filterList[$sideFacetSet['tags']['label']] : null;
+		$removeLabel    = $sideFacetSet['tags']['label'];
+	?>
+
+	<h3 class="tag"><?= $this->transEsc($sideFacetSet['tags']['label']) ?></h3>
+
+	<?php if (!empty($tagFilterList)): ?>
+		<strong><?= $this->transEsc('Remove Filters') ?></strong>
+		<div class="subnavigation">
+			<ul class="filters">
+
+				<?php foreach ($tagFilterList as $filter): ?>
+					<?php $removeLink = $this->currentPath() . $results->getUrlQuery()->removeFacet($filter['field'], $filter['value']); ?>
+					<li>
+						<a href="<?= $removeLink ?>">
+							<img src="<?= $this->imageLink('silk/delete.png') ?>" alt="<?= $this->transEsc('Delete') ?>"/>
+						</a>
+						<a href="<?= $removeLink ?>"><?= $this->transEsc($removeLabel) ?>: <?= $this->escapeHtml($filter['displayText']) ?></a>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</div>
+	<?php endif; ?>
+
+	<div class="subnavigation tagList listWithCounter">
+		<ul>
+			<?php foreach ($sideFacetSet['tags']['list'] as $thisFacet): ?>
+				<li>
+					<?php if ($thisFacet['isApplied']): ?>
+						<a href="javascript:void(0)" class="noLink"><?= $this->escapeHtml($thisFacet['displayText']) ?></a>
+						<img src="<?= $this->imageLink('silk/tick.png') ?>"	alt="<?= $this->transEsc('Selected') ?>"/>
+					<?php else: ?>
+						<a href="<?= $this->currentPath() . $results->getUrlQuery()->addFacet('tags', $thisFacet['value']) ?>"><?= $this->escapeHtml($thisFacet['displayText']) ?></a>
+						<span class="counter">(<?= $this->escapeHtml($thisFacet['count']) ?>)</span>
+					<?php endif; ?>
+				</li>
+			<?php endforeach; ?>
+		</ul>
+	</div>
+
+<?php endif; ?>

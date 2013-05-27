@@ -47,64 +47,86 @@ class Summon extends VuFindSummon
 {
 
 	/**
-	 * @param	String	$fieldName
-	 * @param	String	$fallbackValue
-	 * @return	String
+	 * @param    String $fieldName
+	 * @param    String $fallbackValue
+	 * @return    String
 	 */
-	private function getField($fieldName, $fallbackValue = '') {
+	private function getField($fieldName, $fallbackValue = '')
+	{
 		return array_key_exists($fieldName, $this->fields) ? $this->fields[$fieldName] : $fallbackValue;
 	}
 
+
+
 	/**
-	 * @return 	String	Author name(s)
+	 * @return    String    Author name(s)
 	 */
-	public function getAuthor() {
+	public function getAuthor()
+	{
 		$author = $this->getField('Author', '-');
 
 		return is_array($author) ? implode(', ', $author) : $author;
 	}
 
+
+
 	/**
-	 * @return	Array
+	 * @return    Array
 	 */
-	private function getLinkModel() {
+	private function getLinkModel()
+	{
 		return $this->getField('LinkModel');
 	}
 
+
+
 	/**
-	 * @return	Array
+	 * @return    Array
 	 */
-	public function getURI() {
+	public function getURI()
+	{
 		return $this->getField('URI');
 	}
 
+
+
 	/**
-	 * @return	Boolean
+	 * @return    Boolean
 	 */
-	public function hasDirectLink() {
+	public function hasDirectLink()
+	{
 		return in_array('DirectLink', $this->getLinkModel());
 	}
 
+
+
 	/**
-	 * @return	Boolean
+	 * @return    Boolean
 	 */
-	public function hasFulltext() {
+	public function hasFulltext()
+	{
 		return 1 === intval($this->getField('hasFullText'));
 	}
 
+
+
 	/**
-	 * @todo	implement
-	 * @return	array
+	 * @todo    implement
+	 * @return    array
 	 */
-	public function getAllSubjectVocabularies() {
+	public function getAllSubjectVocabularies()
+	{
 		return array();
 	}
 
+
+
 	/**
-	 * @todo	implement
+	 * @todo    implement
 	 * @return string
 	 */
-	public function getAltTitle() {
+	public function getAltTitle()
+	{
 		return '';
 	}
 }
