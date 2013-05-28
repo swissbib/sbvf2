@@ -54,6 +54,11 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 	 */
 	protected $targetApiKey	= false;
 
+	/**
+	 * @var	Boolean|String
+	 */
+	protected $targetApiId = false;
+
 
 
 	/**
@@ -187,7 +192,8 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 	 */
 	public function detectTarget($overrideIP = '', $overrideHost = '')
 	{
-		$this->targetKey = false;	// Key of detected target config
+		$this->targetKey	= false;	// Key of detected target config
+		$this->targetApiId	= false;
 		$this->targetApiKey	= false;
 
 		$targetKeys	= explode(',', $this->config->get('TargetsProxy')->get('targetKeys' . $this->searchClass));
@@ -235,7 +241,13 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 				 && (empty($patternsURL) || $isMatchingUrl === true) ) {
 					// Target detected
 				$this->targetKey = $targetKey;
-				$this->targetApiKey	= $targetConfig->get('apiKey');
+
+					// Get API ID and key from config.ini (only local)
+				/** @var \Zend\Config\Config $vfConfig */
+				$vfConfig = $this->serviceLocator->get('VuFind\Config')->get('config')->toArray();
+
+				$this->targetApiId	= $vfConfig[$this->targetKey]['apiID'];
+				$this->targetApiKey	= $vfConfig[$this->targetKey]['apiKey'];
 
 				return true;
 			}
@@ -262,6 +274,14 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 	public function getTargetApiKey()
 	{
 		return $this->targetApiKey;
+	}
+
+	/**
+	 * @return bool|String
+	 */
+	public function getTargetApiId()
+	{
+		return $this->targetApiId;
 	}
 
 }

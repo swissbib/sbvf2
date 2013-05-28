@@ -61,9 +61,10 @@ class SummonBackendFactory extends \VuFind\Search\Factory\SummonBackendFactory
         $id = isset($this->config->Summon->apiId) 	? $this->config->Summon->apiId : null;
         $key = isset($this->config->Summon->apiKey)	? $this->config->Summon->apiKey : null;
 
-		$overrideKey	= $this->getOverrideApiKeyFromProxy();
-		if( $overrideKey !== false ) {
-			$key	= $overrideKey;
+		$overrideCredentials	= $this->getOverrideApiCredentialsFromProxy();
+		if( $overrideCredentials !== false ) {
+			$id	= array_key_exists('', $overrideCredentials) && !empty($overrideCredentials['apiId']) ? $overrideCredentials['apiId'] : $id;
+			$key= array_key_exists('', $overrideCredentials) && !empty($overrideCredentials['apiKey']) ? $overrideCredentials['apiKey'] : $key;
 		}
 
         // Build HTTP client:
@@ -82,17 +83,20 @@ class SummonBackendFactory extends \VuFind\Search\Factory\SummonBackendFactory
 	 *
 	 * @return	Boolean|String		false or the API key to switch to
 	 */
-	protected function getOverrideApiKeyFromProxy() {
+	protected function getOverrideApiCredentialsFromProxy() {
 		try {
 			/** @var TargetsProxy $targetsProxy */
 			$targetsProxy = $this->serviceLocator->get('Swissbib\TargetsProxy\TargetsProxy');
 			$targetsProxy->setSearchClass('Summon');
 
-			$proxyDetected = $targetsProxy->detectTarget();
-//			$proxyDetected = $targetsProxy->detectTarget('192.128.0.1', 'unibas');
+//			$proxyDetected = $targetsProxy->detectTarget();
+			$proxyDetected = $targetsProxy->detectTarget('99.0.0.0', 'snowflake.ch');
 
 			if( $proxyDetected !== false ) {
-				return $targetsProxy->getTargetApiKey();
+				return array(
+					'apiId'		=> $targetsProxy->getTargetApiId(),
+					'apiKey'	=> $targetsProxy->getTargetApiKey()
+				);
 			}
 		} catch (\Exception $e) {
 			// handle exceptions
