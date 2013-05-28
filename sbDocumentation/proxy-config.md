@@ -1,10 +1,11 @@
 # Proxy Targets Configuration
-The API key of the search can be configured to change
+The API ID and key of the search index can be configured to change
 according to detected IP-range and/or URL patterns of the client's request.
 
 
 ## Configuration File
 Proxy targets are configured in local/config/vufind/TargetsProxy.ini
+Upon detecting a target, it's API ID and API key are taken from the section with the same target key in config.ini
 
 
 ## Configuration Parameters
