@@ -15,11 +15,17 @@ class ResourceContainer extends VfResourceContainer implements ServiceLocatorAwa
 	protected $serviceLocator;
 
 
-	/**
-	 * @var    String[]        List of ignore patterns
-	 */
-	protected $ignoredFiles;
 
+    /**
+     * @var    String[]        List of ignore patterns
+     */
+    protected $ignoredCssFiles;
+
+
+    /**
+     * @var    String[]        List of ignore patterns
+     */
+    protected $ignoredJsFiles;
 
 
 	/**
@@ -31,7 +37,10 @@ class ResourceContainer extends VfResourceContainer implements ServiceLocatorAwa
 	{
 		$this->serviceLocator = $serviceLocator;
 		$config               = new Config($serviceLocator->get('Config'));
-		$this->ignoredFiles   = $config->swissbib->ignore_assets->toArray();
+		//$this->ignoredFiles   = $config->swissbib->ignore_assets->toArray();
+
+        $this->ignoredCssFiles = $config->swissbib->ignore_css_assets->toArray();
+        $this->ignoredJsFiles = $config->swissbib->ignore_js_assets->toArray();
 	}
 
 
@@ -55,34 +64,42 @@ class ResourceContainer extends VfResourceContainer implements ServiceLocatorAwa
 	 */
 	public function addCss($css)
 	{
-		$css = $this->removeIgnoredFiles($css);
+		$css = $this->removeIgnoredFiles($css,$this->ignoredCssFiles);
 
 		parent::addCss($css);
 	}
 
+    /**
+     * Remove ignored js file before they're added to the resources
+     *
+     * @param array|string $js Javascript file (or array of files) to add (possibly
+     * with extra settings from theme config appended to each filename string).
+     *
+     * @return void
+     */
+    public function addJs($js)
+    {
+        $js = $this->removeIgnoredFiles($js,$this->ignoredJsFiles);
+
+        parent::addJs($js);
+    }
 
 
-	/**
-	 * Remove ignored files
-	 *
-	 * @param    Array|String|\Traversable    $css
-	 * @return     Array|\Traversable
-	 */
-	protected function removeIgnoredFiles($css)
-	{
-		if (!is_array($css) && !is_a($css, 'Traversable')) {
-			$css = array($css);
-		}
+    protected function removeIgnoredFiles($resourcesToInspect, $resourcesToIgnore) {
+        if( !is_array($resourcesToInspect) && !is_a($resourcesToInspect, 'Traversable') ) {
+            $css = array($resourcesToInspect);
+        }
 
-		foreach ($this->ignoredFiles as $ignorePattern) {
-			foreach ($css as $index => $file) {
-				if (stristr($file, $ignorePattern) !== false) {
-					// File matches ignore pattern
-					unset($css[$index]);
-				}
-			}
-		}
+        foreach($resourcesToIgnore as $ignorePattern) {
+            foreach($resourcesToInspect as $index => $file) {
+                if( stristr($file, $ignorePattern) !== false ) {
+                    // File matches ignore pattern
+                    unset($resourcesToInspect[$index]);
+                }
+            }
+        }
 
-		return $css;
-	}
+        return $resourcesToInspect;
+    }
+
 }

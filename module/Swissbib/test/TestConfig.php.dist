@@ -3,7 +3,7 @@ return array(
 	'modules'                 => array(
 		'VuFindHttp',
 		'VuFindTheme',
-//		'VuFindTest',
+		'VuFindSearch',
 		'VuFind',
 		'Swissbib'
 	),

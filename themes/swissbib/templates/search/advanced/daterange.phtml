@@ -1,0 +1,15 @@
+<div class="fieldbox">
+	<label class="label"><?=$this->transEsc('adv_search_year')?></label>
+	<div class="vertical yearSliderBox">
+		<input type="hidden" name="daterange[]" value="<?=$this->escapeHtml($this->name)?>"/>
+
+		<label for="date_range_from"><?=$this->transEsc('date_from')?>:</label>
+		<input type="text" size="4" maxlength="4" class="yearbox text" name="<?=$this->escapeHtml($this->name)?>from" id="<?=$this->escapeHtml($this->name)?>from" value="<?=$this->escapeHtml($this->dateRangeLimit[0])?>"/>
+
+		<label for="date_range_to"><?=$this->transEsc('date_to')?>:</label>
+		<input type="text" size="4" maxlength="4" class="yearbox text" name="<?=$this->escapeHtml($this->name)?>to" id="<?=$this->escapeHtml($this->name)?>to" value="<?=$this->escapeHtml($this->dateRangeLimit[1])?>"/>
+
+		<br />
+		<div id="<?=$this->escapeHtml($this->name)?>Slider" class="dateSlider"></div>
+	</div>
+</div>

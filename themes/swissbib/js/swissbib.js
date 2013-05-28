@@ -21,6 +21,8 @@ var swissbib = {
     initOnReady: function() {
         window.DEBUG = false;	// debug flag
 
+		jQuery.migrateMute = true;
+
         	// Context elements
         var contextHeader	= $("#header");
 //        var contextSearch	= $("#search");
@@ -29,7 +31,7 @@ var swissbib = {
         var contextAll		= $("#header, #search, #main");
 
         	// Init UI elements
-        this.initBrowserFlags();
+        //this.initBrowserFlags();
 		this.initNavigation(contextHeader);
 
 //        swissbib.initAutocomplete(ctxAll);
@@ -44,9 +46,6 @@ var swissbib = {
 		this.initLinks(contextMain);
 		this.initModalNBImages(contextMain);
 		this.initAdvancedSearch();
-
-			// Init tabs (if present =after search)
-		this.initTabbed(contextMain);
 
 		this.initHints(contextMain);
 
@@ -137,41 +136,10 @@ var swissbib = {
 
     /**
      * Initializes the tabs.
-	 *
-	  @param	{Element}	ctx		Selector context
+	 * @param	{Element}	ctx		Selector context
      */
     initTabs: function(ctx) {
         $(".tabs").tabs({cookie:{expires:30}});
-    },
-
-
-
-    /**
-     * Initialize "tabbed" elements
-	 *
-	 * @param	{Element}	ctx
-     */
-    initTabbed: function(ctx) {
-		if( !$('#tabbed').is('*') ) {
-			return;
-		}
-
-			// Register already loaded tab: store it's AJAX URL (content, sidebar)
-		var containerIDs= ['content', 'sidebar'];
-
-		$.each(containerIDs, function(index, containerId) {
-			var tabId	= swissbib.getIdSelectedTab();
-			var url		= ''; //sbAjax.getTabbedUrl(tabId, "Tab" + containerId);
-
-			var fieldId	= 'ajaxuri_' + tabId + '_' + containerId;
-			$('#' + containerId + ' .' + tabId).append(
-				swissbib.createHiddenField(fieldId, url)
-			);
-		});
-			// Init "tabbed" containers
-        $("#tabbed").each(function(i, tabbed){
-            $(tabbed).tabbed({"animate":!swissbib.ie});
-        });
     },
 
 

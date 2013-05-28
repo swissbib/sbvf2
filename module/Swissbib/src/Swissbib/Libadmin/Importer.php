@@ -352,6 +352,8 @@ class Importer implements ServiceLocatorAwareInterface
 		}
 
 		$client = new HttpClient($url);
+        if (!empty($this->config->user) && !empty($this->config->password))
+            $client->setAuth($this->config->user,$this->config->password);
 
 		/** @var Response $response */
 		$response = $client->send();

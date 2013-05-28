@@ -4,6 +4,7 @@ namespace Swissbib\Controller;
 use VuFind\Controller\MyResearchController as VFMyResearchController;
 use Swissbib\VuFind\ILS\Driver\Aleph;
 use Zend\View\Model\ViewModel;
+use Zend\Http\PhpEnvironment\Response as HttpResponse;
 
 class MyResearchController extends VFMyResearchController
 {
@@ -261,5 +262,92 @@ class MyResearchController extends VFMyResearchController
 		}
 
 		return $key;
+	}
+
+
+
+	/**
+	 * Wrapper for parent
+	 *
+	 * @return mixed|HttpResponse|ViewModel
+	 */
+	public function confirmAction()
+	{
+		$viewModel = parent::confirmAction();
+
+		return $this->wrapWithContentLayout($viewModel, 'myresearch/confirm');
+	}
+
+
+
+	/**
+	 * Wrapper for parent
+	 *
+	 * @return mixed|HttpResponse|ViewModel
+	 */
+	public function editAction()
+	{
+		$viewModel = parent::editAction();
+
+		return $this->wrapWithContentLayout($viewModel, 'myresearch/edit');
+	}
+
+
+
+	/**
+	 * Wrapper for parent
+	 *
+	 * @return mixed|HttpResponse|ViewModel
+	 */
+	public function editlistAction()
+	{
+		$viewModel = parent::editlistAction();
+
+		return $this->wrapWithContentLayout($viewModel, 'myresearch/editlist');
+	}
+
+
+
+	/**
+	 * Wrapper for parent
+	 *
+	 * @return mixed|HttpResponse|ViewModel
+	 */
+	public function deleteAction()
+	{
+		$viewModel = parent::deleteAction();
+
+		return $this->wrapWithContentLayout($viewModel, 'myresearch/delete');
+	}
+
+
+
+	/**
+	 * Wrap view in basic content template
+	 *
+	 * @todo	Improve/generalize
+	 * @param ViewModel $viewModel
+	 * @param bool      $template
+	 * @return ViewModel|HttpResponse;
+	 */
+	protected function wrapWithContentLayout($viewModel, $template = false)
+	{
+		if ($viewModel instanceof HttpResponse) {
+			return $viewModel;
+		}
+		if ($viewModel->getTemplate() === 'myresearch/login') {
+			return $viewModel;
+		}
+
+		$layout	= $this->createViewModel();
+
+		if ($template) {
+			$viewModel->setTemplate($template);
+		}
+
+		$layout->setTemplate('layout/content');
+		$layout->addChild($viewModel, 'content');
+
+		return $layout;
 	}
 }

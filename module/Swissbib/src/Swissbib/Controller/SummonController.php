@@ -2,204 +2,154 @@
 
 namespace Swissbib\Controller;
 
-use VuFind\Controller\SummonController as VFSummonController;
 use Zend\Session\Container as SessionContainer;
 
+use VuFind\Solr\Utils as SolrUtils;
+
 use Swissbib\Controller\Helper\Search as SearchHelper;
+use Swissbib\Controller\SearchController;
 
-/**
- * Summon Controller
- *
- * @category VuFind2
- * @package  Controller
- * @author   Demian Katz <demian.katz@villanova.edu>
- * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org   Main Site
- */
-
-class SummonController extends VFSummonController
+class SummonController extends SearchController
 {
 
-    /**
-     * Search action
-     *
-     * @return mixed
-     */
-    public function searchAction()
-    {
-        return $this->resultsAction();
-    }
+	/**
+	 * Constructor
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+
+		$this->useResultScroller = false;
+		$this->forceTabKey       = 'summon';
+	}
+
 
 
 	/**
-	 * Get model for general results view (all tabs, content of active tab only)
+	 * Search action -- call standard results action
 	 *
-	 * @return \Zend\View\Model\ViewModel
+	 * @return mixed
 	 */
-	public function resultsAction()
+	public function searchAction()
 	{
-		// Initialize tab(s) config
-		$preloadNonSelectedTabResultCounts = !!$this->getModuleConfigParam('preload_result_tabs_counts');
-		$idSelectedTab                     = $this->getIdSelectedTab();
-		$resultTabsConfig                  = $this->getModuleConfigParam('result_tabs');
+		return $this->resultsAction();
+	}
 
-		// Init all tabs
-		$views = array();
-		foreach ($resultTabsConfig as $idTab => $tabConfig) {
-			$this->searchClassId	= $tabConfig['searchClassId'];	// Solr, Summon, WorldCat, ...
-			SearchHelper::rememberTabbedSearchURI($idTab, $this->request->getRequestUri());
 
-			if ($idTab === $idSelectedTab) {
-				// Selected tab
-				$views[$idTab]                   = parent::resultsAction();
-				$selectedView                    = $views[$idTab];
-				$tabConfig['params']['selected'] = true;
-			} else {
-				// Non-selected tabs (preload results optionally)
-				if ($preloadNonSelectedTabResultCounts) {
-					$views[$idTab] = parent::resultsAction();
-				} else {
-					$views[$idTab] = null;
+
+	/**
+	 * Get date range settings for summon
+	 * Field is named PublicationDate instead publishDate
+	 *
+	 * @param	Boolean		$savedSearch
+	 * @return	Array
+	 */
+	protected function getDateRangeSettings($savedSearch = false)
+	{
+		// Default to blank strings:
+		$from = $to = '';
+
+		// Check to see if there is an existing range in the search object:
+		if ($savedSearch) {
+			$filters = $savedSearch->getParams()->getFilters();
+			if (isset($filters['PublicationDate'])) {
+				foreach ($filters['PublicationDate'] as $current) {
+					if ($range = SolrUtils::parseRange($current)) {
+						$from = $range['from'] == '*' ? '' : $range['from'];
+						$to = $range['to'] == '*' ? '' : $range['to'];
+						$savedSearch->getParams()
+							->removeFilter('PublicationDate:' . $current);
+						break;
+					}
 				}
 			}
-
-			$resultTabsConfig[$idTab] = $this->getTabConfig($tabConfig, $views[$idTab]);
 		}
 
-		// Add view params
-		/** @var    $selectedView    \Zend\View\Model\ViewModel */
-		$selectedView->tabHeadConfigs     = $resultTabsConfig;
-		$selectedView->facetsConfig       = $this->getServiceLocator()->get('VuFind\Config')->get('facets');
-		$this->layout()->resultViewParams = $selectedView->params;
-
-		return $selectedView;
+		// Send back the settings:
+		return array($from, $to);
 	}
 
 
 
 	/**
-	 * Returns results content of single tab (called via AJAX)
+	 * Return a Search Results object containing advanced facet information.  This
+	 * data may come from the cache.
 	 *
-	 * @return \Zend\View\Model\ViewModel
+	 * @return \VuFind\Search\Summon\Results
 	 */
-	public function tabcontentAction()
+	protected function getAdvancedFacets()
 	{
-		return $this->tabAction();
-	}
+		// Check if we have facet results cached, and build them if we don't.
+		$cache = $this->getServiceLocator()->get('VuFind\CacheManager')
+				->getCache('object');
+		if (!($results = $cache->getItem('summonSearchAdvancedFacets'))) {
+			$results = $this->getResultsManager()->get('Summon');
+			$params  = $results->getParams();
+			$params->addFacet('Language,or,1,20');
+			$params->addFacet('ContentType,or,1,20', 'Format');
 
+			// We only care about facet lists, so don't get any results:
+			$params->setLimit(0);
 
+			// force processing for cache
+			$results->getResults();
 
-	/**
-	 * Returns sidebar content of single tab (called via AJAX)
-	 *
-	 * @return \Zend\View\Model\ViewModel
-	 */
-	public function tabsidebarAction()
-	{
-		return $this->tabAction();
-	}
-
-
-
-	/**
-	 * Wrapper for AJAX "tabbed" actions
-	 *
-	 * @return \Zend\View\Model\ViewModel
-	 */
-	private function tabAction()
-	{
-		$tabKey = $_REQUEST['tab'];
-
-		// Initialize tab config
-		$resultTabsConfig = $this->getModuleConfigParam('result_tabs');
-		$tabConfig        = $resultTabsConfig[$tabKey];
-		/** @var    $view    \Zend\View\Model\ViewModel */
-		$this->searchClassId = $tabConfig['searchClassId'];
-
-		$view                = parent::resultsAction();
-		$view->tabHeadConfig = $this->getTabConfig($tabConfig, $view);
-		$view->facetsConfig  = $this->getServiceLocator()->get('VuFind\Config')->get('facets');
-
-		// Add view params to layout
-		$this->layout()->resultViewParams = $view->params;
-
-		// Set the model terminal
-		$view->setTerminal(true);
-
-		return $view;
-	}
-
-
-
-	/**
-	 * Get given parameter from (given / or ) swissbib module config
-	 *
-	 * @throws \Exception
-	 * @param   String  $moduleKey
-	 * @param   String  $parameterKey
-	 * @return  Mixed
-	 */
-	private function getModuleConfigParam($parameterKey, $moduleKey = 'swissbib')
-	{
-		$config       = $this->getServiceLocator()->get('Config');
-		$moduleConfig = $config[$moduleKey];
-
-		if (!array_key_exists($parameterKey, $moduleConfig)) {
-			throw new \Exception('swissbib config param missing: ' . $parameterKey);
+			$cache->setItem('summonSearchAdvancedFacets', $results);
 		}
 
-		return $moduleConfig[$parameterKey];
+		// Restore the real service locator to the object (it was lost during
+		// serialization):
+		$results->restoreServiceLocator($this->getServiceLocator());
+		return $results;
 	}
 
 
 
 	/**
-	 * Get ID of selected tab
-	 * User pref: lastly selected tab (cookie set in jquery.tabbed.js)
-	 * Or module config: default tab (if no user pref stored yet)
+	 * Return a Search Results object containing homepage facet information.  This
+	 * data may come from the cache.
 	 *
-	 * @return  String  ID of the previously selected / default tab
+	 * @return \VuFind\Search\Summon\Results
 	 */
-	private function getIdSelectedTab()
+	protected function getHomePageFacets()
 	{
-		$idTab = null;
-
-		// Get selected tab from cookie if set
-		if (isset($_COOKIE[SearchHelper::COOKIENAME_SELECTED_TAB])) {
-			$cookieContent = $_COOKIE[SearchHelper::COOKIENAME_SELECTED_TAB];
-			$idTab         = str_replace('tabbed_', '', $cookieContent);
-		}
-
-		return !empty($idTab) ? $idTab : $this->getModuleConfigParam('default_result_tab');
+		// For now, we'll use the same fields as the advanced search screen.
+		return $this->getAdvancedFacets();
 	}
 
 
 
 	/**
-	 * Get built SbResultsTab config
+	 * Process the facets to be used as limits on the Advanced Search screen.
 	 *
-	 * @param   Array                       $tabConfig
-	 * @param   \Zend\View\Model\ViewModel  $view
-	 * @return  Array
+	 * @param array  $facetList    The advanced facet values
+	 * @param object $searchObject Saved search object (false if none)
+	 *
+	 * @return array               Sorted facets, with selected values flagged.
 	 */
-	private function getTabConfig($tabConfig, $view = null)
+	protected function processAdvancedFacets($facetList, $searchObject = false)
 	{
-		if (is_null($view)) {
-			$this->searchClassId = $tabConfig['searchClassId'];
-			$view                = null; //parent::resultsAction();
+		// Process the facets, assuming they came back
+		foreach ($facetList as $facet => $list) {
+			foreach ($list['list'] as $key => $value) {
+				// Build the filter string for the URL:
+				$fullFilter = $facet . ':"' . $value['value'] . '"';
+
+				// If we haven't already found a selected facet and the current
+				// facet has been applied to the search, we should store it as
+				// the selected facet for the current control.
+				if ($searchObject
+						&& $searchObject->getParams()->hasFilter($fullFilter)
+				) {
+					$facetList[$facet]['list'][$key]['selected'] = true;
+					// Remove the filter from the search object -- we don't want
+					// it to show up in the "applied filters" sidebar since it
+					// will already be accounted for by being selected in the
+					// filter select list!
+					$searchObject->getParams()->removeFilter($fullFilter);
+				}
+			}
 		}
-
-		/** @var $tabModel \Swissbib\ResultTab\SbResultTab */
-		$tabModel  = $tabConfig['model'];
-		$tabParams = $tabConfig['params'];
-
-		$templates = array_key_exists('templates', $tabConfig) ? $tabConfig['templates'] : array();
-
-		/** @var    \Swissbib\ResultTab\SbResultTab     $tab */
-		$tab = new $tabModel($view, $tabParams, $templates);
-
-		return $tab->getConfig();
+		return $facetList;
 	}
-
 }
-

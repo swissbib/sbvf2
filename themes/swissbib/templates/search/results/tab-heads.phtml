@@ -1,0 +1,36 @@
+<?php
+use VuFindSearch\Query\Query;
+
+/** @var VuFind\Search\Solr\Options	 $tabOptions  */
+
+$query			= $this->params->getQuery();
+$lookFor		= $query instanceof Query ? $query->getString() : '';
+$lookForQuery	= $lookFor ? '?lookfor=' . $this->escapeHtml($lookFor) : '';
+?>
+<div id="tabbed" rel="catalog">
+	<ul>
+		<?php foreach($this->allTabsConfig as $tabKey => $tab): ?>
+			<?php
+				$isActive 	= isset($tab['active']) && $tab['active'];
+
+				if (!$isActive) {
+					$tabOptions	= $this->searchOptions($tab['searchClassId']);
+					$basicSearch= $tabOptions->getSearchAction();
+					$tabUrl		= $this->url($basicSearch) . $lookForQuery;
+				} else {
+					$tabUrl		= 'javascript:void(0)';
+				}
+			?>
+			<li id="tab_<?=$tabKey?>" class="<?=($isActive ? 'selected' : '')?>">
+				<a href="<?=$tabUrl?>">
+					<span>
+						<?=$this->transEsc($tab['label'])?>
+						<?php if($tabKey === $this->activeTabKey && isset($tab['count'])): ?>
+							<em>(<?=$this->number($tab['count'])?>)</em>
+						<?php endif; ?>
+					</span>
+				</a>
+			</li>
+		<?php endforeach; ?>
+	</ul>
+</div>

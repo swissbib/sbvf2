@@ -1,0 +1,88 @@
+<?php
+
+/** @var	VuFind\View\Helper\Root\Record		$viewRecord  */
+/** @var	Swissbib\RecordDriver\SolrMarc		$resultItem  */
+
+$resultItem	= $this->driver;
+$viewRecord	= $this->record($resultItem);
+
+//$authors	= $this->Authors($resultItem->getDeduplicatedAuthors());
+
+//$thumbnail		= $viewRecord->getThumbnail('medium');
+$thumbnail		= $viewRecord->getThumbnail('large');
+$thumbnailSrc	= $thumbnail ? $thumbnail : $this->url('cover-unavailable');
+
+$subTitle				= $resultItem->getSubtitle(true);
+$titleStatement			= $resultItem->getTitleStatement(true);
+$secondaryAuthors		= $resultItem->getSecondaryAuthors(false);
+$publishers				= $resultItem->getPublishers(true);
+$physicalDescriptions	= $resultItem->getPhysicalDescriptions(false);
+$edition				= $resultItem->getEdition();
+$summary				= trim(implode($resultItem->getSummary()));
+$groupID				= $resultItem->getGroup(true);
+
+$publicationDate		= $this->publicationDateMarc($resultItem->getPublicationDates());
+$openUrl				= $this->driver->openURLActive('record') ? $this->driver->getOpenURL() : false;
+$favoriteLink			= $this->recordLink()->getActionUrl($this->driver, 'Save');
+
+?>
+<?/* Common parts of recordDriver's core.phtml templates*/?>
+<!-- col -->
+<div class="c25l">
+	<a title="<?=$this->transEsc('Add to favorites')?>" class="icon_notepad_add_link" href="<?=$favoriteLink?>">
+		<img src="<?=$thumbnailSrc?>" class="dropshadow"/>
+	</a>
+</div>
+
+<!-- col -->
+<div class="c75l">
+	<h2><?=$this->escapeHtml($resultItem->getShortTitle())?></h2>
+	<?php if($subTitle): ?>
+        <p><?=$this->escapeHtml($subTitle)?></p>
+    <?php endif ?>
+	<!-- details -->
+	<div class="details">
+
+		<?php if($titleStatement): ?>
+			<h4><?=$this->transEsc('Author')?>:</h4>
+			<?php if( isset($titleStatement['statement_responsibility']) ): ?>
+				<p><?=$this->escapeHtml($titleStatement['statement_responsibility'])?></p>
+			<?php endif; ?>
+		<?php endif; ?>
+
+		<?php if($publishers): ?>
+			<h4><?=$this->transEsc('Publication')?>:</h4>
+			<p><?=$this->escapeHtml(implode(' | ', $publishers))?>, <?=$publicationDate?></p>
+		<?php endif; ?>
+
+        <?php if($physicalDescriptions): ?>
+            <h4><?=$this->transEsc('Physical Description')?>:</h4>
+			<p><?=$this->physicalDescription($physicalDescriptions)?></p>
+        <?php endif; ?>
+
+		<h4><?=$this->transEsc('Format')?>:</h4>
+		<p>
+		<?php foreach($resultItem->getFormats() as $format): ?>
+			<span class="icon_format_book"><?=$this->escapeHtml($format)?></span>
+		<?php endforeach; ?>
+		</p>
+
+		<?php if($edition): ?>
+		    <h4><?=$this->transEsc('Edition')?>:</h4>
+		    <p><?=$this->escapeHtml($edition)?></p>
+		<?php endif; ?>
+
+		<?php if(!empty($summary)): ?>
+		<h4>Inhalt:</h4>
+		<p><?=$this->escapeHtml($summary)?></p>
+		<?php endif; ?>
+
+		<?php if ($openUrl): ?>
+			<h4>OpenURL:</h4>
+			<p><?=$this->openUrl($openUrl)?></p>
+		<?php endif; ?>
+
+	</div>
+
+
+</div>

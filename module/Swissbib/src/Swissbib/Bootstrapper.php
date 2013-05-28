@@ -18,31 +18,42 @@ class Bootstrapper
 	protected $events;
 
 
+	/**
+	 * @var \Zend\Mvc\ApplicationInterface
+	 */
+	protected $application;
+
+	/**
+	 * @var \Zend\ServiceManager\ServiceLocatorInterface
+	 */
+	protected $serviceManager;
+
 
 	/**
 	 * @param MvcEvent $event
 	 */
 	public function __construct(MvcEvent $event)
 	{
-		$application = $this->config = $event->getApplication();
+		$this->application = $event->getApplication();
+		$this->serviceManager	= $this->application->getServiceManager();
 
-		$this->config = $application->getServiceManager()->get('VuFind\Config')->get('config');
+		$this->config = $this->serviceManager->get('VuFind\Config')->get('config');
 		$this->event  = $event;
-		$this->events = $application->getEventManager();
-
+		$this->events = $this->application->getEventManager();
 	}
 
 
 
 	/**
 	 * Bootstrap
+	 * Automatically discovers and evokes all class methods with names starting with 'init'
 	 */
 	public function bootstrap()
 	{
 		$methods = get_class_methods($this);
 
 		foreach ($methods as $method) {
-			if (substr($method, 0, 4) == "init") {
+			if (substr($method, 0, 4) == 'init') {
 				$this->$method();
 			}
 		}
@@ -52,12 +63,10 @@ class Bootstrapper
 
 	/**
 	 * Add template path filter to filter chain
-	 *
 	 */
 	protected function initFilterChain()
 	{
-		return; // Disabled because of IE problem
-		if (!$this->event->getRequest() instanceof ConsoleRequest) {
+		if (APPLICATION_ENV == 'development' && !$this->event->getRequest() instanceof ConsoleRequest) {
 			$sm = $this->event->getApplication()->getServiceManager();
 
 			$widgetFilter = new TemplateFilenameFilter();
@@ -83,10 +92,13 @@ class Bootstrapper
 		}
 
 		$baseDir = LOCAL_OVERRIDE_DIR . '/languages';
+
+		// Custom namespaces for zendTranslate
 		$types   = array(
-			'institution',
+			'bibinfo',
 			'group',
-			'bibinfo'
+			'institution',
+			'union'
 		);
 
 		$callback = function ($event) use ($baseDir, $types) {
@@ -94,7 +106,12 @@ class Bootstrapper
 			/** @var Translator $translator */
 			$translator = $sm->get('VuFind\Translator');
 			$locale     = $translator->getLocale();
-			$translator->setFallbackLocale('en');
+			$fallback	= 'en';
+			$translator->setFallbackLocale($fallback);
+				// Add file for fallback locale if not already en
+			if ($locale !== 'en') {
+				$translator->addTranslationFile('ExtendedIni', $baseDir . '/en.ini', 'default', $fallback);
+			}
 
 			foreach ($types as $type) {
 				$langFile = $baseDir . '/' . $type . '/' . $locale . '.ini';
@@ -115,13 +132,6 @@ class Bootstrapper
 
 
 
-	public function initSwissbibDBs()
-	{
-
-	}
-
-
-
 	/**
 	 * Set up plugin managers.
 	 */
@@ -133,7 +143,7 @@ class Bootstrapper
 
 		// Use naming conventions to set up a bunch of services based on namespace:
 		$namespaces = array(
-			'Db\Table'
+			'Db\Table','Search\Results','Search\Options', 'Search\Params'
 		);
 		foreach ($namespaces as $ns) {
 			$serviceName = 'Swissbib\\' . str_replace('\\', '', $ns) . 'PluginManager';
@@ -150,4 +160,5 @@ class Bootstrapper
 			$serviceManager->setFactory($serviceName, $factory);
 		}
 	}
+
 }
