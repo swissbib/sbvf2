@@ -357,3 +357,8 @@ form[name="bulkActionForm"] .mail {
 label[for="search_favorites"] {
 	display: none !important;
 }
+
+/* Hide favorites list in search results */
+#notepad {
+	display: none;
+}

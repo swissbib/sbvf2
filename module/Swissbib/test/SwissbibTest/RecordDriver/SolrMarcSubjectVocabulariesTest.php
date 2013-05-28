@@ -20,15 +20,15 @@ class SolrMarcSubjectVocabulariesTest extends SolrMarcTestCase
 
 	public function testGetAllSubjectVocabularies()
 	{
-		$subjectVocabularies = $topicTerms = $this->driver->getAllSubjectVocabularies();
+		$subjectVocabularies = $this->driver->getAllSubjectVocabularies();
 
 		$this->assertInternalType('array', $subjectVocabularies);
 
-		$this->assertEquals(4, sizeof($subjectVocabularies));
+		$this->assertEquals(2, sizeof($subjectVocabularies));
 		$this->assertArrayHasKey('gnd', $subjectVocabularies);
 		$this->assertArrayHasKey('lcsh', $subjectVocabularies);
-		$this->assertArrayHasKey('bisacsh', $subjectVocabularies);
-		$this->assertArrayHasKey('ids zbz', $subjectVocabularies);
+//		$this->assertArrayHasKey('bisacsh', $subjectVocabularies);
+//		$this->assertArrayHasKey('ids zbz', $subjectVocabularies);
 		$this->assertArrayNotHasKey('local', $subjectVocabularies);
 
 		$this->assertEquals(0, $subjectVocabularies['lcsh']['650'][0]['@ind2']);
