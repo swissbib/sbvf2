@@ -599,6 +599,7 @@ class SolrMarc extends VuFindSolrMarc
 	 * $vocabConfigs:
 	 * - ind: Value for indicator 2 in tag
 	 * - field: sub field 2 in tag
+	 * - fieldsOnly: Only check for given field indexes
 	 * - detect: The vocabulary key is defined in sub field 2. Don't use the key in the config (only used for local)
 	 *
 	 * @see	getAllSubjectHeadings
@@ -609,12 +610,6 @@ class SolrMarc extends VuFindSolrMarc
 		$subjectVocabularies = array();
 		$fieldIndexes        = array(600, 610, 611, 630, 648, 650, 651, 655, 656, 690, 691);
 		$vocabConfigs        = array(
-			'lcsh'        => array(
-				'ind' => 0
-			),
-			'mesh'        => array(
-				'ind' => 2
-			),
 			'gnd'         => array(
 				'ind'   => 7,
 				'field' => 'gnd'
@@ -623,12 +618,19 @@ class SolrMarc extends VuFindSolrMarc
 				'ind'   => 7,
 				'field' => 'rero'
 			),
+			'lcsh'        => array(
+				'ind' => 0
+			),
+			'mesh'        => array(
+				'ind' => 2
+			),
 			'unspecified' => array(
 				'ind' => 4
 			),
 			'local'       => array(
-				'ind'    => 7,
-				'detect' => true // extract vocabulary from sub field 2
+				'ind'			=> 7,
+				'fieldsOnly'	=> array(690,691),
+				'detect'		=> true // extract vocabulary from sub field 2
 			)
 		);
 		$fieldMapping        = array(
@@ -656,6 +658,13 @@ class SolrMarc extends VuFindSolrMarc
 				foreach ($vocabConfigs as $vocabKey => $vocabConfig) {
 					$fieldData     = false;
 					$useAsVocabKey = $vocabKey;
+
+						// Are limited fields set in config
+					if (isset($vocabConfig['fieldsOnly']) && is_array($vocabConfig['fieldsOnly'])) {
+						if (!in_array($fieldIndex, $vocabConfig['fieldsOnly'])) {
+							continue; // Skip vocabulary if field in not in list
+						}
+					}
 
 					if (isset($vocabConfig['ind']) && $indexField->getIndicator(2) == (string)$vocabConfig['ind']) {
 						if (isset($vocabConfig['field'])) { // is there a field check required?
