@@ -19,7 +19,7 @@ class GetVersion extends AbstractHelper
 	 */
 	public function __invoke()
 	{
-		$pathVersionFile	= 'module\\Swissbib\\version.txt';
+		$pathVersionFile	= 'module/Swissbib/version.txt';
 
 		return file_exists($pathVersionFile) ? file_get_contents($pathVersionFile) : '';
 	}
