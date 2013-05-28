@@ -63,8 +63,8 @@ class SummonBackendFactory extends \VuFind\Search\Factory\SummonBackendFactory
 
 		$overrideCredentials	= $this->getOverrideApiCredentialsFromProxy();
 		if( $overrideCredentials !== false ) {
-			$id	= array_key_exists('', $overrideCredentials) && !empty($overrideCredentials['apiId']) ? $overrideCredentials['apiId'] : $id;
-			$key= array_key_exists('', $overrideCredentials) && !empty($overrideCredentials['apiKey']) ? $overrideCredentials['apiKey'] : $key;
+			$id	= array_key_exists('apiId', $overrideCredentials) && !empty($overrideCredentials['apiId']) ? $overrideCredentials['apiId'] : $id;
+			$key= array_key_exists('apiKey', $overrideCredentials) && !empty($overrideCredentials['apiKey']) ? $overrideCredentials['apiKey'] : $key;
 		}
 
         // Build HTTP client:
@@ -89,8 +89,8 @@ class SummonBackendFactory extends \VuFind\Search\Factory\SummonBackendFactory
 			$targetsProxy = $this->serviceLocator->get('Swissbib\TargetsProxy\TargetsProxy');
 			$targetsProxy->setSearchClass('Summon');
 
-//			$proxyDetected = $targetsProxy->detectTarget();
-			$proxyDetected = $targetsProxy->detectTarget('99.0.0.0', 'snowflake.ch');
+			$proxyDetected = $targetsProxy->detectTarget();
+//			$proxyDetected = $targetsProxy->detectTarget('99.0.0.0', 'snowflake.ch');
 
 			if( $proxyDetected !== false ) {
 				return array(
