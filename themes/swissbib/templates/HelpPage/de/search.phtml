@@ -1,18 +1,20 @@
 <h1>Suche</h1>
 
-<p>
-    <strong>Kombinieren</strong>
-    <br>AND, OR, NOT. Bsp.: <i>art* OR kunst*</i>
-    <br>Die Operatoren müssen in Grossbuchstaben geschrieben werden, Default ist AND.
+<h3>Kombinieren</h3>
+<p>AND, OR, NOT. Bsp.: <i>art* OR kunst*</i>
+    <br>Die Operatoren müssen in Grossbuchstaben geschrieben werden, Default ist AND
 </p>
 
+<h3>Phrasensuche mit Anführungszeichen</h3>
 <p>
-    <strong>Phrasensuche</strong>
-    <br><i>"street art"</i> = die beiden Wörter müssen direkt hintereinander stehen
+    <i>"street art"</i> = die beiden Wörter müssen direkt hintereinander stehen
     <br><i>"street art"~5</i> = die beiden Wörter müssen innerhalb von 5 Wörtern Abstand vorkommen</p>
+<p>Anführungszeichen ebenfalls benutzen für:
+    <br>- ISBN, ISSN
+    <br>- Bindestrich-Wortkombinationen
+</p>
 
-<p>
-    <strong>Suche mit Platzhaltern</strong></p>
+<h3>Suche mit Platzhaltern, innerhalb oder am Ende eines Wortes</h3>
 <table>
     <tbody>
     <tr>
@@ -21,32 +23,45 @@
         <td><i>cultur*</i></td>
         <td>culture, cultura, cultural, culturally etc.</td>
     </tr>
-
     <tr>
         <td><i>Fr*ib*urg</i></td>
-        <td>Fribourg, Freiburg</td>
+        <td>Fribourg, Freiburg etc.</td>
     </tr>
+
+
     <tr>
         <td rowspan="2">?</td>
         <td rowspan="2">ersetzt genau ein Zeichen</td>
         <td><i>wom?n</i></td>
-        <td>woman, women</td>
+        <td>woman, women etc. **</td>
     </tr>
+    <tr>
+        <td><i>Lind??ist~</i></td>
+        <td>Lindquist, Lindkvist, Lindqvist etc. **</td>
+    </tr>
+
+
+
     <tr>
         <td>~</td>
         <td>wenn Sie die genaue Schreibweise nicht kennen</td>
-    <tr>
-        <td><i>Lindkvist~</i></td>
-        <td>Lindkvist, Lindquist, Lindqvist etc.</td>
+        <td><i>Copenhagen~</i></td>
+        <td>Copenhagen, København, Kopenhagen etc. **</td>
     </tr>
     </tbody>
+
 </table>
+</p>
 
-<p>
-    <strong>ISBN, ISSN etc.</strong>
-    <br>In Anführungszeichen setzen.</p>
+<h3>Bereichssuche **</h3>
+<p><i>Wetter {2010 TO 2013}</i>
+    <br>
+    <br>** nur für <i>Bücher & mehr</i>
+</p>
 
-<h2>Erweiterte Suche</h2>
+
+
+<h2>Siehe auch</h2>
 <p>
-    [folgt]</p>
-	
+    <a href="../vufind/Search/Advanced">Erweiterte Suche</a></p>
+

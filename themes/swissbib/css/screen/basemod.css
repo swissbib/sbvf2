@@ -51,7 +51,14 @@ body {
 	background-image:url(../../images/bg_header-home.gif);
 }
 
-#search {
+.footer.buildnum {
+	margin:-16px auto 0;
+	width:990px;
+	color:#a4a4a4;
+	text-align:right;
+}
+
+div#search {
 	width:775px;
 	padding:20px 20px 20px 205px;
 	height:25px;
@@ -61,7 +68,7 @@ body {
 	background-repeat:repeat-y;
 	z-index:2;
 }
-#main {
+div#main {
 	position:relative; 
 	z-index:1;
 }

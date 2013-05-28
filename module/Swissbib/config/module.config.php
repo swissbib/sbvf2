@@ -3,6 +3,10 @@ namespace Swissbib\Module\Config;
 
 use Zend\Config\Config;
 
+use Swissbib\TargetsProxy\TargetsProxy;
+use Swissbib\TargetsProxy\IpMatcher;
+use Swissbib\TargetsProxy\UrlMatcher;
+use Swissbib\Theme\Theme;
 use Swissbib\Libadmin\Importer;
 use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
 use Swissbib\View\Helper\InstitutionSorter;
@@ -24,6 +28,17 @@ return array(
 						'action'   => '[a-zA-Z][a-zA-Z0-9_-]*',
 						'location' => '[a-z]+',
 					),
+				)
+			),
+			// Search results with tab
+			'search-results' => array(
+				'type' => 'segment',
+				'options' => array(
+					'route'    => '/Search/Results[/:tab]',
+					'defaults' => array(
+						'controller' => 'Search',
+						'action'     => 'results'
+					)
 				)
 			),
 			// (local) Search User Settings
@@ -88,6 +103,20 @@ return array(
 
 				return new HoldingsHelper($ilsConnection, $hmac, $authManager, $config, $translator);
 			},
+			'Swissbib\TargetsProxy\TargetsProxy' => function ($sm) {
+				$config        = $sm->get('VuFind\Config')->get('TargetsProxy');
+
+				return new TargetsProxy($config);
+			},
+			'Swissbib\TargetsProxy\IpMatcher' => function ($sm) {
+				return new IpMatcher();
+			},
+			'Swissbib\TargetsProxy\UrlMatcher' => function ($sm) {
+				return new UrlMatcher();
+			},
+			'Swissbib\Theme\Theme' => function () {
+				return new Theme();
+			},
 			'Swissbib\Libadmin\Importer' => function ($sm) {
 				$config        = $sm->get('VuFind\Config')->get('config')->Libadmin;
 				$languageCache = $sm->get('VuFind\CacheManager')->getCache('language');
@@ -115,7 +144,10 @@ return array(
 			'subjectHeadingFormatter' => 'Swissbib\View\Helper\SubjectHeadings',
 			'shorttitleSummon'		  => 'Swissbib\View\Helper\ShortTitleFormatterSummon',
 			'SortAndPrepareFacetList' => 'Swissbib\View\Helper\SortAndPrepareFacetList',
-			'zendTranslate'           => 'Zend\I18n\View\Helper\Translate'
+			'subjectVocabularies'	  => 'Swissbib\View\Helper\SubjectVocabularies',
+			'tabTemplate'			  => 'Swissbib\View\Helper\TabTemplate',
+			'zendTranslate'           => 'Zend\I18n\View\Helper\Translate',
+			'getVersion'              => 'Swissbib\View\Helper\GetVersion'
 		),
 		'factories' => array(
 			'institutionSorter' => function ($sm) {
@@ -131,10 +163,29 @@ return array(
 			}
 		)
 	),
-	'vufind'          => array(
+	'vufind'	=> array(
+		'recorddriver_tabs'	=> array(
+			'VuFind\RecordDriver\SolrMarc' => array(
+				'tabs' => array(
+					'UserComments'	=> null // Disable user comments tab
+				)
+			),
+			'VuFind\RecordDriver\Summon' => array(
+				'tabs' => array(
+					'UserComments'	=> null // Disable user comments tab
+				)
+			)
+		),
 		// This section contains service manager configurations for all VuFind
 		// pluggable components:
 		'plugin_managers' => array(
+			'search_backend'	=> array(
+				'factories'	=> array(
+//					'Solr' => 'VuFind\Search\Factory\SolrDefaultBackendFactory',
+					'Summon'	=> 'Swissbib\Search\Factory\SummonBackendFactory',
+//					'WorldCat' => 'VuFind\Search\Factory\WorldCatBackendFactory',
+				)
+			),
 			'recorddriver' => array(
 				'factories' => array(
 					'solrmarc' => function ($sm) {
@@ -184,17 +235,41 @@ return array(
 						);
 					}
 				)
+			),
+			'hierarchy_treerenderer' => array(
+				'invokables' => array(
+					'jstree' => 'Swissbib\VuFind\Hierarchy\TreeRenderer\JSTree',
+				)
 			)
 		)
 	),
-	'swissbib'        => array(
-		'ignore_assets'              => array(
-			'blueprint/screen.css',
-			'jquery-ui.css'
-		),
+	//'swissbib' => array(
+	//	'ignore_assets' => array(
+	//		'blueprint/screen.css',
+	//		'jquery-ui.css'
+	//	),
+
+    'swissbib' => array(
+        'ignore_css_assets' => array(
+            'blueprint/screen.css',
+            'jquery-ui.css'
+        ),
+
+        'ignore_js_assets' => array(
+            'jquery.min.js',
+            'jquery.form.js',
+            'jquery.metadata.js',
+            'jquery.validate.min.js',
+            'jquery-ui/js/jquery-ui.js',
+            'lightbox.js',
+            'common.js',
+            //has a dependency to jQuery so has to be linked after this general component
+            //move it into the swissbib libs
+        ),
+
 		// This section contains service manager configurations for all Swissbib
 		// pluggable components:
-		'plugin_managers'            => array(
+		'plugin_managers' => array(
 			'db_table' => array(
 				'factories'  => array(
 					'userlocaldata' => function ($sm) {
@@ -206,48 +281,46 @@ return array(
 					'userlocaldata' => 'Swissbib\Db\Table\UserLocalData',
 				),
 			),
-		),
 
+            'search_options' => array(
+                'abstract_factories' => array('Swissbib\Search\Options\PluginFactory'),
+            ),
+            'search_params' => array(
+                'abstract_factories' => array('Swissbib\Search\Params\PluginFactory'),
+            ),
+
+            'search_results' => array(
+                'abstract_factories' => array('Swissbib\Search\Results\PluginFactory'),
+            ),
+
+		),
 		// Search result tabs
-		'preload_result_tabs_counts' => false, // Fetch(+display) results-count of non-selected tab(s) initially?
-		'default_result_tab'         => 'swissbib', // ID of default selected tab
-		'result_tabs'                => array(
-			'swissbib' => array(	// Primary tab: swissbib solr
-				'searchClassId' => 'Solr',
-				'model'         => '\Swissbib\ResultTab\SbResultTabSolr',
-				'params'        => array(
-					'id'    => 'swissbib',
-					'label' => 'Bücher & mehr',
+		'resultTabs' => array(
+				// Active tabs for a theme
+			'themes' => array(
+				'swissbibmulti' => array(
+					'swissbib',
+					'summon'
 				),
-				'templates'     => array( // templates for tab content and sidebar (=filters)
-					'tab'     => 'search/tabs/base.phtml', // default
-					'sidebar' => 'global/sidebar/search/facets.swissbib.phtml'
+				'swissbibsingle' => array(
+					'swissbib'
 				)
 			),
-			'summon' => array(
-				'searchClassId' => 'Summon',
-				'model'         => '\Swissbib\ResultTab\SbResultTab', //Summon',
-				'params'        => array(
-					'id'    => 'summon',
-					'label' => 'Artikel & mehr'
+				// Configuration of tabs
+			'tabs' => array(
+				'swissbib' => array(
+					'searchClassId' => 'Solr',			// VuFind searchClassId
+					'label'			=> 'tab.swissbib',	// Label
+					'type'			=> 'swissbibsolr',	// Key for custom templates
+					'advSearch'		=> 'search-advanced'
 				),
-				'templates'     => array(
-					'tab'     => 'search/tabs/summon.phtml',
-					'sidebar' => 'global/sidebar/search/facets.summon.phtml',
+				'summon' => array(
+					'searchClassId' => 'Summon',
+					'label'			=> 'tab.summon',
+					'type'			=> 'summon',
+					'advSearch'		=> 'summon-advanced'
 				)
-			),
-//			'external' => array(
-//				'searchClassId' => 'WorldCat',
-//				'model'         => '\Swissbib\ResultTab\SbResultTab',
-//				'params'        => array(
-//					'id'    => 'external',
-//					'label' => 'Artikel & mehr'
-//				),
-//				'templates'     => array(
-//					'tab'     => 'search/tabs/external.phtml',
-//					'sidebar' => 'global/sidebar/search/facets.external.phtml',
-//				)
-//			),
+			)
 		)
 	)
 );

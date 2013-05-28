@@ -1,24 +1,27 @@
 <h1>Search</h1>
 
-<p>
-    <strong>Combine</strong>
-    <br>AND, OR, NOT. Example: <i>art* OR kunst*</i>
+<h3>Combine</h3>
+<p>AND, OR, NOT. Example: <i>art* OR kunst*</i>
     <br>The operators must be written in capital letters, default is AND.
 </p>
 
-<p>
-    <strong>Phrase search</strong>
-    <br><i>"street art"</i> = the words must be adjacent
-    <br><i>"street art"~5</i> = must be present within 5 words</p>
+<h3>Phrase search, using quotation marks</h3>
+<p><i>"street art"</i> = the words must be adjacent
+    <br><i>"street art"~5</i> = must be present within 5 words
+    <br><br>Also use quotation marks for:
+    <br>- ISBN, ISSN
+    <br>- hyphenated words
+</p>
 
-<p>
-    <strong>Truncation</strong></p>
+
+
+<h3>Truncation, works within or at the end of a word</h3>
 <table>
     <tbody>
     <tr>
-        <td rowspan="2">*</td>
-        <td rowspan="2">replaces any number of letters</td>
-        <td><i></i>cultur*</i></td>
+        <td>*</td>
+        <td>replaces any number of letters</td>
+        <td><i>cultur*</i></td>
         <td>culture, cultura, cultural, culturally etc.</td>
     </tr>
 
@@ -26,24 +29,37 @@
         <td rowspan="2">?</td>
         <td rowspan="2">replaces exactly one letter</td>
         <td><i>wom?n</i></td>
-        <td>woman, women</td>
+        <td>woman, women etc. **</td>
     </tr>
+    <tr>
+        <td><i>Lind??ist~</i></td>
+        <td>Lindquist, Lindkvist, Lindqvist etc. **</td>
+    </tr>
+
 
     <tr>
         <td>~</td>
         <td>fuzzy search</td>
-    <tr>
-        <td><i>Lindquist~</i></td>
-        <td>Lindquist, Lindkvist, Lindqvist</td>
+        <td><i>Copenhagen~</i></td>
+        <td>Copenhagen, København, Kopenhagen etc. **</td>
     </tr>
-    </tr>
+
+
     </tbody>
 </table>
+</p>
+
 
 <p>
-    <strong>ISBN, ISSN etc.</strong>
-    <br>Use quotation marks.</p>
+<h3>Range search **</h3>
+<p><i>weather {2010 TO 2013}</i>
+    <br>
+    <br> ** only for <i>Books & more</i>
+</p>
 
-<h1>Advanced search</h1>
-<p>[Following soon]</p>
+
+<h2>See also</h2>
+<p>
+    <a href="../vufind/Search/Advanced">Advanced search</a></p>
+	
 	

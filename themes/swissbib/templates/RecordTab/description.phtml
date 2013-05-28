@@ -1,5 +1,5 @@
-<?
-	// Set page title.
+<?php
+// Set page title.
 $this->headTitle($this->translate('Description') . ': ' . $this->driver->getBreadcrumb());
 
 // Grab clean ISBN for convenience:
@@ -10,21 +10,70 @@ if ($this->syndeticsPlus()->isActive()) {
     $this->headScript()->appendFile($this->syndeticsPlus()->getScript());
 }
 
+$resultItem	= $this->driver;
+$subjectVocabularies	= $resultItem->getAllSubjectVocabularies();
+$subjects = $this->driver->getAllSubjectHeadings();
 ?>
 
 
 <!-- Tab-Inhalte gemaess TP detailstab -->
 
-<h4>Alternativtitel</h4>
-<p>hier 240 etc.</p>
+<?/* Display alternative title */?>
+<? $alttitle = $this->driver->getAltTitle(); if (!empty($alttitle)): ?>
+    <h4><?=$this->transEsc('Other_Title')?></h4>
+    <p>
+        <? foreach ($alttitle as $field): ?>
+        <?=$this->escapeHtml($field)?><br />
+        <? endforeach; ?>
+    </p>
+<? endif; ?>
 
-<h4>Reihe</h4>
-<p>490 etc.</p>
+<?/* Display series section if at least one series exists. */?>
+<? $series = $this->driver->getSeries(); if (!empty($series)): ?>
+    <h4><?=$this->transEsc('Series')?>: </h4>
+        <? foreach ($series as $field): ?>
+        <? if (is_array($field)): ?>
+            <? if (!empty($field['name'])): ?>
+                <p><?=$this->escapeHtml($field['name'])?>
+                    <? if (!empty($field['number'])): ?>
+                        <?=$this->escapeHtml($field['number'])?>
+                    <? endif; ?>
+                    <br />
+                </p>
+            <? endif; ?>
+            <? else: ?>
+            <p>
+                <?=$this->escapeHtml($field)?> <br />
+            </p>
+        <? endif; ?>
+        <? endforeach; ?>
+<? endif; ?>
 
-<h4>diverse 500</h4>
-<p>diverse 500</p>
+<? $notes = $this->driver->getGeneralNotes(); if (!empty($notes)): ?>
+    <h4><?=$this->transEsc('Item Description')?>: </h4>
+    <p>
+        <? foreach ($notes as $field): ?>
+        <?=$this->escapeHtml($field)?><br/>
+        <? endforeach; ?>
+    </p>
+<?php endif; ?>
 
-    <? $subjectHeadings = $this->driver->getAllSubjectHeadings() ?>
-    <? if (sizeof($subjectHeadings) > 0) :?>
-    <?=$subjectHeadingsDisplay = $this->subjectHeadingFormatter($subjectHeadings); ?>
-    <? endif; ?>
+<?php if(sizeof($subjectVocabularies)): ?>
+    <?=$this->subjectVocabularies($subjectVocabularies)?>
+<?php endif; ?>
+
+<? $subjects = $this->driver->getAllSubjectHeadings(); if (!empty($subjects)): ?>
+
+<h4><?=$this->transEsc('Subjects')?>: </h4>
+<? foreach ($subjects as $field): ?>
+    <? $subject = ''; ?>
+    <p>
+    <? $i = 0; foreach ($field as $subfield): ?>
+            <?=($i++ == 0) ? '' : ' &gt; '?>
+        <? $subject = trim($subject . ' ' . $subfield); ?>
+        <?=$this->escapeHtml($subfield)?>
+        <? endforeach; ?>
+    </p>
+    <? endforeach; ?>
+
+<? endif; ?>

@@ -3,54 +3,54 @@
 use VuFindSearch\Query\QueryGroup;
 use VuFindSearch\Query\Query;
 
+	// Set page title
+$this->headTitle($this->translate('Advanced Search'));
 
+// Set up saved search details:
 
-    	// Set page title
-    $this->headTitle($this->translate('Advanced Search'));
+$jsSearchDetails = array();
 
-    // Set up saved search details:
+if (isset($this->saved) && is_object($this->saved)) {
+	/** @var QueryGroup $searchDetails */
+	/** @var QueryGroup $searchGroup */
+	/** @var Query $searchQuery */
+	$searchDetails = $this->saved->getParams()->getQuery();
+	$groups = $searchDetails->getQueries();
+	$searchFilters = $this->saved->getParams()->getFilterList();
 
-	$jsSearchDetails = array();
-
-    if (isset($this->saved) && is_object($this->saved)) {
-		/** @var QueryGroup $searchDetails */
-		/** @var QueryGroup $searchGroup */
-		/** @var Query $searchQuery */
-        $searchDetails = $this->saved->getParams()->getQuery();
-        $groups = $searchDetails->getQueries();
-        $searchFilters = $this->saved->getParams()->getFilterList();
-
-		if (is_object($searchDetails)) {
-			foreach ($searchDetails->getQueries() as $searchGroup) {
-				$groupData = array();
-				foreach ($searchGroup->getQueries() as $searchQuery) {
-					$groupData[] = array(
-						'lookfor'	=> $searchQuery->getString(),
-						'field'		=> $searchQuery->getHandler(),
-						'bool'		=> $searchGroup->isNegated() ? 'NOT' : $searchGroup->getOperator()
-					);
-				}
-				$jsSearchDetails[] = $groupData;
+	if (is_object($searchDetails)) {
+		foreach ($searchDetails->getQueries() as $searchGroup) {
+			$groupData = array();
+			foreach ($searchGroup->getQueries() as $searchQuery) {
+				$groupData[] = array(
+					'lookfor'	=> $searchQuery->getString(),
+					'field'		=> $searchQuery->getHandler(),
+					'bool'		=> $searchGroup->isNegated() ? 'NOT' : $searchGroup->getOperator()
+				);
 			}
+			$jsSearchDetails[] = $groupData;
 		}
-    } else {
-        $searchDetails = $searchFilters = $groups = false;
-    }
+	}
+} else {
+	$searchDetails = $searchFilters = $groups = false;
+}
 
-    	// Set up Javascript
-    // Step 1: Define our search arrays so they are usable in javascript
+	// Set up Javascript
+// Step 1: Define our search arrays so they are usable in javascript
 
-    // Step 2: Call the javascript to make use of the above
-    $this->headScript()->appendFile('advanced_search.js');
-    $this->headScript()->appendFile('swissbib.AdvancedSearch.js');
-    $this->headScript()->appendFile('lib/handlebars.js');
-    // Step 3: Build the page
+// Step 2: Call the javascript to make use of the above
+$this->headScript()->appendFile('advanced_search.js');
+$this->headScript()->appendFile('swissbib.AdvancedSearch.js');
+$this->headScript()->appendFile('lib/handlebars.js');
+// Step 3: Build the page
 //    $this->headScript()->appendScript($this->partial('search/advanced/build_page.phtml', array('searchDetails' => $searchDetails)));
-		// Replace build_page
-	$this->headScript()->appendScript('swissbib.AdvancedSearch.searchDetails = ' . json_encode($jsSearchDetails) . ';');
-	$this->headScript()->appendScript($this->render('search/advanced/globals.phtml'));
+	// Replace build_page
+$this->headScript()->appendScript('swissbib.AdvancedSearch.searchDetails = ' . json_encode($jsSearchDetails) . ';');
+$this->headScript()->appendScript($this->render('search/advanced/globals.phtml'));
 
-	$lastSort = $this->options->getLastSort();
+$lastSort = $this->options->getLastSort();
+
+
 
 ?>
 
@@ -70,6 +70,23 @@ use VuFindSearch\Query\Query;
 	<div id="col3_content" class="clearfix">
 		<!-- begin: content -->
 		<div id="content">
+
+			<?php if (sizeof($this->allTabsConfig) > 1): ?>
+				<div id="inlay">
+					<div id="tabbed">
+						<ul>
+							<?php foreach ($this->allTabsConfig as $tabKey => $tabConfig): ?>
+								<?php $isSelected = $tabKey===$this->activeTabKey; ?>
+								<li class="<?=$isSelected?'selected':''?>">
+									<a href="<?=$isSelected?'javascript:void(0)':$this->url($tabConfig['advSearch'])?>">
+										<span><?=$this->transEsc($tabConfig['label'])?></span>
+									</a>
+								</li>
+							<?php endforeach; ?>
+						</ul>
+					</div>
+				</div>
+			<?php endif; ?>
 
 			<h1><?=$this->transEsc('Advanced Search')?></h1>
 			<?=$this->flashmessages()?>
@@ -106,14 +123,13 @@ use VuFindSearch\Query\Query;
 
 				</fieldset>
 
-
 				<?php if( isset($this->extraAdvancedControls) ): ?>
 					<?= $this->extraAdvancedControls ?>
 				<?php endif; ?>
 
 				<fieldset class="actions">
 					<label for="advancedsearch_submit" class="hidden">Suchanfrage senden</label>
-					<input id="advancedsearch_submit" name="advancedsearch_submit" type="submit" class="submit primary" value="<?=$this->transEsc("Find")?>"/>
+					<input id="advancedsearch_submit" type="submit" class="submit primary" value="<?=$this->transEsc("Find")?>"/>
 					<label for="advancedsearch_reset" class="hidden">Formular zurücksetzen</label>
 					<input id="advancedsearch_reset" name="advancedsearch_reset" type="reset" class="reset" value="<?=$this->transEsc("Reset")?>"/>
 				</fieldset>
@@ -121,7 +137,7 @@ use VuFindSearch\Query\Query;
 			</form>
 
 			<!-- begin: pagefunctions -->
-			<?=$this->pageFunctions($this->driver, false)?>
+			<?=$this->pageFunctions()?>
 			<!-- end: pagefunctions -->
 		</div>
 		<!-- end: content -->

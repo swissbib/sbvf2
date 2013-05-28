@@ -358,7 +358,7 @@ class Holdings
 			foreach ($group['institutions'] as $institutionCode => $institution) {
 					// Add backlink
 				$structuredElements[$groupCode]['institutions'][$institutionCode]['backlink']
-						= $this->getBackLink($group['networkCode'], $institutionCode, $institution['items'][0]);
+						= $this->getBackLink($group['networkCode'], strtoupper($institutionCode), $institution['items'][0]);
 					// Add bib-info link
 				$structuredElements[$groupCode]['institutions'][$institutionCode]['bibinfolink']
 						= $this->getBibInfoLink($institutionCode);
@@ -777,12 +777,18 @@ class Holdings
 	 */
 	protected function getItemCirculationStatuses($sysNumber)
 	{
-		$circulationStatuses = $this->ils->getDriver()->getCirculationStatus($sysNumber);
-		$data                = array();
+        $data                = array();
+        try {
+            $circulationStatuses = $this->ils->getDriver()->getCirculationStatus($sysNumber);
 
-		foreach ($circulationStatuses as $circulationStatus) {
-			$data[$circulationStatus['barcode']] = $circulationStatus;
-		}
+
+            foreach ($circulationStatuses as $circulationStatus) {
+                $data[$circulationStatus['barcode']] = $circulationStatus;
+            }
+
+        } catch (\Exception $e) {
+            //todo: GH get logging service
+        }
 
 		return $data;
 	}

@@ -1,0 +1,45 @@
+<?php
+
+/** @var $results VuFind\Search\Solr\Results */
+$results	= $this->results;
+$facetList	= $results->getFacetList();
+
+/** @var $options VuFind\Search\Solr\Options */
+$options = $this->searchOptions($this->searchClassId);
+$basicSearch = $options->getSearchAction();
+// Facet results settings: settings for items limit per facet
+$facetConfig	= $this->facetsConfig;
+$checkboxFilters = $results->getParams()->getCheckboxFacets();
+
+?>
+<h3><?= $this->transEsc('Narrow Search') ?></h3>
+
+<div class="facets">
+
+	<!-- start checkbox facet -->
+	<?=$this->render($this->tabTemplate('search/sidebar/facet.checkbox', $this->activeTabKey), array(
+																				   'results'		=> $results,
+																				   'checkboxFilters'=> $checkboxFilters
+																			  ));?>
+	<!-- end checkbox facet -->
+
+	<?=$this->render($this->tabTemplate('search/sidebar/facet.basic', $this->activeTabKey), array(
+																					'results'			=> $results,
+																					'facetList'			=> $facetList,
+																					'basicSearch'		=> $basicSearch,
+																					'facetConfig'		=> $facetConfig,
+																					'activeTabKey'		=> $this->activeTabKey
+																				   ));?>
+
+	<!-- Slider widget: Range of publication date  -->
+	<?=$this->render($this->tabTemplate('search/sidebar/facet.dateslider', $this->activeTabKey), array(
+																					 'results'	=> $results
+																				));?>
+
+</div>
+
+<?php
+//$this->render($this->tabTemplate('search/sidebar/facet.more', $this->activeTabKey), array(
+//
+//																					   ));
+?>

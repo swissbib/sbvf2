@@ -69,8 +69,9 @@ class TemplateFilenameFilter extends AbstractFilter implements ServiceLocatorAwa
 	private function wrapContentWithComment($content, $templateFilename)
 	{
 		$templateFilename	= str_replace('\\', '/', $templateFilename);
+		$isStartOfHtml 		= strstr($content, '<html') !== false || strstr($content, '<xml') !== false;
 
-		return
+		return $isStartOfHtml ? $content :
 				"\n" . '<!-- Begin' . (!empty($type) ? ' ' . $type : '') . ': ' . $templateFilename . ' -->'
 				. "\n" . $content
 				. "\n" . '<!-- End: ' . $templateFilename . ' -->'

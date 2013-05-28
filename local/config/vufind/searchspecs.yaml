@@ -239,6 +239,14 @@ JournalTitle:
       - [and , ~]
   FilterQuery: "format:Journal OR format:Article"
 
+
+FRBR:
+  QueryFields:
+    group_id:
+      - [onephrase, 750]
+
+
+
 Title:
   DismaxFields:
     - title_short^500

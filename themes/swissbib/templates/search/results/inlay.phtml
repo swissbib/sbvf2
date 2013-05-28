@@ -1,0 +1,9 @@
+<?php if (sizeof($this->allTabsConfig)>1): ?>
+	<!-- begin: tabbed -->
+	<?=$this->render($this->tabTemplate('search/results/tab-heads', $this->activeTabKey));?>
+	<!-- end: tabbed -->
+<?php endif; ?>
+
+<!-- begin: notepad -->
+<?=$this->render($this->tabTemplate('global/notepad', $this->activeTabKey))?>
+<!-- end: notepad -->
