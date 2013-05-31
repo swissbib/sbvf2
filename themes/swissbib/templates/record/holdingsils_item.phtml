@@ -2,8 +2,6 @@
 
 $isAvailable= isset($item['isAvailable']) && $item['isAvailable'];
 $actions	= array();
-$recordDriver	= $this->driver;
-$holdings		= $recordDriver->getHoldings();
 
 	// Build item links
 	// @todo Move into holdings helper or view helper as soon as the feature set is clear
