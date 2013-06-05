@@ -18,7 +18,7 @@ $subjects = $this->driver->getAllSubjectHeadings();
 
 <!-- Tab-Inhalte gemaess TP detailstab -->
 
-<?/* Display ISBN and ISSN, later maybe other IDs */?>
+<?/* Display ISBN */?>
 <? $isbns = $this->driver->getISBNs(); if (!empty($isbns)): ?>
 <? $contentDisplayed = true; ?>
     <h4><?=$this->transEsc('ISBN')?>: </h4>
@@ -29,6 +29,7 @@ $subjects = $this->driver->getAllSubjectHeadings();
     </p>
 <? endif; ?>
 
+<?/* Display ISSN */?>
 <? $issns = $this->driver->getISSNs(); if (!empty($issns)): ?>
 <? $contentDisplayed = true; ?>
     <h4><?=$this->transEsc('ISSN')?>: </h4>
@@ -37,7 +38,39 @@ $subjects = $this->driver->getAllSubjectHeadings();
         <?=$this->escapeHtml($field)?><br />
         <? endforeach; ?>
     </p>
-</tr>
+<? endif; ?>
+
+<?/* Display ISMN */?>
+<? $ismns = $this->driver->getISMNs(); if (!empty($ismns)): ?>
+<? $contentDisplayed = true; ?>
+<h4><?=$this->transEsc('ISMN')?>: </h4>
+<p>
+    <? foreach ($ismns as $field): ?>
+    <?=$this->escapeHtml($field)?><br />
+    <? endforeach; ?>
+</p>
+<? endif; ?>
+
+<?/* Display DOI */?>
+<? $dois = $this->driver->getDOIs(); if (!empty($dois)): ?>
+<? $contentDisplayed = true; ?>
+<h4><?=$this->transEsc('DOI')?>: </h4>
+<p>
+    <? foreach ($dois as $field): ?>
+    <?=$this->escapeHtml($field)?><br />
+    <? endforeach; ?>
+</p>
+<? endif; ?>
+
+<?/* Display URN */?>
+<? $urns = $this->driver->getURNs(); if (!empty($urns)): ?>
+<? $contentDisplayed = true; ?>
+<h4><?=$this->transEsc('URN')?>: </h4>
+<p>
+    <? foreach ($urns as $field): ?>
+    <?=$this->escapeHtml($field)?><br />
+    <? endforeach; ?>
+</p>
 <? endif; ?>
 
 <?/* Display alternative title */?>
@@ -75,10 +108,50 @@ $subjects = $this->driver->getAllSubjectHeadings();
     <h4><?=$this->transEsc('Item Description')?>: </h4>
     <p>
         <? foreach ($notes as $field): ?>
-        <?=$this->escapeHtml($field)?><br/>
+        <?=$this->escapeHtml($field)?><br />
         <? endforeach; ?>
     </p>
 <?php endif; ?>
+
+<? $awards = $this->driver->getAwards(); if (!empty($awards)): ?>
+<? $contentDisplayed = true; ?>
+    <h4><?=$this->transEsc('Awards')?>: </h4>
+    <p>
+        <? foreach ($awards as $field): ?>
+        <?=$this->escapeHtml($field)?><br />
+        <? endforeach; ?>
+    </p>
+<? endif; ?>
+
+<? $credits = $this->driver->getProductionCredits(); if (!empty($credits)): ?>
+<? $contentDisplayed = true; ?>
+    <h4><?=$this->transEsc('Production Credits')?>: </h4>
+    <p>
+        <? foreach ($credits as $field): ?>
+        <?=$this->escapeHtml($field)?><br />
+        <? endforeach; ?>
+    </p>
+<? endif; ?>
+
+<? $bib = $this->driver->getBibliographyNotes(); if (!empty($bib)): ?>
+<? $contentDisplayed = true; ?>
+    <h4><?=$this->transEsc('Bibliography')?>: </h4>
+    <p>
+        <? foreach ($bib as $field): ?>
+        <?=$this->escapeHtml($field)?><br />
+        <? endforeach; ?>
+    </p>
+<? endif; ?>
+
+<? $access = $this->driver->getAccessRestrictions(); if (!empty($access)): ?>
+<? $contentDisplayed = true; ?>
+    <h4><?=$this->transEsc('Access')?>: </h4>
+    <p>
+        <? foreach ($access as $field): ?>
+        <?=$this->escapeHtml($field)?><br />
+        <? endforeach; ?>
+    </p>
+<? endif; ?>
 
 <?php if(sizeof($subjectVocabularies)): ?>
     <?=$this->subjectVocabularies($subjectVocabularies)?>
