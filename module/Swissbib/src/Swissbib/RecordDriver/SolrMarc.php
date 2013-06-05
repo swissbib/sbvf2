@@ -409,6 +409,16 @@ class SolrMarc extends VuFindSolrMarc
         return $this->getFieldArray('246', '247');
     }
 
+    /**
+     * Get dissertation notes for the record.
+     *
+     * @return array
+     */
+    public function getDissertationNotes()
+    {
+        return $this->getFieldArray('502');
+    }
+
 
     /**
 	 * get subject headings from GND subject headings
