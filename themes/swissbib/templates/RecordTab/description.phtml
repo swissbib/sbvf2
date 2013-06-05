@@ -18,6 +18,28 @@ $subjects = $this->driver->getAllSubjectHeadings();
 
 <!-- Tab-Inhalte gemaess TP detailstab -->
 
+<?/* Display ISBN and ISSN, later maybe other IDs */?>
+<? $isbns = $this->driver->getISBNs(); if (!empty($isbns)): ?>
+<? $contentDisplayed = true; ?>
+    <h4><?=$this->transEsc('ISBN')?>: </h4>
+    <p>
+        <? foreach ($isbns as $field): ?>
+        <?=$this->escapeHtml($field)?><br />
+        <? endforeach; ?>
+    </p>
+<? endif; ?>
+
+<? $issns = $this->driver->getISSNs(); if (!empty($issns)): ?>
+<? $contentDisplayed = true; ?>
+    <h4><?=$this->transEsc('ISSN')?>: </h4>
+    <p>
+        <? foreach ($issns as $field): ?>
+        <?=$this->escapeHtml($field)?><br />
+        <? endforeach; ?>
+    </p>
+</tr>
+<? endif; ?>
+
 <?/* Display alternative title */?>
 <? $alttitle = $this->driver->getAltTitle(); if (!empty($alttitle)): ?>
     <h4><?=$this->transEsc('Other_Title')?></h4>
