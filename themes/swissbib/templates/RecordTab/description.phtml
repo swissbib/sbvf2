@@ -6,9 +6,9 @@ $this->headTitle($this->translate('Description') . ': ' . $this->driver->getBrea
 //$isbn = $this->driver->getCleanISBN();
 
 // Activate Syndetics Plus if necessary:
-if ($this->syndeticsPlus()->isActive()) {
-    $this->headScript()->appendFile($this->syndeticsPlus()->getScript());
-}
+//if ($this->syndeticsPlus()->isActive()) {
+//    $this->headScript()->appendFile($this->syndeticsPlus()->getScript());
+//}
 
 $resultItem	= $this->driver;
 $subjectVocabularies	= $resultItem->getAllSubjectVocabularies();
@@ -85,7 +85,8 @@ $subjects = $this->driver->getAllSubjectHeadings();
 
 <?/* Display series section if at least one series exists. */?>
 <? $series = $this->driver->getSeries(); if (!empty($series)): ?>
-    <h4><?=$this->transEsc('Series')?>: </h4>
+    <div class="details">
+        <h4><?=$this->transEsc('Series')?>: </h4>
         <? foreach ($series as $field): ?>
         <? if (is_array($field)): ?>
             <? if (!empty($field['name'])): ?>
@@ -102,6 +103,7 @@ $subjects = $this->driver->getAllSubjectHeadings();
             </p>
         <? endif; ?>
         <? endforeach; ?>
+    </div>
 <? endif; ?>
 
 <?/* Display supplement (field 770) */?>
@@ -112,7 +114,28 @@ $subjects = $this->driver->getAllSubjectHeadings();
 
 <?/* Display related publication (field 776) */?>
 
-<?/* Display predecessor or following publication (field 780 / 785) */?>
+<?/* Display and link to new and previous titles (field 780 / 785) */?>
+<? $nextTitles = $this->driver->getNewerTitles(); $prevTitles = $this->driver->getPreviousTitles(); ?>
+<? if (!empty($nextTitles) or !empty($prevTitles)): ?>
+    <div class="details">
+        <? if (!empty($nextTitles)): ?>
+        <h4><?=$this->transEsc('New Title')?>: </h4>
+        <p>
+            <? foreach($nextTitles as $field): ?>
+            <a href="<?=$this->record($this->driver)->getLink('title', $field)?>"><?=$this->escapeHtml($field)?></a><br/>
+            <? endforeach; ?>
+        </p>
+        <? endif; ?>
+        <? if (!empty($prevTitles)): ?>
+        <h4><?=$this->transEsc('Previous Title')?>: </h4>
+        <p>
+            <? foreach($prevTitles as $field): ?>
+            <a href="<?=$this->record($this->driver)->getLink('title', $field)?>"><?=$this->escapeHtml($field)?></a><br/>
+            <? endforeach; ?>
+        </p>
+        <? endif; ?>
+    </div>
+<? endif; ?>
 
 <?/* div-box for all notes */ ?>
 
@@ -170,6 +193,8 @@ $subjects = $this->driver->getAllSubjectHeadings();
             <? endforeach; ?>
         </p>
     <? endif; ?>
+    <?/* Display citation / reference note (field 510) */?>
+    <?/* Display copy and version identification note (fields 562 or 590) */?>
     <?/* Display award notes (field 586) */?>
     <? if (!empty($awards)): ?>
         <h4><?=$this->transEsc('Awards')?>: </h4>
