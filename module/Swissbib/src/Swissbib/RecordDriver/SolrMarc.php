@@ -770,6 +770,7 @@ class SolrMarc extends VuFindSolrMarc
 	 * Override base method to assure a string and not an array
 	 *
 	 * @todo    Still required?
+     * as long as title_short is multivalued=true in solr (necessary because of faulty data)
 	 * @return    String
 	 */
 	public function getShortTitle()
