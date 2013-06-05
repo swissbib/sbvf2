@@ -137,7 +137,42 @@ class SolrMarc extends VuFindSolrMarc
 
 
 
-	/**
+    /**
+     * Get ISMN (International Standard Music Number)
+     *
+     * @return array
+     */
+    public function getISMNs() {
+        return isset($this->fields['ismn_isn_mv']) && is_array($this->fields['ismn_isn_mv']) ?
+            $this->fields['ismn_isn_mv'] : array();
+    }
+
+
+
+    /**
+     * Get DOI (Digital Object Identifier)
+     *
+     * @return array
+     */
+    public function getDOIs() {
+        return isset($this->fields['doi_isn_mv']) && is_array($this->fields['doi_isn_mv']) ?
+            $this->fields['doi_isn_mv'] : array();
+    }
+
+
+
+    /**
+     * Get URN (Uniform Resource Name)
+     *
+     * @return array
+     */
+    public function getURNs() {
+        return isset($this->fields['urn_isn_mv']) && is_array($this->fields['urn_isn_mv']) ?
+            $this->fields['urn_isn_mv'] : array();
+    }
+
+
+    /**
 	 * Get formats modified to work with openURL
 	 * Formats: Book, Journal, Article
 	 *
