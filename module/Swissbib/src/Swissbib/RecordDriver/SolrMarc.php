@@ -82,108 +82,6 @@ class SolrMarc extends VuFindSolrMarc
 		'9'  => 'unknownNumber'
 	);
 
-
-
-	/**
-	 * Get possible ISBN/ISSN numbers from record
-	 *
-	 * @return    String[]
-	 */
-	public function getISBNs()
-	{
-		$tags     = array('020', '022', '024');
-		$isbnList = array();
-
-		foreach ($tags as $tag) {
-			$fields = $this->getMarcSubFieldMaps($tag, array(
-															'a'  => 'isbn',
-															'_b' => 'binding',
-															'c'  => 'availability',
-															'z'  => 'canceled'
-													   ));
-
-			foreach ($fields as $field) {
-				if (isset($field['isbn'])) {
-					$isbnList[] = $field['isbn'];
-				}
-			}
-		}
-
-		// Add ISBN numbers from solr field
-		$baseIsbn = parent::getISBNs();
-		$isbnList = array_merge($isbnList, $baseIsbn);
-
-		return $isbnList;
-	}
-
-
-
-	/**
-	 *
-	 * @return	String[]
-	 */
-	public function getISSNs()
-	{
-		$issns	= $this->getISSNsFull();
-		$simple	= array();
-
-		foreach ($issns as $issn) {
-			if (isset($issn['issn'])) {
-				$simple[] = $issn['issn'];
-			}
-		}
-
-		return $simple;
-	}
-
-
-
-	/**
-	 * Get full ISSN marc fields data
-	 *
-	 * @return	Array[]
-	 */
-	public function getISSNsFull()
-	{
-		return $this->getMarcSubFieldMaps('022', array(
-													'a'	=> 'issn',
-													'l'	=> 'issn-l',
-													'_m'	=> 'canceled-l',
-													'_y'	=> 'incorrect',
-													'_z'	=> 'canceled',
-													'2'	=> 'source'
-												));
-	}
-
-
-
-	/**
-	 * Get possible ISBN/ISSN numbers from record
-	 *
-	 * @return String[]
-	 */
-	public function getStandardNumbers()
-	{
-		$tags   = array('020', '022', '024');
-		$idList = array();
-
-		foreach ($tags as $tag) {
-			$fields = $this->getMarcSubFieldMaps($tag, array(
-															'a' => 'id',
-															'z' => 'canceled',
-															'2' => 'code',
-													   ));
-
-			foreach ($fields as $field) {
-				if (isset($field['id'])) {
-					$idList[] = $field['id'];
-				}
-			}
-		}
-	}
-
-
-
 	/**
 	 * Wrapper for getOpenURL()
 	 * Set flag to get special values from getFormats()
@@ -311,13 +209,6 @@ class SolrMarc extends VuFindSolrMarc
 	}
 
 
-
-	/**
-	 * Get standard numbers (ISBN, ISSN, ISMN, DOI, URN) for display
-	 *
-	 * @todo    May need a refactoring to simplify
-	 * @return Array
-	 */
 
 	/**
 	 * Get primary author
