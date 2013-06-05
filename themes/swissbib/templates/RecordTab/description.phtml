@@ -3,7 +3,7 @@
 $this->headTitle($this->translate('Description') . ': ' . $this->driver->getBreadcrumb());
 
 // Grab clean ISBN for convenience:
-$isbn = $this->driver->getCleanISBN();
+//$isbn = $this->driver->getCleanISBN();
 
 // Activate Syndetics Plus if necessary:
 if ($this->syndeticsPlus()->isActive()) {
@@ -104,54 +104,83 @@ $subjects = $this->driver->getAllSubjectHeadings();
         <? endforeach; ?>
 <? endif; ?>
 
-<? $notes = $this->driver->getGeneralNotes(); if (!empty($notes)): ?>
+<?/* Display supplement (field 770) */?>
+
+<?/* Display is supplement (field 772) */?>
+
+<?/* Display related publication (field 776) */?>
+
+<?/* Display related publication (field 776) */?>
+
+<?/* Display predecessor or following publication (field 780 / 785) */?>
+
+<?/* div-box for all notes */ ?>
+
+<? $notes = $this->driver->getGeneralNotes() ?>
+<? $diss = $this->driver->getDissertationNotes() ?>
+<? $bib = $this->driver->getBibliographyNotes() ?>
+<? $access = $this->driver->getAccessRestrictions() ?>
+<? $credits = $this->driver->getProductionCredits() ?>
+<? $awards = $this->driver->getAwards() ?>
+<? if (!empty($notes) or !empty($diss) or !empty($bib) or !empty($access) or !empty($credits) or !empty($awards)): ?>
+<? $contentDisplayed = true; ?>
+<div class="details">
+    <?/* Display general notes (field 500) */?>
+    <? if (!empty($notes)): ?>
     <h4><?=$this->transEsc('Item Description')?>: </h4>
     <p>
         <? foreach ($notes as $field): ?>
         <?=$this->escapeHtml($field)?><br />
         <? endforeach; ?>
     </p>
+    <? endif; ?>
+    <?/* Display dissertation notes (field 502) */?>
+    <? if (!empty($diss)): ?>
+        <h4><?=$this->transEsc('Dissertation_Note')?>: </h4>
+        <p>
+            <? foreach ($diss as $field): ?>
+            <?=$this->escapeHtml($field)?><br />
+            <? endforeach; ?>
+        </p>
+    <? endif; ?>
+    <?/* Display bibliography notes (field 504) */?>
+    <? if (!empty($bib)): ?>
+        <h4><?=$this->transEsc('Bibliography')?>: </h4>
+        <p>
+            <? foreach ($bib as $field): ?>
+            <?=$this->escapeHtml($field)?><br />
+            <? endforeach; ?>
+        </p>
+    <? endif; ?>
+    <?/* Display access restriction notes (field 506) */?>
+    <? if (!empty($access)): ?>
+        <h4><?=$this->transEsc('Access')?>: </h4>
+        <p>
+            <? foreach ($access as $field): ?>
+            <?=$this->escapeHtml($field)?><br />
+            <? endforeach; ?>
+        </p>
+    <? endif; ?>
+    <?/* Display production credit notes (field 508) */?>
+    <? if (!empty($credits)): ?>
+        <h4><?=$this->transEsc('Production Credits')?>: </h4>
+        <p>
+            <? foreach ($credits as $field): ?>
+            <?=$this->escapeHtml($field)?><br />
+            <? endforeach; ?>
+        </p>
+    <? endif; ?>
+    <?/* Display award notes (field 586) */?>
+    <? if (!empty($awards)): ?>
+        <h4><?=$this->transEsc('Awards')?>: </h4>
+        <p>
+            <? foreach ($awards as $field): ?>
+            <?=$this->escapeHtml($field)?><br />
+            <? endforeach; ?>
+        </p>
+    <? endif; ?>
+</div>
 <?php endif; ?>
-
-<? $awards = $this->driver->getAwards(); if (!empty($awards)): ?>
-<? $contentDisplayed = true; ?>
-    <h4><?=$this->transEsc('Awards')?>: </h4>
-    <p>
-        <? foreach ($awards as $field): ?>
-        <?=$this->escapeHtml($field)?><br />
-        <? endforeach; ?>
-    </p>
-<? endif; ?>
-
-<? $credits = $this->driver->getProductionCredits(); if (!empty($credits)): ?>
-<? $contentDisplayed = true; ?>
-    <h4><?=$this->transEsc('Production Credits')?>: </h4>
-    <p>
-        <? foreach ($credits as $field): ?>
-        <?=$this->escapeHtml($field)?><br />
-        <? endforeach; ?>
-    </p>
-<? endif; ?>
-
-<? $bib = $this->driver->getBibliographyNotes(); if (!empty($bib)): ?>
-<? $contentDisplayed = true; ?>
-    <h4><?=$this->transEsc('Bibliography')?>: </h4>
-    <p>
-        <? foreach ($bib as $field): ?>
-        <?=$this->escapeHtml($field)?><br />
-        <? endforeach; ?>
-    </p>
-<? endif; ?>
-
-<? $access = $this->driver->getAccessRestrictions(); if (!empty($access)): ?>
-<? $contentDisplayed = true; ?>
-    <h4><?=$this->transEsc('Access')?>: </h4>
-    <p>
-        <? foreach ($access as $field): ?>
-        <?=$this->escapeHtml($field)?><br />
-        <? endforeach; ?>
-    </p>
-<? endif; ?>
 
 <?php if(sizeof($subjectVocabularies)): ?>
     <?=$this->subjectVocabularies($subjectVocabularies)?>
