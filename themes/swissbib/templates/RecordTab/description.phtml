@@ -115,6 +115,17 @@ $subjects = $this->driver->getAllSubjectHeadings();
 <?/* Display related publication (field 776) */?>
 
 <?/* Display and link to new and previous titles (field 780 / 785) */?>
+<? $recordLinks = $this->driver->getAllRecordLinks(); if (!empty($recordLinks)): ?>
+    <h4><?=$this->transEsc('Related Items')?></h4>
+    <p>
+        <? foreach ($recordLinks as $recordLink): ?>
+        <?=$this->transEsc($recordLink['title'])?>:
+        <a href="<?=$this->recordLink()->related($recordLink['link'])?>"><?=$this->escapeHtml($recordLink['value'])?></a><br />
+        <? endforeach; ?>
+    </p>
+<? endif; ?>
+
+<?/* This section is only valid when the above links do not exist */?>
 <? $nextTitles = $this->driver->getNewerTitles(); $prevTitles = $this->driver->getPreviousTitles(); ?>
 <? if (!empty($nextTitles) or !empty($prevTitles)): ?>
     <div class="details">
