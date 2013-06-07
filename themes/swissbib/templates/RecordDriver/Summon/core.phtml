@@ -56,10 +56,6 @@ $favoriteLink			= $this->recordLink()->getActionUrl($this->driver, 'Save');
 		<p><?=$this->escapeHtml($publisher)?>, <?=$publicationDate?></p>
 		<?php endif; ?>
 
-        <h4><?=$this->transEsc('Description')?>:</h4>
-        <p>statisch, 300 $a, $b, $c, $e</p>
-
-
 		<h4><?=$this->transEsc('Format')?>:</h4>
 		<p>
 		<?php foreach($resultItem->getFormats() as $format): ?>
