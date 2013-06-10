@@ -24,8 +24,6 @@ if ((is_array($publishers) && count($publishers)>0)) {
 $edition			= $resultItem->getEdition();
 $summary			= trim(implode($resultItem->getSummary()));
 
-$groupID            = 'dummy'; //$resultItem->getGroup(true);
-
 $publicationDate    = $this->publicationDateWorldCat($resultItem->getPublicationDates());
 $favoriteLink			= $this->recordLink()->getActionUrl($this->driver, 'Save');
 
@@ -58,10 +56,6 @@ $favoriteLink			= $this->recordLink()->getActionUrl($this->driver, 'Save');
 		<p><?=$this->escapeHtml($publisher)?>, <?=$publicationDate?></p>
 		<?php endif; ?>
 
-        <h4><?=$this->transEsc('Description')?>:</h4>
-        <p>statisch, 300 $a, $b, $c, $e</p>
-
-
 		<h4><?=$this->transEsc('Format')?>:</h4>
 		<p>
 		<?php foreach($resultItem->getFormats() as $format): ?>
@@ -80,11 +74,5 @@ $favoriteLink			= $this->recordLink()->getActionUrl($this->driver, 'Save');
 		<?php endif; ?>
 
 	</div>
-
-    <?php if(!empty($groupID)): ?>
-	    <a href="#frbr.html" class="linkbutton icon_show" title="<?=$this->transEsc('FRBR_Button')?>">
-			<span><?=$this->transEsc('FRBR_Button')?></span>
-		</a>
-    <?php endif; ?>
 
 </div>

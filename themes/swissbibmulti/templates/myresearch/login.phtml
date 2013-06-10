@@ -1,0 +1,78 @@
+<?
+// Set page title
+$this->headTitle($this->translate('Login'));
+
+// Set up breadcrumbs
+//    $this->layout()->breadcrumbs = '<a href="' . $this->url('myresearch-home') . '">'
+//        . $this->transEsc('Your Account') . '</a>' . '<span>&gt;</span><em>'
+//        . $this->transEsc('Login') . '</em>';
+
+// If we're in AJAX mode, load some extra Javascript inline:
+if ($this->layout()->getTemplate() == 'layout/lightbox') {
+    $this->inlineScript()->appendFile("rc4.js");
+}
+
+// Convenience variables
+$account = $this->auth()->getManager();
+$hideLogin = !(is_object($account) && $account->loginEnabled());
+//    $offlineMode = $this->ils()->getOfflineMode();
+
+$sessionInitiator = $account->getSessionInitiator($this->serverUrl($this->url('myresearch-home')));
+
+$initJs		= '$(document).ready(function() { $(\'#loginForm\').validate(); });';
+$initScript	= $this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $initJs);
+
+?>
+
+<!-- begin: col1 (sidebar)  -->
+<div id="col1" class="sidebar">
+    <div id="col1_content" class="clearfix">
+        <!-- begin: sidebar -->
+        <div id="sidebar">
+            <?=$this->render('myresearch/sidebar/login.phtml')?>
+        </div>
+        <!-- end: sidebar -->
+    </div>
+</div>
+<!-- end: col1 (sidebar) -->
+<!-- begin: col3 (content) -->
+<div id="col3" class="content">
+    <div id="col3_content" class="clearfix">
+        <!-- begin: content -->
+        <div id="content">
+
+            <h1><?=$this->transEsc('Login')?></h1>
+
+            <?=$this->flashmessages()?>
+
+            <!--<p>Login Screen Nachrichten. Hier kann weiterer informativer Text zum Login stehen</p>-->
+
+            <? if( $hideLogin ): ?>
+            <div class="error"><?=$this->transEsc('login_disabled')?></div>
+            <? else: ?>
+            <? if( !$sessionInitiator ): // display default login form if no login URL provided ?>
+                <form method="post" action="<?=$this->url('myresearch-home')?>" name="loginForm" id="loginForm">
+                    <?=$this->auth()->getLoginFields()?>
+                    <input class="push-2 button" type="submit" name="processLogin" value="<?=$this->transEsc('Login')?>"/>
+                    <div class="clear"></div>
+                </form>
+                <?=$initScript?>
+                <?php /** temporary disabled by ferni@snowflake.ch
+                <?php if( $account->supportsCreation() ): ?>
+                <a class="new_account"
+                href="<?=$this->url('myresearch-account')?>"><?=$this->transEsc('Create New Account')?></a>
+                <? endif; ?>
+                 */ ?>
+                <? else: ?>
+                <a href="<?=$this->escapeHtml($sessionInitiator)?>"><?=$this->transEsc("Institutional Login")?></a>
+                <? endif; ?>
+            <?php endif; ?>
+
+        </div>
+        <!-- end: content -->
+    </div>
+    <div id="ie_clearing">
+        &nbsp;
+    </div>
+</div>
+<!-- end: col3 (content) -->
