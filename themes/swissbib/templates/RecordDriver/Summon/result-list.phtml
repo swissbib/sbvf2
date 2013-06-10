@@ -16,6 +16,7 @@ $openURL		= $resultItem->getOpenURL();
 	// Direct link: shown only if summons record's 'LinkModel' attr. is 'DirectLink'
 $hasDirectLink	= $resultItem->hasDirectLink();
 $directLinkUris	= $hasDirectLink ? $resultItem->getURI() : '';
+$link           = $resultItem->getLink();
 
 $hasFullText	= $resultItem->hasFulltext();
 $favoriteLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
@@ -62,17 +63,12 @@ $favoriteLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
         <!-- format -->
 		<div class="format">
 			<?=$viewRecord->getFormatList()?>
-        <!-- <h6 class="icon_format_book">Buch</h6> -->
-            <?php if(!empty($groupID)): ?>
-                <a href="#frbr.html" class="linkbutton icon_show" title="<?=$this->transEsc('FRBR_Button')?>">
-					<span><?=$this->transEsc('FRBR_Button')?></span>
-				</a>
-            <?php endif; ?>
 		</div>
 
 		<table class="nodivider noborder">
 			<tr>
-				<td>OpenURL: <?= str_replace('<a ', '<a target="_blank" ', $this->openUrl($openURL)) ?></td>
+				<td>sfx-Link: <?= str_replace('<a ', '<a target="_blank" ', $this->openUrl($openURL)) ?></td>
+                <td>360-Link: <a href="<?=$link?>" target="_blank">360-Link</a> </td>
 				<?php if($hasDirectLink && !empty($directLinkUris)): ?>
 					<td><?php foreach($directLinkUris as $directUri): ?>
 							<a class="color singleLink" target="_blank" href="<?= $directUri ?>">Direct Link</a><br />
