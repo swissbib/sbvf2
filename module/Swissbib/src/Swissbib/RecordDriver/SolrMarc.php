@@ -82,108 +82,6 @@ class SolrMarc extends VuFindSolrMarc
 		'9'  => 'unknownNumber'
 	);
 
-
-
-	/**
-	 * Get possible ISBN/ISSN numbers from record
-	 *
-	 * @return    String[]
-	 */
-	public function getISBNs()
-	{
-		$tags     = array('020', '022', '024');
-		$isbnList = array();
-
-		foreach ($tags as $tag) {
-			$fields = $this->getMarcSubFieldMaps($tag, array(
-															'a'  => 'isbn',
-															'_b' => 'binding',
-															'c'  => 'availability',
-															'z'  => 'canceled'
-													   ));
-
-			foreach ($fields as $field) {
-				if (isset($field['isbn'])) {
-					$isbnList[] = $field['isbn'];
-				}
-			}
-		}
-
-		// Add ISBN numbers from solr field
-		$baseIsbn = parent::getISBNs();
-		$isbnList = array_merge($isbnList, $baseIsbn);
-
-		return $isbnList;
-	}
-
-
-
-	/**
-	 *
-	 * @return	String[]
-	 */
-	public function getISSNs()
-	{
-		$issns	= $this->getISSNsFull();
-		$simple	= array();
-
-		foreach ($issns as $issn) {
-			if (isset($issn['issn'])) {
-				$simple[] = $issn['issn'];
-			}
-		}
-
-		return $simple;
-	}
-
-
-
-	/**
-	 * Get full ISSN marc fields data
-	 *
-	 * @return	Array[]
-	 */
-	public function getISSNsFull()
-	{
-		return $this->getMarcSubFieldMaps('022', array(
-													'a'	=> 'issn',
-													'l'	=> 'issn-l',
-													'_m'	=> 'canceled-l',
-													'_y'	=> 'incorrect',
-													'_z'	=> 'canceled',
-													'2'	=> 'source'
-												));
-	}
-
-
-
-	/**
-	 * Get possible ISBN/ISSN numbers from record
-	 *
-	 * @return String[]
-	 */
-	public function getStandardNumbers()
-	{
-		$tags   = array('020', '022', '024');
-		$idList = array();
-
-		foreach ($tags as $tag) {
-			$fields = $this->getMarcSubFieldMaps($tag, array(
-															'a' => 'id',
-															'z' => 'canceled',
-															'2' => 'code',
-													   ));
-
-			foreach ($fields as $field) {
-				if (isset($field['id'])) {
-					$idList[] = $field['id'];
-				}
-			}
-		}
-	}
-
-
-
 	/**
 	 * Wrapper for getOpenURL()
 	 * Set flag to get special values from getFormats()
@@ -239,7 +137,42 @@ class SolrMarc extends VuFindSolrMarc
 
 
 
-	/**
+    /**
+     * Get ISMN (International Standard Music Number)
+     *
+     * @return array
+     */
+    public function getISMNs() {
+        return isset($this->fields['ismn_isn_mv']) && is_array($this->fields['ismn_isn_mv']) ?
+            $this->fields['ismn_isn_mv'] : array();
+    }
+
+
+
+    /**
+     * Get DOI (Digital Object Identifier)
+     *
+     * @return array
+     */
+    public function getDOIs() {
+        return isset($this->fields['doi_isn_mv']) && is_array($this->fields['doi_isn_mv']) ?
+            $this->fields['doi_isn_mv'] : array();
+    }
+
+
+
+    /**
+     * Get URN (Uniform Resource Name)
+     *
+     * @return array
+     */
+    public function getURNs() {
+        return isset($this->fields['urn_isn_mv']) && is_array($this->fields['urn_isn_mv']) ?
+            $this->fields['urn_isn_mv'] : array();
+    }
+
+
+    /**
 	 * Get formats modified to work with openURL
 	 * Formats: Book, Journal, Article
 	 *
@@ -311,13 +244,6 @@ class SolrMarc extends VuFindSolrMarc
 	}
 
 
-
-	/**
-	 * Get standard numbers (ISBN, ISSN, ISMN, DOI, URN) for display
-	 *
-	 * @todo    May need a refactoring to simplify
-	 * @return Array
-	 */
 
 	/**
 	 * Get primary author
@@ -481,6 +407,16 @@ class SolrMarc extends VuFindSolrMarc
     public function getAltTitle()
     {
         return $this->getFieldArray('246', '247');
+    }
+
+    /**
+     * Get dissertation notes for the record.
+     *
+     * @return array
+     */
+    public function getDissertationNotes()
+    {
+        return $this->getFieldArray('502');
     }
 
 
@@ -844,6 +780,7 @@ class SolrMarc extends VuFindSolrMarc
 	 * Override base method to assure a string and not an array
 	 *
 	 * @todo    Still required?
+     * as long as title_short is multivalued=true in solr (necessary because of faulty data)
 	 * @return    String
 	 */
 	public function getShortTitle()
