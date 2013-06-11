@@ -16,14 +16,21 @@ $checkboxFilters = $results->getParams()->getCheckboxFacets();
 
 <div class="facets">
 
+	<?php
+
+	$tt = $this->tabTemplate('search/sidebar/facet-checkbox', $this->activeTabKey);
+	$ddd = $this->render($tt);
+	$x = 3;
+	?>
+
 	<!-- start checkbox facet -->
-	<?=$this->render($this->tabTemplate('search/sidebar/facet.checkbox', $this->activeTabKey), array(
+	<?=$this->render($this->tabTemplate('search/sidebar/facet-checkbox', $this->activeTabKey), array(
 																				   'results'		=> $results,
 																				   'checkboxFilters'=> $checkboxFilters
 																			  ));?>
 	<!-- end checkbox facet -->
 
-	<?=$this->render($this->tabTemplate('search/sidebar/facet.basic', $this->activeTabKey), array(
+	<?=$this->render($this->tabTemplate('search/sidebar/facet-basic', $this->activeTabKey), array(
 																					'results'			=> $results,
 																					'facetList'			=> $facetList,
 																					'basicSearch'		=> $basicSearch,
@@ -32,14 +39,14 @@ $checkboxFilters = $results->getParams()->getCheckboxFacets();
 																				   ));?>
 
 	<!-- Slider widget: Range of publication date  -->
-	<?=$this->render($this->tabTemplate('search/sidebar/facet.dateslider', $this->activeTabKey), array(
+	<?=$this->render($this->tabTemplate('search/sidebar/facet-dateslider', $this->activeTabKey), array(
 																					 'results'	=> $results
 																				));?>
 
 </div>
 
 <?php
-//$this->render($this->tabTemplate('search/sidebar/facet.more', $this->activeTabKey), array(
+//$this->render($this->tabTemplate('search/sidebar/facet-more', $this->activeTabKey), array(
 //
 //																					   ));
 ?>
