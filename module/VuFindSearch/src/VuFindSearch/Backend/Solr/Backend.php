@@ -36,9 +36,10 @@ use VuFindSearch\Response\RecordCollectionInterface;
 use VuFindSearch\Response\RecordCollectionFactoryInterface;
 
 use VuFindSearch\Backend\Solr\Response\Json\Terms;
+use VuFindSearch\Backend\Solr\Response\Json\Spellcheck;
 
 use VuFindSearch\Backend\BackendInterface;
-use VuFindSearch\Feature\MoreLikeThis;
+use VuFindSearch\Feature\SimilarInterface;
 use VuFindSearch\Feature\RetrieveBatchInterface;
 
 use Zend\Log\LoggerInterface;
@@ -57,7 +58,7 @@ use VuFindSearch\Exception\InvalidArgumentException;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org
  */
-class Backend implements BackendInterface, MoreLikeThis, RetrieveBatchInterface
+class Backend implements BackendInterface, SimilarInterface, RetrieveBatchInterface
 {
     /**
      * Record collection factory.
@@ -156,43 +157,33 @@ class Backend implements BackendInterface, MoreLikeThis, RetrieveBatchInterface
         $params = $params ?: new ParamBag();
         $this->injectResponseWriter($params);
 
-        if ($params->get('spellcheck.q')) {
-            if (!empty($this->dictionaries)) {
-                reset($this->dictionaries);
-                $params->set('spellcheck', 'true');
-                $params->set('spellcheck.dictionary', current($this->dictionaries));
-            } else {
+        $spellcheck = $params->get('spellcheck.q');
+        if ($spellcheck) {
+            if (empty($this->dictionaries)) {
                 $this->log(
                     'warn',
                     'Spellcheck requested but no spellcheck dictionary configured'
                 );
+                $spellcheck = false;
+            } else {
+                reset($this->dictionaries);
+                $params->set('spellcheck', 'true');
+                $params->set('spellcheck.dictionary', current($this->dictionaries));
             }
         }
 
+        $params->set('rows', $limit);
+        $params->set('start', $offset);
         $params->mergeWith($this->getQueryBuilder()->build($query));
-        $response   = $this->connector->search($params, $offset, $limit);
+        $response   = $this->connector->search($params);
         $collection = $this->createRecordCollection($response);
         $this->injectSourceIdentifier($collection);
 
-        // Submit requests for more spelling suggestions
-        while (next($this->dictionaries) !== false) {
-            $prev = $this->connector->getLastQueryParameters();
-            // Bypass secondary spell check if initial query disabled it:
-            if (is_array($prev->get('spellcheck'))
-                && current($prev->get('spellcheck')) == 'true'
-            ) {
-                $next = new ParamBag(
-                    array('q' => '*:*', 'spellcheck' => 'true', 'rows' => 0)
-                );
-                $this->injectResponseWriter($next);
-                $next->mergeWith($this->connector->getQueryInvariants());
-                $next->set('spellcheck.q', $prev->get('spellcheck.q'));
-                $next->set('spellcheck.dictionary', current($this->dictionaries));
-                $response   = $this->connector->resubmit($next);
-                $spellcheck = $this->createRecordCollection($response);
-                $collection->getSpellcheck()
-                    ->mergeWith($spellcheck->getSpellcheck());
-            }
+        if ($spellcheck) {
+            $spellcheckQuery = $params->get('spellcheck.q');
+            $this->aggregateSpellcheck(
+                $collection->getSpellcheck(), end($spellcheckQuery)
+            );
         }
 
         return $collection;
@@ -242,11 +233,15 @@ class Backend implements BackendInterface, MoreLikeThis, RetrieveBatchInterface
             $currentPage = array_splice($ids, 0, $pageSize, array());
             $currentPage = array_map($formatIds, $currentPage);
             $params = new ParamBag(
-                array('q' => 'id:(' . implode(' OR ', $currentPage) . ')')
+                array(
+                    'q' => 'id:(' . implode(' OR ', $currentPage) . ')',
+                    'start' => 0,
+                    'rows' => $pageSize
+                )
             );
             $this->injectResponseWriter($params);
             $next = $this->createRecordCollection(
-                $this->connector->search($params, 0, $pageSize)
+                $this->connector->search($params)
             );
             if (!$results) {
                 $results = $next;
@@ -551,5 +546,28 @@ class Backend implements BackendInterface, MoreLikeThis, RetrieveBatchInterface
         }
         $params->set('wt', array('json'));
         $params->set('json.nl', array('arrarr'));
+    }
+
+    /**
+     * Submit requests for more spelling suggestions.
+     *
+     * @param Spellcheck $spellcheck Aggregating spellcheck object
+     * @param string     $query      Spellcheck query
+     *
+     * @return void
+     */
+    protected function aggregateSpellcheck(Spellcheck $spellcheck, $query)
+    {
+        while (next($this->dictionaries) !== false) {
+            $params = new ParamBag(array('q' => '*:*', 'rows' => 0));
+            $params->set('spellcheck', 'true');
+            $params->set('spellcheck.q', $query);
+            $params->set('spellcheck.dictionary', current($this->dictionaries));
+            $this->injectResponseWriter($params);
+
+            $response   = $this->connector->search($params);
+            $collection = $this->createRecordCollection($response);
+            $spellcheck->mergeWith($collection->getSpellcheck());
+        }
     }
 }
