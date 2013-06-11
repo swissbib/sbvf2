@@ -167,12 +167,15 @@ return array(
 		'recorddriver_tabs'	=> array(
 			'VuFind\RecordDriver\SolrMarc' => array(
 				'tabs' => array(
-					'UserComments'	=> null // Disable user comments tab
+					'UserComments'	=> null, // Disable user comments tab
+                    'HierarchyTree' => null,
 				)
 			),
 			'VuFind\RecordDriver\Summon' => array(
 				'tabs' => array(
-					'UserComments'	=> null // Disable user comments tab
+					'UserComments'	=> null, // Disable user comments tab
+					'Description' => null, // Disable description tab
+                    'TOC' => null, // Disable TOC tab
 				)
 			)
 		),

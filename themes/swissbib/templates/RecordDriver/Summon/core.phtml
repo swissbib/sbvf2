@@ -24,16 +24,15 @@ if ((is_array($publishers) && count($publishers)>0)) {
 $edition			= $resultItem->getEdition();
 $summary			= trim(implode($resultItem->getSummary()));
 
-$groupID            = 'dummy'; //$resultItem->getGroup(true);
-
 $publicationDate    = $this->publicationDateWorldCat($resultItem->getPublicationDates());
+$favoriteLink			= $this->recordLink()->getActionUrl($this->driver, 'Save');
 
 ?>
 
 <?/* Common parts of recordDriver's core.phtml templates*/?>
 <!-- col -->
 <div class="c25l">
-	<a title="Zur Merkliste hinzufügen" class="icon_notepad_add_link" href="#">
+	<a title="<?=$this->transEsc('Add to favorites')?>" class="icon_notepad_add_link" href="<?=$favoriteLink?>">
 		<img src="<?=$thumbUrl?>" class="dropshadow"/>
 	</a>
 </div>
@@ -57,10 +56,6 @@ $publicationDate    = $this->publicationDateWorldCat($resultItem->getPublication
 		<p><?=$this->escapeHtml($publisher)?>, <?=$publicationDate?></p>
 		<?php endif; ?>
 
-        <h4><?=$this->transEsc('Description')?>:</h4>
-        <p>statisch, 300 $a, $b, $c, $e</p>
-
-
 		<h4><?=$this->transEsc('Format')?>:</h4>
 		<p>
 		<?php foreach($resultItem->getFormats() as $format): ?>
@@ -79,11 +74,5 @@ $publicationDate    = $this->publicationDateWorldCat($resultItem->getPublication
 		<?php endif; ?>
 
 	</div>
-
-    <?php if(!empty($groupID)): ?>
-	    <a href="#frbr.html" class="linkbutton icon_show" title="<?=$this->transEsc('FRBR_Button')?>">
-			<span><?=$this->transEsc('FRBR_Button')?></span>
-		</a>
-    <?php endif; ?>
 
 </div>
