@@ -50,6 +50,7 @@ $holdings		= $recordDriver->getHoldings();
 					</h4>
 
 					<ul class="actions">
+                        <!-- following backlink should be transferred to items display -->
 						<?php if (isset($institution['backlink'])): ?>
 						<li>
 							<a href="<?=$this->escapeHtml($institution['backlink'])?>" class="linkbutton primary icon_link_primary" title="Zum Bestand" target="_blank">
@@ -60,8 +61,8 @@ $holdings		= $recordDriver->getHoldings();
 							<li>Kein Institutions-Backlink.</li>
 						<?php endif; ?>
 						<li>
-							<a href="#" class="linkbutton icon_show toggler collapsed" title="Informationen zum Bestand" id="stock_toggler_<?=$groupCode?>_<?=$institutionCode?>">
-								<span>Informationen zum Bestand</span>
+							<a href="#" class="linkbutton icon_show toggler collapsed" title="<?=$this->transEsc('Item_Information')?>" id="stock_toggler_<?=$groupCode?>_<?=$institutionCode?>">
+								<span><?=$this->transEsc('Item_Information')?></span>
 							</a>
 						</li>
 					</ul>
@@ -72,8 +73,8 @@ $holdings		= $recordDriver->getHoldings();
 						</li>
 						<?php if (isset($institution['bibinfolink']) && $institution['bibinfolink']): ?>
 							<li class="miniaction_link">
-								<a href="<?=$this->escapeHtml($institution['bibinfolink']['url'])?>" class="externallink" title="<?=$this->escapeHtml($this->zendTranslate($institution['label'], 'institution'))?>">
-									<?=$this->escapeHtml($institution['bibinfolink']['host'])?>
+								<a href="<?=$this->escapeHtml($institution['bibinfolink']['url'])?>" class="externallink" title="<?=$this->transEsc('Library_Information')?>">
+                                    <?=$this->transEsc('Library_Information')?>
 								</a>
 							</li>
 						<?php endif; ?>
@@ -83,12 +84,12 @@ $holdings		= $recordDriver->getHoldings();
 						<table>
 							<thead>
 								<tr>
-									<th>Standort</th>
-									<th>Signatur</th>
-									<th>Exemplarstatus</th>
-									<th>Ausleihstatus</th>
-									<th>Beschreibung</th>
-									<th>&nbsp;</th>
+                                    <th>&nbsp; (Funktionen)</th>
+                                    <th><?=$this->transEsc('Availability')?></th>
+									<th><?=$this->transEsc('Location')?></th>
+									<th><?=$this->transEsc('Call Number')?></th>
+                                    <th>QR</th>
+                                    <th><?=$this->transEsc('Description')?></th>
 								</tr>
 							</thead>
 							<tbody>

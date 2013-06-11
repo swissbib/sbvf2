@@ -11,10 +11,14 @@
 
 ?>
 <div>
+    <?php if (!isset($allTabsConfig)): ?>
 	<h1>
 		<?=$this->number($recordTotal)?> Treffer für ihre Suchanfrage
 		<cite><?=$this->escapeHtml($lookFor)?></cite>
 	</h1>
+    <?php else: ?>
+    <h1>&nbsp;</h1>
+    <?php endif; ?>
 
 	<?php if($recordTotal): ?>
 		<!-- begin: tools -->
