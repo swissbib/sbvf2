@@ -88,9 +88,17 @@ class Summon extends VuFindSummon
 		return $this->getField('URI');
 	}
 
+    /**
+     * @return string ??
+     * return 360-summon-link (field 'link')
+     */
+    public function getLink()
+    {
+        return $this->getField('link');
+    }
 
 
-	/**
+    /**
 	 * @return    Boolean
 	 */
 	public function hasDirectLink()
