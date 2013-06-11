@@ -1,0 +1,12 @@
+<?php
+$facetLabel = $this->facetItemLabel($facet, $type);
+?>
+<?php if ($facet['isApplied']): ?>
+    <li class="hidden">
+        <a href="<?=$facet['url']?>" title="<?=$facetLabel?>"><?=$facetLabel?>&nbsp;&raquo;</a>
+    </li>
+<? else: ?>
+    <li>
+        <a href="<?=$facet['url']?>" title="<?=$facetLabel?>"><?=$facetLabel?>&nbsp;&raquo;</a>
+    </li>
+<? endif; ?>

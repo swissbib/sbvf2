@@ -37,7 +37,7 @@ class TabTemplate extends AbstractHelper implements ServiceLocatorAwareInterface
 			return $baseTemplate;
 		}
 		$tab               = strtolower($tab);
-		$customTemplate	   = str_replace('.phtml', '', $baseTemplate) . '.' . $tab;
+		$customTemplate	   = str_replace('.phtml', '', $baseTemplate) . '-' . $tab;
 
 		return $this->resolver->resolve($customTemplate) !== false ? $customTemplate : $baseTemplate;
 	}

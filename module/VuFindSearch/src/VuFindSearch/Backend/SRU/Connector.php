@@ -26,7 +26,14 @@
  * @link     http://vufind.org/wiki/vufind2:developer_manual Wiki
  */
 namespace VuFindSearch\Backend\SRU;
-use VuFind\XSLT\Processor as XSLTProcessor, Zend\Log\LoggerInterface;
+
+use VuFindSearch\Backend\Exception\HttpErrorException;
+use VuFindSearch\Backend\Exception\BackendException;
+
+use VuFind\XSLT\Processor as XSLTProcessor;
+
+use Zend\Log\LoggerAwareInterface;
+use Zend\Log\LoggerInterface;
 
 /**
  * SRU Search Interface
@@ -37,7 +44,7 @@ use VuFind\XSLT\Processor as XSLTProcessor, Zend\Log\LoggerInterface;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:developer_manual Wiki
  */
-class Connector implements \Zend\Log\LoggerAwareInterface
+class Connector implements LoggerAwareInterface
 {
     /**
      * Logger object for debug info (or false for no debugging).
@@ -122,7 +129,6 @@ class Connector implements \Zend\Log\LoggerAwareInterface
      * @param string $id     The record id
      * @param int    $max    The maximum records to return; Default is 5
      *
-     * @throws \Exception
      * @return array         An array of query results
      */
     public function getMoreLikeThis($record, $id, $max = 5)
@@ -176,7 +182,6 @@ class Connector implements \Zend\Log\LoggerAwareInterface
      * @param string $schema  Record schema to use in results list
      * @param bool   $process Process into array (true) or return raw (false)
      *
-     * @throws \Exception
      * @return array          An array of query results
      */
     public function search($query, $start = 1, $limit = null, $sortBy = null,
@@ -204,13 +209,13 @@ class Connector implements \Zend\Log\LoggerAwareInterface
      *
      * @param \Zend\Http\Response $result The response to check.
      *
-     * @throws \Exception
+     * @throws BackendException
      * @return void
      */
     public function checkForHttpError($result)
     {
         if (!$result->isSuccess()) {
-            throw new \Exception('HTTP error ' . $result->getStatusCode());
+            throw HttpErrorException::createFromResponse($response);
         }
     }
 
@@ -257,18 +262,19 @@ class Connector implements \Zend\Log\LoggerAwareInterface
      * Process an SRU response.  Returns either the raw XML string or a
      * SimpleXMLElement based on the contents of the class' raw property.
      *
-     * @param string $result SRU response
+     * @param string $response SRU response
      *
      * @return string|SimpleXMLElement
      */
-    protected function process($result)
+    protected function process($response)
     {
-        if (substr($result, 0, 5) != '<?xml') {
-            throw new \Exception('Cannot Load Results');
-        }
-
         // Send back either the raw XML or a SimpleXML object, as requested:
-        $result = XSLTProcessor::process('sru-convert.xsl', $result);
+        $result = XSLTProcessor::process('sru-convert.xsl', $response);
+        if (!$result) {
+            throw new BackendException(
+                sprintf('Error processing SRU response: %20s', $response)
+            );
+        }
         return $this->raw ? $result : simplexml_load_string($result);
     }
 }
