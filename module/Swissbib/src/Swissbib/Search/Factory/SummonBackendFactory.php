@@ -9,6 +9,7 @@ namespace Swissbib\Search\Factory;
 
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Config\Config;
+use Zend\Http\Client as HttpClient;
 
 use VuFind\Search\Factory\SummonBackendFactory as SummonBackendFactoryBase;
 use SerialsSolutions\Summon\Zend2 as Connector;
@@ -31,14 +32,14 @@ class SummonBackendFactory extends SummonBackendFactoryBase
 	/**
 	 * VuFind configuration
 	 *
-	 * @var \Zend\Config\Config
+	 * @var Config
 	 */
 	protected $config;
 
 	/**
 	 * Summon configuration
 	 *
-	 * @var \Zend\Config\Config
+	 * @var Config
 	 */
 	protected $summonConfig;
 
@@ -58,11 +59,15 @@ class SummonBackendFactory extends SummonBackendFactoryBase
 
 		$overrideCredentials = $this->getOverrideApiCredentialsFromProxy();
 		if ($overrideCredentials !== false) {
-			$id  = array_key_exists('apiId', $overrideCredentials) && !empty($overrideCredentials['apiId']) ? $overrideCredentials['apiId'] : $id;
-			$key = array_key_exists('apiKey', $overrideCredentials) && !empty($overrideCredentials['apiKey']) ? $overrideCredentials['apiKey'] : $key;
+			if (isset($overrideCredentials['apiId']) && !empty($overrideCredentials['apiId'])) {
+				$id = $overrideCredentials['apiKey'];
+			}
+			if (isset($overrideCredentials['apiKey']) && !empty($overrideCredentials['apiKey'])) {
+				$key = $overrideCredentials['apiKey'];
+			}
 		}
 
-		// Build HTTP client:
+		/** @var HttpClient $client */
 		$client  = $this->serviceLocator->get('VuFind\Http')->createClient();
 		$timeout = isset($this->summonConfig->General->timeout) ? $this->summonConfig->General->timeout : 30;
 		$client->setOptions(array('timeout' => $timeout));
