@@ -63,7 +63,7 @@ $holdings		= $recordDriver->getHoldingsStructure();
 					</ul>
 
 					<div class="stock_toggler_<?=$groupCode?>_<?=$institutionCode?>" id="holdings-data-<?=$groupCode?>-<?=$institutionCode?>">
-						<p>Loading...</p>
+						<p><div class="holdingsAjaxSpinner" id="holdings-ajax-spinner-<?=$institutionCode?>"></div> Loading...</p>
 					</div>
 				<?php endforeach; ?>
 
