@@ -18,68 +18,55 @@ $subjects = $this->driver->getAllSubjectHeadings();
 
 <!-- Tab-Inhalte gemaess TP detailstab -->
 
-<?/* Display ISBN */?>
-<? $isbns = $this->driver->getISBNs(); if (!empty($isbns)): ?>
+<?/* Display Standard-IDs */?>
+<? $isbns = $this->driver->getISBNs(); ?>
+<? $issns = $this->driver->getISSNs(); ?>
+<? $ismns = $this->driver->getISMNs(); ?>
+<? $dois  = $this->driver->getDOIs(); ?>
+<? $urns  = $this->driver->getURNs(); ?>
+<? if (!empty($isbns) or !empty($issns) or !empty($ismns) or !empty($dois) or !empty($urns)): ?>
 <? $contentDisplayed = true; ?>
     <div class="details">
-        <h4><?=$this->transEsc('ISBN')?>: </h4>
-        <p>
-            <? foreach ($isbns as $field): ?>
-            <?=$this->escapeHtml($field)?><br />
-            <? endforeach; ?>
-        </p>
-    </div>
-<? endif; ?>
-
-<?/* Display ISSN */?>
-<? $issns = $this->driver->getISSNs(); if (!empty($issns)): ?>
-<? $contentDisplayed = true; ?>
-    <div class="details">
-        <h4><?=$this->transEsc('ISSN')?>: </h4>
-        <p>
-            <? foreach ($issns as $field): ?>
-            <?=$this->escapeHtml($field)?><br />
-            <? endforeach; ?>
-        </p>
-    </div>
-<? endif; ?>
-
-<?/* Display ISMN */?>
-<? $ismns = $this->driver->getISMNs(); if (!empty($ismns)): ?>
-<? $contentDisplayed = true; ?>
-    <div class="details">
-        <h4><?=$this->transEsc('ISMN')?>: </h4>
-        <p>
-            <? foreach ($ismns as $field): ?>
-            <?=$this->escapeHtml($field)?><br />
-            <? endforeach; ?>
-        </p>
-    </div>
-<? endif; ?>
-
-<?/* Display DOI */?>
-<? $dois = $this->driver->getDOIs(); if (!empty($dois)): ?>
-<? $contentDisplayed = true; ?>
-    <div class="details">
-        <h4><?=$this->transEsc('DOI')?>: </h4>
-        <p>
-            <? foreach ($dois as $field): ?>
-            <?=$this->escapeHtml($field)?><br />
-            <? endforeach; ?>
-        </p>
-    </div>
-<? endif; ?>
-
-<?/* Display URN */?>
-<? $urns = $this->driver->getURNs(); if (!empty($urns)): ?>
-<? $contentDisplayed = true; ?>
-    <div class="details">
-        <h4><?=$this->transEsc('URN')?>: </h4>
-        <p>
-            <? foreach ($urns as $field): ?>
-            <?=$this->escapeHtml($field)?><br />
-            <? endforeach; ?>
-        </p>
+        <? if (!empty($isbns)): ?>
+            <h4><?=$this->transEsc('ISBN')?>: </h4>
+            <p>
+                <? foreach ($isbns as $field): ?>
+                <?=$this->escapeHtml($field)?><br />
+                <? endforeach; ?>
+            </p>
+        <? endif; ?>
+        <? if (!empty($issns)): ?>
+            <h4><?=$this->transEsc('ISSN')?>: </h4>
+            <p>
+                <? foreach ($issns as $field): ?>
+                <?=$this->escapeHtml($field)?><br />
+                <? endforeach; ?>
+            </p>
+        <? endif; ?>
+        <? if (!empty($ismns)): ?>
+            <h4><?=$this->transEsc('ISMN')?>: </h4>
+            <p>
+                <? foreach ($ismns as $field): ?>
+                <?=$this->escapeHtml($field)?><br />
+                <? endforeach; ?>
+            </p>
+        <? endif; ?>
+        <? if (!empty($dois)): ?>
+            <h4><?=$this->transEsc('DOI')?>: </h4>
+            <p>
+                <? foreach ($dois as $field): ?>
+                <?=$this->escapeHtml($field)?><br />
+                <? endforeach; ?>
+            </p>
+        <? endif; ?>
+        <? if (!empty($urns)): ?>
+            <h4><?=$this->transEsc('URN')?>: </h4>
+            <p>
+                <? foreach ($urns as $field): ?>
+                <?=$this->escapeHtml($field)?><br />
+                <? endforeach; ?>
+            </p>
+        <? endif; ?>
     </div>
 <? endif; ?>
 
@@ -118,23 +105,18 @@ $subjects = $this->driver->getAllSubjectHeadings();
     </div>
 <? endif; ?>
 
-<?/* Display supplement (field 770) */?>
-
-<?/* Display is supplement (field 772) */?>
-
-<?/* Display related publication (field 776) */?>
-
-<?/* Display related publication (field 776) */?>
-
-<?/* Display and link to new and previous titles (field 780 / 785) */?>
+<?/* Display and link to related items (field configured in config_base.ini -> marc_links) */?>
 <? $recordLinks = $this->driver->getAllRecordLinks(); if (!empty($recordLinks)): ?>
-    <h4><?=$this->transEsc('Related Items')?></h4>
-    <p>
-        <? foreach ($recordLinks as $recordLink): ?>
-        <?=$this->transEsc($recordLink['title'])?>:
-        <a href="<?=$this->recordLink()->related($recordLink['link'])?>"><?=$this->escapeHtml($recordLink['value'])?></a><br />
-        <? endforeach; ?>
-    </p>
+    <? $contentDisplayed = true; ?>
+        <div class="details">
+        <h4><?=$this->transEsc('Related Items')?></h4>
+        <p>
+            <? foreach ($recordLinks as $recordLink): ?>
+            <?=$this->transEsc($recordLink['title'])?>:
+            <a href="<?=$this->recordLink()->related($recordLink['link'])?>"><?=$this->escapeHtml($recordLink['value'])?></a><br />
+            <? endforeach; ?>
+        </p>
+    </div>
 <? endif; ?>
 
 <?/* This section is only valid when the above links do not exist */?>
