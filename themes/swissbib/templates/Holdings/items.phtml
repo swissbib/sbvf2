@@ -1,6 +1,12 @@
-Items
-
-<table>
+<?php
+/** @var Array[] $items */
+/**
+ * <a href="<?=$this->escapeHtml($institution['backlink'])?>" class="linkbutton primary icon_link_primary" title="Zum Bestand" target="_blank">
+ 	<span>Zum Bestand</span>
+ </a>
+ */
+?>
+<table class="holdings-items">
 	<thead>
 		<tr>
 			<th>&nbsp; (Funktionen)</th>
@@ -14,8 +20,8 @@ Items
 	<tbody>
 		<?php
 			// Items
-			foreach($institution['items'] as $item) {
-				echo $this->render('record/holdingsils_item.phtml', array(
+			foreach($items as $item) {
+				echo $this->render('Holdings/holding-item.phtml', array(
 					'item'	=> $item
 				));
 			}

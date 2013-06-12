@@ -97,7 +97,10 @@ class Holdings
 	/**
 	 * @var    Array[]|Boolean
 	 */
-	protected $extractedData = false;
+	protected $holdingData = false;
+
+	/** @var	Array[]|Boolean		Holding structure without data */
+	protected $holdingStructure = false;
 
 	/**
 	 * @var    Array[]    List of availabilities per item and barcode
@@ -197,21 +200,49 @@ class Holdings
 	/**
 	 * Get holdings data
 	 *
+	 * @param		String		$institutionCode
 	 * @return    Array[]|Boolean            Contains lists for items and holdings {items=>[],holdings=>[]}
 	 */
-	public function getHoldings()
+	public function getHoldings($institutionCode)
 	{
-		if ($this->extractedData === false) {
-			$holdingsData = $this->getHoldingData();
-			$itemsData    = $this->getItemData();
+		if ($this->holdingData === false) {
+			$this->holdingData = array();
+
+			if ($this->hasItems()) {
+				$this->holdingData['items'] = $this->getItemsData($institutionCode);
+			} elseif ($this->hasHoldings()) {
+				$this->holdingData['holdings'] = $this->getHoldingData($institutionCode);
+			}
+
+			// @todo sorting
+
+//			$holdingsData = $this->getHoldingData();
+//			$itemsData    = $this->getItemData();
+//
+//			// Merge items and holding into the same network/institution structure
+//			// (stays separated by items/holdings key at lowest level)
+//			$merged              = $this->mergeHoldings($holdingsData, $itemsData);
+//			$this->extractedData = $this->sortHoldings($merged);
+		}
+
+		return $this->holdingData;
+	}
+
+
+	public function getHoldingsStructure()
+	{
+		if ($this->holdingStructure === false) {
+			$holdingsData = $this->getStructuredHoldingsStructure(852);
+			$itemsData    = $this->getStructuredHoldingsStructure(949);
 
 			// Merge items and holding into the same network/institution structure
 			// (stays separated by items/holdings key at lowest level)
-			$merged              = $this->mergeHoldings($holdingsData, $itemsData);
-			$this->extractedData = $this->sortHoldings($merged);
+			$merged             	= $this->mergeHoldings($holdingsData, $itemsData);
+			$this->holdingStructure	= $this->sortHoldings($merged);
+
 		}
 
-		return $this->extractedData;
+		return $this->holdingStructure;
 	}
 
 
@@ -337,41 +368,50 @@ class Holdings
 			$this->holdings = $marcData;
 		} else {
 			// Invalid input data. Currently just ignore it
-			$this->extractedData = array();
+			$this->holdingData = array();
 		}
 	}
 
 
 
 	/**
-	 * Get values of field
+	 * Get holding items for an institution
 	 *
-	 * @return    Array    array[networkid][institutioncode] = array() of values for the current item
+	 * @param    String $institutionCode
+	 * @return    Array   Institution Items
 	 */
-	protected function getItemData()
+	protected function getItemsData($institutionCode)
 	{
 		$fieldName          = 949; // Field code for item information in holdings xml
-		$structuredElements = $this->getStructuredHoldingData($fieldName, $this->fieldMapping, 'items');
+		$institutionItems = $this->geHoldingsData($fieldName, $this->fieldMapping, $institutionCode);
 
-		// Add hold link and availability for all items
-		foreach ($structuredElements as $groupCode => $group) {
-			foreach ($group['institutions'] as $institutionCode => $institution) {
-					// Add backlink
-				$structuredElements[$groupCode]['institutions'][$institutionCode]['backlink']
-						= $this->getBackLink($group['networkCode'], strtoupper($institutionCode), $institution['items'][0]);
-					// Add bib-info link
-				$structuredElements[$groupCode]['institutions'][$institutionCode]['bibinfolink']
-						= $this->getBibInfoLink($institutionCode);
-
-				foreach ($institution['items'] as $index => $item) {
-					// Add extra information for item
-					$structuredElements[$groupCode]['institutions'][$institutionCode]['items'][$index]
-							= $this->extendWithActionLinks($item);
-				}
-			}
+		foreach ($institutionItems as $index => $item) {
+				// Add extra information for item
+			$institutionItems[$index] = $this->extendWithActionLinks($item);
 		}
 
-		return $structuredElements;
+//		// Add hold link and availability for all items
+//		foreach ($institutionItems as $groupCode => $group) {
+//
+//
+//
+//			foreach ($group['institutions'] as $institutionCode => $institution) {
+//					// Add backlink
+//				$institutionItems[$groupCode]['institutions'][$institutionCode]['backlink']
+//						= $this->getBackLink($group['networkCode'], strtoupper($institutionCode), $institution['items'][0]);
+//					// Add bib-info link
+//				$institutionItems[$groupCode]['institutions'][$institutionCode]['bibinfolink']
+//						= $this->getBibInfoLink($institutionCode);
+//
+//				foreach ($institution['items'] as $index => $item) {
+//					// Add extra information for item
+//					$institutionItems[$groupCode]['institutions'][$institutionCode]['items'][$index]
+//							= $this->extendWithActionLinks($item);
+//				}
+//			}
+//		}
+
+		return $institutionItems;
 	}
 
 
@@ -410,6 +450,8 @@ class Holdings
 			// Add availability if supported by network
 			$item['availability'] = $this->getAvailabilityInfos($item['bibsysnumber'], $item['barcode']);
 			$item['isAvailable']  = $this->isAvailable($item['bibsysnumber'], $item['barcode']);
+
+			$item['backlink'] = $this->getBackLink($item['network'], strtoupper($item['institution']), $item);
 
 			if ($this->isLoggedIn()) {
 				$item['userActions'] = $this->getAllowedUserActions($item);
@@ -802,7 +844,31 @@ class Holdings
 	 */
 	protected function getHoldingData()
 	{
-		return $this->getStructuredHoldingData(852, $this->fieldMapping, 'holdings');
+		return $this->geHoldingsData(852, $this->fieldMapping, 'holdings');
+	}
+
+
+
+	/**
+	 * Check whether holding holdings are available
+	 *
+	 * @return	Boolean
+	 */
+	protected function hasHoldings()
+	{
+		return $this->holdings->getField(852) !== false;
+	}
+
+
+
+	/**
+	 * Check whether holding items are available
+	 *
+	 * @return	Boolean
+	 */
+	protected function hasItems()
+	{
+		return $this->holdings->getField(949) !== false;
 	}
 
 
@@ -812,13 +878,58 @@ class Holdings
 	 *
 	 * @param    String        $fieldName
 	 * @param    Array         $mapping
-	 * @param    String        $elementKey
-	 * @return    Array
+	 * @param    String        $institutionCode
+	 * @return    Array		Items or holdings for institution
 	 */
-	protected function getStructuredHoldingData($fieldName, array $mapping, $elementKey)
+	protected function geHoldingsData($fieldName, array $mapping, $institutionCode)
 	{
-		$data   = array();
-		$fields = $this->holdings->getFields($fieldName);
+		$data            = array();
+		$fields          = $this->holdings->getFields($fieldName);
+		$institutionCode = strtolower($institutionCode);
+
+		if (is_array($fields)) {
+			foreach ($fields as $index => $field) {
+				$item        = $this->extractFieldData($field, $mapping);
+//				$networkCode = strtolower($item['network']);
+				$institution = strtolower($item['institution']);
+
+				if ($institution === $institutionCode) {
+					$data[] = $item;
+				}
+
+//				$groupCode   = $this->getGroup($institution);
+
+//				// Make sure group is present
+//				if (!isset($data[$groupCode])) {
+//					$data[$groupCode] = array(
+//						'label'        => strtolower($groupCode),
+//						'networkCode'  => $networkCode,
+//						'institutions' => array()
+//					);
+//				}
+//
+//				// Make sure institution is present
+//				if (!isset($data[$groupCode]['institutions'][$institution])) {
+//					$data[$groupCode]['institutions'][$institution] = array(
+//						'label'     => strtolower($institution),
+//						$elementKey => array()
+//					);
+//				}
+			}
+		}
+
+		return $data;
+	}
+
+
+	protected function getStructuredHoldingsStructure($fieldName)
+	{
+		$data    = array();
+		$fields  = $this->holdings->getFields($fieldName);
+		$mapping = array(
+			'B' => 'network',
+			'b' => 'institution'
+		);
 
 		if (is_array($fields)) {
 			foreach ($fields as $index => $field) {
@@ -839,12 +950,11 @@ class Holdings
 				// Make sure institution is present
 				if (!isset($data[$groupCode]['institutions'][$institution])) {
 					$data[$groupCode]['institutions'][$institution] = array(
-						'label'     => strtolower($institution),
-						$elementKey => array()
+						'label'     => strtolower($institution)
 					);
 				}
 
-				$data[$groupCode]['institutions'][$institution][$elementKey][] = $item;
+//				$data[] = $item;
 			}
 		}
 

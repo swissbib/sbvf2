@@ -2,7 +2,7 @@
 
 /** @var	Swissbib\RecordDriver\SolrMarc	$recordDriver  */
 $recordDriver	= $this->driver;
-$holdings		= $recordDriver->getHoldings();
+$holdings		= $recordDriver->getHoldingsStructure();
 
 ?>
 
@@ -45,28 +45,10 @@ $holdings		= $recordDriver->getHoldings();
 
 			<div class="innerbox">
 				<?php foreach($group['institutions'] as $institutionCode => $institution): ?>
-					<h4>
+					<h4 class="toggler institutionToggler" id="stock_toggler_<?=$groupCode?>_<?=$institutionCode?>">
 						<?=$this->escapeHtml($this->zendTranslate($institution['label'], 'institution'))?>
 					</h4>
 
-					<ul class="actions">
-                        <!-- following backlink should be transferred to items display -->
-						<?php if (isset($institution['backlink'])): ?>
-						<li>
-							<a href="<?=$this->escapeHtml($institution['backlink'])?>" class="linkbutton primary icon_link_primary" title="Zum Bestand" target="_blank">
-								<span>Zum Bestand</span>
-							</a>
-						</li>
-						<?php else: ?>
-							<li>Kein Institutions-Backlink.</li>
-						<?php endif; ?>
-						<li>
-							<a href="#" class="linkbutton icon_show toggler collapsed" title="<?=$this->transEsc('Item_Information')?>" id="stock_toggler_<?=$groupCode?>_<?=$institutionCode?>">
-								<span><?=$this->transEsc('Item_Information')?></span>
-							</a>
-						</li>
-					</ul>
-<!--					<ul class="miniactions boxed">-->
 					<ul class="miniactions">
 						<li class="miniaction_favorite_remove">
 							<a href="#" title="Bibliothek aus Favoriten entfernen">Bibliothek aus Favoriten entfernen</a>
@@ -80,15 +62,8 @@ $holdings		= $recordDriver->getHoldings();
 						<?php endif; ?>
 					</ul>
 
-					<div class="stock_toggler_<?=$groupCode?>_<?=$institutionCode?>">
-						<?php if (isset($institution['items'])): ?>
-							<?=$this->render('record/holdingils-items', array('items' => $institution['items']));?>
-						<?php elseif(isset($institution['holdings'])): ?>
-							<?=$this->render('record/holdingils-holdings', array('holdings' => $institution['holdings']));?>
-						<?php else: ?>
-							<p>There is no information available</p>
-						<?php endif; ?>
-
+					<div class="stock_toggler_<?=$groupCode?>_<?=$institutionCode?>" id="holdings-data-<?=$groupCode?>-<?=$institutionCode?>">
+						<p>Loading...</p>
 					</div>
 				<?php endforeach; ?>
 
@@ -98,3 +73,7 @@ $holdings		= $recordDriver->getHoldings();
 	<!-- end: innerbox <?=$groupCode?> -->
 
 <?php endforeach; ?>
+
+<script type="text/javascript">
+	swissbib.Holdings.initRecord('<?=$recordDriver->getUniqueID();?>');
+</script>
