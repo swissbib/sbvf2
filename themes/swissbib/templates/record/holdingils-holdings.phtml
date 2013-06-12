@@ -1,0 +1,25 @@
+Holdings
+
+<table>
+	<thead>
+		<tr>
+			<th>&nbsp; (Funktionen)</th>
+			<th><?=$this->transEsc('Availability')?></th>
+			<th><?=$this->transEsc('Location')?></th>
+			<th><?=$this->transEsc('Call Number')?></th>
+			<th>QR</th>
+			<th><?=$this->transEsc('Description')?></th>
+		</tr>
+	</thead>
+	<tbody>
+		<?php
+
+			foreach($holdings as $holding) {
+				echo $this->render('record/holdingsils_holding.phtml', array(
+					'holding'	=> $holding
+				));
+			}
+
+		?>
+	</tbody>
+</table>

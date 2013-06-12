@@ -39,6 +39,8 @@ if( isset($item['userActions']) ) {
 	);
 }
 
+$availability = isset($item['availability']['loan-status']) ? $item['availability']['loan-status'] : '';
+
 ?>
 <tr>
     <td>
@@ -49,7 +51,7 @@ if( isset($item['userActions']) ) {
             <?php endforeach; ?>
         </ul>
     </td>
-    <td><?=$this->escapeHtml($item['availability']['loan-status'])?></td>
+    <td><?=$this->escapeHtml($availability)?></td>
 	<td><?=$this->escapeHtml($item['location_expanded'])?></td>
 	<td><?=$this->escapeHtml($item['signature'])?></td>
     <td><?=$this->escapeHtml($item['opac_note'])?></td>

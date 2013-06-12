@@ -81,39 +81,14 @@ $holdings		= $recordDriver->getHoldings();
 					</ul>
 
 					<div class="stock_toggler_<?=$groupCode?>_<?=$institutionCode?>">
-						<table>
-							<thead>
-								<tr>
-                                    <th>&nbsp; (Funktionen)</th>
-                                    <th><?=$this->transEsc('Availability')?></th>
-									<th><?=$this->transEsc('Location')?></th>
-									<th><?=$this->transEsc('Call Number')?></th>
-                                    <th>QR</th>
-                                    <th><?=$this->transEsc('Description')?></th>
-								</tr>
-							</thead>
-							<tbody>
-								<?php
-										// Items
-									if( isset($institution['items'])) {
-										foreach($institution['items'] as $item) {
-											echo $this->render('record/holdingsils_item.phtml', array(
-												'item'	=> $item
-											));
-										}
-									}
+						<?php if (isset($institution['items'])): ?>
+							<?=$this->render('record/holdingils-items', array('items' => $institution['items']));?>
+						<?php elseif(isset($institution['holdings'])): ?>
+							<?=$this->render('record/holdingils-holdings', array('holdings' => $institution['holdings']));?>
+						<?php else: ?>
+							<p>There is no information available</p>
+						<?php endif; ?>
 
-										// Holdings
-									if( isset($institution['holdings'])) {
-										foreach($institution['holdings'] as $holding) {
-											echo $this->render('record/holdingsils_holding.phtml', array(
-												'holding'	=> $holding
-											));
-										}
-									}
-								?>
-							</tbody>
-						</table>
 					</div>
 				<?php endforeach; ?>
 
