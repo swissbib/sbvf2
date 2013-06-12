@@ -3,6 +3,14 @@
 $isAvailable= isset($item['isAvailable']) && $item['isAvailable'];
 $actions	= array();
 
+if (isset($item['backlink'])) {
+	$actions[] = array(
+		'label'	=> 'zum Bestand',
+		'action'=> $item['backlink'],
+		'escape'=> false
+	);
+}
+
 	// Build item links
 	// @todo Move into holdings helper or view helper as soon as the feature set is clear
 if( isset($item['userActions']) ) {
@@ -39,6 +47,8 @@ if( isset($item['userActions']) ) {
 	);
 }
 
+
+
 $availability = isset($item['availability']['loan-status']) ? $item['availability']['loan-status'] : '';
 
 ?>
@@ -55,5 +65,5 @@ $availability = isset($item['availability']['loan-status']) ? $item['availabilit
 	<td><?=$this->escapeHtml($item['location_expanded'])?></td>
 	<td><?=$this->escapeHtml($item['signature'])?></td>
     <td><?=$this->escapeHtml($item['opac_note'])?></td>
-	<td>sadf</td>
+	<td>...</td>
 </tr>
