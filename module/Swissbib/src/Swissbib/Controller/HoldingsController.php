@@ -1,19 +1,25 @@
 <?php
 namespace Swissbib\Controller;
 
-use VuFind\Controller\AbstractBase as BaseController;
 use Zend\View\Model\ViewModel;
 
+use VuFind\Controller\AbstractBase as BaseController;
 use VuFind\Record\Loader as RecordLoader;
+
 use Swissbib\RecordDriver\SolrMarc;
 
 /**
- * [Description]
+ * Serve holdings data (items and holdings) for solr records over ajax
  *
  */
 class HoldingsController extends BaseController
 {
 
+	/**
+	 * Get list for items or holdings, depending on the data
+	 *
+	 * @return ViewModel
+	 */
 	public function listAction()
 	{
 		$institution = $this->params()->fromRoute('institution');
@@ -43,8 +49,8 @@ class HoldingsController extends BaseController
 	 * @param	Integer			$idRecord
 	 * @return	SolrMarc
 	 */
-	protected function getRecord($idRecord) {
+	protected function getRecord($idRecord)
+	{
 		return $this->getServiceLocator()->get('VuFind\RecordLoader')->load($idRecord, 'Solr');
 	}
-
 }
