@@ -62,7 +62,7 @@ return array(
 					)
 				)
 			),
-			'holdings-ajax'     => array(
+			'holdings-ajax'     => array( // load holdings details for record with ajax
 				'type'    => 'segment',
 				'options' => array(
 					'route'    => '/Holdings/:record/:institution',
