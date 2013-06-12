@@ -2,6 +2,7 @@
 
 $isAvailable= isset($item['isAvailable']) && $item['isAvailable'];
 $actions	= array();
+$desc		= '';
 
 if (isset($item['backlink'])) {
 	$actions[] = array(
@@ -47,7 +48,10 @@ if( isset($item['userActions']) ) {
 	);
 }
 
-
+	// Temporary usage for error info
+if (isset($item['error'])) {
+	$desc = $item['error'];
+}
 
 $availability = isset($item['availability']['loan-status']) ? $item['availability']['loan-status'] : '';
 
@@ -65,5 +69,5 @@ $availability = isset($item['availability']['loan-status']) ? $item['availabilit
 	<td><?=$this->escapeHtml($item['location_expanded'])?></td>
 	<td><?=$this->escapeHtml($item['signature'])?></td>
     <td><?=$this->escapeHtml($item['opac_note'])?></td>
-	<td>...</td>
+	<td><?=$this->escapeHtml($desc)?></td>
 </tr>

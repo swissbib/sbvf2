@@ -213,22 +213,18 @@ class Holdings
 			} elseif ($this->hasHoldings()) {
 				$this->holdingData['holdings'] = $this->getHoldingData($institutionCode);
 			}
-
-			// @todo sorting
-
-//			$holdingsData = $this->getHoldingData();
-//			$itemsData    = $this->getItemData();
-//
-//			// Merge items and holding into the same network/institution structure
-//			// (stays separated by items/holdings key at lowest level)
-//			$merged              = $this->mergeHoldings($holdingsData, $itemsData);
-//			$this->extractedData = $this->sortHoldings($merged);
 		}
 
 		return $this->holdingData;
 	}
 
 
+
+	/**
+	 * Get holdings structure grouped by group and institution
+	 *
+	 * @return Array|\Array[]|bool
+	 */
 	public function getHoldingsStructure()
 	{
 		if ($this->holdingStructure === false) {
@@ -387,29 +383,13 @@ class Holdings
 
 		foreach ($institutionItems as $index => $item) {
 				// Add extra information for item
-			$institutionItems[$index] = $this->extendWithActionLinks($item);
+			try {
+				$institutionItems[$index] = $this->extendWithActionLinks($item);
+			} catch (\Exception $e) {
+				// ignore errors?
+				$institutionItems[$index]['error'] = 'Could not fetch status info!'; // $e->getMessage();
+			}
 		}
-
-//		// Add hold link and availability for all items
-//		foreach ($institutionItems as $groupCode => $group) {
-//
-//
-//
-//			foreach ($group['institutions'] as $institutionCode => $institution) {
-//					// Add backlink
-//				$institutionItems[$groupCode]['institutions'][$institutionCode]['backlink']
-//						= $this->getBackLink($group['networkCode'], strtoupper($institutionCode), $institution['items'][0]);
-//					// Add bib-info link
-//				$institutionItems[$groupCode]['institutions'][$institutionCode]['bibinfolink']
-//						= $this->getBibInfoLink($institutionCode);
-//
-//				foreach ($institution['items'] as $index => $item) {
-//					// Add extra information for item
-//					$institutionItems[$groupCode]['institutions'][$institutionCode]['items'][$index]
-//							= $this->extendWithActionLinks($item);
-//				}
-//			}
-//		}
 
 		return $institutionItems;
 	}
@@ -922,6 +902,13 @@ class Holdings
 	}
 
 
+
+	/**
+	 * Get holdings structure for holdings
+	 *
+	 * @param	Integer		$fieldName
+	 * @return	Array[]
+	 */
 	protected function getStructuredHoldingsStructure($fieldName)
 	{
 		$data    = array();
@@ -950,11 +937,10 @@ class Holdings
 				// Make sure institution is present
 				if (!isset($data[$groupCode]['institutions'][$institution])) {
 					$data[$groupCode]['institutions'][$institution] = array(
-						'label'     => strtolower($institution)
+						'label' 		=> strtolower($institution),
+						'bibinfolink'	=> $this->getBibInfoLink($institution)
 					);
 				}
-
-//				$data[] = $item;
 			}
 		}
 
@@ -1044,47 +1030,4 @@ class Holdings
 
 		return $data;
 	}
-
-//
-//	public function getTestData() {
-//
-//		return
-//				$testholdings = <<<EOT
-//        <record>
-//            <datafield tag="949" ind1=" " ind2=" ">
-//                <subfield code="B">RERO</subfield>
-//                <subfield code="E">vtls0034515</subfield>
-//                <subfield code="b">A100</subfield>
-//                <subfield code="j">-</subfield>
-//                <subfield code="p">1889908238</subfield>
-//                <subfield code="4">60100</subfield>
-//            </datafield>
-//            <datafield tag="949" ind1=" " ind2=" ">
-//                <subfield code="B">RERO</subfield>
-//                <subfield code="E">vtls003451557</subfield>
-//                <subfield code="b">610650002</subfield>
-//                <subfield code="j">-</subfield>
-//                <subfield code="p">1889908238</subfield>
-//                <subfield code="4">60100</subfield>
-//            </datafield>
-//            <datafield tag="949" ind1=" " ind2=" ">
-//                <subfield code="B">RERO</subfield>
-//                <subfield code="E">vtls003451557</subfield>
-//                <subfield code="b">1234</subfield>
-//                <subfield code="j">-</subfield>
-//                <subfield code="p">1889908238</subfield>
-//                <subfield code="4">60100</subfield>
-//            </datafield>
-//            <datafield tag="852" ind1=" " ind2=" ">
-//                <subfield code="B">IDSBB</subfield>
-//                <subfield code="E">sysnr</subfield>
-//                <subfield code="b">1234</subfield>
-//                <subfield code="j">-</subfield>
-//                <subfield code="p">recid</subfield>
-//                <subfield code="4">60100</subfield>
-//            </datafield>
-//        </record>
-//EOT;
-//
-//	}
 }

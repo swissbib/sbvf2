@@ -819,6 +819,12 @@ class SolrMarc extends VuFindSolrMarc
 	}
 
 
+
+	/**
+	 * Get holdings structure without item details
+	 *
+	 * @return Array[]|bool
+	 */
 	public function getHoldingsStructure()
 	{
 		return $this->getHoldingsHelper()->getHoldingsStructure();
