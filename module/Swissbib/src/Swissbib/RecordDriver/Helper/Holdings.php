@@ -454,7 +454,11 @@ class Holdings
 	 */
 	protected function extendHoldingWithActionLinks(array $holding, SolrMarc $recordDriver = null)
 	{
-		$holding['backlink'] = $this->getBackLink($holding['network'], strtoupper($holding['institution']), $holding);
+		$networkCode = $holding['network'];
+
+		if (!$this->isRestfulNetwork($networkCode)) {
+			$holding['backlink'] = $this->getBackLink($holding['network'], strtoupper($holding['institution']), $holding);
+		}
 
 		return $holding;
 	}
