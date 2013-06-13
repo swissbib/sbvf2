@@ -21,8 +21,8 @@ if (isset($holding['locationMap']) && $holding['locationMap']) {
     <td>
 		<ul>
 			<?php foreach($actions as $action): ?>
-			<?php $href = !isset($action['escape']) || $action['escape'] ? $this->escapeHtml($action['action']) : $action['action']; ?>
-			<li><a href="<?=$href?>" ><?=$this->escapeHtml($action['label'])?></a></li>
+				<?php $href = !isset($action['escape']) || $action['escape'] ? $this->escapeHtml($action['action']) : $action['action']; ?>
+				<li><a href="<?=$href?>" ><?=$this->escapeHtml($action['label'])?></a></li>
 			<?php endforeach; ?>
 		</ul>
     </td>
