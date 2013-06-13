@@ -360,6 +360,7 @@ class Holdings
 			$this->holdings = $marcData;
 		} else {
 			// Invalid input data. Currently just ignore it
+			$this->holdings = false;
 			$this->holdingData = array();
 		}
 	}
@@ -953,7 +954,7 @@ class Holdings
 	 */
 	protected function hasHoldings()
 	{
-		return $this->holdings->getField(852) !== false;
+		return $this->holdings && $this->holdings->getField(852) !== false;
 	}
 
 
@@ -965,7 +966,7 @@ class Holdings
 	 */
 	protected function hasItems()
 	{
-		return $this->holdings->getField(949) !== false;
+		return $this->holdings && $this->holdings->getField(949) !== false;
 	}
 
 
@@ -981,7 +982,7 @@ class Holdings
 	protected function geHoldingsData($fieldName, array $mapping, $institutionCode)
 	{
 		$data            = array();
-		$fields          = $this->holdings->getFields($fieldName);
+		$fields          = $this->holdings ? $this->holdings->getFields($fieldName) : false;
 		$institutionCode = strtolower($institutionCode);
 
 		if (is_array($fields)) {
@@ -1009,7 +1010,7 @@ class Holdings
 	protected function getStructuredHoldingsStructure($fieldName)
 	{
 		$data    = array();
-		$fields  = $this->holdings->getFields($fieldName);
+		$fields  = $this->holdings ? $this->holdings->getFields($fieldName) : false;
 		$mapping = array(
 			'B' => 'network',
 			'b' => 'institution'
