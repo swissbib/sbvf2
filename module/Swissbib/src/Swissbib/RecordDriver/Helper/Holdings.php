@@ -906,11 +906,12 @@ class Holdings
 	/**
 	 * Get structured data for holdings
 	 *
+	 * @param	String		$institutionCode
 	 * @return    Array[]
 	 */
-	protected function getHoldingData()
+	protected function getHoldingData($institutionCode)
 	{
-		return $this->geHoldingsData(852, $this->fieldMapping, 'holdings');
+		return $this->geHoldingsData(852, $this->fieldMapping, $institutionCode);
 	}
 
 

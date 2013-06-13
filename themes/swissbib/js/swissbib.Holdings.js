@@ -103,7 +103,7 @@ swissbib.Holdings = {
 	 * @param	{String}	url
 	 */
 	openEODPopup: function(url) {
-		window.open(url, 'eod-popup', 'dependent=yes,height=400,width=500,toolbar=no,status=no,menubar=no,location=no');
+		window.open(url, 'eod-popup', 'dependent=yes,height=450,width=550,toolbar=no,status=no,menubar=no,location=no');
 	}
 
 };
