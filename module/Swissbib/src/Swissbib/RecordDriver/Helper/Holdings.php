@@ -439,6 +439,8 @@ class Holdings
 
 			// EOD LINK
 		$item['eodlink'] = $this->getEODLink($item, $recordDriver);
+			// Location Map Link
+		$item['locationMap'] = $this->getLocationMapLink($item);
 
 		return $item;
 	}
@@ -459,6 +461,9 @@ class Holdings
 		if (!$this->isRestfulNetwork($networkCode)) {
 			$holding['backlink'] = $this->getBackLink($holding['network'], strtoupper($holding['institution']), $holding);
 		}
+
+			// Location Map Link
+		$holding['locationMap'] = $this->getLocationMapLink($holding);
 
 		return $holding;
 	}
@@ -544,6 +549,29 @@ class Holdings
 					return true;
 				}
 			}
+		}
+
+		return false;
+	}
+
+
+
+	/**
+	 * Build location map link
+	 * Return false in case institution is not enable for mapping
+	 *
+	 * @param	Array		$item
+	 * @return	String|Boolean
+	 */
+	protected function getLocationMapLink(array $item)
+	{
+		$mapConfig 				= $this->configManager->get('config')->locationMap;
+		$supportedInstitutions	= array_map('trim', array_map('strtolower', explode(',', $mapConfig->institutions)));
+		$itemInstitution		= strtolower($item['institution']);
+		$hasSignature			= isset($item['signature']) && !empty($item['signature']);
+
+		if (in_array($itemInstitution, $supportedInstitutions) && $hasSignature) {
+			return str_replace('{SIGNATURE}', urlencode($item['signature']), $mapConfig->link);
 		}
 
 		return false;
