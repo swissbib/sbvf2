@@ -375,5 +375,8 @@ label[for="search_favorites"] {
 .institutionToggler {
 	margin-top: 10px;
 	display: inline-block;
-	/*background-color: red;*/
+}
+
+.holdingMapLink {
+	display: block;
 }

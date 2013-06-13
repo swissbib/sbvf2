@@ -2,6 +2,7 @@
 /** @var Array $holding */
 
 $actions	= array();
+$mapLink	= '';
 
 if (isset($holding['backlink'])) {
 	$actions[] = array(
@@ -9,6 +10,10 @@ if (isset($holding['backlink'])) {
 		'action'=> $holding['backlink'],
 		'escape'=> false
 	);
+}
+
+if (isset($holding['locationMap']) && $holding['locationMap']) {
+	$mapLink = '<a href="' . $holding['locationMap'] . '" class="holdingMapLink">Lageplan anzeigen</a>';
 }
 
 ?>
@@ -22,7 +27,7 @@ if (isset($holding['backlink'])) {
 		</ul>
     </td>
     <td>not implemented</td>
-    <td>not implemented</td>
+    <td><?=$this->escapeHtml($holding['location_expanded'])?><?=$mapLink?></td>
 	<td><?=$this->escapeHtml($holding['signature'])?></td>
 	<td>QR</td>
 	<td><?=$this->escapeHtml($holding['holding_information'])?></td>
