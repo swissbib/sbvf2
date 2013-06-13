@@ -1,8 +1,29 @@
+<?php
+/** @var Array $holding */
+
+$actions	= array();
+
+if (isset($holding['backlink'])) {
+	$actions[] = array(
+		'label'	=> 'zum Bestand',
+		'action'=> $holding['backlink'],
+		'escape'=> false
+	);
+}
+
+?>
 <tr>
-    <td>enable item-display if possible</td>
-    <td>Testtext</td>
-    <td>Testtext</td>
-	<td><?=$this->escapeHtml($holding['location_expanded'])?></td>
-	<td><?=$this->escapeHtml($holding['signature2'])?></td>
-	<td><?=$this->escapeHtml($holding['opac_note'])?></td>
+    <td>
+		<ul>
+			<?php foreach($actions as $action): ?>
+			<?php $href = !isset($action['escape']) || $action['escape'] ? $this->escapeHtml($action['action']) : $action['action']; ?>
+			<li><a href="<?=$href?>" ><?=$this->escapeHtml($action['label'])?></a></li>
+			<?php endforeach; ?>
+		</ul>
+    </td>
+    <td>not implemented</td>
+    <td>not implemented</td>
+	<td><?=$this->escapeHtml($holding['signature'])?></td>
+	<td>QR</td>
+	<td><?=$this->escapeHtml($holding['holding_information'])?></td>
 </tr>
