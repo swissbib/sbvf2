@@ -41,6 +41,7 @@ use VuFind\Auth\Manager as AuthManager;
 use VuFind\Config\PluginManager as ConfigManager;
 
 use Swissbib\VuFind\ILS\Driver\Aleph;
+use Swissbib\RecordDriver\SolrMarc;
 
 /**
  * probably Holdings should be a subtype of ZF2 AbstractHelper
@@ -58,6 +59,9 @@ class Holdings
 	 * @var    AuthManager
 	 */
 	protected $authManager;
+
+	/** @var  ConfigManager */
+	protected $configManager;
 
 	/**
 	 * @var    \File_MARC_Record
@@ -157,6 +161,7 @@ class Holdings
 		Translator $translator)
 	{
 		$this->ils            = $ilsConnection;
+		$this->configManager  = $configManager;
 		$this->configHoldings = $configManager->get('Holdings');
 		$this->hmac           = $hmac;
 		$this->authManager    = $authManager;
@@ -201,15 +206,16 @@ class Holdings
 	 * Get holdings data
 	 *
 	 * @param		String		$institutionCode
+	 * @param		SolrMarc	$recordDriver
 	 * @return    Array[]|Boolean            Contains lists for items and holdings {items=>[],holdings=>[]}
 	 */
-	public function getHoldings($institutionCode)
+	public function getHoldings(SolrMarc $recordDriver, $institutionCode)
 	{
 		if ($this->holdingData === false) {
 			$this->holdingData = array();
 
 			if ($this->hasItems()) {
-				$this->holdingData['items'] = $this->getItemsData($institutionCode);
+				$this->holdingData['items'] = $this->getItemsData($recordDriver, $institutionCode);
 			} elseif ($this->hasHoldings()) {
 				$this->holdingData['holdings'] = $this->getHoldingData($institutionCode);
 			}
@@ -373,10 +379,11 @@ class Holdings
 	/**
 	 * Get holding items for an institution
 	 *
+	 * @param	SolrMarc	$recordDriver
 	 * @param    String $institutionCode
 	 * @return    Array   Institution Items
 	 */
-	protected function getItemsData($institutionCode)
+	protected function getItemsData(SolrMarc $recordDriver, $institutionCode)
 	{
 		$fieldName          = 949; // Field code for item information in holdings xml
 		$institutionItems = $this->geHoldingsData($fieldName, $this->fieldMapping, $institutionCode);
@@ -384,7 +391,7 @@ class Holdings
 		foreach ($institutionItems as $index => $item) {
 				// Add extra information for item
 			try {
-				$institutionItems[$index] = $this->extendWithActionLinks($item);
+				$institutionItems[$index] = $this->extendWithActionLinks($item, $recordDriver);
 			} catch (\Exception $e) {
 				// ignore errors?
 				$institutionItems[$index]['error'] = 'Could not fetch status info!'; // $e->getMessage();
@@ -416,9 +423,10 @@ class Holdings
 	 *
 	 * @todo    Handle multi ILS system
 	 * @param    Array    $item
+	 * @param	SolrMarc	$recordDriver
 	 * @return    Array
 	 */
-	protected function extendWithActionLinks(array $item)
+	protected function extendWithActionLinks(array $item, SolrMarc $recordDriver = null)
 	{
 		$networkCode	= isset($item['network']) ? strtolower($item['network']) : '';
 
@@ -438,9 +446,44 @@ class Holdings
 			}
 		}
 
+			// EOD LINK
+		$item['eod'] = $this->buildEODLink($item, $recordDriver);
+
 		return $item;
 	}
 
+
+
+
+	protected function buildEODLink(array $item, SolrMarc $recordDriver = null)
+	{
+		if ($recordDriver instanceof SolrMarc) {
+			list(,$publishYear,) = $recordDriver->getPublicationDates();
+
+				// Is it a real date/year?
+			if (is_numeric($publishYear) && $publishYear > 100 && $publishYear < 3000) {
+				$eodConfig				= $this->configManager->get('config')->get('eBooksOnDemand');
+				$maxYear				= $eodConfig->maxYear;
+				$supportedInstitutions	= explode(',', $eodConfig->institutions);
+				$supportedInstitutions	= array_map('trim', $supportedInstitutions);
+				$supportedInstitutions	= array_map('strtolower', $supportedInstitutions);
+				$supportedFormats		= $eodConfig->formats;
+				$supportedFormats		= array_map('trim', $supportedFormats);
+				$supportedFormats		= array_map('strtolower', $supportedFormats);
+
+				if ($publishYear <= $maxYear) {
+					if (in_array(strtolower($item['institution']), $supportedInstitutions)) {
+						$recordFormats	= array_map('strtolower', $recordDriver->getFormatsRaw());
+						if (sizeof(array_intersect($supportedFormats, $recordFormats)) > 0) {
+							$found = true;
+						}
+					}
+				}
+			}
+		}
+
+		return false;
+	}
 
 
 	/**
