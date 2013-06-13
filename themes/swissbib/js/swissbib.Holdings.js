@@ -82,7 +82,7 @@ swissbib.Holdings = {
 		if( status === 'error' ) {
 			$('#holdings-data-' + groupCode + '-' + institutionCode).html('Request failed. Information is currently not available');
 		}
-		console.log('Table for institution was loaded');
+//		console.log('Table for institution was loaded');
 	},
 
 
