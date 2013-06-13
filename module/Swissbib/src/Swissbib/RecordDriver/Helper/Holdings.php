@@ -50,32 +50,22 @@ use Swissbib\RecordDriver\SolrMarc;
 class Holdings
 {
 
-	/**
-	 * @var    IlsConnection
-	 */
+	/** @var	IlsConnection	Receive more data from server */
 	protected $ils;
 
-	/**
-	 * @var    AuthManager
-	 */
+	/** @var    AuthManager		Check login status and info */
 	protected $authManager;
 
-	/** @var  ConfigManager */
+	/** @var	ConfigManager	Load configurations */
 	protected $configManager;
 
-	/**
-	 * @var    \File_MARC_Record
-	 */
+	/** @var    \File_MARC_Record */
 	protected $holdings;
 
-	/**
-	 * @var    String        Parent item od
-	 */
+	/** @var    String        Parent item */
 	protected $idItem;
 
-	/**
-	 * @var    Array    HMAC keys for ILS
-	 */
+	/** @var    Array    HMAC keys for ILS */
 	protected $hmacKeys = array();
 
 	/**
@@ -127,7 +117,7 @@ class Holdings
 	protected $hmac;
 
 	/**
-	 * @var    Array
+	 * @var    Array		Mapping from institutions to groups
 	 */
 	protected $institution2group = array();
 
@@ -154,12 +144,12 @@ class Holdings
 	 * @throws    \Exception
 	 */
 	public function __construct(
-		IlsConnection $ilsConnection,
-		HMAC $hmac,
-		AuthManager $authManager,
-		ConfigManager $configManager,
-		Translator $translator)
-	{
+					IlsConnection $ilsConnection,
+					HMAC $hmac,
+					AuthManager $authManager,
+					ConfigManager $configManager,
+					Translator $translator
+	) {
 		$this->ils            = $ilsConnection;
 		$this->configManager  = $configManager;
 		$this->configHoldings = $configManager->get('Holdings');
@@ -447,37 +437,90 @@ class Holdings
 		}
 
 			// EOD LINK
-		$item['eod'] = $this->buildEODLink($item, $recordDriver);
+		$item['eodlink'] = $this->getEODLink($item, $recordDriver);
 
 		return $item;
 	}
 
 
 
-
-	protected function buildEODLink(array $item, SolrMarc $recordDriver = null)
+	/**
+	 * Build an EOD link if possible
+	 * Return false if item does not support EOD links
+	 *
+	 * @param	Array    	$item
+	 * @param	SolrMarc	$recordDriver
+	 * @return	String|Boolean
+	 */
+	protected function getEODLink(array $item, SolrMarc $recordDriver = null)
 	{
+		$eodLink = false;
+
 		if ($recordDriver instanceof SolrMarc) {
 			list(,$publishYear,) = $recordDriver->getPublicationDates();
+			$formats			 = $recordDriver->getFormatsRaw();
 
-				// Is it a real date/year?
-			if (is_numeric($publishYear) && $publishYear > 100 && $publishYear < 3000) {
-				$eodConfig				= $this->configManager->get('config')->get('eBooksOnDemand');
-				$maxYear				= $eodConfig->maxYear;
-				$supportedInstitutions	= explode(',', $eodConfig->institutions);
-				$supportedInstitutions	= array_map('trim', $supportedInstitutions);
-				$supportedInstitutions	= array_map('strtolower', $supportedInstitutions);
-				$supportedFormats		= $eodConfig->formats;
-				$supportedFormats		= array_map('trim', $supportedFormats);
-				$supportedFormats		= array_map('strtolower', $supportedFormats);
+			if ($this->isValidForEodLink($publishYear, $item['institution'], $formats)) {
+				$eodLink = $this->buildEODLink($item['localid'], $item['institution'], $item['signature']);
+			}
+		}
 
-				if ($publishYear <= $maxYear) {
-					if (in_array(strtolower($item['institution']), $supportedInstitutions)) {
-						$recordFormats	= array_map('strtolower', $recordDriver->getFormatsRaw());
-						if (sizeof(array_intersect($supportedFormats, $recordFormats)) > 0) {
-							$found = true;
-						}
-					}
+		return $eodLink;
+	}
+
+
+
+	/**
+	 * Build EOD link string
+	 *
+	 * @param	String		$sysId
+	 * @param	String		$institution
+	 * @param	String		$signature
+	 * @return	String
+	 */
+	protected function buildEODLink($sysId, $institution, $signature)
+	{
+		$bibId			= strtolower($this->configManager->get('Aleph')->Catalog->bib);
+		$instId			= urlencode($institution . $signature);
+		$userLanguage	= $this->translator->getLocale();
+		/** @var Config $eodConfig */
+		$eodConfig		= $this->configManager->get('config')->get('eBooksOnDemand');
+		$linkPattern	= $eodConfig->link;
+		$language		= $eodConfig->offsetExists('lang_' . $userLanguage) ? $eodConfig->get('lang_' . $userLanguage) : 'GER';
+
+		$data	= array(
+			'{SID}'			=> $bibId,
+			'{SYSID}'		=> $sysId,
+			'{INSTITUTION}'	=> $instId,
+			'{LANGUAGE}'	=> $language
+		);
+
+		return str_replace(array_keys($data), array_values($data), $linkPattern);
+	}
+
+
+
+	/**
+	 * Check whether conditions for EOD link match for item properties
+	 *
+	 * @param	Integer		$publishYear
+	 * @param	String		$institution
+	 * @param	String[]	$formats
+	 * @return	Boolean
+	 */
+	protected function isValidForEodLink($publishYear, $institution, array $formats)
+	{
+		$eodConfig				= $this->configManager->get('config')->get('eBooksOnDemand');
+		$maxYear				= $eodConfig->maxYear;
+		$supportedInstitutions	= array_map('strtolower', array_map('trim', explode(',', $eodConfig->institutions)));
+		$supportedFormats		= array_map('strtolower', array_map('trim', explode(',', $eodConfig->formats)));
+		$itemInstitution		= strtolower($institution);
+		$itemFormats			= array_map('strtolower', $formats);
+
+		if ($publishYear <= $maxYear) { // Before year?
+			if (in_array($itemInstitution, $supportedInstitutions)) { // Supported institution?
+				if (sizeof(array_intersect($itemFormats, $supportedFormats)) > 0) { // Supported format?
+					return true;
 				}
 			}
 		}

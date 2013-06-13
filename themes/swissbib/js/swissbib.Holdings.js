@@ -94,6 +94,16 @@ swissbib.Holdings = {
 	 */
 	startSpinner: function(institutionCode) {
 		$('#holdings-ajax-spinner-' + institutionCode).sprite({fps: 10, no_of_frames: 12}).spStart();
+	},
+
+
+	/**
+	 * Open EOD link in popup
+	 *
+	 * @param	{String}	url
+	 */
+	openEODPopup: function(url) {
+		window.open(url, 'eod-popup', 'dependent=yes,height=400,width=500,toolbar=no,status=no,menubar=no,location=no');
 	}
 
 };

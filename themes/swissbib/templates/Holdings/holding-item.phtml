@@ -11,6 +11,13 @@ if (isset($item['backlink'])) {
 		'escape'=> false
 	);
 }
+if (isset($item['eodlink']) && $item['eodlink']) {
+	$actions[] = array(
+		'label'	=> 'eBooks on Demand',
+		'action'=> $item['eodlink'],
+		'escape'=> false
+	);
+}
 
 	// Build item links
 	// @todo Move into holdings helper or view helper as soon as the feature set is clear
