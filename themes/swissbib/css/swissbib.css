@@ -237,7 +237,7 @@ ul.facet_toggler_checkbox li {
 
 #tab-holdings .miniactions {
 	float: right;
-	margin-top: -40px;
+	margin-top: -15px;
 }
 
 #tabbed .selected a span {
@@ -361,4 +361,13 @@ label[for="search_favorites"] {
 /* Hide favorites list in search results */
 #notepad {
 	display: none;
+}
+
+.holdingsAjaxSpinner {
+	width: 26px;
+	height: 26px;
+	display: inline-block;
+	background: url(../images/ajax_spinner.png) no-repeat 0 0;
+	vertical-align: middle;
+;
 }

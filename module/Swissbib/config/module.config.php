@@ -61,6 +61,16 @@ return array(
 						'action'     => 'index'
 					)
 				)
+			),
+			'holdings-ajax'     => array( // load holdings details for record with ajax
+				'type'    => 'segment',
+				'options' => array(
+					'route'    => '/Holdings/:record/:institution',
+					'defaults' => array(
+						'controller' => 'holdings',
+						'action'     => 'list'
+					)
+				)
 			)
 		)
 	),
@@ -85,7 +95,8 @@ return array(
 			'libadminsync' => 'Swissbib\Controller\LibadminSyncController',
 			'my-research'  => 'Swissbib\Controller\MyResearchController',
 			'search'       => 'Swissbib\Controller\SearchController',
-			'summon'       => 'Swissbib\Controller\SummonController'
+			'summon'       => 'Swissbib\Controller\SummonController',
+			'holdings'     => 'Swissbib\Controller\HoldingsController'
 		)
 	),
 	'service_manager' => array(
