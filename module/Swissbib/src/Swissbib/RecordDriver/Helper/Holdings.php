@@ -207,7 +207,7 @@ class Holdings
 			if ($this->hasItems()) {
 				$this->holdingData['items'] = $this->getItemsData($recordDriver, $institutionCode);
 			} elseif ($this->hasHoldings()) {
-				$this->holdingData['holdings'] = $this->getHoldingData($institutionCode);
+				$this->holdingData['holdings'] = $this->getHoldingData($recordDriver, $institutionCode);
 			}
 		}
 
@@ -381,7 +381,7 @@ class Holdings
 		foreach ($institutionItems as $index => $item) {
 				// Add extra information for item
 			try {
-				$institutionItems[$index] = $this->extendWithActionLinks($item, $recordDriver);
+				$institutionItems[$index] = $this->extendItemWithActionLinks($item, $recordDriver);
 			} catch (\Exception $e) {
 				// ignore errors?
 				$institutionItems[$index]['error'] = 'Could not fetch status info!'; // $e->getMessage();
@@ -416,7 +416,7 @@ class Holdings
 	 * @param	SolrMarc	$recordDriver
 	 * @return    Array
 	 */
-	protected function extendWithActionLinks(array $item, SolrMarc $recordDriver = null)
+	protected function extendItemWithActionLinks(array $item, SolrMarc $recordDriver = null)
 	{
 		$networkCode	= isset($item['network']) ? strtolower($item['network']) : '';
 
@@ -440,6 +440,22 @@ class Holdings
 		$item['eodlink'] = $this->getEODLink($item, $recordDriver);
 
 		return $item;
+	}
+
+
+
+	/**
+	 * Add action links to holding item
+	 *
+	 * @param	Array		$holding
+	 * @param	SolrMarc	$recordDriver
+	 * @return	Array
+	 */
+	protected function extendHoldingWithActionLinks(array $holding, SolrMarc $recordDriver = null)
+	{
+		$holding['backlink'] = $this->getBackLink($holding['network'], strtoupper($holding['institution']), $holding);
+
+		return $holding;
 	}
 
 
@@ -629,7 +645,7 @@ class Holdings
 	 * @param    Array         $item
 	 * @return    Boolean
 	 */
-	protected function getBackLink($networkCode, $institutionCode, $item)
+	protected function getBackLink($networkCode, $institutionCode, array $item)
 	{
 		$method      = false;
 		$data        = array();
@@ -906,12 +922,26 @@ class Holdings
 	/**
 	 * Get structured data for holdings
 	 *
+	 * @param	SolrMarc	$recordDriver
 	 * @param	String		$institutionCode
 	 * @return    Array[]
 	 */
-	protected function getHoldingData($institutionCode)
+	protected function getHoldingData(SolrMarc $recordDriver, $institutionCode)
 	{
-		return $this->geHoldingsData(852, $this->fieldMapping, $institutionCode);
+		$fieldName          = 852; // Field code for item information in holdings xml
+		$institutionHoldings = $this->geHoldingsData($fieldName, $this->fieldMapping, $institutionCode);
+
+		foreach ($institutionHoldings as $index => $holding) {
+				// Add extra information for item
+			try {
+				$institutionHoldings[$index] = $this->extendHoldingWithActionLinks($holding, $recordDriver);
+			} catch (\Exception $e) {
+				// ignore errors?
+				$institutionHoldings[$index]['error'] = 'Could not fetch status info!'; // $e->getMessage();
+			}
+		}
+
+		return $institutionHoldings;
 	}
 
 
@@ -957,31 +987,11 @@ class Holdings
 		if (is_array($fields)) {
 			foreach ($fields as $index => $field) {
 				$item        = $this->extractFieldData($field, $mapping);
-//				$networkCode = strtolower($item['network']);
 				$institution = strtolower($item['institution']);
 
 				if ($institution === $institutionCode) {
 					$data[] = $item;
 				}
-
-//				$groupCode   = $this->getGroup($institution);
-
-//				// Make sure group is present
-//				if (!isset($data[$groupCode])) {
-//					$data[$groupCode] = array(
-//						'label'        => strtolower($groupCode),
-//						'networkCode'  => $networkCode,
-//						'institutions' => array()
-//					);
-//				}
-//
-//				// Make sure institution is present
-//				if (!isset($data[$groupCode]['institutions'][$institution])) {
-//					$data[$groupCode]['institutions'][$institution] = array(
-//						'label'     => strtolower($institution),
-//						$elementKey => array()
-//					);
-//				}
 			}
 		}
 
