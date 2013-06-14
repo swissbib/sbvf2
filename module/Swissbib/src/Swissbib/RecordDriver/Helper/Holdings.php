@@ -568,7 +568,7 @@ class Holdings
 		$mapConfig 				= $this->configManager->get('config')->locationMap;
 		$supportedInstitutions	= array_map('trim', array_map('strtolower', explode(',', $mapConfig->institutions)));
 		$itemInstitution		= strtolower($item['institution']);
-		$hasSignature			= isset($item['signature']) && !empty($item['signature']);
+		$hasSignature			= isset($item['signature']) && !empty($item['signature']) && $item['signature'] !== '-';
 
 		if (in_array($itemInstitution, $supportedInstitutions) && $hasSignature) {
 			return str_replace('{SIGNATURE}', urlencode($item['signature']), $mapConfig->link);
