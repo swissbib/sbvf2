@@ -35,10 +35,15 @@ class Tab40ImportController extends AbstractActionController
 
 		$importResult	= $this->getImporter()->import($network, $locale, $sourceFile);
 
-		$numRecords		= $importResult->getRecordCount();
+		echo "Imported language data from tab40 file\n";
+		echo "Source: $sourceFile\n";
+		echo "Network: $network\n";
+		echo "Locale: $locale\n";
+		echo "\nResult:\n";
+		echo "Written File: {$importResult->getFilePath()}\n";
+		echo "Items imported: {$importResult->getRecordCount()}\n";
 
-
-		return 'Import ' . $network . ' - ' . $locale . ' - form ' . $sourceFile . ' : ' . $numRecords;
+		return '';
 	}
 
 
