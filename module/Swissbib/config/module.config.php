@@ -12,6 +12,7 @@ use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
 use Swissbib\View\Helper\InstitutionSorter;
 use Swissbib\Tab40Import\Importer as Tab40Importer;
 use Swissbib\View\Helper\TranslateLocation;
+use Zend\I18n\Translator\Translator;
 
 return array(
 	'router'          => array(
@@ -189,8 +190,9 @@ return array(
 
 				return new InstitutionSorter($institutionList);
 			},
-			'transLocation'	=> function ($sm) {
-				$translator		= $sm->getServiceLocator()->get('VuFind\Translator');
+			'transLocation'	=> function ($sm) { // Translate holding locations
+				/** @var Translator $translator */
+				$translator	= $sm->getServiceLocator()->get('VuFind\Translator');
 
 				return new TranslateLocation($translator);
 			}
