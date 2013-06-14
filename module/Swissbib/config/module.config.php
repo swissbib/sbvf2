@@ -11,6 +11,7 @@ use Swissbib\Libadmin\Importer as LibadminImporter;
 use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
 use Swissbib\View\Helper\InstitutionSorter;
 use Swissbib\Tab40Import\Importer as Tab40Importer;
+use Swissbib\View\Helper\TranslateLocation;
 
 return array(
 	'router'          => array(
@@ -87,9 +88,9 @@ return array(
 						)
 					)
 				),
-				'tab40-import' => array(
+				'tab40-import' => array( // Importer for aleph tab40 files
 					'options' => array(
-						'route'    => 'tab40import [-v] <network> <locale> <source>',
+						'route'    => 'tab40import <network> <locale> <source>',
 						'defaults' => array(
 							'controller' => 'tab40import',
 							'action'     => 'import'
@@ -187,6 +188,11 @@ return array(
 				}
 
 				return new InstitutionSorter($institutionList);
+			},
+			'transLocation'	=> function ($sm) {
+				$translator		= $sm->getServiceLocator()->get('VuFind\Translator');
+
+				return new TranslateLocation($translator);
 			}
 		)
 	),

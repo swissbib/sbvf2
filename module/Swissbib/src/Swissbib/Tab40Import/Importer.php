@@ -4,7 +4,7 @@ namespace Swissbib\Tab40Import;
 use Zend\Config\Config;
 
 /**
- * [Description]
+ * Import and convert a tab40 file into a vufind language file
  *
  */
 class Importer
@@ -37,11 +37,17 @@ class Importer
 	public function import($network, $locale, $sourceFile)
 	{
 			// Read data
-		$data	= $this->read($sourceFile);
+		$importedData	= $this->read($sourceFile);
 			// Write data
-		$result	= $this->write($network, $locale, $data);
+		$languageFile	= $this->write($network, $locale, $importedData);
 
-		return new Result($result);
+		return new Result(array(
+			'file'		=> $languageFile,
+			'count'		=> sizeof($importedData),
+			'network'	=> $network,
+			'locale'	=> $locale,
+			'source'	=> $sourceFile
+		));
 	}
 
 
@@ -62,12 +68,12 @@ class Importer
 
 
 	/**
-	 *
+	 * Write imported data to language file
 	 *
 	 * @param	String		$network
 	 * @param	String		$locale
 	 * @param	Array[]		$data
-	 * @return	Array
+	 * @return	String
 	 */
 	protected function write($network, $locale, array $data)
 	{

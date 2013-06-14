@@ -1,12 +1,16 @@
 <?php
 namespace Swissbib;
 
-use VuFind\Config\Reader as ConfigReader;
+use Zend\Config\Config;
 use Zend\Console\Console;
 use Zend\Mvc\MvcEvent;
 use Zend\Console\Request as ConsoleRequest;
-use Swissbib\Filter\TemplateFilenameFilter;
 use Zend\I18n\Translator\Translator;
+use Zend\ServiceManager\ServiceManager;
+
+use VuFind\Config\Reader as ConfigReader;
+
+use Swissbib\Filter\TemplateFilenameFilter;
 
 class Bootstrapper
 {
@@ -79,12 +83,34 @@ class Bootstrapper
 	}
 
 
+	/*
+	 * Set fallback locale to english
+	 */
+	public function initTranslationFallback()
+	{
+		$baseDir = LOCAL_OVERRIDE_DIR . '/languages';
+
+		$callback = function ($event) use ($baseDir) {
+			/** @var Translator $translator */
+			$translator = $event->getApplication()->getServiceManager()->get('VuFind\Translator');
+			$locale     = $translator->getLocale();
+			$fallback	= 'en';
+			$translator->setFallbackLocale($fallback);
+				// Add file for fallback locale if not already en
+			if ($locale !== $fallback) {
+				$translator->addTranslationFile('ExtendedIni', $baseDir . '/' . $fallback. '.ini', 'default', $fallback);
+			}
+		};
+
+		$this->events->attach('dispatch', $callback, 8999);
+	}
+
+
 
 	/**
 	 * Initialize translator for custom label files
-	 * DISABLED AT THE MOMENT
 	 */
-	public function initLanguage()
+	public function initSpecialTranslations()
 	{
 		// Language not supported in CLI mode:
 		if (Console::isConsole()) {
@@ -102,32 +128,53 @@ class Bootstrapper
 		);
 
 		$callback = function ($event) use ($baseDir, $types) {
-			$sm = $event->getApplication()->getServiceManager();
 			/** @var Translator $translator */
-			$translator = $sm->get('VuFind\Translator');
+			$translator = $event->getApplication()->getServiceManager()->get('VuFind\Translator');
 			$locale     = $translator->getLocale();
-			$fallback	= 'en';
-			$translator->setFallbackLocale($fallback);
-				// Add file for fallback locale if not already en
-			if ($locale !== 'en') {
-				$translator->addTranslationFile('ExtendedIni', $baseDir . '/en.ini', 'default', $fallback);
-			}
 
 			foreach ($types as $type) {
 				$langFile = $baseDir . '/' . $type . '/' . $locale . '.ini';
 
-				// File not available, add empty file to prevent problems
+					// File not available, add empty file to prevent problems
 				if (!is_file($langFile)) {
 					$langFile = $baseDir . '/empty_fallback.ini';
 				}
 
-				$translator->addTranslationFile('ExtendedIni', $langFile, $type, $locale)
-						->setLocale($locale);
+				$translator->addTranslationFile('ExtendedIni', $langFile, $type, $locale);
 			}
 		};
 
 		// Attach right AFTER base translator, so it is initialized
-		$this->events->attach('dispatch', $callback, 8999);
+		$this->events->attach('dispatch', $callback, 8998);
+	}
+
+
+
+	/**
+	 * Add files for location translation based on tab40 data to the translator
+	 */
+	public function initTab40LocationTranslation()
+	{
+		$callback = function ($event) {
+			/** @var ServiceManager $serviceLocator */
+			$serviceLocator	= $event->getApplication()->getServiceManager();
+			/** @var Translator $translator */
+			$translator = $serviceLocator->get('VuFind\Translator');
+			/** @var Config $tab40Config */
+			$tab40Config	= $serviceLocator->get('VuFind\Config')->get('config')->tab40import;
+			$basePath		= $tab40Config->path;
+			$languageFiles	= glob($basePath . '/*.ini');
+
+				// Add all found files
+			foreach ($languageFiles as $languageFile) {
+				list($network, $locale) = explode('-', basename($languageFile, '.ini'));
+
+				$translator->addTranslationFile('ExtendedIni', $languageFile, 'location-' . $network, $locale);
+			}
+		};
+
+			// Attach right AFTER base translator, so it is initialized
+		$this->events->attach('dispatch', $callback, 8997);
 	}
 
 
