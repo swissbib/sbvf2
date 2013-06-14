@@ -15,11 +15,11 @@ VUFIND_LOCAL_DIR="$BASEDIR/../local"
 
 export VUFIND_LOCAL_MODULES=Swissbib
 export VUFIND_LOCAL_DIR
-export APPLICATION_ENV=development
+#export APPLICATION_ENV=development
 
 php $INDEX tab40import $@
 
-#su -c "php $INDEX tab40import $2 $3 $4" vfsb
+#su -c "php $INDEX tab40import $@" vfsb
 
 #please do not delete a directory with options -rf as root based on a relative directory! GH
 #rm -rf $CACHE_DIR/*
