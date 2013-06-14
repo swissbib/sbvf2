@@ -110,6 +110,17 @@ swissbib.Holdings = {
 	 */
 	openEODPopup: function(url) {
 		window.open(url, 'eod-popup', 'dependent=yes,height=450,width=550,toolbar=no,status=no,menubar=no,location=no');
+	},
+
+
+
+	/**
+	 * Show map popup
+	 *
+	 * @param	{String}	url
+	 */
+	showMap: function(url) {
+		window.open(url, 'map-popup', 'dependent=yes,height=650,width=760,toolbar=no,status=no,menubar=no,location=no');
 	}
 
 };

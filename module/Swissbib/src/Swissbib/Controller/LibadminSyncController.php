@@ -61,5 +61,7 @@ class LibadminSyncController extends AbstractActionController
 		if (!$verbose && $showResult) {
 			echo $result->isSuccess() ? 1 : 0;
 		}
+
+		return '';
 	}
 }
