@@ -26,7 +26,7 @@ class Reader
 			$data[] = array(
 				'code'			=> trim(substr($line, 0, 5)),
 				'sublibrary'	=> trim(substr($line, 5, 5)),
-				'label'			=> trim(substr($line, 11))
+				'label'			=> trim(substr($line, 14))
 			);
 		}
 

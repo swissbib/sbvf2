@@ -78,7 +78,7 @@ $availability = isset($item['availability']['loan-status']) ? $item['availabilit
         </ul>
     </td>
     <td><?=$this->escapeHtml($availability)?></td>
-	<td><?=$this->escapeHtml($item['location_expanded'])?><?=$mapLink?></td>
+	<td><?=$this->escapeHtml($item['locationLabel'])?><?=$mapLink?></td>
 	<td><?=$this->escapeHtml($item['signature'])?></td>
     <td><?=$this->escapeHtml($item['opac_note'])?></td>
 	<td><?=$this->escapeHtml($desc)?></td>
