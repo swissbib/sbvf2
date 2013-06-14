@@ -367,7 +367,8 @@ label[for="search_favorites"] {
 .holdingsAjaxSpinner {
 	width: 26px;
 	height: 26px;
-	display: inline-block;
+	/*display: inline-block;*/
+	display: none;
 	background: url(../images/ajax_spinner.png) no-repeat 0 0;
 	vertical-align: middle;
 }
