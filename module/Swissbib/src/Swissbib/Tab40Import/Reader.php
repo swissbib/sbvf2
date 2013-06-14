@@ -2,7 +2,9 @@
 namespace Swissbib\Tab40Import;
 
 /**
- * [Description]
+ * Read data from tab40 file
+ * Data in tab40 files have a fixed layout
+ * See the header of a tab40 file for details about the format
  *
  */
 class Reader

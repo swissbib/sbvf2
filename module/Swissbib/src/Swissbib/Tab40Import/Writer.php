@@ -5,18 +5,36 @@ use Zend\Config\Config;
 use Zend\Config\Writer\Ini as IniWriter;
 
 /**
- * [Description]
+ * Write tab40 data to label file
  *
  */
 class Writer
 {
+	/** @var String	Base path for storage */
 	protected $basePath;
 
+
+
+	/**
+	 * Initialize with base path
+	 *
+	 * @param	String		$basePath
+	 */
 	public function __construct($basePath)
 	{
-		$this->basePath = $basePath;
+		$this->basePath = realpath($basePath);
 	}
 
+
+
+	/**
+	 * Write data to label file
+	 *
+	 * @param	String		$network
+	 * @param	String		$locale
+	 * @param	Array[]		$data
+	 * @return	String		Path to file
+	 */
 	public function write($network, $locale, array $data)
 	{
 		$data	= $this->convertData($data);
@@ -27,12 +45,13 @@ class Writer
 
 		$writer->toFile($pathFile, $config);
 
-		return array();
+		return $pathFile;
 	}
 
+
+
 	/**
-	 * Clean data
-	 * Cleanup: Remove double quotes
+	 * Convert data to label file format
 	 *
 	 * @param	Array	$data
 	 * @return	Array
@@ -49,35 +68,24 @@ class Writer
 		}
 
 		return $labelData;
-
-
-		$callback = function ($item) {
-			return str_replace('"', '', $item);
-		};
-
-		return array_map($callback, $data);
-
-//		foreach ($data as $key => $value) {
-//			$data[$key] = str_replace('"', '', $value);
-//		}
-//
-//		return $data;
 	}
 
 
 
 	/**
-	 *
+	 * Build file path based on base path, network and locale
 	 *
 	 * @param	String		$network
 	 * @param	String		$locale
-	 * @return	String|Boolean
+	 * @return	String
 	 */
 	protected function buildPath($network, $locale)
 	{
 		$network= strtolower(trim($network));
 		$locale	= strtolower(trim($locale));
 
-		return str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, realpath($this->basePath) . '/' . $network . '-' . $locale . '.ini');
+		$path	= $this->basePath . '/' . $network . '-' . $locale . '.ini';
+
+		return str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $path);
 	}
 }

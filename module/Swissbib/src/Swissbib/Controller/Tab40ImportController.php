@@ -15,6 +15,12 @@ use Swissbib\Tab40Import\Importer as Tab40Importer;
 class Tab40ImportController extends AbstractActionController
 {
 
+	/**
+	 * Import file as label data
+	 *
+	 * @return	String
+	 * @throws	\RuntimeException
+	 */
 	public function importAction()
 	{
 		$request = $this->getRequest();
