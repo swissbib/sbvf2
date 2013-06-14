@@ -41,6 +41,7 @@ use VuFind\Auth\Manager as AuthManager;
 use VuFind\Config\PluginManager as ConfigManager;
 
 use Swissbib\VuFind\ILS\Driver\Aleph;
+use Swissbib\RecordDriver\SolrMarc;
 
 /**
  * probably Holdings should be a subtype of ZF2 AbstractHelper
@@ -49,29 +50,22 @@ use Swissbib\VuFind\ILS\Driver\Aleph;
 class Holdings
 {
 
-	/**
-	 * @var    IlsConnection
-	 */
+	/** @var	IlsConnection	Receive more data from server */
 	protected $ils;
 
-	/**
-	 * @var    AuthManager
-	 */
+	/** @var    AuthManager		Check login status and info */
 	protected $authManager;
 
-	/**
-	 * @var    \File_MARC_Record
-	 */
+	/** @var	ConfigManager	Load configurations */
+	protected $configManager;
+
+	/** @var    \File_MARC_Record */
 	protected $holdings;
 
-	/**
-	 * @var    String        Parent item od
-	 */
+	/** @var    String        Parent item */
 	protected $idItem;
 
-	/**
-	 * @var    Array    HMAC keys for ILS
-	 */
+	/** @var    Array    HMAC keys for ILS */
 	protected $hmacKeys = array();
 
 	/**
@@ -97,7 +91,10 @@ class Holdings
 	/**
 	 * @var    Array[]|Boolean
 	 */
-	protected $extractedData = false;
+	protected $holdingData = false;
+
+	/** @var	Array[]|Boolean		Holding structure without data */
+	protected $holdingStructure = false;
 
 	/**
 	 * @var    Array[]    List of availabilities per item and barcode
@@ -120,7 +117,7 @@ class Holdings
 	protected $hmac;
 
 	/**
-	 * @var    Array
+	 * @var    Array		Mapping from institutions to groups
 	 */
 	protected $institution2group = array();
 
@@ -147,13 +144,14 @@ class Holdings
 	 * @throws    \Exception
 	 */
 	public function __construct(
-		IlsConnection $ilsConnection,
-		HMAC $hmac,
-		AuthManager $authManager,
-		ConfigManager $configManager,
-		Translator $translator)
-	{
+					IlsConnection $ilsConnection,
+					HMAC $hmac,
+					AuthManager $authManager,
+					ConfigManager $configManager,
+					Translator $translator
+	) {
 		$this->ils            = $ilsConnection;
+		$this->configManager  = $configManager;
 		$this->configHoldings = $configManager->get('Holdings');
 		$this->hmac           = $hmac;
 		$this->authManager    = $authManager;
@@ -197,21 +195,46 @@ class Holdings
 	/**
 	 * Get holdings data
 	 *
+	 * @param		String		$institutionCode
+	 * @param		SolrMarc	$recordDriver
 	 * @return    Array[]|Boolean            Contains lists for items and holdings {items=>[],holdings=>[]}
 	 */
-	public function getHoldings()
+	public function getHoldings(SolrMarc $recordDriver, $institutionCode)
 	{
-		if ($this->extractedData === false) {
-			$holdingsData = $this->getHoldingData();
-			$itemsData    = $this->getItemData();
+		if ($this->holdingData === false) {
+			$this->holdingData = array();
+
+			if ($this->hasItems()) {
+				$this->holdingData['items'] = $this->getItemsData($recordDriver, $institutionCode);
+			} elseif ($this->hasHoldings()) {
+				$this->holdingData['holdings'] = $this->getHoldingData($recordDriver, $institutionCode);
+			}
+		}
+
+		return $this->holdingData;
+	}
+
+
+
+	/**
+	 * Get holdings structure grouped by group and institution
+	 *
+	 * @return Array|\Array[]|bool
+	 */
+	public function getHoldingsStructure()
+	{
+		if ($this->holdingStructure === false) {
+			$holdingsData = $this->getStructuredHoldingsStructure(852);
+			$itemsData    = $this->getStructuredHoldingsStructure(949);
 
 			// Merge items and holding into the same network/institution structure
 			// (stays separated by items/holdings key at lowest level)
-			$merged              = $this->mergeHoldings($holdingsData, $itemsData);
-			$this->extractedData = $this->sortHoldings($merged);
+			$merged             	= $this->mergeHoldings($holdingsData, $itemsData);
+			$this->holdingStructure	= $this->sortHoldings($merged);
+
 		}
 
-		return $this->extractedData;
+		return $this->holdingStructure;
 	}
 
 
@@ -337,41 +360,36 @@ class Holdings
 			$this->holdings = $marcData;
 		} else {
 			// Invalid input data. Currently just ignore it
-			$this->extractedData = array();
+			$this->holdings = false;
+			$this->holdingData = array();
 		}
 	}
 
 
 
 	/**
-	 * Get values of field
+	 * Get holding items for an institution
 	 *
-	 * @return    Array    array[networkid][institutioncode] = array() of values for the current item
+	 * @param	SolrMarc	$recordDriver
+	 * @param    String $institutionCode
+	 * @return    Array   Institution Items
 	 */
-	protected function getItemData()
+	protected function getItemsData(SolrMarc $recordDriver, $institutionCode)
 	{
 		$fieldName          = 949; // Field code for item information in holdings xml
-		$structuredElements = $this->getStructuredHoldingData($fieldName, $this->fieldMapping, 'items');
+		$institutionItems = $this->geHoldingsData($fieldName, $this->fieldMapping, $institutionCode);
 
-		// Add hold link and availability for all items
-		foreach ($structuredElements as $groupCode => $group) {
-			foreach ($group['institutions'] as $institutionCode => $institution) {
-					// Add backlink
-				$structuredElements[$groupCode]['institutions'][$institutionCode]['backlink']
-						= $this->getBackLink($group['networkCode'], strtoupper($institutionCode), $institution['items'][0]);
-					// Add bib-info link
-				$structuredElements[$groupCode]['institutions'][$institutionCode]['bibinfolink']
-						= $this->getBibInfoLink($institutionCode);
-
-				foreach ($institution['items'] as $index => $item) {
-					// Add extra information for item
-					$structuredElements[$groupCode]['institutions'][$institutionCode]['items'][$index]
-							= $this->extendWithActionLinks($item);
-				}
+		foreach ($institutionItems as $index => $item) {
+				// Add extra information for item
+			try {
+				$institutionItems[$index] = $this->extendItemWithActionLinks($item, $recordDriver);
+			} catch (\Exception $e) {
+				// ignore errors?
+				$institutionItems[$index]['error'] = 'Could not fetch status info!'; // $e->getMessage();
 			}
 		}
 
-		return $structuredElements;
+		return $institutionItems;
 	}
 
 
@@ -396,9 +414,10 @@ class Holdings
 	 *
 	 * @todo    Handle multi ILS system
 	 * @param    Array    $item
+	 * @param	SolrMarc	$recordDriver
 	 * @return    Array
 	 */
-	protected function extendWithActionLinks(array $item)
+	protected function extendItemWithActionLinks(array $item, SolrMarc $recordDriver = null)
 	{
 		$networkCode	= isset($item['network']) ? strtolower($item['network']) : '';
 
@@ -411,14 +430,152 @@ class Holdings
 			$item['availability'] = $this->getAvailabilityInfos($item['bibsysnumber'], $item['barcode']);
 			$item['isAvailable']  = $this->isAvailable($item['bibsysnumber'], $item['barcode']);
 
+			$item['backlink'] = $this->getBackLink($item['network'], strtoupper($item['institution']), $item);
+
 			if ($this->isLoggedIn()) {
 				$item['userActions'] = $this->getAllowedUserActions($item);
 			}
 		}
 
+			// EOD LINK
+		$item['eodlink'] = $this->getEODLink($item, $recordDriver);
+			// Location Map Link
+		$item['locationMap'] = $this->getLocationMapLink($item);
+
 		return $item;
 	}
 
+
+
+	/**
+	 * Add action links to holding item
+	 *
+	 * @param	Array		$holding
+	 * @param	SolrMarc	$recordDriver
+	 * @return	Array
+	 */
+	protected function extendHoldingWithActionLinks(array $holding, SolrMarc $recordDriver = null)
+	{
+		$networkCode = $holding['network'];
+
+		if (!$this->isRestfulNetwork($networkCode)) {
+			$holding['backlink'] = $this->getBackLink($holding['network'], strtoupper($holding['institution']), $holding);
+		}
+
+			// Location Map Link
+		$holding['locationMap'] = $this->getLocationMapLink($holding);
+
+		return $holding;
+	}
+
+
+
+	/**
+	 * Build an EOD link if possible
+	 * Return false if item does not support EOD links
+	 *
+	 * @param	Array    	$item
+	 * @param	SolrMarc	$recordDriver
+	 * @return	String|Boolean
+	 */
+	protected function getEODLink(array $item, SolrMarc $recordDriver = null)
+	{
+		$eodLink = false;
+
+		if ($recordDriver instanceof SolrMarc) {
+			list(,$publishYear,) = $recordDriver->getPublicationDates();
+			$formats			 = $recordDriver->getFormatsRaw();
+
+			if ($this->isValidForEodLink($publishYear, $item['institution'], $formats)) {
+				$eodLink = $this->buildEODLink($item['localid'], $item['institution'], $item['signature']);
+			}
+		}
+
+		return $eodLink;
+	}
+
+
+
+	/**
+	 * Build EOD link string
+	 *
+	 * @param	String		$sysId
+	 * @param	String		$institution
+	 * @param	String		$signature
+	 * @return	String
+	 */
+	protected function buildEODLink($sysId, $institution, $signature)
+	{
+		$bibId			= strtolower($this->configManager->get('Aleph')->Catalog->bib);
+		$instId			= urlencode($institution . $signature);
+		$userLanguage	= $this->translator->getLocale();
+		/** @var Config $eodConfig */
+		$eodConfig		= $this->configManager->get('config')->get('eBooksOnDemand');
+		$linkPattern	= $eodConfig->link;
+		$language		= $eodConfig->offsetExists('lang_' . $userLanguage) ? $eodConfig->get('lang_' . $userLanguage) : 'GER';
+
+		$data	= array(
+			'{SID}'			=> $bibId,
+			'{SYSID}'		=> $sysId,
+			'{INSTITUTION}'	=> $instId,
+			'{LANGUAGE}'	=> $language
+		);
+
+		return str_replace(array_keys($data), array_values($data), $linkPattern);
+	}
+
+
+
+	/**
+	 * Check whether conditions for EOD link match for item properties
+	 *
+	 * @param	Integer		$publishYear
+	 * @param	String		$institution
+	 * @param	String[]	$formats
+	 * @return	Boolean
+	 */
+	protected function isValidForEodLink($publishYear, $institution, array $formats)
+	{
+		$eodConfig				= $this->configManager->get('config')->get('eBooksOnDemand');
+		$maxYear				= $eodConfig->maxYear;
+		$supportedInstitutions	= array_map('strtolower', array_map('trim', explode(',', $eodConfig->institutions)));
+		$supportedFormats		= array_map('strtolower', array_map('trim', explode(',', $eodConfig->formats)));
+		$itemInstitution		= strtolower($institution);
+		$itemFormats			= array_map('strtolower', $formats);
+
+		if ($publishYear <= $maxYear) { // Before year?
+			if (in_array($itemInstitution, $supportedInstitutions)) { // Supported institution?
+				if (sizeof(array_intersect($itemFormats, $supportedFormats)) > 0) { // Supported format?
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+
+
+	/**
+	 * Build location map link
+	 * Return false in case institution is not enable for mapping
+	 *
+	 * @param	Array		$item
+	 * @return	String|Boolean
+	 */
+	protected function getLocationMapLink(array $item)
+	{
+		$mapConfig 				= $this->configManager->get('config')->locationMap;
+		$supportedInstitutions	= array_map('trim', array_map('strtolower', explode(',', $mapConfig->institutions)));
+		$itemInstitution		= strtolower($item['institution']);
+		$hasSignature			= isset($item['signature']) && !empty($item['signature']) && $item['signature'] !== '-';
+
+		if (in_array($itemInstitution, $supportedInstitutions) && $hasSignature) {
+			return str_replace('{SIGNATURE}', urlencode($item['signature']), $mapConfig->link);
+		}
+
+		return false;
+	}
 
 
 	/**
@@ -521,7 +678,7 @@ class Holdings
 	 * @param    Array         $item
 	 * @return    Boolean
 	 */
-	protected function getBackLink($networkCode, $institutionCode, $item)
+	protected function getBackLink($networkCode, $institutionCode, array $item)
 	{
 		$method      = false;
 		$data        = array();
@@ -798,11 +955,50 @@ class Holdings
 	/**
 	 * Get structured data for holdings
 	 *
+	 * @param	SolrMarc	$recordDriver
+	 * @param	String		$institutionCode
 	 * @return    Array[]
 	 */
-	protected function getHoldingData()
+	protected function getHoldingData(SolrMarc $recordDriver, $institutionCode)
 	{
-		return $this->getStructuredHoldingData(852, $this->fieldMapping, 'holdings');
+		$fieldName          = 852; // Field code for item information in holdings xml
+		$institutionHoldings = $this->geHoldingsData($fieldName, $this->fieldMapping, $institutionCode);
+
+		foreach ($institutionHoldings as $index => $holding) {
+				// Add extra information for item
+			try {
+				$institutionHoldings[$index] = $this->extendHoldingWithActionLinks($holding, $recordDriver);
+			} catch (\Exception $e) {
+				// ignore errors?
+				$institutionHoldings[$index]['error'] = 'Could not fetch status info!'; // $e->getMessage();
+			}
+		}
+
+		return $institutionHoldings;
+	}
+
+
+
+	/**
+	 * Check whether holding holdings are available
+	 *
+	 * @return	Boolean
+	 */
+	protected function hasHoldings()
+	{
+		return $this->holdings && $this->holdings->getField(852) !== false;
+	}
+
+
+
+	/**
+	 * Check whether holding items are available
+	 *
+	 * @return	Boolean
+	 */
+	protected function hasItems()
+	{
+		return $this->holdings && $this->holdings->getField(949) !== false;
 	}
 
 
@@ -812,13 +1008,45 @@ class Holdings
 	 *
 	 * @param    String        $fieldName
 	 * @param    Array         $mapping
-	 * @param    String        $elementKey
-	 * @return    Array
+	 * @param    String        $institutionCode
+	 * @return    Array		Items or holdings for institution
 	 */
-	protected function getStructuredHoldingData($fieldName, array $mapping, $elementKey)
+	protected function geHoldingsData($fieldName, array $mapping, $institutionCode)
 	{
-		$data   = array();
-		$fields = $this->holdings->getFields($fieldName);
+		$data            = array();
+		$fields          = $this->holdings ? $this->holdings->getFields($fieldName) : false;
+		$institutionCode = strtolower($institutionCode);
+
+		if (is_array($fields)) {
+			foreach ($fields as $index => $field) {
+				$item        = $this->extractFieldData($field, $mapping);
+				$institution = strtolower($item['institution']);
+
+				if ($institution === $institutionCode) {
+					$data[] = $item;
+				}
+			}
+		}
+
+		return $data;
+	}
+
+
+
+	/**
+	 * Get holdings structure for holdings
+	 *
+	 * @param	Integer		$fieldName
+	 * @return	Array[]
+	 */
+	protected function getStructuredHoldingsStructure($fieldName)
+	{
+		$data    = array();
+		$fields  = $this->holdings ? $this->holdings->getFields($fieldName) : false;
+		$mapping = array(
+			'B' => 'network',
+			'b' => 'institution'
+		);
 
 		if (is_array($fields)) {
 			foreach ($fields as $index => $field) {
@@ -839,12 +1067,10 @@ class Holdings
 				// Make sure institution is present
 				if (!isset($data[$groupCode]['institutions'][$institution])) {
 					$data[$groupCode]['institutions'][$institution] = array(
-						'label'     => strtolower($institution),
-						$elementKey => array()
+						'label' 		=> strtolower($institution),
+						'bibinfolink'	=> $this->getBibInfoLink($institution)
 					);
 				}
-
-				$data[$groupCode]['institutions'][$institution][$elementKey][] = $item;
 			}
 		}
 
@@ -934,47 +1160,4 @@ class Holdings
 
 		return $data;
 	}
-
-//
-//	public function getTestData() {
-//
-//		return
-//				$testholdings = <<<EOT
-//        <record>
-//            <datafield tag="949" ind1=" " ind2=" ">
-//                <subfield code="B">RERO</subfield>
-//                <subfield code="E">vtls0034515</subfield>
-//                <subfield code="b">A100</subfield>
-//                <subfield code="j">-</subfield>
-//                <subfield code="p">1889908238</subfield>
-//                <subfield code="4">60100</subfield>
-//            </datafield>
-//            <datafield tag="949" ind1=" " ind2=" ">
-//                <subfield code="B">RERO</subfield>
-//                <subfield code="E">vtls003451557</subfield>
-//                <subfield code="b">610650002</subfield>
-//                <subfield code="j">-</subfield>
-//                <subfield code="p">1889908238</subfield>
-//                <subfield code="4">60100</subfield>
-//            </datafield>
-//            <datafield tag="949" ind1=" " ind2=" ">
-//                <subfield code="B">RERO</subfield>
-//                <subfield code="E">vtls003451557</subfield>
-//                <subfield code="b">1234</subfield>
-//                <subfield code="j">-</subfield>
-//                <subfield code="p">1889908238</subfield>
-//                <subfield code="4">60100</subfield>
-//            </datafield>
-//            <datafield tag="852" ind1=" " ind2=" ">
-//                <subfield code="B">IDSBB</subfield>
-//                <subfield code="E">sysnr</subfield>
-//                <subfield code="b">1234</subfield>
-//                <subfield code="j">-</subfield>
-//                <subfield code="p">recid</subfield>
-//                <subfield code="4">60100</subfield>
-//            </datafield>
-//        </record>
-//EOT;
-//
-//	}
 }

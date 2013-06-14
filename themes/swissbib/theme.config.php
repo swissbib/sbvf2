@@ -49,6 +49,7 @@ return array(
         'swissbib.ajax.js', // general AJAX helpers
         'swissbib.js',
         'swissbib.AdvancedSearch.js',
+        'swissbib.Holdings.js',
         'swissbib.searchsettings.js',
 
         'jstorage.min.js', //used for favorites - there is still some amount of JS code inline of the page -> Todo: Refactoring in upcoming Sprints
