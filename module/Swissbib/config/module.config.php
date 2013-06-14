@@ -7,9 +7,10 @@ use Swissbib\TargetsProxy\TargetsProxy;
 use Swissbib\TargetsProxy\IpMatcher;
 use Swissbib\TargetsProxy\UrlMatcher;
 use Swissbib\Theme\Theme;
-use Swissbib\Libadmin\Importer;
+use Swissbib\Libadmin\Importer as LibadminImporter;
 use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
 use Swissbib\View\Helper\InstitutionSorter;
+use Swissbib\Tab40Import\Importer as Tab40Importer;
 
 return array(
 	'router'          => array(
@@ -85,6 +86,15 @@ return array(
 							'action'     => 'sync'
 						)
 					)
+				),
+				'tab40-import' => array(
+					'options' => array(
+						'route'    => 'tab40import [-v] <network> <locale> <source>',
+						'defaults' => array(
+							'controller' => 'tab40import',
+							'action'     => 'import'
+						)
+					)
 				)
 			)
 		)
@@ -96,7 +106,8 @@ return array(
 			'my-research'  => 'Swissbib\Controller\MyResearchController',
 			'search'       => 'Swissbib\Controller\SearchController',
 			'summon'       => 'Swissbib\Controller\SummonController',
-			'holdings'     => 'Swissbib\Controller\HoldingsController'
+			'holdings'     => 'Swissbib\Controller\HoldingsController',
+			'tab40import'  => 'Swissbib\Controller\Tab40ImportController'
 		)
 	),
 	'service_manager' => array(
@@ -132,7 +143,12 @@ return array(
 				$config        = $sm->get('VuFind\Config')->get('config')->Libadmin;
 				$languageCache = $sm->get('VuFind\CacheManager')->getCache('language');
 
-				return new Importer($config, $languageCache);
+				return new LibadminImporter($config, $languageCache);
+			},
+			'Swissbib\Tab40Importer' => function ($sm) {
+				$config        = $sm->get('VuFind\Config')->get('config')->tab40import;
+
+				return new Tab40Importer($config);
 			}
 		)
 	),
