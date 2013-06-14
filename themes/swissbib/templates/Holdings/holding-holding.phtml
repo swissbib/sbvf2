@@ -2,6 +2,7 @@
 /** @var Array $holding */
 
 $actions	= array();
+$mapLink	= '';
 
 if (isset($holding['backlink'])) {
 	$actions[] = array(
@@ -11,18 +12,22 @@ if (isset($holding['backlink'])) {
 	);
 }
 
+if (isset($holding['locationMap']) && $holding['locationMap']) {
+	$mapLink = '<a href="' . $holding['locationMap'] . '" class="holdingMapLink">Lageplan anzeigen</a>';
+}
+
 ?>
 <tr>
     <td>
 		<ul>
 			<?php foreach($actions as $action): ?>
-			<?php $href = !isset($action['escape']) || $action['escape'] ? $this->escapeHtml($action['action']) : $action['action']; ?>
-			<li><a href="<?=$href?>" ><?=$this->escapeHtml($action['label'])?></a></li>
+				<?php $href = !isset($action['escape']) || $action['escape'] ? $this->escapeHtml($action['action']) : $action['action']; ?>
+				<li><a href="<?=$href?>" ><?=$this->escapeHtml($action['label'])?></a></li>
 			<?php endforeach; ?>
 		</ul>
     </td>
     <td>not implemented</td>
-    <td>not implemented</td>
+    <td><?=$this->escapeHtml($holding['locationLabel'])?><?=$mapLink?></td>
 	<td><?=$this->escapeHtml($holding['signature'])?></td>
 	<td>QR</td>
 	<td><?=$this->escapeHtml($holding['holding_information'])?></td>

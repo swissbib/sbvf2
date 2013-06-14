@@ -78,6 +78,7 @@ class Holdings
 		'B' => 'network',
 		'b' => 'institution',
 		'C' => 'adm_code',
+		'c'	=> 'location_code',
 		'E' => 'bibsysnumber',
 		'j' => 'signature',
 		'o' => 'staff_note',
@@ -381,12 +382,7 @@ class Holdings
 
 		foreach ($institutionItems as $index => $item) {
 				// Add extra information for item
-			try {
-				$institutionItems[$index] = $this->extendItemWithActionLinks($item, $recordDriver);
-			} catch (\Exception $e) {
-				// ignore errors?
-				$institutionItems[$index]['error'] = 'Could not fetch status info!'; // $e->getMessage();
-			}
+			$institutionItems[$index] = $this->extendItem($item, $recordDriver);
 		}
 
 		return $institutionItems;
@@ -410,14 +406,56 @@ class Holdings
 
 
 	/**
-	 * Add action links for item
+	 * Extend item with additional informations
 	 *
-	 * @todo    Handle multi ILS system
-	 * @param    Array    $item
+	 * @param	Array		$item
 	 * @param	SolrMarc	$recordDriver
-	 * @return    Array
+	 * @return	Array
 	 */
-	protected function extendItemWithActionLinks(array $item, SolrMarc $recordDriver = null)
+	protected function extendItem(array $item, SolrMarc $recordDriver = null)
+	{
+		$item	= $this->extendItemBasic($item, $recordDriver);
+		$item	= $this->extendItemIlsActions($item, $recordDriver);
+
+		return $item;
+	}
+
+
+
+	/**
+	 * Extend item with basic infos
+	 * - Ebooks on Demand Link
+	 * - Location map
+	 *
+	 * @param	Array		$item
+	 * @param	SolrMarc	$recordDriver
+	 * @return	Array
+	 */
+	protected function extendItemBasic(array $item, SolrMarc $recordDriver = null)
+	{
+			// EOD LINK
+		$item['eodlink']	= $this->getEODLink($item, $recordDriver);
+			// Location Map Link
+		$item['locationMap']= $this->getLocationMapLink($item);
+			// Location label
+		$item['locationLabel'] = $this->getLocationLabel($item);
+
+		if (!$this->isRestfulNetwork($item['network'])) {
+			$item['backlink'] = $this->getBackLink($item['network'], strtoupper($item['institution']), $item);
+		}
+
+		return $item;
+	}
+
+
+	/**
+	 * Extend item with action links based on ILS
+	 *
+	 * @param	Array    	$item
+	 * @param	SolrMarc	$recordDriver
+	 * @return  Array
+	 */
+	protected function extendItemIlsActions(array $item, SolrMarc $recordDriver = null)
 	{
 		$networkCode	= isset($item['network']) ? strtolower($item['network']) : '';
 
@@ -430,17 +468,55 @@ class Holdings
 			$item['availability'] = $this->getAvailabilityInfos($item['bibsysnumber'], $item['barcode']);
 			$item['isAvailable']  = $this->isAvailable($item['bibsysnumber'], $item['barcode']);
 
-			$item['backlink'] = $this->getBackLink($item['network'], strtoupper($item['institution']), $item);
-
 			if ($this->isLoggedIn()) {
 				$item['userActions'] = $this->getAllowedUserActions($item);
 			}
 		}
 
-			// EOD LINK
-		$item['eodlink'] = $this->getEODLink($item, $recordDriver);
 
 		return $item;
+	}
+
+
+
+	/**
+	 * Extend holding with additional informations
+	 *
+	 * @param	Array			$holding
+	 * @param	SolrMarc		$recordDriver
+	 * @return	Array
+	 */
+	protected function extendHolding(array $holding, SolrMarc $recordDriver = null)
+	{
+		$holding	= $this->extendHoldingBasic($holding, $recordDriver);
+//		$holding	= $this->extendHoldingIlsActions($holding, $recordDriver); // NOT USED AT THE MOMENT
+
+		return $holding;
+	}
+
+
+
+	/**
+	 *  Extend holding with basic infos
+	 * - Location map
+	 *
+	 * @param	Array    	$holding
+	 * @param	SolrMarc	$recordDriver
+	 * @return	Array
+	 */
+	protected function extendHoldingBasic(array $holding, SolrMarc $recordDriver = null)
+	{
+			// Location Map Link
+		$holding['locationMap'] = $this->getLocationMapLink($holding);
+			// Location label
+		$item['locationLabel'] = $this->getLocationLabel($holding);
+
+			// Add backlink for not restful networks
+		if (!$this->isRestfulNetwork($holding['network'])) {
+			$holding['backlink'] = $this->getBackLink($holding['network'], strtoupper($holding['institution']), $holding);
+		}
+
+		return $holding;
 	}
 
 
@@ -452,13 +528,8 @@ class Holdings
 	 * @param	SolrMarc	$recordDriver
 	 * @return	Array
 	 */
-	protected function extendHoldingWithActionLinks(array $holding, SolrMarc $recordDriver = null)
+	protected function extendHoldingIlsActions(array $holding, SolrMarc $recordDriver = null)
 	{
-		$networkCode = $holding['network'];
-
-		if (!$this->isRestfulNetwork($networkCode)) {
-			$holding['backlink'] = $this->getBackLink($holding['network'], strtoupper($holding['institution']), $holding);
-		}
 
 		return $holding;
 	}
@@ -547,6 +618,65 @@ class Holdings
 		}
 
 		return false;
+	}
+
+
+
+	/**
+	 * Build location map link
+	 * Return false in case institution is not enable for mapping
+	 *
+	 * @param	Array		$item
+	 * @return	String|Boolean
+	 */
+	protected function getLocationMapLink(array $item)
+	{
+		$mapConfig 				= $this->configManager->get('config')->locationMap;
+		$supportedInstitutions	= array_map('trim', array_map('strtolower', explode(',', $mapConfig->institutions)));
+		$itemInstitution		= strtolower($item['institution']);
+		$hasSignature			= isset($item['signature']) && !empty($item['signature']) && $item['signature'] !== '-';
+
+		if (in_array($itemInstitution, $supportedInstitutions) && $hasSignature) {
+			return str_replace('{SIGNATURE}', urlencode($item['signature']), $mapConfig->link);
+		}
+
+		return false;
+	}
+
+
+
+	/**
+	 * Get location label
+	 * Try to translate. Fallback to index data
+	 *
+	 * @param	Array	$item
+	 * @return	String
+	 */
+	protected function getLocationLabel(array $item)
+	{
+		$label = '';
+
+			// Has informations with translation?
+		if (isset($item['location_code']) && isset($item['institution']) && isset($item['network'])) {
+			$labelKey	= strtolower($item['institution'] . '_' . $item['location_code']);
+			$textDomain	= 'location-' . strtolower($item['network']);
+			$translated	= $this->translator->translate($labelKey, $textDomain);
+
+			if ($translated !== $labelKey) {
+				$label = $translated;
+			}
+		}
+
+			// Use expanded label or code as fallback
+		if (empty($label)) {
+			if (isset($item['location_expanded'])) {
+				$label = trim($item['location_expanded']);
+			} elseif (isset($item['location_code'])) {
+				$label = trim($item['location_code']);
+			}
+		}
+
+		return $label;
 	}
 
 
@@ -937,13 +1067,7 @@ class Holdings
 		$institutionHoldings = $this->geHoldingsData($fieldName, $this->fieldMapping, $institutionCode);
 
 		foreach ($institutionHoldings as $index => $holding) {
-				// Add extra information for item
-			try {
-				$institutionHoldings[$index] = $this->extendHoldingWithActionLinks($holding, $recordDriver);
-			} catch (\Exception $e) {
-				// ignore errors?
-				$institutionHoldings[$index]['error'] = 'Could not fetch status info!'; // $e->getMessage();
-			}
+			$institutionHoldings[$index] = $this->extendHolding($holding, $recordDriver);
 		}
 
 		return $institutionHoldings;

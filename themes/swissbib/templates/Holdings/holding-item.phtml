@@ -4,6 +4,7 @@
 $isAvailable= isset($item['isAvailable']) && $item['isAvailable'];
 $actions	= array();
 $desc		= '';
+$mapLink	= '';
 
 if (isset($item['backlink'])) {
 	$actions[] = array(
@@ -61,6 +62,9 @@ if (isset($item['eodlink']) && $item['eodlink']) {
 if (isset($item['error'])) {
 	$desc = $item['error'];
 }
+if (isset($item['locationMap']) && $item['locationMap']) {
+	$mapLink = '<a href="' . $item['locationMap'] . '" class="holdingMapLink">Lageplan anzeigen</a>';
+}
 
 $availability = isset($item['availability']['loan-status']) ? $item['availability']['loan-status'] : '';
 
@@ -75,7 +79,7 @@ $availability = isset($item['availability']['loan-status']) ? $item['availabilit
         </ul>
     </td>
     <td><?=$this->escapeHtml($availability)?></td>
-	<td><?=$this->escapeHtml($item['location_expanded'])?></td>
+	<td><?=$this->escapeHtml($item['locationLabel'])?><?=$mapLink?></td>
 	<td><?=$this->escapeHtml($item['signature'])?></td>
     <td><?=$this->escapeHtml($item['opac_note'])?></td>
 	<td><?=$this->escapeHtml($desc)?></td>
