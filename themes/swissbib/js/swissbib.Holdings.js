@@ -93,8 +93,14 @@ swissbib.Holdings = {
 	 * @param	{String}	institutionCode
 	 */
 	startSpinner: function(institutionCode) {
-		$('#holdings-ajax-spinner-' + institutionCode).sprite({fps: 10, no_of_frames: 12}).spStart();
+		$('#holdings-ajax-spinner-' + institutionCode).css({
+			display: 'inline-block'
+		}).sprite({
+			fps: 10,
+			no_of_frames: 12
+		}).spStart();
 	},
+
 
 
 	/**
