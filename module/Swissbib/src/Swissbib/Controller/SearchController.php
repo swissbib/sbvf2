@@ -10,8 +10,6 @@ use Zend\View\Resolver\ResolverInterface;
 use VuFind\Controller\SearchController as VFSearchController;
 use VuFind\Search\Memory as VFMemory;
 
-use Swissbib\Controller\Helper\Search as SearchHelper;
-
 /**
  * @package       Swissbib
  * @subpackage    Controller
