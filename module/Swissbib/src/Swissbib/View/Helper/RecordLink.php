@@ -39,7 +39,7 @@ class RecordLink extends VfRecordLink
 
 		$url = $urlHelper('search-results')
 				. '?lookfor=' . urlencode($link['value'])
-				. '&type=id&jumpto=1';
+				. '&type=ctrlnum&jumpto=1';
 
 		return $escape ? $escapeHelper($url) : $url;
 	}
