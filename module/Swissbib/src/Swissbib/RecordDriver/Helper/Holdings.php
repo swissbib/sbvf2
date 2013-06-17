@@ -132,6 +132,9 @@ class Holdings
 	 */
 	protected $translator;
 
+	/** @var  LocationMap */
+	protected $locationMap;
+
 
 
 	/**
@@ -142,6 +145,7 @@ class Holdings
 	 * @param    AuthManager           $authManager
 	 * @param    ConfigManager         $configManager
 	 * @param    Translator            $translator
+	 * @param	 LocationMap		   $locationMap
 	 * @throws    \Exception
 	 */
 	public function __construct(
@@ -149,7 +153,8 @@ class Holdings
 					HMAC $hmac,
 					AuthManager $authManager,
 					ConfigManager $configManager,
-					Translator $translator
+					Translator $translator,
+					LocationMap $locationMap
 	) {
 		$this->ils            = $ilsConnection;
 		$this->configManager  = $configManager;
@@ -157,6 +162,7 @@ class Holdings
 		$this->hmac           = $hmac;
 		$this->authManager    = $authManager;
 		$this->translator     = $translator;
+		$this->locationMap	  = $locationMap;
 
 
 		/** @var Config $relationConfig */
@@ -631,46 +637,7 @@ class Holdings
 	 */
 	protected function getLocationMapLink(array $item)
 	{
-		if ($this->isItemValidForLocationMapLink($item)) {
-			$mapConfig 		= $this->getLocationMapConfig();
-			$itemInstitution= strtolower($item['institution']);
-			$mapLinkPattern = $mapConfig->get($itemInstitution);
-			$data           = array(
-				'{SIGNATURE}' => urlencode($item['signature'])
-			);
-
-			return str_replace(array_keys($data), array_values($data), $mapLinkPattern);
-		}
-
-		return false;
-	}
-
-
-
-	/**
-	 * Check whether location map link should be shown
-	 *
-	 * @param	Array	$item
-	 * @return	Boolean
-	 */
-	protected function isItemValidForLocationMapLink(array $item)
-	{
-		$mapConfig				= $this->getLocationMapConfig();
-		$itemInstitution		= strtolower($item['institution']);
-		$hasSignature			= isset($item['signature']) && !empty($item['signature']) && $item['signature'] !== '-';
-		$isInstitutionSupported	= $mapConfig->offsetExists($itemInstitution);
-
-		return $isInstitutionSupported && $hasSignature;
-	}
-
-
-
-	/**
-	 * @return	Config
-	 */
-	protected function getLocationMapConfig()
-	{
-		return $this->configManager->get('config')->locationMap;
+		return $this->locationMap ? $this->locationMap->getLinkForItem($item) : false;
 	}
 
 
