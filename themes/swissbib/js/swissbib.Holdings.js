@@ -116,11 +116,17 @@ swissbib.Holdings = {
 
 	/**
 	 * Show map popup
+	 * Allow window size overrides
 	 *
 	 * @param	{String}	url
+	 * @param	{Number}	width
+	 * @param	{Number}	height
 	 */
-	showMap: function(url) {
-		window.open(url, 'map-popup', 'dependent=yes,height=650,width=760,toolbar=no,status=no,menubar=no,location=no');
+	showMap: function(url, width, height) {
+		width	= width || 650;
+		height	= height|| 760;
+
+		window.open(url, 'map-popup', 'height=' + height + ',width=' + width);
 	}
 
 };

@@ -631,13 +631,18 @@ class Holdings
 	 */
 	protected function getLocationMapLink(array $item)
 	{
+		/** @var Config $mapConfig */
 		$mapConfig 				= $this->configManager->get('config')->locationMap;
-		$supportedInstitutions	= array_map('trim', array_map('strtolower', explode(',', $mapConfig->institutions)));
 		$itemInstitution		= strtolower($item['institution']);
 		$hasSignature			= isset($item['signature']) && !empty($item['signature']) && $item['signature'] !== '-';
+		$isInstitutionSupported	= $mapConfig->offsetExists($itemInstitution);
 
-		if (in_array($itemInstitution, $supportedInstitutions) && $hasSignature) {
-			return str_replace('{SIGNATURE}', urlencode($item['signature']), $mapConfig->link);
+		if ($isInstitutionSupported && $hasSignature) {
+			$data = array(
+				'{SIGNATURE}'	=> urlencode($item['signature'])
+			);
+
+			return str_replace(array_keys($data), array_values($data), $mapConfig->get($itemInstitution));
 		}
 
 		return false;
