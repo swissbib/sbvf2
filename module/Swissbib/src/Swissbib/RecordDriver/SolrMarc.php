@@ -810,11 +810,24 @@ class SolrMarc extends VuFindSolrMarc
 	/**
 	 * Get holdings data
 	 *
+	 * @param    String 		$institutionCode
 	 * @return    Array|Boolean
 	 */
-	public function getHoldings()
+	public function getInstitutionHoldings($institutionCode)
 	{
-		return $this->getHoldingsHelper()->getHoldings();
+		return $this->getHoldingsHelper()->getHoldings($this, $institutionCode);
+	}
+
+
+
+	/**
+	 * Get holdings structure without item details
+	 *
+	 * @return Array[]|bool
+	 */
+	public function getHoldingsStructure()
+	{
+		return $this->getHoldingsHelper()->getHoldingsStructure();
 	}
 
 

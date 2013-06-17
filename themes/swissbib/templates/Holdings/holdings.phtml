@@ -1,0 +1,26 @@
+<?php
+/** @var Array[] $holdings */
+?>
+<table class="holdings-holding">
+	<thead>
+		<tr>
+			<th>(Funktionen)</th>
+			<th><?=$this->transEsc('Availability')?></th>
+			<th><?=$this->transEsc('Location')?></th>
+			<th><?=$this->transEsc('Call Number')?></th>
+			<th>QR</th>
+			<th><?=$this->transEsc('Description')?></th>
+		</tr>
+	</thead>
+	<tbody>
+		<?php
+			// Items
+			foreach($holdings as $holding) {
+				echo $this->render('Holdings/holding-holding.phtml', array(
+					'holding'	=> $holding
+				));
+			}
+		?>
+	</tbody>
+</table>
+
