@@ -636,7 +636,7 @@ class Holdings
 			$itemInstitution= strtolower($item['institution']);
 			$mapLinkPattern = $mapConfig->get($itemInstitution);
 			$data           = array(
-				'{SIGNATURE}' => urlencode($item['signature'])
+				'{PARAMS}' => urlencode($item['signature'])
 			);
 
 			return str_replace(array_keys($data), array_values($data), $mapLinkPattern);
