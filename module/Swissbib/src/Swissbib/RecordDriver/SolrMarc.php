@@ -1061,7 +1061,7 @@ class SolrMarc extends VuFindSolrMarc
 	/**
 	 * @inheritDoc
 	 */
-	protected function getFieldData($field, $value)
+	protected function getFieldData($field, $fieldIndex)
 	{
 		 // Make sure that there is a t field to be displayed:
         if ($title = $field->getSubfield('t')) {
@@ -1076,31 +1076,30 @@ class SolrMarc extends VuFindSolrMarc
 
 		$link = false;
 
-		if (in_array('id', $linkTypes)) {
+		if (in_array('id', $linkTypes)) { // Search ID in field 9
 			$linkSubfield = $field->getSubfield('9');
 			if ($linkSubfield && $bibLink = $this->getIdFromLinkingField($linkSubfield)) {
 				$link = array('type' => 'bib', 'value' => $bibLink);
 			}
-		} elseif (in_array('ctrlnum', $linkTypes)) {
-//			$linkFields = $linkFields = $field->getSubfields('w');
-//			foreach ($linkFields as $current) {
-//				if ($oclc = $this->getIdFromLinkingField($current, 'OCoLC')) {
-//					$link = array('type' => 'oclc', 'value' => $oclc);
-//				}
-//			}
-//			$link = '123';
+		} elseif (in_array('ctrlnum', $linkTypes)) { // Extract ctrlnum from field w, ignore the prefix
+			$linkFields = $linkFields = $field->getSubfields('w');
+			foreach ($linkFields as $current) {
+				if (preg_match('/\(([^)]+)\)(.+)/', $current->getData(), $matches)) {
+					$link = array('type' => 'ctrlnum', 'value' => $matches[2]);
+				}
+			}
 		}
 
 			// Found link based on special conditions, stop here
 		if ($link) {
 			return array(
-				'title' => 'note_' . $value,
+				'title' => 'note_' . $fieldIndex,
 				'value' => $title,
 				'link'  => $link
 			);
 		}
 
-		return parent::getFieldData($field, $value);
+			// Fallback to base method if no custom field found
+		return parent::getFieldData($field, $fieldIndex);
 	}
-
 }

@@ -57,5 +57,15 @@ return array(
         'autocomplete.initialize.swissbib.js',
 
     ),
-	'favicon' => 'favicon.ico'
+	'favicon' => 'favicon.ico',
+
+	'helpers' => array(
+        'factories' => array(
+			'recordlink' => function ($sm) {
+				return new \Swissbib\View\Helper\RecordLink(
+					$sm->getServiceLocator()->get('VuFind\RecordRouter')
+				);
+			}
+		)
+	)
 );
