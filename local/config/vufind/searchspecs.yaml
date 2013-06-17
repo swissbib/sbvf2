@@ -507,3 +507,11 @@ oclc_num:
   QueryFields:
     oclc_num:
       - [oclc_num, ~]
+
+ctrlnum:
+  CustomMunge:
+    ctrlnum:
+      - [preg_replace, "/[\(\)]/", ""]
+  QueryFields:
+    ctrlnum:
+      - [ctrlnum, ~]
