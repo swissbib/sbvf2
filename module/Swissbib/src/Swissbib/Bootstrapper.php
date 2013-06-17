@@ -162,14 +162,17 @@ class Bootstrapper
 			$translator = $serviceLocator->get('VuFind\Translator');
 			/** @var Config $tab40Config */
 			$tab40Config	= $serviceLocator->get('VuFind\Config')->get('config')->tab40import;
-			$basePath		= $tab40Config->path;
-			$languageFiles	= glob($basePath . '/*.ini');
 
-				// Add all found files
-			foreach ($languageFiles as $languageFile) {
-				list($network, $locale) = explode('-', basename($languageFile, '.ini'));
+			if ($tab40Config) {
+				$basePath		= $tab40Config->path;
+				$languageFiles	= glob($basePath . '/*.ini');
 
-				$translator->addTranslationFile('ExtendedIni', $languageFile, 'location-' . $network, $locale);
+					// Add all found files
+				foreach ($languageFiles as $languageFile) {
+					list($network, $locale) = explode('-', basename($languageFile, '.ini'));
+
+					$translator->addTranslationFile('ExtendedIni', $languageFile, 'location-' . $network, $locale);
+				}
 			}
 		};
 
