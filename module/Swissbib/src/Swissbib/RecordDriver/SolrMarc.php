@@ -578,8 +578,11 @@ class SolrMarc extends VuFindSolrMarc
 			'f' => 'f',
 			'g' => 'g',
 			'h' => 'h',
+            't' => 't',
 			'v' => 'v',
 			'x' => 'x',
+            'y' => 'y',
+            'z' => 'z',
 			'0' => '0',
 			'2' => '2'
 		);
