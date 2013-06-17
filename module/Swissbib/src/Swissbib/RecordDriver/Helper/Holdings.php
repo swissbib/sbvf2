@@ -509,7 +509,7 @@ class Holdings
 			// Location Map Link
 		$holding['locationMap'] = $this->getLocationMapLink($holding);
 			// Location label
-		$item['locationLabel'] = $this->getLocationLabel($holding);
+		$holding['locationLabel'] = $this->getLocationLabel($holding);
 
 			// Add backlink for not restful networks
 		if (!$this->isRestfulNetwork($holding['network'])) {
@@ -631,21 +631,46 @@ class Holdings
 	 */
 	protected function getLocationMapLink(array $item)
 	{
-		/** @var Config $mapConfig */
-		$mapConfig 				= $this->configManager->get('config')->locationMap;
+		if ($this->isItemValidForLocationMapLink($item)) {
+			$mapConfig 		= $this->getLocationMapConfig();
+			$itemInstitution= strtolower($item['institution']);
+			$mapLinkPattern = $mapConfig->get($itemInstitution);
+			$data           = array(
+				'{PARAMS}' => urlencode($item['signature'])
+			);
+
+			return str_replace(array_keys($data), array_values($data), $mapLinkPattern);
+		}
+
+		return false;
+	}
+
+
+
+	/**
+	 * Check whether location map link should be shown
+	 *
+	 * @param	Array	$item
+	 * @return	Boolean
+	 */
+	protected function isItemValidForLocationMapLink(array $item)
+	{
+		$mapConfig				= $this->getLocationMapConfig();
 		$itemInstitution		= strtolower($item['institution']);
 		$hasSignature			= isset($item['signature']) && !empty($item['signature']) && $item['signature'] !== '-';
 		$isInstitutionSupported	= $mapConfig->offsetExists($itemInstitution);
 
-		if ($isInstitutionSupported && $hasSignature) {
-			$data = array(
-				'{SIGNATURE}'	=> urlencode($item['signature'])
-			);
+		return $isInstitutionSupported && $hasSignature;
+	}
 
-			return str_replace(array_keys($data), array_values($data), $mapConfig->get($itemInstitution));
-		}
 
-		return false;
+
+	/**
+	 * @return	Config
+	 */
+	protected function getLocationMapConfig()
+	{
+		return $this->configManager->get('config')->locationMap;
 	}
 
 
