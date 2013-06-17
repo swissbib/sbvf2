@@ -164,7 +164,6 @@ class Holdings
 		$this->translator     = $translator;
 		$this->locationMap	  = $locationMap;
 
-
 		/** @var Config $relationConfig */
 		$relationConfig			= $configManager->get('libadmin-groups');
 
@@ -231,14 +230,15 @@ class Holdings
 	public function getHoldingsStructure()
 	{
 		if ($this->holdingStructure === false) {
-			$holdingsData = $this->getStructuredHoldingsStructure(852);
-			$itemsData    = $this->getStructuredHoldingsStructure(949);
+			$holdingStructure = array();
 
-			// Merge items and holding into the same network/institution structure
-			// (stays separated by items/holdings key at lowest level)
-			$merged             	= $this->mergeHoldings($holdingsData, $itemsData);
-			$this->holdingStructure	= $this->sortHoldings($merged);
+			if ($this->hasItems()) {
+				$holdingStructure = $this->getStructuredHoldingsStructure(949);
+			} elseif ($this->hasHoldings()) {
+				$holdingStructure = $this->getStructuredHoldingsStructure(852);
+			}
 
+			$this->holdingStructure	= $this->sortHoldings($holdingStructure);
 		}
 
 		return $this->holdingStructure;
@@ -637,7 +637,7 @@ class Holdings
 	 */
 	protected function getLocationMapLink(array $item)
 	{
-		return $this->locationMap ? $this->locationMap->getLinkForItem($item) : false;
+		return $this->locationMap ? $this->locationMap->getLinkForItem($this, $item) : false;
 	}
 
 
