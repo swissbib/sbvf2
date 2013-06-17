@@ -2,7 +2,7 @@
 
 /** @var	Swissbib\RecordDriver\SolrMarc	$recordDriver  */
 $recordDriver	= $this->driver;
-$holdings		= $recordDriver->getHoldings();
+$holdings		= $recordDriver->getHoldingsStructure();
 
 ?>
 
@@ -45,28 +45,10 @@ $holdings		= $recordDriver->getHoldings();
 
 			<div class="innerbox">
 				<?php foreach($group['institutions'] as $institutionCode => $institution): ?>
-					<h4>
+					<h4 class="toggler institutionToggler" id="stock_toggler_<?=$groupCode?>_<?=$institutionCode?>">
 						<?=$this->escapeHtml($this->zendTranslate($institution['label'], 'institution'))?>
 					</h4>
 
-					<ul class="actions">
-                        <!-- following backlink should be transferred to items display -->
-						<?php if (isset($institution['backlink'])): ?>
-						<li>
-							<a href="<?=$this->escapeHtml($institution['backlink'])?>" class="linkbutton primary icon_link_primary" title="Zum Bestand" target="_blank">
-								<span>Zum Bestand</span>
-							</a>
-						</li>
-						<?php else: ?>
-							<li>Kein Institutions-Backlink.</li>
-						<?php endif; ?>
-						<li>
-							<a href="#" class="linkbutton icon_show toggler collapsed" title="<?=$this->transEsc('Item_Information')?>" id="stock_toggler_<?=$groupCode?>_<?=$institutionCode?>">
-								<span><?=$this->transEsc('Item_Information')?></span>
-							</a>
-						</li>
-					</ul>
-<!--					<ul class="miniactions boxed">-->
 					<ul class="miniactions">
 						<li class="miniaction_favorite_remove">
 							<a href="#" title="Bibliothek aus Favoriten entfernen">Bibliothek aus Favoriten entfernen</a>
@@ -80,40 +62,8 @@ $holdings		= $recordDriver->getHoldings();
 						<?php endif; ?>
 					</ul>
 
-					<div class="stock_toggler_<?=$groupCode?>_<?=$institutionCode?>">
-						<table>
-							<thead>
-								<tr>
-                                    <th>&nbsp; (Funktionen)</th>
-                                    <th><?=$this->transEsc('Availability')?></th>
-									<th><?=$this->transEsc('Location')?></th>
-									<th><?=$this->transEsc('Call Number')?></th>
-                                    <th>QR</th>
-                                    <th><?=$this->transEsc('Description')?></th>
-								</tr>
-							</thead>
-							<tbody>
-								<?php
-										// Items
-									if( isset($institution['items'])) {
-										foreach($institution['items'] as $item) {
-											echo $this->render('record/holdingsils_item.phtml', array(
-												'item'	=> $item
-											));
-										}
-									}
-
-										// Holdings
-									if( isset($institution['holdings'])) {
-										foreach($institution['holdings'] as $holding) {
-											echo $this->render('record/holdingsils_holding.phtml', array(
-												'holding'	=> $holding
-											));
-										}
-									}
-								?>
-							</tbody>
-						</table>
+					<div class="stock_toggler_<?=$groupCode?>_<?=$institutionCode?>" id="holdings-data-<?=$groupCode?>-<?=$institutionCode?>">
+						<p><div class="holdingsAjaxSpinner" id="holdings-ajax-spinner-<?=$institutionCode?>"></div> Loading...</p>
 					</div>
 				<?php endforeach; ?>
 
@@ -123,3 +73,7 @@ $holdings		= $recordDriver->getHoldings();
 	<!-- end: innerbox <?=$groupCode?> -->
 
 <?php endforeach; ?>
+
+<script type="text/javascript">
+	swissbib.Holdings.initRecord('<?=$recordDriver->getUniqueID();?>');
+</script>
