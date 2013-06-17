@@ -204,10 +204,9 @@ class LocationMap
 	 */
 	protected function buildLocationMapLinkA100(array $item, HoldingsHelper $holdingsHelper)
 	{
-		$mapLinkPattern  = $this->config->get(strtolower($item['institution']));
+		$mapLinkPattern  = $this->config->get('a100');
 
 		return $this->buildSimpleLocationMapLink($mapLinkPattern, $item['signature']);
-
 	}
 
 
@@ -218,6 +217,7 @@ class LocationMap
 	 * @param    Array    $item
 	 * @param    Holdings $holdingsHelper
 	 * @return    Boolean
+	 * @todo	Implement checks
 	 */
 	protected function isItemValidForLocationMapB500(array $item, HoldingsHelper $holdingsHelper)
 	{
@@ -235,6 +235,8 @@ class LocationMap
 	 */
 	protected function buildLocationMapLinkB500(array $item, HoldingsHelper $holdingsHelper)
 	{
-		return false;
+		$mapLinkPattern  = $this->config->get('b500');
+
+		return $this->buildSimpleLocationMapLink($mapLinkPattern, $item['signature']);
 	}
 }
