@@ -1085,7 +1085,7 @@ class SolrMarc extends VuFindSolrMarc
 			$linkFields = $linkFields = $field->getSubfields('w');
 			foreach ($linkFields as $current) {
 				if (preg_match('/\(([^)]+)\)(.+)/', $current->getData(), $matches)) {
-					$link = array('type' => 'ctrlnum', 'value' => $matches[2]);
+					$link = array('type' => 'ctrlnum', 'value' => $matches[1].$matches[2]);
 				}
 			}
 		}
