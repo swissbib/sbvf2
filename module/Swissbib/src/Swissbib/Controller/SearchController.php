@@ -2,6 +2,7 @@
 namespace Swissbib\Controller;
 
 use Zend\Config\Config;
+use Zend\Http\PhpEnvironment\Response;
 use Zend\Session\Container as SessionContainer;
 use Zend\View\Model\ViewModel;
 use Zend\View\Resolver\ResolverInterface;
@@ -71,6 +72,10 @@ class SearchController extends VFSearchController
 		$this->searchClassId = $activeTabConfig['searchClassId'];
 
 		$resultViewModel     = parent::resultsAction();
+
+		if ($resultViewModel instanceof Response) {
+			return $resultViewModel;
+		}
 
 		$allTabsConfig[$activeTabKey]['active'] = true;
 		$allTabsConfig[$activeTabKey]['count'] = $resultViewModel->results->getResultTotal();
