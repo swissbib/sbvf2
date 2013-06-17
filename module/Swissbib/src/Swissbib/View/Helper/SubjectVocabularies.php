@@ -19,23 +19,25 @@ class SubjectVocabularies extends AbstractHelper
 
 	public function __invoke(array $subjectVocabularies)
 	{
-		$titleLcsh		= '';
-		$titleGnd		= '';
-		$titleMesh		= '';
-		$titleBisacsh	= '';
-		$titleIdszbz	= '';
+		$titleLcsh		= '<h4>LCSH</h4>';
+		$titleGnd		= '<h4>gnd</h4>';
+		$titleMesh		= '<h4>MESH</h4>';
+		$titleBisacsh	= '<h4>BISAC</h4>';
+		$titleIdszbz	= '<h4>IDS ZBZ</h4>';
 
         foreach ($subjectVocabularies as $vocab => $subjectVocabulary) {
             switch($vocab) {
                 case 'gnd':
-                    $titleGnd = '<h4>gnd</h4>';
-//                    foreach ($subjectVocabulary as $fields) {
-//                        $subject = '';
-//                        foreach ($fields as $field) {
-//                            if (!is_numeric($field->getKey()));
-//                        };
-//                    }
+                    foreach ($subjectVocabulary as $fields) {
+                        foreach ($fields as $subfields); {
+                            if (isset($subfields['a'])) {
+                                $terms[] = '<p>' . $subfields['a'] . '</p>';
+                            };
+                        };
+                        $itemlist = implode('', $terms);
+                    }
                     break;
+                    //}
                 case 'lcsh':
                     $titleLcsh = '<h4>lcsh</h4>';
                     break;
@@ -53,6 +55,6 @@ class SubjectVocabularies extends AbstractHelper
             continue;
         }
 
-        return $titleGnd . $titleLcsh . $titleMesh . $titleBisacsh . $titleIdszbz;
+        return $titleGnd . $itemlist . $titleLcsh . $titleMesh . $titleBisacsh . $titleIdszbz;
 	}
 }
