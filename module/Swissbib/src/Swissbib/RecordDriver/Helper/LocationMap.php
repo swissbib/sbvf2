@@ -289,7 +289,9 @@ class LocationMap
 	protected function buildLocationMapLinkHSG(array $item, HoldingsHelper $holdingsHelper)
 	{
 		$mapLinkPattern  = $this->config->get('hsg');
+        $hsg_param = $item['location_code'] . ' ' . $item['signature'];
 
-		return $this->buildSimpleLocationMapLink($mapLinkPattern, $item['signature']);
+        return $this->buildSimpleLocationMapLink($mapLinkPattern, $hsg_param);
+
 	}
 }
