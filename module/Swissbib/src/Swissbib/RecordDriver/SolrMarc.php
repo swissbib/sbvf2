@@ -1055,4 +1055,51 @@ class SolrMarc extends VuFindSolrMarc
 	{
 		return $this->getServiceLocator()->get('VuFind/Translator');
 	}
+
+
+
+	/**
+	 * @inheritDoc
+	 */
+	protected function getFieldData($field, $fieldIndex)
+	{
+		 // Make sure that there is a t field to be displayed:
+        if ($title = $field->getSubfield('t')) {
+            $title = $title->getData();
+        } else {
+            return false;
+        }
+
+		$linkTypeSetting = isset($this->mainConfig->Record->marc_links_link_types)
+				? $this->mainConfig->Record->marc_links_link_types : 'id,oclc,dlc,isbn,issn,title';
+		$linkTypes = explode(',', $linkTypeSetting);
+
+		$link = false;
+
+		if (in_array('id', $linkTypes)) { // Search ID in field 9
+			$linkSubfield = $field->getSubfield('9');
+			if ($linkSubfield && $bibLink = $this->getIdFromLinkingField($linkSubfield)) {
+				$link = array('type' => 'bib', 'value' => $bibLink);
+			}
+		} elseif (in_array('ctrlnum', $linkTypes)) { // Extract ctrlnum from field w, ignore the prefix
+			$linkFields = $linkFields = $field->getSubfields('w');
+			foreach ($linkFields as $current) {
+				if (preg_match('/\(([^)]+)\)(.+)/', $current->getData(), $matches)) {
+					$link = array('type' => 'ctrlnum', 'value' => $matches[1].$matches[2]);
+				}
+			}
+		}
+
+			// Found link based on special conditions, stop here
+		if ($link) {
+			return array(
+				'title' => 'note_' . $fieldIndex,
+				'value' => $title,
+				'link'  => $link
+			);
+		}
+
+			// Fallback to base method if no custom field found
+		return parent::getFieldData($field, $fieldIndex);
+	}
 }
