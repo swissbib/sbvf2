@@ -74,6 +74,7 @@ class Holdings
 	protected $fieldMapping = array(
 		'0' => 'local_branch_expanded',
 		'1' => 'location_expanded',
+		'4' => 'holding_status',
 		'a' => 'holding_information',
 		'B' => 'network',
 		'b' => 'institution',
@@ -509,6 +510,7 @@ class Holdings
 	 * @param	Array    	$holding
 	 * @param	SolrMarc	$recordDriver
 	 * @return	Array
+	 * @todo	Enable restful check after full features are implemented for holdings
 	 */
 	protected function extendHoldingBasic(array $holding, SolrMarc $recordDriver = null)
 	{
@@ -518,9 +520,10 @@ class Holdings
 		$holding['locationLabel'] = $this->getLocationLabel($holding);
 
 			// Add backlink for not restful networks
-		if (!$this->isRestfulNetwork($holding['network'])) {
+			// @note Disabled check until the
+//		if (!$this->isRestfulNetwork($holding['network'])) {
 			$holding['backlink'] = $this->getBackLink($holding['network'], strtoupper($holding['institution']), $holding);
-		}
+//		}
 
 		return $holding;
 	}
