@@ -2,6 +2,7 @@
 namespace Swissbib\Module\Config;
 
 use Zend\Config\Config;
+use Zend\I18n\Translator\Translator;
 
 use Swissbib\TargetsProxy\TargetsProxy;
 use Swissbib\TargetsProxy\IpMatcher;
@@ -12,7 +13,10 @@ use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
 use Swissbib\View\Helper\InstitutionSorter;
 use Swissbib\Tab40Import\Importer as Tab40Importer;
 use Swissbib\View\Helper\TranslateLocation;
-use Zend\I18n\Translator\Translator;
+use Swissbib\RecordDriver\Helper\LocationMap;
+use Swissbib\RecordDriver\Missing as RecordDriverMissing;
+use Swissbib\RecordDriver\Summon;
+use Swissbib\RecordDriver\WorldCat;
 
 return array(
 	'router'          => array(
@@ -124,8 +128,9 @@ return array(
 				$authManager    = $sm->get('VuFind\AuthManager');
 				$config			= $sm->get('VuFind\Config');
 				$translator		= $sm->get('VuFind\Translator');
+				$locationMap	= $sm->get('Swissbib\LocationMap');
 
-				return new HoldingsHelper($ilsConnection, $hmac, $authManager, $config, $translator);
+				return new HoldingsHelper($ilsConnection, $hmac, $authManager, $config, $translator, $locationMap);
 			},
 			'Swissbib\TargetsProxy\TargetsProxy' => function ($sm) {
 				$config        = $sm->get('VuFind\Config')->get('TargetsProxy');
@@ -151,6 +156,11 @@ return array(
 				$config        = $sm->get('VuFind\Config')->get('config')->tab40import;
 
 				return new Tab40Importer($config);
+			},
+			'Swissbib\LocationMap' => function ($sm) {
+				$locationMapConfig = $sm->get('VuFind\Config')->get('config')->locationMap;
+
+				return new LocationMap($locationMapConfig);
 			}
 		)
 	),
@@ -244,7 +254,7 @@ return array(
 						$baseConfig   = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
 						$summonConfig = $sm->getServiceLocator()->get('VuFind\Config')->get('Summon');
 
-						return new \Swissbib\RecordDriver\Summon(
+						return new Summon(
 							$baseConfig, // main config
 							$summonConfig // record config
 						);
@@ -253,7 +263,7 @@ return array(
 						$baseConfig     = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
 						$worldcatConfig = $sm->getServiceLocator()->get('VuFind\Config')->get('WorldCat');
 
-						return new \Swissbib\RecordDriver\WorldCat(
+						return new WorldCat(
 							$baseConfig, // main config
 							$worldcatConfig // record config
 						);
@@ -261,7 +271,7 @@ return array(
 					'missing'  => function ($sm) {
 						$baseConfig = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
 
-						return new \Swissbib\RecordDriver\Missing($baseConfig);
+						return new RecordDriverMissing($baseConfig);
 					}
 				)
 			),
