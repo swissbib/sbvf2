@@ -126,7 +126,7 @@ swissbib.Holdings = {
 		width	= width || 650;
 		height	= height|| 760;
 
-		window.open(url, 'map-popup', 'dependent=yes,toolbar=no,status=no,menubar=no,location=no,height=' + height + ',width=' + width).focus();
+		window.open(url, 'map-popup', 'height=' + height + ',width=' + width).focus();
 	}
 
 };
