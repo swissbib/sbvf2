@@ -63,7 +63,7 @@ if (isset($item['error'])) {
 	$desc = $item['error'];
 }
 if (isset($item['locationMap']) && $item['locationMap']) {
-	$mapLink = '<a href="' . $item['locationMap'] . '" class="holdingMapLink">Lageplan anzeigen</a>';
+	$mapLink = '<a href="' . $item['locationMap'] . '" class="holdingMapLink">' . $this->transEsc('Show_Location_Map') . '</a>';
 }
 
 $availability = isset($item['availability']['loan-status']) ? $item['availability']['loan-status'] : '';

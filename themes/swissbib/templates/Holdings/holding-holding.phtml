@@ -13,7 +13,7 @@ if (isset($holding['backlink'])) {
 }
 
 if (isset($holding['locationMap']) && $holding['locationMap']) {
-	$mapLink = '<a href="' . $holding['locationMap'] . '" class="holdingMapLink">Lageplan anzeigen</a>';
+	$mapLink = '<a href="' . $holding['locationMap'] . '" class="holdingMapLink">' . $this->transEsc('Show_Location_Map') . '</a>';
 }
 
 ?>
