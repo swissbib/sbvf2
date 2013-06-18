@@ -74,6 +74,7 @@ class Holdings
 	protected $fieldMapping = array(
 		'0' => 'local_branch_expanded',
 		'1' => 'location_expanded',
+		'4' => 'holding_status',
 		'a' => 'holding_information',
 		'B' => 'network',
 		'b' => 'institution',

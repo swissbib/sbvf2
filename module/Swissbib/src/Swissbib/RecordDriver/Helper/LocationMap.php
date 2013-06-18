@@ -6,13 +6,20 @@ use Zend\Config\Config;
 use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
 
 /**
- * [Description]
+ * Generate location map link depending on item data and configuration
+ * This class allows you to implement custom behaviour per institution.
+ * Add the institution code as postfix to the called methods.
+ * Possible method names are:
+ * - isItemValidForLocationMap
+ * - buildLocationMapLink
+ *
+ * Example: isItemValidForLocationMapA100
  *
  */
 class LocationMap
 {
 
-	/** @var    Config */
+	/** @var    Config	Location map config defined in config_base.ini in section locationMap */
 	protected $config;
 
 
@@ -30,11 +37,11 @@ class LocationMap
 
 
 	/**
+	 * Get a link for an item
 	 *
-	 *
-	 * @param    HoldingsHelper $holdingsHelper
-	 * @param    Array          $item
-	 * @return    String|Boolean
+	 * @param	HoldingsHelper		$holdingsHelper
+	 * @param	Array          		$item
+	 * @return	String|Boolean
 	 */
 	public function getLinkForItem(HoldingsHelper $holdingsHelper, array $item)
 	{
@@ -47,10 +54,18 @@ class LocationMap
 
 
 
+	/**
+	 * Try to call an institution specific method or fall back to the base version if not implemented
+	 *
+	 * @param	String		$function		Function name
+	 * @param	Array		$item
+	 * @param	Holdings	$holdingsHelper
+	 * @return	Mixed		The return value of the called method
+	 */
 	protected function callInstitutionMethod($function, array $item, HoldingsHelper $holdingsHelper)
 	{
 		$itemInstitution = strtolower($item['institution']);
-		$customMethod    = $function . ucfirst($itemInstitution);
+		$customMethod    = $function . strtoupper($itemInstitution);
 		$baseMethod      = $function . 'Base';
 		$method          = method_exists($this, $customMethod) ? $customMethod : $baseMethod;
 
@@ -188,7 +203,12 @@ class LocationMap
 		$accessibleConfigKey  = $item['institution'] . '_codes';
 		$isAccessible         = $this->isValueInConfigList($accessibleConfigKey, strtolower($item['location_code']));
 		$circulatingConfigKey = $item['institution'] . '_status';
-		$isCirculating        = true; // $this->isValueInConfigList($circulatingConfigKey, $item['holding_information']);
+		$isCirculating		  = true;
+
+			// Compare holding status if set
+		if (isset($item['holding_status'])) {
+			$isCirculating = $this->isValueInConfigList($circulatingConfigKey, $item['holding_status']);
+		}
 
 		return $isItemAvailable && $hasSignature && $isAccessible && $isCirculating;
 	}
@@ -236,6 +256,39 @@ class LocationMap
 	protected function buildLocationMapLinkB500(array $item, HoldingsHelper $holdingsHelper)
 	{
 		$mapLinkPattern  = $this->config->get('b500');
+
+		return $this->buildSimpleLocationMapLink($mapLinkPattern, $item['signature']);
+	}
+
+
+
+	/**
+	 * Check if map link is possible
+	 * Make sure signature is present
+	 *
+	 * @param	Array		$item
+	 * @param	Holdings	$holdingsHelper
+	 * @return	Boolean
+	 */
+	protected function isItemValidForLocationMapHSG(array $item, HoldingsHelper $holdingsHelper)
+	{
+		$hasSignature = isset($item['signature']) && !empty($item['signature']) && $item['signature'] !== '-';
+
+		return $hasSignature;
+	}
+
+
+
+	/**
+	 * Build custom link for HSG
+	 *
+	 * @param    Array    $item
+	 * @param    Holdings $holdingsHelper
+	 * @return    Boolean
+	 */
+	protected function buildLocationMapLinkHSG(array $item, HoldingsHelper $holdingsHelper)
+	{
+		$mapLinkPattern  = $this->config->get('hsg');
 
 		return $this->buildSimpleLocationMapLink($mapLinkPattern, $item['signature']);
 	}
