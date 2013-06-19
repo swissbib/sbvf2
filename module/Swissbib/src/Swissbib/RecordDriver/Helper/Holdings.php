@@ -1,35 +1,4 @@
 <?php
-
-/**
- * swissbib / VuFind <<full descriptive name of the class>>
- *
- * PHP version 5
- *
- * Copyright (C) project swissbib, University Library Basel, Switzerland
- * http://www.swissbib.org  / http://www.swissbib.ch / http://www.ub.unibas.ch
- *
- * Date: 2/7/13
- * Time: 9:02 PM
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2,
- * as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- * @category swissbib_VuFind2
- * @package  <<name of package>>
- * @author   Guenter Hipler  <guenter.hipler@unibas.ch>
- * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     << link to further documentation related to this resource type (Wiki, tracker ...)
- */
-
 namespace Swissbib\RecordDriver\Helper;
 
 use Zend\Config\Config;
@@ -136,6 +105,9 @@ class Holdings
 	/** @var  LocationMap */
 	protected $locationMap;
 
+	/** @var  EbooksOnDemand */
+	protected $ebooksOnDemand;
+
 
 
 	/**
@@ -155,7 +127,8 @@ class Holdings
 					AuthManager $authManager,
 					ConfigManager $configManager,
 					Translator $translator,
-					LocationMap $locationMap
+					LocationMap $locationMap,
+					EbooksOnDemand $ebooksOnDemand
 	) {
 		$this->ils            = $ilsConnection;
 		$this->configManager  = $configManager;
@@ -164,6 +137,7 @@ class Holdings
 		$this->authManager    = $authManager;
 		$this->translator     = $translator;
 		$this->locationMap	  = $locationMap;
+		$this->ebooksOnDemand = $ebooksOnDemand;
 
 		/** @var Config $relationConfig */
 		$relationConfig			= $configManager->get('libadmin-groups');
@@ -438,7 +412,7 @@ class Holdings
 	 * @param	SolrMarc	$recordDriver
 	 * @return	Array
 	 */
-	protected function extendItemBasic(array $item, SolrMarc $recordDriver = null)
+	protected function extendItemBasic(array $item, SolrMarc $recordDriver)
 	{
 			// EOD LINK
 		$item['eodlink']	= $this->getEODLink($item, $recordDriver);
@@ -553,8 +527,10 @@ class Holdings
 	 * @param	SolrMarc	$recordDriver
 	 * @return	String|Boolean
 	 */
-	protected function getEODLink(array $item, SolrMarc $recordDriver = null)
+	protected function getEODLink(array $item, SolrMarc $recordDriver)
 	{
+		return $this->ebooksOnDemand ? $this->ebooksOnDemand->getEbooksOnDemandLink($item, $recordDriver, $this) : false;
+
 		$eodLink = false;
 
 		if ($recordDriver instanceof SolrMarc) {
