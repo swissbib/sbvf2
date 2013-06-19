@@ -17,6 +17,7 @@ use Swissbib\RecordDriver\Helper\LocationMap;
 use Swissbib\RecordDriver\Missing as RecordDriverMissing;
 use Swissbib\RecordDriver\Summon;
 use Swissbib\RecordDriver\WorldCat;
+use Swissbib\RecordDriver\Helper\EbooksOnDemand;
 
 return array(
 	'router'          => array(
@@ -129,8 +130,9 @@ return array(
 				$config			= $sm->get('VuFind\Config');
 				$translator		= $sm->get('VuFind\Translator');
 				$locationMap	= $sm->get('Swissbib\LocationMap');
+				$eBooksOnDemand	= $sm->get('Swissbib\EbooksOnDemand');
 
-				return new HoldingsHelper($ilsConnection, $hmac, $authManager, $config, $translator, $locationMap);
+				return new HoldingsHelper($ilsConnection, $hmac, $authManager, $config, $translator, $locationMap, $eBooksOnDemand);
 			},
 			'Swissbib\TargetsProxy\TargetsProxy' => function ($sm) {
 				$config        = $sm->get('VuFind\Config')->get('TargetsProxy');
@@ -161,6 +163,12 @@ return array(
 				$locationMapConfig = $sm->get('VuFind\Config')->get('config')->locationMap;
 
 				return new LocationMap($locationMapConfig);
+			},
+			'Swissbib\EbooksOnDemand' => function ($sm) {
+				$eBooksOnDemandConfig = $sm->get('VuFind\Config')->get('config')->eBooksOnDemand;
+				$translator			  = $sm->get('VuFind\Translator');
+
+				return new EbooksOnDemand($eBooksOnDemandConfig, $translator);
 			}
 		)
 	),

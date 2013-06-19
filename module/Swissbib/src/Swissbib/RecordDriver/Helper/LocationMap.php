@@ -16,25 +16,8 @@ use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
  * Example: isItemValidForLocationMapA100
  *
  */
-class LocationMap
+class LocationMap extends CustomizedMethods
 {
-
-	/** @var    Config	Location map config defined in config_base.ini in section locationMap */
-	protected $config;
-
-
-
-	/**
-	 * Initialize with config
-	 *
-	 * @param    Config $config
-	 */
-	public function __construct(Config $config)
-	{
-		$this->config = $config;
-	}
-
-
 
 	/**
 	 * Get a link for an item
@@ -64,48 +47,7 @@ class LocationMap
 	 */
 	protected function callInstitutionMethod($function, array $item, HoldingsHelper $holdingsHelper)
 	{
-		$itemInstitution = strtolower($item['institution']);
-		$customMethod    = $function . strtoupper($itemInstitution);
-		$baseMethod      = $function . 'Base';
-		$method          = method_exists($this, $customMethod) ? $customMethod : $baseMethod;
-
-		return call_user_func(array($this, $method), $item, $holdingsHelper);
-	}
-
-
-
-	/**
-	 * Parse values from data array into template string
-	 *
-	 * @param    String $string
-	 * @param    Array  $data
-	 * @return    String
-	 */
-	protected function parseTemplateString($string, array $data)
-	{
-		return str_replace(array_keys($data), array_values($data), trim($string));
-	}
-
-
-
-	/**
-	 * Check whether value is defined in a comma separated config parameter
-	 *
-	 * @param    String $configKey
-	 * @param    String $value
-	 * @return    Boolean
-	 */
-	protected function isValueInConfigList($configKey, $value)
-	{
-		$configData = $this->config->get(strtolower($configKey));
-
-		if ($configData) {
-			$configValues = array_map('trim', explode(',', $configData));
-
-			return in_array($value, $configValues);
-		}
-
-		return false;
+		return $this->callMethod($function, $item['institution'], array($item, $holdingsHelper));
 	}
 
 
@@ -140,36 +82,6 @@ class LocationMap
 
 
 	/**
-	 * Fallback implementation
-	 * By default, item is not valid for map link
-	 *
-	 * @param    Array    $item
-	 * @param    Holdings $holdingsHelper
-	 * @return    Boolean
-	 */
-	protected function isItemValidForLocationMapBase(array $item, HoldingsHelper $holdingsHelper)
-	{
-		return false;
-	}
-
-
-
-	/**
-	 * Base method for map links
-	 * Use as fallback if no custom implementation is available
-	 *
-	 * @param    Array    $item
-	 * @param    Holdings $holdingsHelper
-	 * @return    Boolean
-	 */
-	protected function buildLocationMapLinkBase(array $item, HoldingsHelper $holdingsHelper)
-	{
-		return false;
-	}
-
-
-
-	/**
 	 * Build simple map link form link pattern and a value for PARAMS placeholder
 	 * Use this if you don't need a very special behaviour
 	 *
@@ -180,10 +92,10 @@ class LocationMap
 	protected function buildSimpleLocationMapLink($mapLinkPattern, $paramsValue)
 	{
 		$data = array(
-			'{PARAMS}' => urlencode($paramsValue)
+			'PARAMS' => urlencode($paramsValue)
 		);
 
-		return $this->parseTemplateString($mapLinkPattern, $data);
+		return $this->templateString($mapLinkPattern, $data);
 	}
 
 
@@ -292,6 +204,5 @@ class LocationMap
         $hsg_param = $item['location_code'] . ' ' . $item['signature'];
 
         return $this->buildSimpleLocationMapLink($mapLinkPattern, $hsg_param);
-
 	}
 }
