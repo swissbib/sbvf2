@@ -405,3 +405,8 @@ label[for="search_favorites"] {
 .holdingActions li.eod span {
 	display: none;
 }
+
+
+#tab-collectionlist form[name=bulkActionForm] table.data {
+	width: 740px;
+}
