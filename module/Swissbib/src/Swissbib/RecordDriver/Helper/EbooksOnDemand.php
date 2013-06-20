@@ -28,12 +28,10 @@ class EbooksOnDemand extends EbooksOnDemandBase
 		list(,$publishYear) = $recordDriver->getPublicationDates();
 		$itemFormats		= $recordDriver->getFormatsRaw();
 
-		$isYearInRange			= $this->isYearInRange($institutionCode, $publishYear);
-		$isSupportedInstitution	= $this->isSupportedInstitution($institutionCode);
-		$isSupportedFormat		= $this->isSupportedFormat($institutionCode, $itemFormats);
-		$hasNoStopWords			= $this->hasStopWords($institutionCode, $recordDriver->getLocalCodes()) === false;
-
-		return $isYearInRange && $isSupportedInstitution && $isSupportedFormat && $hasNoStopWords;
+		return		$this->isYearInRange($institutionCode, $publishYear)
+				&&	$this->isSupportedInstitution($institutionCode)
+				&&	$this->isSupportedFormat($institutionCode, $itemFormats)
+				&&	$this->hasStopWords($institutionCode, $recordDriver->getLocalCodes()) === false;
 	}
 
 
@@ -133,15 +131,12 @@ class EbooksOnDemand extends EbooksOnDemandBase
         list(,$publishYear) = $recordDriver->getPublicationDates();
         $itemFormats		= $recordDriver->getFormatsRaw();
 
-        $isYearInRange			= $this->isYearInRange($institutionCode, $publishYear);
-        $isSupportedInstitution	= $this->isSupportedInstitution($institutionCode);
-        $isSupportedFormat		= $this->isSupportedFormat($institutionCode, $itemFormats);
-        $hasNoStopWords			= $this->hasStopWords($institutionCode, $recordDriver->getLocalCodes()) === false;
-        // method scheme 1: if $item['location_code'] != 'AX50001 => link is invalid, i.e. don't build a link
-        // method scheme 2: if $item['signature'] beginswith('BIG') => link is invalid, i.e. don't build a link
-
-
-        return $isYearInRange && $isSupportedInstitution && $isSupportedFormat && $hasNoStopWords;
+		return 		$this->isYearInRange($institutionCode, $publishYear)
+				&&	$this->isSupportedInstitution($institutionCode)
+				&&	$this->isSupportedFormat($institutionCode, $itemFormats)
+				&&	$this->hasStopWords($institutionCode, $recordDriver->getLocalCodes()) === false // no stop words
+				&&	$item['location_code'] != 'AX50001' // not this location code
+				&&	stripos($item['signature'], 'BIG') !== 0; // doesn't start with BIG
     }
 
 
