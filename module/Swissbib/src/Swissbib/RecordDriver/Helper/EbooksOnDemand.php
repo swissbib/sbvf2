@@ -28,12 +28,10 @@ class EbooksOnDemand extends EbooksOnDemandBase
 		list(,$publishYear) = $recordDriver->getPublicationDates();
 		$itemFormats		= $recordDriver->getFormatsRaw();
 
-		$isYearInRange			= $this->isYearInRange($institutionCode, $publishYear);
-		$isSupportedInstitution	= $this->isSupportedInstitution($institutionCode);
-		$isSupportedFormat		= $this->isSupportedFormat($institutionCode, $itemFormats);
-		$hasNoStopWords			= $this->hasStopWords($institutionCode, $recordDriver->getLocalCodes()) === false;
-
-		return $isYearInRange && $isSupportedInstitution && $isSupportedFormat && $hasNoStopWords;
+		return		$this->isYearInRange($institutionCode, $publishYear)
+				&&	$this->isSupportedInstitution($institutionCode)
+				&&	$this->isSupportedFormat($institutionCode, $itemFormats)
+				&&	$this->hasStopWords($institutionCode, $recordDriver->getLocalCodes()) === false;
 	}
 
 
@@ -117,4 +115,51 @@ class EbooksOnDemand extends EbooksOnDemandBase
 
 		return $this->templateString($linkPattern, $data);
 	}
+
+
+    /**
+     * Check whether AX5 item is valid for EOD link
+     *
+     * @param	Array		$item
+     * @param	SolrMarc	$recordDriver
+     * @param	Holdings	$holdingsHelper
+     * @return	Boolean
+     */
+    protected function isValidForLinkAX5(array $item, SolrMarc $recordDriver, Holdings $holdingsHelper)
+    {
+        $institutionCode	= strtolower($item['institution']);
+        list(,$publishYear) = $recordDriver->getPublicationDates();
+        $itemFormats		= $recordDriver->getFormatsRaw();
+
+		return 		$item['location_code'] != 'AX50001' // not this location code
+				&&	stripos($item['signature'], 'BIG') !== 0 // doesn't start with BIG
+				&&	$this->isYearInRange($institutionCode, $publishYear)
+				&&	$this->isSupportedInstitution($institutionCode)
+				&&	$this->isSupportedFormat($institutionCode, $itemFormats)
+				&&	$this->hasStopWords($institutionCode, $recordDriver->getLocalCodes()) === false; // no stop words
+    }
+
+
+
+    /**
+     * Build EOD link for AX5 item
+     *
+     * @param	Array		$item
+     * @param	SolrMarc	$recordDriver
+     * @param	Holdings	$holdingsHelper
+     * @return	String
+     */
+    protected function buildLinkAX5(array $item, SolrMarc $recordDriver, Holdings $holdingsHelper)
+    {
+        $linkPattern	= $this->getLinkPattern($item['institution']);
+        $data	= array(
+            'SYSID'			=> $item['bibsysnumber'],
+            'INSTITUTION'	=> urlencode($item['institution'] . $item['signature']),
+            'LANGUAGE'		=> $this->getConvertedLanguage()
+        );
+
+        return $this->templateString($linkPattern, $data);
+    }
+
 }
+
