@@ -10,7 +10,7 @@ use Swissbib\RecordDriver\SolrMarc;
  * Contains all general base methods for ebooks on demand handlings
  *
  */
-class EbooksOnDemandBase extends CustomizedMethods
+abstract class EbooksOnDemandBase extends CustomizedMethods
 {
 	/** @var  Translator */
 	protected $translator;
