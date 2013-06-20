@@ -6,57 +6,6 @@ $actions	= array();
 $desc		= '';
 $mapLink	= '';
 
-if (isset($item['backlink'])) {
-	$actions[] = array(
-		'label'	=> 'zum Bestand',
-		'action'=> $item['backlink'],
-		'escape'=> false
-	);
-}
-
-	// Build item links
-	// @todo Move into holdings helper or view helper as soon as the feature set is clear
-if( isset($item['userActions']) ) {
-	if( $item['userActions']['hold'] ) {
-		$actions[] = array(
-			'label'	=> 'ausleihen',
-			'action'=> $this->recordLink()->getHoldUrl($item['holdLink']),
-			'escape'=> false
-		);
-	}
-	if( $item['userActions']['shortLoan'] ) {
-		$actions[] = array(
-			'label'	=> 'Kurzausleihe',
-			'action'=> 'javascript:alert(\'Not implemented yet\')'
-		);
-	}
-	if( $item['userActions']['photocopyRequest'] ) {
-		$actions[] = array(
-			'label'	=> 'Kopie bestellen',
-			'action'=> $item['userActions']['photocopyRequestLink']
-		);
-	}
-	if( $item['userActions']['bookingRequest'] ) {
-		$actions[] = array(
-			'label'	=> 'Booking Request',
-			'action'=> 'javascript:alert(\'Not implemented yet\')'
-		);
-	}
-} elseif( isset($item['holdLink']) ) {
-	$actions[] = array(
-		'label'	=> 'ausleihen',
-		'action'=> $this->recordLink()->getHoldUrl($item['holdLink']),
-		'escape'=> false
-	);
-}
-
-if (isset($item['eodlink']) && $item['eodlink']) {
-	$actions[] = array(
-		'label'	=> 'eBooks on Demand',
-		'action'=> $item['eodlink'],
-		'escape'=> false
-	);
-}
 
 	// Temporary usage for error info
 if (isset($item['error'])) {
@@ -65,19 +14,11 @@ if (isset($item['error'])) {
 if (isset($item['locationMap']) && $item['locationMap']) {
 	$mapLink = '<a href="' . $item['locationMap'] . '" class="holdingMapLink">' . $this->transEsc('Show_Location_Map') . '</a>';
 }
-
 $availability = isset($item['availability']['loan-status']) ? $item['availability']['loan-status'] : '';
 
 ?>
 <tr>
-    <td>
-        <ul>
-            <?php foreach($actions as $action): ?>
-            <?php $href = !isset($action['escape']) || $action['escape'] ? $this->escapeHtml($action['action']) : $action['action']; ?>
-            <li><a href="<?=$href?>" ><?=$this->escapeHtml($action['label'])?></a></li>
-            <?php endforeach; ?>
-        </ul>
-    </td>
+    <td><?=$this->holdingActions($item)?> </td>
     <td><?=$this->escapeHtml($availability)?></td>
 	<td><?=$this->escapeHtml($item['locationLabel'])?><?=$mapLink?></td>
 	<td><?=$this->escapeHtml($item['signature'])?></td>

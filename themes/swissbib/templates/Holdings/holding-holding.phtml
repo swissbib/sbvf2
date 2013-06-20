@@ -19,7 +19,7 @@ if (isset($holding['locationMap']) && $holding['locationMap']) {
 ?>
 <tr>
     <td>
-		<ul>
+		<ul class="holdingActions holdingActionsHolding">
 			<?php foreach($actions as $action): ?>
 				<?php $href = !isset($action['escape']) || $action['escape'] ? $this->escapeHtml($action['action']) : $action['action']; ?>
 				<li><a href="<?=$href?>" ><?=$this->escapeHtml($action['label'])?></a></li>
