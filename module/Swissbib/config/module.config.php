@@ -222,7 +222,7 @@ return array(
 			'VuFind\RecordDriver\SolrMarc' => array(
 				'tabs' => array(
 					'UserComments'	=> null, // Disable user comments tab
-                    'HierarchyTree' => null,
+//                    'HierarchyTree' => null,
 				)
 			),
 			'VuFind\RecordDriver\Summon' => array(
