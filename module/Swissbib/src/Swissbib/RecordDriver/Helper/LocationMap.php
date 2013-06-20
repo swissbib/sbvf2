@@ -16,88 +16,8 @@ use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
  * Example: isItemValidForLocationMapA100
  *
  */
-class LocationMap extends CustomizedMethods
+class LocationMap extends LocationMapBase
 {
-
-	/**
-	 * Get a link for an item
-	 *
-	 * @param	HoldingsHelper		$holdingsHelper
-	 * @param	Array          		$item
-	 * @return	String|Boolean
-	 */
-	public function getLinkForItem(HoldingsHelper $holdingsHelper, array $item)
-	{
-		if ($this->isItemValidForLocationMap($item, $holdingsHelper)) {
-			return $this->buildLocationMapLink($item, $holdingsHelper);
-		}
-
-		return false;
-	}
-
-
-
-	/**
-	 * Try to call an institution specific method or fall back to the base version if not implemented
-	 *
-	 * @param	String		$function		Function name
-	 * @param	Array		$item
-	 * @param	Holdings	$holdingsHelper
-	 * @return	Mixed		The return value of the called method
-	 */
-	protected function callInstitutionMethod($function, array $item, HoldingsHelper $holdingsHelper)
-	{
-		return $this->callMethod($function, $item['institution'], array($item, $holdingsHelper));
-	}
-
-
-
-	/**
-	 * Check whether location map link should be shown
-	 *
-	 *
-	 * @param    Array          $item
-	 * @param    HoldingsHelper $holdingsHelper
-	 * @return    Boolean
-	 */
-	protected function isItemValidForLocationMap(array $item, HoldingsHelper $holdingsHelper)
-	{
-		return $this->callInstitutionMethod('isItemValidForLocationMap', $item, $holdingsHelper);
-	}
-
-
-
-	/**
-	 * Build link for location map
-	 *
-	 * @param   Array           $item
-	 * @param    HoldingsHelper $holdingsHelper
-	 * @return    String|Boolean
-	 */
-	protected function buildLocationMapLink(array $item, HoldingsHelper $holdingsHelper)
-	{
-		return $this->callInstitutionMethod('buildLocationMapLink', $item, $holdingsHelper);
-	}
-
-
-
-	/**
-	 * Build simple map link form link pattern and a value for PARAMS placeholder
-	 * Use this if you don't need a very special behaviour
-	 *
-	 * @param	String		$mapLinkPattern
-	 * @param	String		$paramsValue
-	 * @return	String
-	 */
-	protected function buildSimpleLocationMapLink($mapLinkPattern, $paramsValue)
-	{
-		$data = array(
-			'PARAMS' => urlencode($paramsValue)
-		);
-
-		return $this->templateString($mapLinkPattern, $data);
-	}
-
 
 
 	/**

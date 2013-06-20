@@ -90,4 +90,31 @@ class EbooksOnDemand extends EbooksOnDemandBase
 		return $this->buildLinkA100($item, $recordDriver, $holdingsHelper);
 	}
 
+
+
+	protected function isValidForLinkZ01(array $item, SolrMarc $recordDriver, Holdings $holdingsHelper)
+	{
+		return true; // always show the link - maybe change this
+	}
+
+
+
+	/**
+	 * Build EOD link for B400 item
+	 *
+	 * @param	Array		$item
+	 * @param	SolrMarc	$recordDriver
+	 * @param	Holdings	$holdingsHelper
+	 * @return	String
+	 */
+	protected function buildLinkZ01(array $item, SolrMarc $recordDriver, Holdings $holdingsHelper)
+	{
+		$linkPattern	= $this->getLinkPattern($item['institution']);
+		$data	= array(
+			'SYSID'		=> $item['bibsysnumber'],
+			'CALLNUM'	=> urlencode('(' . $item['network'] . ') ' .  $item['signature'])
+		);
+
+		return $this->templateString($linkPattern, $data);
+	}
 }
