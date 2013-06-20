@@ -31,7 +31,7 @@ class EbooksOnDemand extends EbooksOnDemandBase
 		$isYearInRange			= $this->isYearInRange($institutionCode, $publishYear);
 		$isSupportedInstitution	= $this->isSupportedInstitution($institutionCode);
 		$isSupportedFormat		= $this->isSupportedFormat($institutionCode, $itemFormats);
-		$hasNoStopWords			= $this->hasStopWords($institutionCode, $recordDriver->getStopWords()) === false;
+		$hasNoStopWords			= $this->hasStopWords($institutionCode, $recordDriver->getLocalCodes()) === false;
 
 		return $isYearInRange && $isSupportedInstitution && $isSupportedFormat && $hasNoStopWords;
 	}
