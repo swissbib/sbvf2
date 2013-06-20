@@ -227,24 +227,24 @@ abstract class EbooksOnDemandBase extends CustomizedMethods
 	 * Check whether configured stop words are part of the compare string
 	 *
 	 * @param	String		$institutionCode
-	 * @param	String		$compareString
+	 * @param	String[]	$itemStopWords
 	 * @return	Boolean
 	 */
-	protected function hasStopWords($institutionCode, $compareString)
+	protected function hasStopWords($institutionCode, array $itemStopWords)
 	{
 		$customConfigKey	= $institutionCode . '_stopwords';
 
 		if ($this->hasConfigValue($customConfigKey)) {
-			$stopWords  = $this->getConfigList($customConfigKey);
+			$configStopWords  = $this->getConfigList($customConfigKey);
 		} elseif ($this->hasConfigValue('formats')) {
-			$stopWords = $this->getConfigList('formats');
+			$configStopWords = $this->getConfigList('formats');
 		} else {
-			$stopWords = false;
+			$configStopWords = false;
 		}
 
-		if ($stopWords !== false) {
-			foreach ($stopWords as $stopWord) {
-				if (stripos($compareString, $stopWord) !== false) {
+		if ($configStopWords !== false) {
+			foreach ($configStopWords as $configStopWord) {
+				if (in_array($configStopWord, $itemStopWords)) {
 					return true;
 				}
 			}

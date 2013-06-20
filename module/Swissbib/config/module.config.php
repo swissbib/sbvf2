@@ -194,7 +194,8 @@ return array(
 			'subjectVocabularies'	  => 'Swissbib\View\Helper\SubjectVocabularies',
 			'tabTemplate'			  => 'Swissbib\View\Helper\TabTemplate',
 			'zendTranslate'           => 'Zend\I18n\View\Helper\Translate',
-			'getVersion'              => 'Swissbib\View\Helper\GetVersion'
+			'getVersion'              => 'Swissbib\View\Helper\GetVersion',
+			'holdingActions'          => 'Swissbib\View\Helper\HoldingActions'
 		),
 		'factories' => array(
 			'institutionSorter' => function ($sm) {

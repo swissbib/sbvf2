@@ -381,3 +381,27 @@ label[for="search_favorites"] {
 .holdingMapLink {
 	display: block;
 }
+
+.holdingActions {
+
+}
+
+.holdingActions li {
+	line-height: 1.3em;
+}
+
+.holdingActions li.eod {
+
+
+}
+
+.holdingActions li.eod a {
+	display: inline-block;
+	width: 80px;
+	height: 20px;
+	background: url(../images/eod_button.gif) no-repeat 0 0;
+}
+
+.holdingActions li.eod span {
+	display: none;
+}

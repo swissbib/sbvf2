@@ -1059,6 +1059,32 @@ class SolrMarc extends VuFindSolrMarc
 
 
 	/**
+	 * Get stop words from 909 fields
+	 *
+	 * @return	String[]
+	 */
+	public function getStopWords()
+	{
+		$stopWords	= array();
+		$fieldsValues = $this->getMarcSubFieldMaps(909, array(
+											 'a'	=> 'a',
+											 'e'	=> 'e'
+										));
+
+		foreach ($fieldsValues as $fieldValues) {
+			foreach ($fieldValues as $fieldName => $fieldValue) {
+				if (strpos($fieldName, '@') !== 0) {
+					$stopWords[] = $fieldValue;
+				}
+			}
+		}
+
+		return $stopWords;
+	}
+
+
+
+	/**
 	 * @inheritDoc
 	 */
 	protected function getFieldData($field, $fieldIndex)
