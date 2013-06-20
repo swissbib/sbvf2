@@ -131,12 +131,12 @@ class EbooksOnDemand extends EbooksOnDemandBase
         list(,$publishYear) = $recordDriver->getPublicationDates();
         $itemFormats		= $recordDriver->getFormatsRaw();
 
-		return 		$this->isYearInRange($institutionCode, $publishYear)
+		return 		$item['location_code'] != 'AX50001' // not this location code
+				&&	stripos($item['signature'], 'BIG') !== 0 // doesn't start with BIG
+				&&	$this->isYearInRange($institutionCode, $publishYear)
 				&&	$this->isSupportedInstitution($institutionCode)
 				&&	$this->isSupportedFormat($institutionCode, $itemFormats)
-				&&	$this->hasStopWords($institutionCode, $recordDriver->getLocalCodes()) === false // no stop words
-				&&	$item['location_code'] != 'AX50001' // not this location code
-				&&	stripos($item['signature'], 'BIG') !== 0; // doesn't start with BIG
+				&&	$this->hasStopWords($institutionCode, $recordDriver->getLocalCodes()) === false; // no stop words
     }
 
 
