@@ -294,6 +294,13 @@ return array(
 					}
 				)
 			),
+			'hierarchy_driver' => array(
+				'factories' => array(
+					'series' => function ($sm) {
+						return \VuFind\Hierarchy\Driver\Factory::get($sm->getServiceLocator(), 'HierarchySeries');
+					},
+				)
+			),
 			'hierarchy_treerenderer' => array(
 				'invokables' => array(
 					'jstree' => 'Swissbib\VuFind\Hierarchy\TreeRenderer\JSTree',
