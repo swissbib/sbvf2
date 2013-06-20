@@ -1063,23 +1063,29 @@ class SolrMarc extends VuFindSolrMarc
 	 *
 	 * @return	String[]
 	 */
-	public function getStopWords()
+	public function getLocalCodes()
 	{
-		$stopWords	= array();
+		$localCodes   = array();
 		$fieldsValues = $this->getMarcSubFieldMaps(909, array(
 											 'a'	=> 'a',
-											 'e'	=> 'e'
+                                             'b'    => 'b',
+                                             'c'    => 'c',
+                                             'd'    => 'd',
+											 'e'	=> 'e',
+                                             'f'    => 'f',
+                                             'g'    => 'g',
+                                             'h'    => 'h',
 										));
 
 		foreach ($fieldsValues as $fieldValues) {
 			foreach ($fieldValues as $fieldName => $fieldValue) {
 				if (strpos($fieldName, '@') !== 0) {
-					$stopWords[] = $fieldValue;
+					$localCodes[] = $fieldValue;
 				}
 			}
 		}
 
-		return $stopWords;
+		return $localCodes;
 	}
 
 
