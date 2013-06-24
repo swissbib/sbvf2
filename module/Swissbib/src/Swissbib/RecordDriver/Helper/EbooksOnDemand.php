@@ -110,7 +110,7 @@ class EbooksOnDemand extends EbooksOnDemandBase
 		$linkPattern	= $this->getLinkPattern($item['institution']);
 		$data	= array(
 			'SYSID'		=> $item['bibsysnumber'],
-			'CALLNUM'	=> urlencode('(' . $item['network'] . ') ' .  $item['signature'])
+			'CALLNUM'	=> urlencode($item['signature'])
 		);
 
 		return $this->templateString($linkPattern, $data);
@@ -131,9 +131,9 @@ class EbooksOnDemand extends EbooksOnDemandBase
         list(,$publishYear) = $recordDriver->getPublicationDates();
         $itemFormats		= $recordDriver->getFormatsRaw();
 
-		return 		$item['location_code'] != 'AX50001' // not this location code
-				&&	stripos($item['signature'], 'BIG') !== 0 // doesn't start with BIG
-				&&	$this->isYearInRange($institutionCode, $publishYear)
+		return 		// $item['location_code'] != 'AX50001' // not this location code
+				// &&	stripos($item['signature'], 'BIG') !== 0 // doesn't start with BIG
+					$this->isYearInRange($institutionCode, $publishYear)
 				&&	$this->isSupportedInstitution($institutionCode)
 				&&	$this->isSupportedFormat($institutionCode, $itemFormats)
 				&&	$this->hasStopWords($institutionCode, $recordDriver->getLocalCodes()) === false; // no stop words
@@ -153,9 +153,8 @@ class EbooksOnDemand extends EbooksOnDemandBase
     {
         $linkPattern	= $this->getLinkPattern($item['institution']);
         $data	= array(
-            'SYSID'			=> $item['bibsysnumber'],
-            'INSTITUTION'	=> urlencode($item['institution'] . $item['signature']),
-            'LANGUAGE'		=> $this->getConvertedLanguage()
+            'SYSID'			=> str_replace('vtls', '', $item['bibsysnumber']),
+            'CALLNUM'	    => urlencode($item['signature']),
         );
 
         return $this->templateString($linkPattern, $data);
