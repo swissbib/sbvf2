@@ -48,7 +48,7 @@ use VuFindSearch\ParamBag;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org
  */
-class QueryBuilder
+class QueryBuilder implements QueryBuilderInterface
 {
 
     /**
@@ -106,10 +106,6 @@ class QueryBuilder
      * @param AbstractQuery $query User query
      *
      * @return ParamBag
-     *
-     * @todo Review usage of filters
-     * @todo Review usage of facets
-     * @todo Implement hightlighting
      */
     public function build(AbstractQuery $query)
     {
@@ -618,27 +614,4 @@ class QueryBuilder
             return $open . trim($start) . ' TO ' . trim($end) . $close;
         }
     }
-
-    /**
-     * Return from and to values of SOLR range.
-     *
-     * Returns false if the search string does not contain a range. Otherwise
-     * it returns an associative array with the keys `from', and `to'
-     * referring to the lower and upper bound of the range.
-     *
-     * @param string $string Search string
-     *
-     * @return array|false
-     *
-     * @todo This function seems to be unused
-     */
-    public function parseRange($string)
-    {
-        $regEx = '/\[([^\]]+)\s+TO\s+([^\]]+)\]/';
-        if (!preg_match($regEx, $string, $matches)) {
-            return false;
-        }
-        return array('from' => trim($matches[1]), 'to' => trim($matches[2]));
-    }
-
 }
