@@ -107,9 +107,14 @@ swissbib.Holdings = {
 	 * Open EOD link in popup
 	 *
 	 * @param	{String}	url
+	 * @param	{Number}	width
+	 * @param	{Number}	height
 	 */
-	openEODPopup: function(url) {
-		window.open(url, 'eod-popup', 'dependent=yes,height=450,width=550,toolbar=no,status=no,menubar=no,location=no').focus();
+	openEODPopup: function(url, width, height) {
+		width	= width || 650;
+		height	= height|| 760;
+
+		window.open(url, 'eod-popup', 'height=' + height + ',width=' + width).focus();
 	},
 
 
