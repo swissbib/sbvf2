@@ -2,7 +2,6 @@
 /** @var Array $item */
 
 $isAvailable= isset($item['isAvailable']) && $item['isAvailable'];
-$actions	= array();
 $desc		= '';
 $mapLink	= '';
 
@@ -18,7 +17,7 @@ $availability = isset($item['availability']['loan-status']) ? $item['availabilit
 
 ?>
 <tr>
-    <td><?=$this->holdingActions($item)?> </td>
+    <td><?=$this->holdingActions($item, 'holdingActionsItem')?> </td>
     <td><?=$this->escapeHtml($availability)?></td>
 	<td><?=$this->escapeHtml($item['locationLabel'])?><?=$mapLink?></td>
 	<td><?=$this->escapeHtml($item['signature'])?></td>
