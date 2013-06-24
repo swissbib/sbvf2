@@ -51,7 +51,7 @@ jQuery.fn.toggler = function(content,op) {
 	if (elItemContent.children().size() > 0) {
 		elItemContent = elItemContent.children();	
 	}
-	jQuery(elItemContent).attr("title",jQuery(elItemContent).html());
+	jQuery(elItemContent).attr("title",jQuery.trim(jQuery(elItemContent).html()));
 	
 	// params
 	if (jQuery(elItem).hasClass(defaults.classPersist)) {
