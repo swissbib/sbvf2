@@ -221,9 +221,7 @@ return array(
 		'recorddriver_tabs'	=> array(
 			'VuFind\RecordDriver\SolrMarc' => array(
 				'tabs' => array(
-					'UserComments'	=> null, // Disable user comments tab
-                    'CollectionList' => 'CollectionList',
-//                    'HierarchyTree' => null,
+					'UserComments'	=> null
 				)
 			),
 			'VuFind\RecordDriver\Summon' => array(
@@ -303,7 +301,7 @@ return array(
 			),
 			'hierarchy_treerenderer' => array(
 				'invokables' => array(
-					'jstree' => 'Swissbib\VuFind\Hierarchy\TreeRenderer\JSTree',
+					'jstree' => 'Swissbib\VuFind\Hierarchy\TreeRenderer\JSTree'
 				)
 			)
 		)
