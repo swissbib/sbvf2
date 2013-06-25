@@ -10,7 +10,7 @@ if($pagingRequired) {
 <div class="paging">
 	<?php if($pagingRequired): ?>
 		<?php if($previousUrl): ?>
-			<a href="<?=$previousUrl?>" title="zurück" class="paging_back">zurück</a>
+			<a href="<?=$previousUrl?>" title="<?= $this->transEsc('navigate_back') ?>" class="paging_back"><?= $this->transEsc('navigate_back') ?></a>
 		<?php endif; ?>
 		<div class="paging_pages">
 			<ul>
@@ -20,7 +20,7 @@ if($pagingRequired) {
 			</ul>
 		</div>
 		<?php if($nextUrl): ?>
-			<a href="<?=$nextUrl?>" title="weiter" class="paging_forward">weiter</a>
+			<a href="<?=$nextUrl?>" title="<?= $this->transEsc('Next') ?>" class="paging_forward"><?= $this->transEsc('Next') ?></a>
 		<?php endif; ?>
 	<?php endif; ?>
 </div>

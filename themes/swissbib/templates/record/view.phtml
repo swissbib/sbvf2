@@ -40,12 +40,12 @@ $lastSearchUrl = VuFind\Search\Memory::retrieve();
 			<input type="hidden" value="<?=$this->escapeHtml($this->driver->getUniqueId())?>" class="hiddenId" id="record_id" />
 
 			<!-- title -->
-			<h1 class="invisible">Details</h1>
+			<h1 class="invisible"><? $this->transEsc('Details') ?></h1>
 
 			<div class="tools floatbox">
 				<?php if($lastSearchUrl): ?>
-					<a href="<?=$this->escapeHtml($lastSearchUrl)?>" title="Zurück zur swissbib Resultatsliste" class="linkbutton icon_backto">
-                        <span>swissbib Resultatsliste</span>
+					<a href="<?=$this->escapeHtml($lastSearchUrl)?>" title="<?= $this->transEsc('result.backtohitlist') ?>" class="linkbutton icon_backto">
+                        <span><?= $this->transEsc('result.backtohitlist') ?></span>
                     </a>
 				<?php endif; ?>
 
@@ -64,8 +64,8 @@ $lastSearchUrl = VuFind\Search\Memory::retrieve();
 
 			<div class="tools floatbox">
 				<?php if($lastSearchUrl): ?>
-					<a href="<?=$this->escapeHtml($lastSearchUrl)?>" title="Zurück zur swissbib Resultatsliste" class="linkbutton icon_backto">
-                        <span>swissbib Resultatsliste</span>
+					<a href="<?=$this->escapeHtml($lastSearchUrl)?>" title="<?= $this->transEsc('result.backtohitlist') ?>" class="linkbutton icon_backto">
+                        <span><?= $this->transEsc('result.backtohitlist') ?></span>
                     </a>
 				<?php endif; ?>
 			</div>

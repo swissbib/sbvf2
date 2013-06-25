@@ -1,4 +1,4 @@
 <div id="logo">
-	<h1><a href="<?=$this->url('home')?>" title="swissbib">swissbib</a></h1>
-	<h2 class="hidden">Metakatalog der Schweizer Hochschulbibliotheken und der  Schweizerischen Nationalbibliothek</h2>
+	<h1><a href="<?=$this->url('home')?>" title="<?= $this->transEsc('start.service.title') ?>"><?= $this->transEsc('start.service.title') ?></a></h1>
+	<h2 class="hidden"><?= $this->transEsc('start.service.info') ?></h2>
 </div>

@@ -12,7 +12,7 @@
 		</li>
 		<?php if( $isLoggedIn ): ?>
 			<li>
-				<a href="<?=$this->url('myresearch-home');?>">My swissbib</a>
+				<a href="<?=$this->url('myresearch-home');?>"><?= $this->transEsc('menu.swissbib') ?>/a>
 				<ul class="subnavigation">
                     <li>
                         <a href="<?=$this->url('search-settings');?>"><?=$this->transEsc('My_Search_Settings')?></a>
@@ -27,16 +27,16 @@
 						<a href="#">Meine Suchdienste</a>
 					</li>
 					<li>
-						<a href="#">Meine Bibliotheken</a>
+						<a href="#"><?= $this->transEsc('menu.mylibraries') ?></a>
 					</li>
 				</ul>
 			</li>
 		<?php endif; ?>
 		<li>
-			<a href="<?=$this->url('help-page',array('topic'=>'About'));?>">Über swissbib</a>
+			<a href="<?=$this->url('help-page',array('topic'=>'About'));?>"><?= $this->transEsc('menu.service.information') ?></a>
 		</li>
 		<li>
-			<a title="Feedback" href="javascript:void(0)" style="cursor:not-allowed;">Feedback</a>
+			<a title="Feedback" href="javascript:void(0)" style="cursor:not-allowed;"><?= $this->transEsc('menu.feedback') ?></a>
 		</li>
 		<li class="nav_help">
 			<a href="<?=$this->url('help-page')?>"><?=$this->transEsc('Help')?></a>
