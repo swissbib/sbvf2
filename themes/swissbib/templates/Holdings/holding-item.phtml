@@ -1,0 +1,26 @@
+<?php
+/** @var Array $item */
+
+$isAvailable= isset($item['isAvailable']) && $item['isAvailable'];
+$desc		= '';
+$mapLink	= '';
+
+
+	// Temporary usage for error info
+if (isset($item['error'])) {
+	$desc = $item['error'];
+}
+if (isset($item['locationMap']) && $item['locationMap']) {
+	$mapLink = '<a href="' . $item['locationMap'] . '" class="holdingMapLink">' . $this->transEsc('Show_Location_Map') . '</a>';
+}
+$availability = isset($item['availability']['loan-status']) ? $item['availability']['loan-status'] : '';
+
+?>
+<tr>
+    <td><?=$this->holdingActions($item, 'holdingActionsItem')?> </td>
+    <td><?=$this->escapeHtml($availability)?></td>
+	<td><?=$this->escapeHtml($item['locationLabel'])?><?=$mapLink?></td>
+	<td><?=$this->escapeHtml($item['signature'])?></td>
+    <td><?=$this->escapeHtml($item['opac_note'])?></td>
+	<td><?=$this->escapeHtml($desc)?></td>
+</tr>

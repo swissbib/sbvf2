@@ -16,7 +16,7 @@
   <property name="mysqlrootpass" value="password" />
   <property name="pgsqlhost" value="localhost" />
   <property name="pgsqlrootuser" value="postgres" />
-  <property name="version" value="2.0" />
+  <property name="version" value="2.0.1" />
 
   <!-- Main Target -->
   <target name="main" description="main target">
@@ -138,6 +138,14 @@
       </else>
     </if>
 
+    <!-- start Solr (use restart in case of old PID files) -->
+    <exec command="VUFIND_HOME=${srcdir} VUFIND_LOCAL_DIR=${srcdir}/local JETTY_PID=${srcdir}/local/vufindtest.pid JETTY_CONSOLE=/dev/null ${srcdir}/vufind.sh restart" outputProperty="LASTOUTPUT" />
+    <echo message="${LASTOUTPUT}" />
+
+    <!-- wait for Solor to finish spinning up -->
+    <echo message="Waiting for Solr to start up..." />
+    <exec command="sleep 30" />
+
     <!-- import marc test records into vufind index (note: the marc test records have prefix "testsample#") -->
     <exec command="find ${srcdir}/tests/data -name *.mrc -printf %p," outputProperty="buglist" />
     <foreach list="${buglist}" param="filename" delimiter="," target="importrec" />
@@ -146,10 +154,6 @@
 
     <!-- build alphabrowse index -->
     <exec command="VUFIND_HOME=${srcdir} VUFIND_LOCAL_DIR=${srcdir}/local ${srcdir}/index-alphabetic-browse.sh" outputProperty="LASTOUTPUT" />
-    <echo message="${LASTOUTPUT}" />
-
-    <!-- start Solr (use restart in case of old PID files) -->
-    <exec command="VUFIND_HOME=${srcdir} VUFIND_LOCAL_DIR=${srcdir}/local JETTY_PID=${tmp}/vufindtest.pid JETTY_CONSOLE=/dev/null ${srcdir}/vufind.sh restart" outputProperty="LASTOUTPUT" />
     <echo message="${LASTOUTPUT}" />
   </target>
 
@@ -174,21 +178,19 @@
     </if>
 
     <!-- stop Solr -->
-    <exec command="VUFIND_HOME=${srcdir} VUFIND_LOCAL_DIR=${srcdir}/local JETTY_PID=${tmp}/vufindtest.pid ${srcdir}/vufind.sh stop" outputProperty="LASTOUTPUT" />
+    <exec command="VUFIND_HOME=${srcdir} VUFIND_LOCAL_DIR=${srcdir}/local JETTY_PID=${srcdir}/local/vufindtest.pid ${srcdir}/vufind.sh stop" outputProperty="LASTOUTPUT" />
     <echo message="${LASTOUTPUT}" />
 
     <!-- delete the configuration, sample index, logs and cache data -->
     <delete dir="${srcdir}/solr/alphabetical_browse" includeemptydirs="true" failonerror="true" />
     <delete dir="${srcdir}/solr/stats/index" includeemptydirs="true" failonerror="true" />
     <delete dir="${srcdir}/solr/authority/index" includeemptydirs="true" failonerror="true" />
+    <delete dir="${srcdir}/solr/authority/tlog" includeemptydirs="true" failonerror="true" />
     <delete dir="${srcdir}/solr/biblio/index" includeemptydirs="true" failonerror="true" />
+    <delete dir="${srcdir}/solr/biblio/tlog" includeemptydirs="true" failonerror="true" />
     <delete dir="${srcdir}/solr/biblio/spellchecker" includeemptydirs="true" failonerror="true" />
     <delete dir="${srcdir}/solr/biblio/spellShingle" includeemptydirs="true" failonerror="true" />
-    <delete failonerror="false">
-      <fileset dir="${srcdir}/solr/jetty/logs">
-        <include name="*.log" />
-      </fileset>
-    </delete>
+    <delete file="${srcdir}/import/solrmarc.log" failonerror="true" />
     <delete dir="${srcdir}/local" includeemptydirs="true" failonerror="true" />
     <exec command="git reset --hard" />
   </target>

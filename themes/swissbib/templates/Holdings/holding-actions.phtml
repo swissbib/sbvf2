@@ -1,0 +1,13 @@
+<ul class="holdingActions <?=$listClass?>">
+
+   <?php foreach($actions as $key => $action): ?>
+
+		<li class="<?=$action['class']?>">
+			<a href="<?=$action['href']?>" title="<?=$this->escapeHtml($action['label'])?>">
+				<span><?=$this->escapeHtml($action['label'])?></span>
+			</a>
+		</li>
+
+   <?php endforeach; ?>
+
+</ul>

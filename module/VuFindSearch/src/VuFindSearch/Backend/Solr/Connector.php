@@ -37,9 +37,7 @@ use VuFindSearch\Query\Query;
 
 use VuFindSearch\ParamBag;
 
-use VuFindSearch\Backend\Exception\RemoteErrorException;
-use VuFindSearch\Backend\Exception\RequestErrorException;
-use VuFindSearch\Backend\Exception\RequestParseErrorException;
+use VuFindSearch\Backend\Exception\HttpErrorException;
 
 use VuFindSearch\Backend\Solr\Document\AbstractDocument;
 
@@ -70,7 +68,7 @@ class Connector
      *
      * Switches to POST if the SOLR target URL exeeds this length.
      *
-     * @see self::sendRequest()
+     * @see self::query()
      *
      * @var integer
      */
@@ -91,6 +89,13 @@ class Connector
     protected $url;
 
     /**
+     * Handler map.
+     *
+     * @var HandlerMap
+     */
+    protected $map;
+
+    /**
      * HTTP read timeout.
      *
      * @var int
@@ -105,36 +110,6 @@ class Connector
     protected $proxy;
 
     /**
-     * Query invariants.
-     *
-     * @var ParamBag
-     */
-    protected $invariants;
-
-    /**
-     * Query defaults.
-     *
-     * @var ParamBag
-     */
-    protected $defaults;
-
-    /**
-     * Query appends.
-     *
-     * @var ParamBag
-     */
-    protected $appends;
-
-    /**
-     * Last query.
-     *
-     * @see self::resubmit()
-     *
-     * @var array
-     */
-    protected $lastQuery;
-
-    /**
      * HTTP client adapter.
      *
      * Either the class name or a adapter instance.
@@ -146,16 +121,15 @@ class Connector
     /**
      * Constructor
      *
-     * @param string $url SOLR base URL
+     * @param string     $url SOLR base URL
+     * @param HandlerMap $map Handler map
      *
      * @return void
      */
-    public function __construct($url)
+    public function __construct($url, HandlerMap $map)
     {
-        $this->invariants = new ParamBag();
-        $this->defaults   = new ParamBag();
-        $this->appends    = new ParamBag();
-        $this->url        = $url;
+        $this->url = $url;
+        $this->map = $map;
     }
 
     /// Public API
@@ -171,6 +145,16 @@ class Connector
     }
 
     /**
+     * Return handler map.
+     *
+     * @return HandlerMap
+     */
+    public function getMap()
+    {
+        return $this->map;
+    }
+
+    /**
      * Return document specified by id.
      *
      * @param string   $id     The document to retrieve from Solr
@@ -182,8 +166,11 @@ class Connector
     {
         $params = $params ?: new ParamBag();
         $params->set('q', sprintf('id:"%s"', addcslashes($id, '"')));
-        $result = $this->select($params);
-        return $result;
+
+        $handler = $this->map->getHandler(__FUNCTION__);
+        $this->map->prepare(__FUNCTION__, $params);
+
+        return $this->query($handler, $params);
     }
 
     /**
@@ -201,23 +188,25 @@ class Connector
         $params = $params ?: new ParamBag();
         $params->set('q', sprintf('id:"%s"', addcslashes($id, '"')));
         $params->set('qt', 'morelikethis');
-        return $this->select($params);
+
+        $handler = $this->map->getHandler(__FUNCTION__);
+        $this->map->prepare(__FUNCTION__, $params);
+
+        return $this->query($handler, $params);
     }
 
     /**
      * Execute a search.
      *
      * @param ParamBag $params Parameters
-     * @param integer  $offset Search offset
-     * @param integer  $limit  Search limit
      *
      * @return string
      */
-    public function search(ParamBag $params, $offset, $limit)
+    public function search(ParamBag $params)
     {
-        $params->set('start', $offset);
-        $params->set('rows', $limit);
-        return $this->select($params);
+        $handler = $this->map->getHandler(__FUNCTION__);
+        $this->map->prepare(__FUNCTION__, $params);
+        return $this->query($handler, $params);
     }
 
     /**
@@ -229,7 +218,10 @@ class Connector
      */
     public function terms(ParamBag $params)
     {
-        return $this->query('term', $params);
+        $handler = $this->map->getHandler(__FUNCTION__);
+        $this->map->prepare(__FUNCTION__, $params);
+
+        return $this->query($handler, $params);
     }
 
     /**
@@ -272,111 +264,6 @@ class Connector
     }
 
     /**
-     * Return the current query invariants.
-     *
-     * @return ParamBag
-     */
-    public function getQueryInvariants()
-    {
-        return $this->invariants;
-    }
-
-    /**
-     * Return query defaults.
-     *
-     * @return ParamBag
-     */
-    public function getQueryDefaults()
-    {
-        return $this->defaults;
-    }
-
-    /**
-     * Return query appends.
-     *
-     * @return ParamBag
-     */
-    public function getQueryAppends()
-    {
-        return $this->appends;
-    }
-
-    /**
-     * Set the query invariants.
-     *
-     * @param array $invariants Query invariants
-     *
-     * @return void
-     */
-    public function setQueryInvariants(array $invariants)
-    {
-        $this->invariants = new ParamBag($invariants);
-    }
-
-    /**
-     * Set the query defaults.
-     *
-     * @param array $defaults Query defaults
-     *
-     * @return void
-     */
-    public function setQueryDefaults(array $defaults)
-    {
-        $this->defaults = new ParamBag($defaults);
-    }
-
-    /**
-     * Set the query appends.
-     *
-     * @param array $appends Query appends
-     *
-     * @return void
-     */
-    public function setQueryAppends(array $appends)
-    {
-        $this->appends = new ParamBag($appends);
-    }
-
-    /**
-     * Add a query invariant.
-     *
-     * @param string $parameter Query parameter
-     * @param string $value     Query parameter value
-     *
-     * @return void
-     */
-    public function addQueryInvariant($parameter, $value)
-    {
-        $this->getQueryInvariants()->add($parameter, $value);
-    }
-
-    /**
-     * Add a query default.
-     *
-     * @param string $parameter Query parameter
-     * @param string $value     Query parameter value
-     *
-     * @return void
-     */
-    public function addQueryDefault($parameter, $value)
-    {
-        $this->getQueryDefaults()->add($parameter, $value);
-    }
-
-    /**
-     * Add a query append.
-     *
-     * @param string $parameter Query parameter
-     * @param string $value     Query parameter value
-     *
-     * @return void
-     */
-    public function addQueryAppend($parameter, $value)
-    {
-        $this->getQueryAppends()->add($parameter, $value);
-    }
-
-    /**
      * Set logger instance.
      *
      * @param LoggerInterface $logger Logger
@@ -386,16 +273,6 @@ class Connector
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
-    }
-
-    /**
-     * Return parameters of the last request.
-     *
-     * @return ParamBag
-     */
-    public function getLastQueryParameters()
-    {
-        return $this->lastQuery['parameters'];
     }
 
     /**
@@ -460,58 +337,6 @@ class Connector
     /// Internal API
 
     /**
-     * Send request to `select' query handler and return response.
-     *
-     * @param ParamBag $params Request parameters
-     *
-     * @return array
-     */
-    protected function select(ParamBag $params)
-    {
-        $params = $this->prepare($params);
-        $result = $this->query('select', $params);
-        return $result;
-    }
-
-    /**
-     * Prepare final request parameters.
-     *
-     * This function is called right before the request is send. Adds the
-     * invariants of our SOLR queries.
-     *
-     * @param ParamBag $params Parameters
-     *
-     * @return ParamBag
-     */
-    protected function prepare(ParamBag $params)
-    {
-        $params     = $params->getArrayCopy();
-        $invariants = $this->getQueryInvariants()->getArrayCopy();
-        $defaults   = $this->getQueryDefaults()->getArrayCopy();
-        $appends    = $this->getQueryAppends()->getArrayCopy();
-
-        $params = array_replace($defaults, $params);
-        $params = array_replace($params, $invariants);
-        $params = array_merge_recursive($params, $appends);
-
-        return new ParamBag($params);
-    }
-
-    /**
-     * Repeat the last request with potentially modified parameters.
-     *
-     * @param ParamBag $params Request parameters
-     *
-     * @return string
-     */
-    public function resubmit(ParamBag $params)
-    {
-        $last   = $this->lastQuery;
-        $params = $this->prepare($params);
-        return $this->query($last['handler'], $params, $last['method']);
-    }
-
-    /**
      * Send query to SOLR and return response body.
      *
      * @param string   $handler SOLR request handler to use
@@ -543,9 +368,6 @@ class Connector
         if ($this->logger) {
             $this->logger->debug(sprintf('Query %s', $paramString));
         }
-        $this->lastQuery = array(
-            'parameters' => $params, 'handler' => $handler, 'method' => $method
-        );
         return $this->send($client);
     }
 
@@ -581,34 +403,9 @@ class Connector
         }
 
         if (!$response->isSuccess()) {
-            $status = $response->getStatusCode();
-            $phrase = $response->getReasonPhrase();
-            if ($status >= 500) {
-                throw new RemoteErrorException($phrase, $status);
-            } else if ($this->isParseError($phrase)) {
-                throw new RequestParseErrorException($phrase, $status);
-            } else {
-                throw new RequestErrorException($phrase, $status);
-            }
+            throw HttpErrorException::createFromResponse($response);
         }
         return $response->getBody();
-    }
-
-    /**
-     * Check the Solr error message for indication of a syntax error.
-     *
-     * @param string $error Error message
-     *
-     * @return bool
-     */
-    protected function isParseError($error)
-    {
-        if (stristr($error, 'org.apache.lucene.queryParser.ParseException')
-            || stristr($error, 'undefined field')
-        ) {
-            return true;
-        }
-        return false;
     }
 
     /**
