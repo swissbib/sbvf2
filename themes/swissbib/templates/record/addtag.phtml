@@ -1,0 +1,48 @@
+<?
+    // Set page title.
+    $this->headTitle($this->translate('Add Tag'));
+
+    // Set up breadcrumbs:
+//    $this->layout()->breadcrumbs = $this->getLastSearchLink($this->transEsc('Search'), '', '<span>&gt;</span>') .
+//        $this->recordLink()->getBreadcrumb($this->driver) . '<span>&gt;</span><em>' . $this->transEsc('Add Tag') . '</em>';
+?>
+<!-- begin: col1 (sidebar)  -->
+<div id="col1" class="sidebar">
+	<div id="col1_content" class="clearfix">
+		<!-- begin: sidebar -->
+		Sidebar für Record
+		<!-- end: sidebar -->
+	</div>
+</div>
+<!-- end: col1 (sidebar) -->
+
+<!-- begin: col3 (content) -->
+<div id="col3" class="content">
+	<div id="col3_content" class="clearfix">
+		<!-- begin: content -->
+		<div id="content">
+			<h1 class="hideinlightbox"><?=$this->transEsc('Add Tag')?></h1>
+
+			<div class="record">
+				<form action="" method="post" name="tagRecord">
+					<input type="hidden" name="submit" value="1"/>
+					<input type="hidden" name="id" value="<?= $this->escapeHtml($this->driver->getUniqueId()) ?>"/>
+					<input type="hidden" name="source"value="<?= $this->escapeHtml($this->driver->getResourceSource()) ?>"/>
+					<label for="addtag_tag"><?= $this->transEsc("Tags") ?>:</label>
+					<input id="addtag_tag" type="text" name="tag" value="" size="40" class="mainFocus <?= $this->jqueryValidation(array('required' => 'This field is required')) ?>"/>
+
+					<p><?= $this->transEsc("add_tag_note") ?></p>
+					<input type="submit" value="<?= $this->transEsc('Save') ?>"/>
+				</form>
+			</div>
+		</div>
+		<!-- end: content -->
+	</div>
+	<div id="ie_clearing">
+		&nbsp;
+	</div>
+</div>
+<!-- end: col3 (content) -->
+
+
+

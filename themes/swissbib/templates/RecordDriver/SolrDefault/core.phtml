@@ -22,8 +22,8 @@ $summary				= trim(implode($resultItem->getSummary()));
 $groupID				= $resultItem->getGroup(true);
 
 $publicationDate		= $this->publicationDateMarc($resultItem->getPublicationDates());
-$openUrl				= $this->driver->openURLActive('record') ? $this->driver->getOpenURL() : false;
-$favoriteLink			= $this->recordLink()->getActionUrl($this->driver, 'Save');
+$openUrl				= $resultItem->openURLActive('record') ? $resultItem->getOpenURL() : false;
+$favoriteLink			= $this->recordLink()->getActionUrl($resultItem, 'Save');
 
 ?>
 <?/* Common parts of recordDriver's core.phtml templates*/?>
@@ -82,7 +82,26 @@ $favoriteLink			= $this->recordLink()->getActionUrl($this->driver, 'Save');
 			<p><?=$this->openUrl($openUrl)?></p>
 		<?php endif; ?>
 
-	</div>
+		<?php $tagList = $resultItem->getTags(); ?>
+		<h4><?=$this->transEsc('Tags')?>:</h4>
+		<p id="tagList">
+			<?php if (sizeof($tagList) > 0): ?>
+				<?php
+					$tagElements = array();
+					foreach ($tagList as $tag) {
+						$tagElements[] = '<a href="' . $this->url('tag-home') . '?lookfor=' . urlencode($tag->tag) . '">'
+											. $this->escapeHtml($tag->tag)
+											. '</a>'
+											. ' (' . $this->escapeHtml($tag->cnt) . ')';
+					}
+					echo implode(', ', $tagElements);
+				?>
+			<?php else: ?>
+				<?= $this->transEsc('No Tags') ?>, <?= $this->transEsc('Be the first to tag this record') ?>!
+			<?php endif; ?>
+		</p>
+		<p><a href="<?=$this->recordLink()->getActionUrl($resultItem, 'AddTag')?>" class="tool add tagRecord controller<?=$viewRecord->getController()?>" title="<?=$this->transEsc('Add Tag')?>" id="tagRecord"><?=$this->transEsc('Add Tag')?></a></p>
 
+	</div>
 
 </div>
