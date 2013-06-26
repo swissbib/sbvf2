@@ -93,5 +93,5 @@ var baseAutocomplete = {
             open: uiserach_open
         });
     }
-}
+};
 

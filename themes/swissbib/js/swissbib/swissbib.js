@@ -54,15 +54,6 @@ var swissbib = {
 
 
     /**
-     * Initialize on load.
-     */
-    initOnLoad: function(){
-
-    },
-
-
-
-    /**
      * Initializes the navigation
 	 *
 	 * @param	{Element}	ctx		Selector context
@@ -299,18 +290,18 @@ var swissbib = {
 			}
 
 				// Create slider
-			vmin = 0;
-			vmax = 1000;
-			vstep = 100;
+			var vmin = 0;
+			var vmax = 1000;
+			var vstep = 100;
 
 			if ($(el).attr("rel") != null) {
 				var params = $(el).attr("rel").split(";");
-				for (var i = 0; i < params.length; i++) {
-					var p = params[i].split(":");
+				for (var ii = 0; ii < params.length; ii++) {
+					var p = params[ii].split(":");
 					switch(p[0]) {
-						case "min": vmin = parseInt(p[1]);
-						case "max": vmax = parseInt(p[1]);
-						case "step": vstep = parseInt(p[1]);
+						case "min": vmin = parseInt(p[1]);break;
+						case "max": vmax = parseInt(p[1]);break;
+						case "step": vstep = parseInt(p[1]);break;
 					}
 				}
 			}
@@ -460,8 +451,4 @@ var swissbib = {
  */
 $(document).ready(function(){
     swissbib.initOnReady();
-});
-
-$(window).bind("load", function() {
-    swissbib.initOnLoad();
 });

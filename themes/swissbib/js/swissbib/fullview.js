@@ -1,7 +1,7 @@
 
 /**
  * swissbib javascript only for the full view of an item
- * @author project swissbib, Günter Hipler
+ * @author project swissbib, Gï¿½nter Hipler
  * @version 0.1 first prototype
  * */
 
@@ -9,8 +9,8 @@
 
 //todo: GH: 20100826
 //Ausgangslage: ist eine Institution Favorit, erscheint sie an zwei Orten (Favoriten und im eigentlichen Verbund)
-//bis jetzt wurde die Verfügbarkeit nur im Container der Favoriten angezeigt - nicht im Bibliotheksnetzwerk
-//neu erscheint die Verfügbarkeit auch im Biblioteksverbund (Änderung des selektors von id auf Klasse)
+//bis jetzt wurde die Verfï¿½gbarkeit nur im Container der Favoriten angezeigt - nicht im Bibliotheksnetzwerk
+//neu erscheint die Verfï¿½gbarkeit auch im Biblioteksverbund (ï¿½nderung des selektors von id auf Klasse)
 //aber die im Verbund angezeigten nformationen werden nochmals abgerufen, wenn der Verbund aufgeklappt wird
 //ich muss das Attribut data-detched=true noch bei der Institution setzen
 
@@ -19,7 +19,7 @@
 
 
 function fetchAvailabilty(urlString, barcodes) {
-    var sBarcodes = new String(barcodes);
+    var sBarcodes = barcodes;
     var oBarcodes = null;
     //we can't know at this moment if it will be an array or a simple string in case of only one barcode
     //alert (urlString);
@@ -99,7 +99,7 @@ function fetchAvailabilty(urlString, barcodes) {
                 properties += value.wholeMessage;
 
                 //$("#" + value.identifierBarcode + "_BC").html(properties);
-                encodeURI
+//                encodeURI
 
                 //alert("#" + value.identifierBarcode + "_BC");
 

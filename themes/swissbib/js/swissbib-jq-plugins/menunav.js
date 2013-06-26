@@ -20,7 +20,7 @@ jQuery.fn.menunav = function(op) {
 	// animation
 	var animation = {
 		animated:false
-	}
+	};
 	
 	// references
 	var elNav = jQuery(this);

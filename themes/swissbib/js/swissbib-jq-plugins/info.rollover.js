@@ -15,7 +15,7 @@
                 direction: 'left',
                 duration: 300
             };
-            var options = jQuery.extend(o, options);
+            options = jQuery.extend(o, options);
 			
 			// all rollovers
             return this.each(function(i) {
