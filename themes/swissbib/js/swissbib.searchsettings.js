@@ -13,10 +13,10 @@ var sbSearchSettings = {
 
 		    if( this.name == 'language' || this.name == 'max_hits' ) {
 
-				var spinnerElId = 'spinner' + jQuery.guid++;
-				$('#content').prepend(sbAjax.createSpinnerElement(spinnerElId));
-				$('#' + spinnerElId).sprite({fps: 10, no_of_frames: 12});
-				$('#' + spinnerElId).spStart();
+//				var spinnerElId = 'spinner' + jQuery.guid++;
+//				$('#content').prepend(sbAjax.createSpinnerElement(spinnerElId));
+//				$('#' + spinnerElId).sprite({fps: 10, no_of_frames: 12});
+//				$('#' + spinnerElId).spStart();
 
 				$.ajax({
 					url:	  document.location.href.split('/vufind')[0] + '/vufind/MyResearch/Saveaccountlocal'

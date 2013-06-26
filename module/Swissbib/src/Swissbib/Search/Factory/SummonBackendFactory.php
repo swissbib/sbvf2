@@ -7,83 +7,87 @@
 
 namespace Swissbib\Search\Factory;
 
-use VuFindSearch\Backend\BackendInterface;
-use VuFindSearch\Backend\Summon\Response\RecordCollectionFactory;
-use VuFindSearch\Backend\Summon\QueryBuilder;
-use VuFindSearch\Backend\Summon\Connector;
-use VuFindSearch\Backend\Summon\Backend;
-
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\ServiceManager\FactoryInterface;
+use Zend\Config\Config;
+use Zend\Http\Client as HttpClient;
+
+use VuFind\Search\Factory\SummonBackendFactory as SummonBackendFactoryBase;
+use SerialsSolutions\Summon\Zend2 as Connector;
 
 use Swissbib\TargetsProxy\TargetsProxy;
-
-
 
 /**
  * Factory for Summon backends.
  */
-class SummonBackendFactory extends \VuFind\Search\Factory\SummonBackendFactory
+class SummonBackendFactory extends SummonBackendFactoryBase
 {
 
- /**
-  * Superior service manager.
-  *
-  * @var ServiceLocatorInterface
-  */
- protected $serviceLocator;
+	/**
+	 * Superior service manager.
+	 *
+	 * @var ServiceLocatorInterface
+	 */
+	protected $serviceLocator;
 
- /**
-  * VuFind configuration
-  *
-  * @var \Zend\Config\Config
-  */
- protected $config;
+	/**
+	 * VuFind configuration
+	 *
+	 * @var Config
+	 */
+	protected $config;
 
- /**
-  * Summon configuration
-  *
-  * @var \Zend\Config\Config
-  */
- protected $summonConfig;
+	/**
+	 * Summon configuration
+	 *
+	 * @var Config
+	 */
+	protected $summonConfig;
 
 
 
-    /**
-     * Create the Summon connector.
+	/**
+	 * Create the Summon connector.
 	 * Detects clients relevant for target switching by IP and hostname
-     *
-     * @return Connector
-     */
-    protected function createConnector()
-    {
-        // Load credentials:
-        $id = isset($this->config->Summon->apiId) 	? $this->config->Summon->apiId : null;
-        $key = isset($this->config->Summon->apiKey)	? $this->config->Summon->apiKey : null;
+	 *
+	 * @return Connector
+	 */
+	protected function createConnector()
+	{
+		// Load credentials:
+		$id  = isset($this->config->Summon->apiId) ? $this->config->Summon->apiId : null;
+		$key = isset($this->config->Summon->apiKey) ? $this->config->Summon->apiKey : null;
 
-		$overrideCredentials	= $this->getOverrideApiCredentialsFromProxy();
-		if( $overrideCredentials !== false ) {
-			$id	= array_key_exists('apiId', $overrideCredentials) && !empty($overrideCredentials['apiId']) ? $overrideCredentials['apiId'] : $id;
-			$key= array_key_exists('apiKey', $overrideCredentials) && !empty($overrideCredentials['apiKey']) ? $overrideCredentials['apiKey'] : $key;
+		$overrideCredentials = $this->getOverrideApiCredentialsFromProxy();
+		if ($overrideCredentials !== false) {
+			if (isset($overrideCredentials['apiId']) && !empty($overrideCredentials['apiId'])) {
+				$id = $overrideCredentials['apiKey'];
+			}
+			if (isset($overrideCredentials['apiKey']) && !empty($overrideCredentials['apiKey'])) {
+				$key = $overrideCredentials['apiKey'];
+			}
 		}
 
-        // Build HTTP client:
-        $client = $this->serviceLocator->get('VuFind\Http')->createClient();
-		$timeout = isset($this->summonConfig->General->timeout)	? $this->summonConfig->General->timeout : 30;
-        $client->setOptions(array('timeout' => $timeout));
+		/** @var HttpClient $client */
+		$client  = $this->serviceLocator->get('VuFind\Http')->createClient();
+		$timeout = isset($this->summonConfig->General->timeout) ? $this->summonConfig->General->timeout : 30;
+		$client->setOptions(array('timeout' => $timeout));
 
-        $connector = new Connector($id, $key, array(), $client);
-        $connector->setLogger($this->logger);
-        return $connector;
-    }
+		$connector = new Connector($id, $key, array(), $client);
+		$connector->setLogger($this->logger);
+
+		return $connector;
+	}
+
 
 
 	/**
 	 * Detect client to possibly switch API key from proxy configuration
 	 *
-	 * @return	Boolean|String		false or the API key to switch to
+	 * @todo	Use exception handling instead of custom error handling!
+	 * @return    Boolean|String        false or the API key to switch to
 	 */
-	protected function getOverrideApiCredentialsFromProxy() {
+	protected function getOverrideApiCredentialsFromProxy()
+	{
 		try {
 			/** @var TargetsProxy $targetsProxy */
 			$targetsProxy = $this->serviceLocator->get('Swissbib\TargetsProxy\TargetsProxy');
@@ -92,10 +96,10 @@ class SummonBackendFactory extends \VuFind\Search\Factory\SummonBackendFactory
 			$proxyDetected = $targetsProxy->detectTarget();
 //			$proxyDetected = $targetsProxy->detectTarget('99.0.0.0', 'snowflake.ch');
 
-			if( $proxyDetected !== false ) {
+			if ($proxyDetected !== false) {
 				return array(
-					'apiId'		=> $targetsProxy->getTargetApiId(),
-					'apiKey'	=> $targetsProxy->getTargetApiKey()
+					'apiId'  => $targetsProxy->getTargetApiId(),
+					'apiKey' => $targetsProxy->getTargetApiKey()
 				);
 			}
 		} catch (\Exception $e) {
@@ -109,5 +113,4 @@ class SummonBackendFactory extends \VuFind\Search\Factory\SummonBackendFactory
 
 		return false;
 	}
-
 }
