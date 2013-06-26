@@ -18,19 +18,16 @@
 	<div id="col3_content" class="clearfix">
 		<!-- begin: content -->
 		<div id="content">
-			<h1 class="hidden">Informationen zu swissbib</h1>
+			<h1 class="hidden"><?=$this->transEsc('start.teaser.description.chb')?></h1>
 			<!-- begin: teaser -->
 			<div class="teaser">
 				<!-- col -->
 				<div class="c50l">
 					<div class="box h150 bmright">
-						<h2>Über swissbib</h2>
-						<p>
-							SwissBib ist der Metakatalog der Schweizer Hochschulbibliotheken und der  Schweizerischen Nationalbibliothek. Er bietet einen raschen, einfachen und umfassenden Zugang zu wissenschaftlicher Information in der Schweiz an.
-						</p>
+                        <?=$this->translate('start.teaser.left.chb')?>
 						<ul class="actions">
 							<li class="right">
-								<a href="inhaltsseite.html" class="linkbutton primary icon_goto_primary" title="Mehr Infos"><span>Mehr Infos</span></a>
+								<a href="<?=$this->url('help-page',array('topic'=>'About'));?>" class="linkbutton primary icon_goto_primary" title="<?=$this->transEsc('more')?>"><span><?=$this->transEsc('start.teaser.more')?></span></a>
 							</li>
 						</ul>
 					</div>
@@ -38,19 +35,19 @@
 				<!-- col -->
 				<div class="c50l">
 					<div class="box h150 bmleft">
-						<h2>Leichter suchen - schneller finden</h2>
-						<p>
-							Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum.
-						</p>
+                        <?=$this->translate('start.teaser.right.chb')?>
 						<ul class="actions">
 							<li class="right">
-								<a href="inhaltsseite.html" class="linkbutton primary icon_goto_primary" title="Mehr Infos"><span>Mehr Infos</span></a>
+								<a href="<?=$this->url('help-page')?>" class="linkbutton primary icon_goto_primary" title="<?=$this->transEsc('more')?>"><span><?=$this->transEsc('start.teaser.more')?></span></a>
 							</li>
 						</ul>
 					</div>
 				</div>
 			</div><!-- end: teaser -->
-		</div>
+            <div style="position: absolute; bottom: 0px; right: 0px;" class="teaser">
+                <a target="_blank" href="http://www.urz.unibas.ch/"><img src="<?= $this->basePath('themes/swissbib/images/poweredby_unibasel.gif') ?>"></a>
+            </div>
+        </div>
 		<!-- end: content -->
 	</div>
 	<div id="ie_clearing">
