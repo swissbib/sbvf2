@@ -65,10 +65,7 @@ jQuery.fn.toggler = function(content,op) {
 	var expanded = defaults.expanded;
 	if (defaults.persist && jQuery.cookie(cname)) {
 		var v = jQuery.cookie(cname);
-		expanded = false;
-		if (v == "expanded") {
-			expanded = true;	
-		}
+		expanded = v == "expanded";
 	}
 	
 	
@@ -84,7 +81,7 @@ jQuery.fn.toggler = function(content,op) {
 	jQuery(this).click(function(){
 		toggleItem();
 		return false;
-	})
+	});
 	
 	/*
 	 * Toggles the item.
@@ -101,7 +98,7 @@ jQuery.fn.toggler = function(content,op) {
 		expanded = ! expanded;
 		if (defaults.persist) {
 			var v = "hidden";
-			if (expanded) {v = "expanded"};
+			if (expanded) {v = "expanded"}
 			jQuery.cookie(cname,v,{path: '/'});
 		}
 	}

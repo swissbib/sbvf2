@@ -9,7 +9,7 @@ jQuery.fn.dropdown = function(nb,op) {
 			timeAnimateShow: 90,
 			timeAnimateHide: 20,
 			maxCharacters:23,
-			easingAnimateShow:"easeOutSine",
+//			easingAnimateShow:"easeOutSine",
 			easingAnimateShow:"easeInSine"
 	};
 	jQuery.extend(defaults, op);

@@ -68,7 +68,7 @@ jQuery.fn.enhancedSearch = function(op) {
 			else {
 				
 				// test values
-				var avals = new Array();
+				var avals = [];
 				avals.push("Apfel");
 				avals.push("Banane");
 				avals.push("Zitrone");

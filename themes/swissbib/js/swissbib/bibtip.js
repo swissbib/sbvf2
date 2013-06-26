@@ -29,8 +29,7 @@ function getContent(element)
 
   if(element.nodeType==3) {
     // text node
-    str = element.data
-    return str;
+    return element.data;
   }
   else {
     // element node
@@ -70,7 +69,7 @@ function getBibtipNd(){
         }
     }
 	return "";
-};
+}
 
 
 
@@ -81,7 +80,7 @@ function getFbt(){
         return result[0];
     }
     return "";
-};
+}
 
 
 
@@ -169,7 +168,7 @@ function showRecs(recs)
             newButton.setAttribute('id','more_button');
             var newAnchor = document.createElement("a");
             newAnchor.setAttribute("href","javascript:showCompleteList()");
-            var moreLabel =  document.getElementById('user-recommendation_more').textContent
+            var moreLabel =  document.getElementById('user-recommendation_more').textContent;
             newAnchor.appendChild(document.createTextNode(moreLabel));
             newButton.appendChild(newAnchor);
             recDiv.appendChild(newButton);

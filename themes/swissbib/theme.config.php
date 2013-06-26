@@ -38,7 +38,6 @@ return array(
 		'swissbib-jq-plugins/enhancedsearch.js',
 
 		'swissbib/swissbib.js',
-		'swissbib/ajax.js',
 
 		'swissbib/AdvancedSearch.js',
   		'swissbib/Holdings.js',
