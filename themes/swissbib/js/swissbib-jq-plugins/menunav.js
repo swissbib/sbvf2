@@ -29,9 +29,9 @@ jQuery.fn.menunav = function(op) {
 	
 	// init
 	// detect ie6
-	if ($.browser.msie && $.browser.version.substr(0,1)<7) {
-		jQuery(defaults.selectorSubnavigation,this).bgiframe();
-	}
+//	if ($.browser.msie && $.browser.version.substr(0,1)<7) {
+//		jQuery(defaults.selectorSubnavigation,this).bgiframe();
+//	}
 	jQuery(defaults.selectorSubnavigation, this).hide();
 		
 	// hover intent config
