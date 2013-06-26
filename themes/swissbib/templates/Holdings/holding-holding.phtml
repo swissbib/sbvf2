@@ -1,31 +1,12 @@
 <?php
 /** @var Array $holding */
 
-$actions	= array();
-$mapLink	= '';
-
-if (isset($holding['backlink'])) {
-	$actions[] = array(
-		'label'	=> 'zum Bestand',
-		'action'=> $holding['backlink'],
-		'escape'=> false
-	);
-}
-
-if (isset($holding['locationMap']) && $holding['locationMap']) {
-	$mapLink = '<a href="' . $holding['locationMap'] . '" class="holdingMapLink">' . $this->transEsc('Show_Location_Map') . '</a>';
-}
-
+$mapLink	= isset($holding['locationMap']) && $holding['locationMap'] ?
+				'<a href="' . $holding['locationMap'] . '" class="holdingMapLink">' . $this->transEsc('Show_Location_Map') . '</a>' :
+				'';
 ?>
 <tr>
-    <td>
-		<ul class="holdingActions holdingActionsHolding">
-			<?php foreach($actions as $action): ?>
-				<?php $href = !isset($action['escape']) || $action['escape'] ? $this->escapeHtml($action['action']) : $action['action']; ?>
-				<li><a href="<?=$href?>" ><?=$this->escapeHtml($action['label'])?></a></li>
-			<?php endforeach; ?>
-		</ul>
-    </td>
+	<td><?=$this->holdingActions($holding, 'holdingActionsHolding')?> </td>
     <td>not implemented</td>
     <td><?=$this->escapeHtml($holding['locationLabel'])?><?=$mapLink?></td>
 	<td><?=$this->escapeHtml($holding['signature'])?></td>
