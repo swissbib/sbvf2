@@ -257,7 +257,7 @@ class SearchController extends AbstractSearch
 
         // Loop through the history
         foreach ($searchHistory as $current) {
-            $minSO = unserialize($current->search_object);
+            $minSO = $current->getSearchObject();
 
             // Saved searches
             if ($current->saved == 1) {
@@ -408,10 +408,14 @@ class SearchController extends AbstractSearch
         // Call rather than forward, so we can use custom template
         $view = $this->resultsAction();
 
-        // Customize the URL helper to make sure it builds proper reserves URLs:
-        $url = $view->results->getUrlQuery();
-        $url->setDefaultParameter('range', $range);
-        $url->setDefaultParameter('department', $dept);
+        // Customize the URL helper to make sure it builds proper reserves URLs
+        // (check it's set first -- RSS feed will return a response model rather
+        // than a view model):
+        if (isset($view->results)) {
+            $url = $view->results->getUrlQuery();
+            $url->setDefaultParameter('range', $range);
+            $url->setDefaultParameter('department', $dept);
+        }
 
         return $view;
     }
@@ -517,6 +521,28 @@ class SearchController extends AbstractSearch
         $url->setDefaultParameter('inst', $inst);
         $url->setDefaultParameter('dept', $dept);
         return $view;
+    }
+
+    /**
+     * Results action.
+     *
+     * @return mixed
+     */
+    public function resultsAction()
+    {
+        // Special case -- redirect tag searches.
+        $tag = $this->params()->fromQuery('tag');
+        if (!empty($tag)) {
+            $query = $this->getRequest()->getQuery();
+            $query->set('lookfor', $tag);
+            $query->set('type', 'tag');
+        }
+        if ($this->params()->fromQuery('type') == 'tag') {
+            return $this->forwardTo('Tag', 'Home');
+        }
+
+        // Default case -- standard behavior.
+        return parent::resultsAction();
     }
 
     /**
@@ -636,5 +662,17 @@ class SearchController extends AbstractSearch
             json_encode(array($query->get('lookfor', ''), $suggestions))
         );
         return $response;
+    }
+
+    /**
+     * Is the result scroller active?
+     *
+     * @return bool
+     */
+    protected function resultScrollerActive()
+    {
+        $config = $this->getServiceLocator()->get('VuFind\Config')->get('config');
+        return (isset($config->Record->next_prev_navigation)
+            && $config->Record->next_prev_navigation);
     }
 }

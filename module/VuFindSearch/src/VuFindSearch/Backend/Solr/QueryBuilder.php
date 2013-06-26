@@ -48,7 +48,7 @@ use VuFindSearch\ParamBag;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org
  */
-class QueryBuilder
+class QueryBuilder implements QueryBuilderInterface
 {
 
     /**
@@ -106,10 +106,6 @@ class QueryBuilder
      * @param AbstractQuery $query User query
      *
      * @return ParamBag
-     *
-     * @todo Review usage of filters
-     * @todo Review usage of facets
-     * @todo Implement hightlighting
      */
     public function build(AbstractQuery $query)
     {
@@ -374,11 +370,16 @@ class QueryBuilder
             $string = '[* TO *]';
         }
 
-        // If the query ends in a question mark, the user may not really intend to
-        // use the question mark as a wildcard -- let's account for that possibility
-        if (substr($string, -1) == '?') {
-            $string = "({$string}) OR (" . substr($string, 0, strlen($string) - 1)
-                . ")";
+        // If the query ends in a non-escaped question mark, the user may not really
+        // intend to use the question mark as a wildcard -- let's account for that
+        // possibility
+        if (substr($string, -1) == '?' && substr($string, -2) != '\?') {
+            // Make sure all question marks are properly escaped (first unescape
+            // any that are already escaped to prevent double-escapes, then escape
+            // all of them):
+            $strippedQuery
+                = str_replace('?', '\?', str_replace('\?', '?', $string));
+            $string = "({$string}) OR (" . $strippedQuery . ")";
         }
 
         return $handler
@@ -517,8 +518,8 @@ class QueryBuilder
         $input = preg_replace('/\s+-\s+' . $lookahead . '/', ' ', $input);
 
         // A proximity of 1 is illegal and meaningless -- remove it:
-        $input = preg_replace('/~1$/', '', $input);
-        $input = preg_replace('/~1\s+' . $lookahead . '/', ' ', $input);
+        $input = preg_replace('/~1(\.0*)?$/', '', $input);
+        $input = preg_replace('/~1(\.0*)?\s+' . $lookahead . '/', ' ', $input);
 
         // Remove empty parentheses outside of quotation marks -- these will
         // cause a fatal Solr error and should be ignored.
@@ -613,27 +614,4 @@ class QueryBuilder
             return $open . trim($start) . ' TO ' . trim($end) . $close;
         }
     }
-
-    /**
-     * Return from and to values of SOLR range.
-     *
-     * Returns false if the search string does not contain a range. Otherwise
-     * it returns an associative array with the keys `from', and `to'
-     * referring to the lower and upper bound of the range.
-     *
-     * @param string $string Search string
-     *
-     * @return array|false
-     *
-     * @todo This function seems to be unused
-     */
-    public function parseRange($string)
-    {
-        $regEx = '/\[([^\]]+)\s+TO\s+([^\]]+)\]/';
-        if (!preg_match($regEx, $string, $matches)) {
-            return false;
-        }
-        return array('from' => trim($matches[1]), 'to' => trim($matches[2]));
-    }
-
 }

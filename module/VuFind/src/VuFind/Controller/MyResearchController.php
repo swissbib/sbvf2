@@ -50,13 +50,25 @@ class MyResearchController extends AbstractBase
      */
     public function homeAction()
     {
-        // Process login request, if necessary:
-        if ($this->params()->fromPost('processLogin')) {
+        // Process login request, if necessary (either because a form has been
+        // submitted or because we're using an external login provider):
+        if ($this->params()->fromPost('processLogin')
+            || $this->getSessionInitiator()
+        ) {
             try {
                 $this->getAuthManager()->login($this->getRequest());
             } catch (AuthException $e) {
-                $this->flashMessenger()->setNamespace('error')
-                    ->addMessage($e->getMessage());
+                $msg = $e->getMessage();
+                // If a Shibboleth-style login has failed and the user just logged
+                // out, we need to override the error message with a more relevant
+                // one:
+                if ($msg == 'authentication_error_admin'
+                    && $this->getAuthManager()->userHasLoggedOut()
+                    && $this->getSessionInitiator()
+                ) {
+                    $msg = 'authentication_error_loggedout';
+                }
+                $this->flashMessenger()->setNamespace('error')->addMessage($msg);
             }
         }
 
@@ -131,8 +143,7 @@ class MyResearchController extends AbstractBase
     {
         // If this authentication method doesn't use a VuFind-generated login
         // form, force it through:
-        $url = $this->getServerUrl('myresearch-home');
-        if ($this->getAuthManager()->getSessionInitiator($url)) {
+        if ($this->getSessionInitiator()) {
             // Don't get stuck in an infinite loop -- if processLogin is already
             // set, it probably means Home action is forwarding back here to
             // report an error!
@@ -497,15 +508,10 @@ class MyResearchController extends AbstractBase
         } else {
             $url = $this->url()->fromRoute('userList', array('id' => $listID));
         }
-        $this->getRequest()->getQuery()->set('confirmAction', $url);
-        $this->getRequest()->getQuery()->set('cancelAction', $url);
-        $this->getRequest()->getQuery()->set(
-            'extraFields', array('delete' => $id, 'source' => $source)
+        return $this->confirm(
+            'confirm_delete_brief', $url, $url, 'confirm_delete',
+            array('delete' => $id, 'source' => $source)
         );
-        $this->getRequest()->getQuery()
-            ->set('confirmTitle', 'confirm_delete_brief');
-        $this->getRequest()->getQuery()->set('confirmMessage', "confirm_delete");
-        return $this->forwardTo('MyResearch', 'Confirm');
     }
 
     /**
@@ -654,24 +660,6 @@ class MyResearchController extends AbstractBase
     }
 
     /**
-     * Takes params from the request and uses them to display a confirmation box
-     *
-     * @return mixed
-     */
-    public function confirmAction()
-    {
-        return $this->createViewModel(
-            array(
-                'title' => $this->params()->fromQuery('confirmTitle'),
-                'message' => $this->params()->fromQuery('confirmMessage'),
-                'confirm' => $this->params()->fromQuery('confirmAction'),
-                'cancel' => $this->params()->fromQuery('cancelAction'),
-                'extras' => $this->params()->fromQuery('extraFields')
-            )
-        );
-    }
-
-    /**
      * Creates a confirmation box to delete or not delete the current list
      *
      * @return mixed
@@ -710,21 +698,12 @@ class MyResearchController extends AbstractBase
         }
 
         // If we got this far, we must display a confirmation message:
-        $this->getRequest()->getQuery()->set(
-            'confirmAction', $this->url()->fromRoute('myresearch-deletelist')
+        return $this->confirm(
+            'confirm_delete_list_brief',
+            $this->url()->fromRoute('myresearch-deletelist'),
+            $this->url()->fromRoute('userList', array('id' => $listID)),
+            'confirm_delete_list_text', array('listID' => $listID)
         );
-        $this->getRequest()->getQuery()->set(
-            'cancelAction',
-            $this->url()->fromRoute('userList', array('id' => $listID))
-        );
-        $this->getRequest()->getQuery()->set(
-            'extraFields', array('listID' => $listID)
-        );
-        $this->getRequest()->getQuery()
-            ->set('confirmTitle', 'confirm_delete_list_brief');
-        $this->getRequest()->getQuery()
-            ->set('confirmMessage', 'confirm_delete_list_text');
-        return $this->forwardTo('MyResearch', 'Confirm');
     }
 
     /**
@@ -900,5 +879,17 @@ class MyResearchController extends AbstractBase
         }
 
         return $this->createViewModel(array('fines' => $fines));
+    }
+
+    /**
+     * Convenience method to get a session initiator URL. Returns false if not
+     * applicable.
+     *
+     * @return string|bool
+     */
+    protected function getSessionInitiator()
+    {
+        $url = $this->getServerUrl('myresearch-home');
+        return $this->getAuthManager()->getSessionInitiator($url);
     }
 }

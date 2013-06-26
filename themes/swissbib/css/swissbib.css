@@ -236,8 +236,9 @@ ul.facet_toggler_checkbox li {
 }
 
 #tab-holdings .miniactions {
-	float: right;
-	margin-top: -40px;
+	/*float: right;*/
+	margin-top: -15px;
+	margin-bottom: 5px;
 }
 
 #tabbed .selected a span {
@@ -360,5 +361,47 @@ label[for="search_favorites"] {
 
 /* Hide favorites list in search results */
 #notepad {
+	display: none;
+}
+
+.holdingsAjaxSpinner {
+	width: 26px;
+	height: 26px;
+	/*display: inline-block;*/
+	display: none;
+	background: url(../images/ajax_spinner.png) no-repeat 0 0;
+	vertical-align: middle;
+}
+
+.institutionToggler {
+	margin-top: 10px;
+	display: inline-block;
+}
+
+.holdingMapLink {
+	display: block;
+}
+
+.holdingActions {
+
+}
+
+.holdingActions li {
+	line-height: 1.3em;
+}
+
+.holdingActions li.eod {
+
+
+}
+
+.holdingActions li.eod a {
+	display: inline-block;
+	width: 80px;
+	height: 20px;
+	background: url(../images/eod_button.gif) no-repeat 0 0;
+}
+
+.holdingActions li.eod span {
 	display: none;
 }

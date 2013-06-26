@@ -2,14 +2,22 @@
 namespace Swissbib\Module\Config;
 
 use Zend\Config\Config;
+use Zend\I18n\Translator\Translator;
 
 use Swissbib\TargetsProxy\TargetsProxy;
 use Swissbib\TargetsProxy\IpMatcher;
 use Swissbib\TargetsProxy\UrlMatcher;
 use Swissbib\Theme\Theme;
-use Swissbib\Libadmin\Importer;
+use Swissbib\Libadmin\Importer as LibadminImporter;
 use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
 use Swissbib\View\Helper\InstitutionSorter;
+use Swissbib\Tab40Import\Importer as Tab40Importer;
+use Swissbib\View\Helper\TranslateLocation;
+use Swissbib\RecordDriver\Helper\LocationMap;
+use Swissbib\RecordDriver\Missing as RecordDriverMissing;
+use Swissbib\RecordDriver\Summon;
+use Swissbib\RecordDriver\WorldCat;
+use Swissbib\RecordDriver\Helper\EbooksOnDemand;
 
 return array(
 	'router'          => array(
@@ -61,6 +69,16 @@ return array(
 						'action'     => 'index'
 					)
 				)
+			),
+			'holdings-ajax'     => array( // load holdings details for record with ajax
+				'type'    => 'segment',
+				'options' => array(
+					'route'    => '/Holdings/:record/:institution',
+					'defaults' => array(
+						'controller' => 'holdings',
+						'action'     => 'list'
+					)
+				)
 			)
 		)
 	),
@@ -75,6 +93,15 @@ return array(
 							'action'     => 'sync'
 						)
 					)
+				),
+				'tab40-import' => array( // Importer for aleph tab40 files
+					'options' => array(
+						'route'    => 'tab40import <network> <locale> <source>',
+						'defaults' => array(
+							'controller' => 'tab40import',
+							'action'     => 'import'
+						)
+					)
 				)
 			)
 		)
@@ -85,7 +112,9 @@ return array(
 			'libadminsync' => 'Swissbib\Controller\LibadminSyncController',
 			'my-research'  => 'Swissbib\Controller\MyResearchController',
 			'search'       => 'Swissbib\Controller\SearchController',
-			'summon'       => 'Swissbib\Controller\SummonController'
+			'summon'       => 'Swissbib\Controller\SummonController',
+			'holdings'     => 'Swissbib\Controller\HoldingsController',
+			'tab40import'  => 'Swissbib\Controller\Tab40ImportController'
 		)
 	),
 	'service_manager' => array(
@@ -100,8 +129,10 @@ return array(
 				$authManager    = $sm->get('VuFind\AuthManager');
 				$config			= $sm->get('VuFind\Config');
 				$translator		= $sm->get('VuFind\Translator');
+				$locationMap	= $sm->get('Swissbib\LocationMap');
+				$eBooksOnDemand	= $sm->get('Swissbib\EbooksOnDemand');
 
-				return new HoldingsHelper($ilsConnection, $hmac, $authManager, $config, $translator);
+				return new HoldingsHelper($ilsConnection, $hmac, $authManager, $config, $translator, $locationMap, $eBooksOnDemand);
 			},
 			'Swissbib\TargetsProxy\TargetsProxy' => function ($sm) {
 				$config        = $sm->get('VuFind\Config')->get('TargetsProxy');
@@ -121,7 +152,23 @@ return array(
 				$config        = $sm->get('VuFind\Config')->get('config')->Libadmin;
 				$languageCache = $sm->get('VuFind\CacheManager')->getCache('language');
 
-				return new Importer($config, $languageCache);
+				return new LibadminImporter($config, $languageCache);
+			},
+			'Swissbib\Tab40Importer' => function ($sm) {
+				$config        = $sm->get('VuFind\Config')->get('config')->tab40import;
+
+				return new Tab40Importer($config);
+			},
+			'Swissbib\LocationMap' => function ($sm) {
+				$locationMapConfig = $sm->get('VuFind\Config')->get('config')->locationMap;
+
+				return new LocationMap($locationMapConfig);
+			},
+			'Swissbib\EbooksOnDemand' => function ($sm) {
+				$eBooksOnDemandConfig = $sm->get('VuFind\Config')->get('config')->eBooksOnDemand;
+				$translator			  = $sm->get('VuFind\Translator');
+
+				return new EbooksOnDemand($eBooksOnDemandConfig, $translator);
 			}
 		)
 	),
@@ -147,7 +194,8 @@ return array(
 			'subjectVocabularies'	  => 'Swissbib\View\Helper\SubjectVocabularies',
 			'tabTemplate'			  => 'Swissbib\View\Helper\TabTemplate',
 			'zendTranslate'           => 'Zend\I18n\View\Helper\Translate',
-			'getVersion'              => 'Swissbib\View\Helper\GetVersion'
+			'getVersion'              => 'Swissbib\View\Helper\GetVersion',
+			'holdingActions'          => 'Swissbib\View\Helper\HoldingActions'
 		),
 		'factories' => array(
 			'institutionSorter' => function ($sm) {
@@ -160,6 +208,12 @@ return array(
 				}
 
 				return new InstitutionSorter($institutionList);
+			},
+			'transLocation'	=> function ($sm) { // Translate holding locations
+				/** @var Translator $translator */
+				$translator	= $sm->getServiceLocator()->get('VuFind\Translator');
+
+				return new TranslateLocation($translator);
 			}
 		)
 	),
@@ -209,7 +263,7 @@ return array(
 						$baseConfig   = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
 						$summonConfig = $sm->getServiceLocator()->get('VuFind\Config')->get('Summon');
 
-						return new \Swissbib\RecordDriver\Summon(
+						return new Summon(
 							$baseConfig, // main config
 							$summonConfig // record config
 						);
@@ -218,7 +272,7 @@ return array(
 						$baseConfig     = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
 						$worldcatConfig = $sm->getServiceLocator()->get('VuFind\Config')->get('WorldCat');
 
-						return new \Swissbib\RecordDriver\WorldCat(
+						return new WorldCat(
 							$baseConfig, // main config
 							$worldcatConfig // record config
 						);
@@ -226,7 +280,7 @@ return array(
 					'missing'  => function ($sm) {
 						$baseConfig = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
 
-						return new \Swissbib\RecordDriver\Missing($baseConfig);
+						return new RecordDriverMissing($baseConfig);
 					}
 				)
 			),
