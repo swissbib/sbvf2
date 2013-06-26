@@ -21,7 +21,7 @@ var swissbib = {
     initOnReady: function() {
         window.DEBUG = false;	// debug flag
 
-		jQuery.migrateMute = true;
+//		jQuery.migrateMute = true;
 
         	// Context elements
         var contextHeader	= $("#header");
@@ -31,7 +31,6 @@ var swissbib = {
         var contextAll		= $("#header, #search, #main");
 
         	// Init UI elements
-        //this.initBrowserFlags();
 		this.initNavigation(contextHeader);
 
 //        swissbib.initAutocomplete(ctxAll);
@@ -59,31 +58,6 @@ var swissbib = {
      */
     initOnLoad: function(){
 
-    },
-
-
-
-	/**
-	 * Initializes the browser flags.
-	 */
-    initBrowserFlags: function() {
-        var tag = "notdetected";
-
-        if (jQuery.browser.msie) {
-            tag = "ie";
-            swissbib.ie = true;
-            if (jQuery.browser.version.substr(0, 1) < 7) {
-                swissbib.ie6 = true;
-            }
-        } else if (jQuery.browser.mozilla) {
-            tag = "mozilla";
-        } else if (jQuery.browser.safari){
-            tag = "safari";
-        } else if (jQuery.browser.opera){
-            tag = "opera";
-        }
-
-        $("body").addClass(tag);
     },
 
 

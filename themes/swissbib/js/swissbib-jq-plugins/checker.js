@@ -62,15 +62,7 @@ jQuery.fn.checker = function(op) {
 	* Determines if checked.
 	*/
 	function isChecked() {
-		
-		// flag
-		var checked = false;
-		if (jQuery(elCheckbox).attr('checked')) {
-			checked = true;
-		}
-		
-		// return
-		return checked;
+		return !!jQuery(elCheckbox).checked;
 	}
 	
 	/*
