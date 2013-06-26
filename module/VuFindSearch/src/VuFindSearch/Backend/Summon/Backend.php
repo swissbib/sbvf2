@@ -29,7 +29,9 @@
 
 namespace VuFindSearch\Backend\Summon;
 
+use SerialsSolutions\Summon\Zend2 as Connector;
 use SerialsSolutions_Summon_Query as SummonQuery;
+use SerialsSolutions_Summon_Exception as SummonException;
 
 use VuFindSearch\Query\AbstractQuery;
 
@@ -39,6 +41,7 @@ use VuFindSearch\Response\RecordCollectionInterface;
 use VuFindSearch\Response\RecordCollectionFactoryInterface;
 
 use VuFindSearch\Backend\BackendInterface;
+use VuFindSearch\Backend\Exception\BackendException;
 
 use Zend\Log\LoggerInterface;
 
@@ -134,10 +137,19 @@ class Backend implements BackendInterface
             $baseParams->mergeWith($params);
         }
         $baseParams->set('pageSize', $limit);
-        $baseParams->set('pageNumber', floor($offset / $limit) + 1);
+        $page = $limit > 0 ? floor($offset / $limit) + 1 : 1;
+        $baseParams->set('pageNumber', $page);
 
         $summonQuery = $this->paramBagToSummonQuery($baseParams);
-        $response = $this->connector->query($summonQuery);
+        try {
+            $response = $this->connector->query($summonQuery);
+        } catch (SummonException $e) {
+            throw new BackendException(
+                $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
+        }
         $collection = $this->createRecordCollection($response);
         $this->injectSourceIdentifier($collection);
         return $collection;
@@ -153,7 +165,15 @@ class Backend implements BackendInterface
      */
     public function retrieve($id, ParamBag $params = null)
     {
-        $response   = $this->connector->getRecord($id);
+        try {
+            $response   = $this->connector->getRecord($id);
+        } catch (SummonException $e) {
+            throw new BackendException(
+                $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
+        }
         $collection = $this->createRecordCollection($response);
         $this->injectSourceIdentifier($collection);
         return $collection;

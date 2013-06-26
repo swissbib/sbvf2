@@ -578,8 +578,11 @@ class SolrMarc extends VuFindSolrMarc
 			'f' => 'f',
 			'g' => 'g',
 			'h' => 'h',
+            't' => 't',
 			'v' => 'v',
 			'x' => 'x',
+            'y' => 'y',
+            'z' => 'z',
 			'0' => '0',
 			'2' => '2'
 		);
@@ -810,11 +813,24 @@ class SolrMarc extends VuFindSolrMarc
 	/**
 	 * Get holdings data
 	 *
+	 * @param    String 		$institutionCode
 	 * @return    Array|Boolean
 	 */
-	public function getHoldings()
+	public function getInstitutionHoldings($institutionCode)
 	{
-		return $this->getHoldingsHelper()->getHoldings();
+		return $this->getHoldingsHelper()->getHoldings($this, $institutionCode);
+	}
+
+
+
+	/**
+	 * Get holdings structure without item details
+	 *
+	 * @return Array[]|bool
+	 */
+	public function getHoldingsStructure()
+	{
+		return $this->getHoldingsHelper()->getHoldingsStructure();
 	}
 
 
@@ -1038,5 +1054,84 @@ class SolrMarc extends VuFindSolrMarc
 	protected function getTranslator()
 	{
 		return $this->getServiceLocator()->get('VuFind/Translator');
+	}
+
+
+
+	/**
+	 * Get stop words from 909 fields
+	 *
+	 * @return	String[]
+	 */
+	public function getLocalCodes()
+	{
+		$localCodes   = array();
+		$fieldsValues = $this->getMarcSubFieldMaps(909, array(
+											 'a'	=> 'a',
+                                             'b'    => 'b',
+                                             'c'    => 'c',
+                                             'd'    => 'd',
+											 'e'	=> 'e',
+                                             'f'    => 'f',
+                                             'g'    => 'g',
+                                             'h'    => 'h',
+										));
+
+		foreach ($fieldsValues as $fieldValues) {
+			foreach ($fieldValues as $fieldName => $fieldValue) {
+				if (strpos($fieldName, '@') !== 0) {
+					$localCodes[] = $fieldValue;
+				}
+			}
+		}
+
+		return $localCodes;
+	}
+
+
+
+	/**
+	 * @inheritDoc
+	 */
+	protected function getFieldData($field, $fieldIndex)
+	{
+		 // Make sure that there is a t field to be displayed:
+        if ($title = $field->getSubfield('t')) {
+            $title = $title->getData();
+        } else {
+            return false;
+        }
+
+		$linkTypeSetting = isset($this->mainConfig->Record->marc_links_link_types)
+				? $this->mainConfig->Record->marc_links_link_types : 'id,oclc,dlc,isbn,issn,title';
+		$linkTypes = explode(',', $linkTypeSetting);
+
+		$link = false;
+
+		if (in_array('id', $linkTypes)) { // Search ID in field 9
+			$linkSubfield = $field->getSubfield('9');
+			if ($linkSubfield && $bibLink = $this->getIdFromLinkingField($linkSubfield)) {
+				$link = array('type' => 'bib', 'value' => $bibLink);
+			}
+		} elseif (in_array('ctrlnum', $linkTypes)) { // Extract ctrlnum from field w, ignore the prefix
+			$linkFields = $linkFields = $field->getSubfields('w');
+			foreach ($linkFields as $current) {
+				if (preg_match('/\(([^)]+)\)(.+)/', $current->getData(), $matches)) {
+					$link = array('type' => 'ctrlnum', 'value' => $matches[1].$matches[2]);
+				}
+			}
+		}
+
+			// Found link based on special conditions, stop here
+		if ($link) {
+			return array(
+				'title' => 'note_' . $fieldIndex,
+				'value' => $title,
+				'link'  => $link
+			);
+		}
+
+			// Fallback to base method if no custom field found
+		return parent::getFieldData($field, $fieldIndex);
 	}
 }

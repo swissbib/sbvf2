@@ -141,10 +141,15 @@ class QueryBuilderTest extends PHPUnit_Framework_TestCase
             array('title - sub', 'title sub'),      // freestanding hyphen
             array('"title - sub"', '"title - sub"'),// freestanding hyphen in quotes
             array('test~1', 'test'),                // meaningless proximity
+            array('test~1.', 'test'),               // meaningless proximity w/dec.
+            array('test~1.000', 'test'),            // meaningless proximity w/dec.
             array('test~1 fish', 'test fish'),      // meaningless proximity
+            array('test~1. fish', 'test fish'),     // meaningless proximity w/dec.
+            array('test~1.000 fish', 'test fish'),  // meaningless proximity w/dec.
             array('"test~1"', '"test~1"'),          // meaningless prox. in quotes
             array('test~0.9', 'test~0.9'),          // valid proximity
-            array('test~11', 'test~11'),            // illegal prox. (leave alone)
+            array('test~10', 'test~10'),            // illegal prox. (leave alone)
+            array('test~10 fish', 'test~10 fish'),  // illegal prox. (leave alone)
         );
         // @codingStandardsIgnoreEnd
 
@@ -159,27 +164,30 @@ class QueryBuilderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test parseRange functionality.
+     * Test generation with a query handler
      *
      * @return void
      */
-    public function testParseRange()
+    public function testQueryHandler()
     {
-        $this->markTestSkipped();
-        $qb = new QueryBuilder();
+        // Set up an array of expected inputs and outputs:
+        // @codingStandardsIgnoreStart
+        $tests = array(
+            array('this?', '((this?) OR (this\?))'),// trailing question mark
+        );
+        // @codingStandardsIgnoreEnd
 
-        // basic range test:
-        $result = $qb->parseRange("[1 TO 100]");
-        $this->assertEquals('1', $result['from']);
-        $this->assertEquals('100', $result['to']);
-
-        // test whitespace handling:
-        $result = $qb->parseRange("[1      TO     100]");
-        $this->assertEquals('1', $result['from']);
-        $this->assertEquals('100', $result['to']);
-
-        // test invalid ranges:
-        $this->assertFalse($qb->parseRange('1 TO 100'));
-        $this->assertFalse($qb->parseRange('[not a range to me]'));
+        $qb = new QueryBuilder(
+            array(
+                'test' => array()
+            )
+        );
+        foreach ($tests as $test) {
+            list($input, $output) = $test;
+            $q = new Query($input, 'test');
+            $response = $qb->build($q);
+            $processedQ = $response->get('q');
+            $this->assertEquals($output, $processedQ[0]);
+        }
     }
 }

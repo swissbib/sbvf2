@@ -3,10 +3,7 @@
 namespace Swissbib\Controller;
 
 use Zend\Session\Container as SessionContainer;
-
 use VuFind\Solr\Utils as SolrUtils;
-
-use Swissbib\Controller\Helper\Search as SearchHelper;
 use Swissbib\Controller\SearchController;
 
 class SummonController extends SearchController

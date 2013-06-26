@@ -49,6 +49,7 @@ return array(
         'swissbib.ajax.js', // general AJAX helpers
         'swissbib.js',
         'swissbib.AdvancedSearch.js',
+        'swissbib.Holdings.js',
         'swissbib.searchsettings.js',
 
         'jstorage.min.js', //used for favorites - there is still some amount of JS code inline of the page -> Todo: Refactoring in upcoming Sprints
@@ -56,5 +57,15 @@ return array(
         'autocomplete.initialize.swissbib.js',
 
     ),
-	'favicon' => 'favicon.ico'
+	'favicon' => 'favicon.ico',
+
+	'helpers' => array(
+        'factories' => array(
+			'recordlink' => function ($sm) {
+				return new \Swissbib\View\Helper\RecordLink(
+					$sm->getServiceLocator()->get('VuFind\RecordRouter')
+				);
+			}
+		)
+	)
 );

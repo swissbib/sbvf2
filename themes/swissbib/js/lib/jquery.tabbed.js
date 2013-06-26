@@ -62,26 +62,16 @@ jQuery.fn.tabbed = function(op) {
 		evt.stopPropagation();	
 
 		var tabId		= $(this).attr("id");
-//		var searchQuery	= swissbib.getSearchQuery();
-
-		if ( swissbib.isTabContentLoaded(tabId) == false ) {
-				// AJAX-load content + sidebar of tab
-			sbAjax.ajaxLoadTabContent('', tabId);
-			sbAjax.ajaxLoadSidebarContent('', tabId);
-		}
 
 			// Persist active tab preference?
 		if (sbTabbedSettings.persist) {
 				// Write cookie
 			var cookieName = encodeURI(sbTabbedSettings.cookie + $(elContainer).attr("rel"));
-			var cookieValue= tabId;
-			jQuery.cookie(cookieName, cookieValue, {path: '/'});
+			jQuery.cookie(cookieName, tabId, {path: '/'});
 		}
 		
 			// Change active tab
-		if( tabId != swissbib.getIdSelectedTab() ) {
-			changeTabbed(tabId, sbTabbedSettings.animate);
-		}
+		changeTabbed(tabId, sbTabbedSettings.animate);
 	}
 
 

@@ -1,8 +1,10 @@
 !.gitignore
 .idea
 build
+cli/removeLocalCacheLocalosc.sh
 local/config/vufind/config.ini
 local/config/vufind/libadmin-groups.ini
+local/languages/location/*
 local/httpd-vufind.conf
 local/cache/*
 public/.htaccess
