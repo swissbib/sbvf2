@@ -5,8 +5,8 @@
 
 <p>
 	<? if ($amountHoldings > 0): ?>
-		<? if ($amountHoldings != 1): ?><?= $amountHoldings ?> Bibliotheken
-		<? else: ?>1 Bibliothek<? endif; ?>
+		<? if ($amountHoldings != 1): ?><?= $amountHoldings ?> <?= $this->transEsc('result.libraries') ?>
+		<? else: ?>1 <?= $this->transEsc('result.library') ?><? endif; ?>
 	<? else: ?>
 		<?= $this->noHolding() ?>
 	<? endif; ?>

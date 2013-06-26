@@ -128,9 +128,9 @@ $lastSort = $this->options->getLastSort();
 				<?php endif; ?>
 
 				<fieldset class="actions">
-					<label for="advancedsearch_submit" class="hidden">Suchanfrage senden</label>
+					<label for="advancedsearch_submit" class="hidden"><?=$this->transEsc("Find")?></label>
 					<input id="advancedsearch_submit" type="submit" class="submit primary" value="<?=$this->transEsc("Find")?>"/>
-					<label for="advancedsearch_reset" class="hidden">Formular zurücksetzen</label>
+					<label for="advancedsearch_reset" class="hidden"><?=$this->transEsc("Reset")?></label>
 					<input id="advancedsearch_reset" name="advancedsearch_reset" type="reset" class="reset" value="<?=$this->transEsc("Reset")?>"/>
 				</fieldset>
 

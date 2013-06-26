@@ -27,24 +27,13 @@
 	<div class="subnavigation">
 		<ul>
 			<li class="selected">
-				<a href="erweitertesuche.html" title="Erweiterte Suche">Erweiterte Suche</a>
+                <a href="<?=$this->url($advSearch)?>" title="<?=$this->transEsc('Advanced Search')?>" id="search_extended"><?=$this->transEsc('Advanced Search')?></a>
 			</li>
 			<li>
-				<a href="sucheinstellungen.html" title="Sucheinstellungen">Sucheinstellungen</a>
+                <a href="<?=$this->url('search-settings');?>"><?=$this->transEsc('My_Search_Settings')?></a>
 			</li>
 			<li>
-				<a href="suchhistorie.html" title="Suchhistorie">Suchhistorie</a>
-			</li>
-			<li>
-				<a href="#" title="swissbib Labs">swissbib Labs</a>
-				<ul>
-					<li>
-						<a href="#" title="Graphen Visualisierung">Graphen Visualisierung</a>
-					</li>
-					<li>
-						<a href="#" title="Trends">Trends</a>
-					</li>
-				</ul>
+                <a href="<?=$this->url('search-history')?>"><?=$this->transEsc('history_saved_searches')?></a>
 			</li>
 		</ul>
 	</div>
