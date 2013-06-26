@@ -18,7 +18,7 @@
 			<?=$this->flashmessages()?><br/>
 
             <form name="form_useraccount" action="/vufind/MyResearch/Saveaccountlocal" method="get" id="save_account_submit">
-                <h3>Sucheinstellungen und Oberfläche</h3>
+                <h3><?= $this->transEsc('preferences.search') ?></h3>
 
                 <label for="language"><?=$this->transEsc('Language')?></label>
                 <select id="language" name="language">
@@ -30,7 +30,7 @@
                 </select>
 
                 <br/><br/><br/>
-                <h3>Trefferliste und Ausgabeformate</h3>
+                <h3><?= $this->transEsc('preferences.result') ?></h3>
 
                 <label for="maxHits"><?=$this->transEsc('Max_Amount_Hits')?></label>
                 <select id="maxHits" name="max_hits">

@@ -1,0 +1,3 @@
+# not necessary. just in case main htaccess file gets broken
+Order deny,allow
+deny from all
