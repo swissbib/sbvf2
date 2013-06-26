@@ -2,8 +2,22 @@
 #
 # Update current project on the branch development from github repository.
 # Clear cache
+# Set access rights for httpd service
+# Pass corresponding application directory on the command line (the directory you are usually in at the moment)
 
-BASE_DIR=/usr/local/vufind/httpd
+getopts ":d:" opt;
+APP_DIR=$OPTARG
+echo $APP_DIR
+
+if [ "$APP_DIR" = "" ]; then
+
+    echo "you have to pass an application directory on the command line"
+    echo "example: > cli/update.development.sh -dhttpd"
+    exit 1
+fi
+
+BASE_DIR=/usr/local/vufind/$APP_DIR
+echo "$BASE_DIR"
 
 if [ "$UID"  -ne 0 ]; then
 
@@ -19,10 +33,10 @@ LOG=cli/log/update.development.${TIME}.log
 
 # Write message with timestamp into log file
 function log {
-	local TIMESTAMP=`date +%Y-%m-%d_%H.%M.%S`
-	local MESSAGE="${TIMESTAMP}: $1"
-	echo $MESSAGE >> $LOG
-	echo "Log: ${MESSAGE}"
+        local TIMESTAMP=`date +%Y-%m-%d_%H.%M.%S`
+        local MESSAGE="${TIMESTAMP}: $1"
+        echo $MESSAGE >> $LOG
+        echo "Log: ${MESSAGE}"
 }
 
 # Update from git
@@ -34,12 +48,11 @@ su -c "git checkout development" vfsb >> $LOG 2>&1
 su -c "git pull origin development" vfsb >> $LOG 2>&1
 su -c "git stash pop" vfsb >> $LOG 2>&1
 
-log "finish update VuFind release branch"
+log "finish update VuFind development branch"
 
 # set access rights of local cache to full
 
 log "set full access rights to cache"
-
 
 # Clear cache
 
@@ -49,15 +62,18 @@ rm -rf $BASE_DIR/local/cache/*
 
 
 chmod 777 $BASE_DIR/local/cache/
+chmod 777 $BASE_DIR/log/
 
 log "full access rights to cache set"
-
-
+log "full access rights to log directory set"
 log "restarting the httpd service..."
+
 service httpd restart
+
+log "httpd service restarted"
 
 chown vfsb:vf $LOG
 
-
 log "git update process for development branch has finished"
+
 
