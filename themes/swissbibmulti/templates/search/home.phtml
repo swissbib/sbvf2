@@ -27,7 +27,7 @@
                         <?=$this->translate('start.teaser.left.bb')?>
 						<ul class="actions">
 							<li class="right">
-								<a href="HelpPage/About" class="linkbutton primary icon_goto_primary" title="<?=$this->transEsc('more')?>"><span><?=$this->transEsc('start.teaser.more')?></span></a>
+								<a href="<?=$this->url('help-page',array('topic'=>'About'));?>" class="linkbutton primary icon_goto_primary" title="<?=$this->transEsc('more')?>"><span><?=$this->transEsc('start.teaser.more')?></span></a>
 							</li>
 						</ul>
 					</div>
@@ -38,14 +38,14 @@
                         <?=$this->translate('start.teaser.right.bb')?>
 						<ul class="actions">
 							<li class="right">
-								<a href="HelpPage/About" class="linkbutton primary icon_goto_primary" title="<?=$this->transEsc('more')?>"><span><?=$this->transEsc('start.teaser.more')?></span></a>
+								<a href="<?=$this->url('help-page',array('topic'=>'About'));?>" class="linkbutton primary icon_goto_primary" title="<?=$this->transEsc('more')?>"><span><?=$this->transEsc('start.teaser.more')?></span></a>
 							</li>
 						</ul>
 					</div>
 				</div>
 			</div><!-- end: teaser -->
             <div style="position: absolute; bottom: 0px; right: 0px;" class="teaser">
-                <a target="_blank" href="http://www.urz.unibas.ch/"><img src="images/poweredby_unibasel.gif"></a>
+                <a target="_blank" href="http://www.urz.unibas.ch/"><img src="<?= $this->basePath('themes/swissbib/images/poweredby_unibasel.gif') ?>"></a>
             </div>
         </div>
 		<!-- end: content -->
