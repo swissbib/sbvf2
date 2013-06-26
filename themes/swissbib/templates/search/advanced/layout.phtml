@@ -40,7 +40,7 @@ if (isset($this->saved) && is_object($this->saved)) {
 
 // Step 2: Call the javascript to make use of the above
 $this->headScript()->appendFile('advanced_search.js');
-$this->headScript()->appendFile('swissbib.AdvancedSearch.js');
+$this->headScript()->appendFile('swissbib/AdvancedSearch.js');
 $this->headScript()->appendFile('lib/handlebars.js');
 // Step 3: Build the page
 //    $this->headScript()->appendScript($this->partial('search/advanced/build_page.phtml', array('searchDetails' => $searchDetails)));

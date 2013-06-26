@@ -309,11 +309,11 @@ return array(
     'swissbib' => array(
         'ignore_css_assets' => array(
             'blueprint/screen.css',
-            'jquery-ui.css'
+            'css/smoothness/jquery-ui.css'
         ),
 
         'ignore_js_assets' => array(
-            'jquery.min.js',
+            'jquery.min.js', // jquery 1.6
             'jquery.form.js',
             'jquery.metadata.js',
             'jquery.validate.min.js',
