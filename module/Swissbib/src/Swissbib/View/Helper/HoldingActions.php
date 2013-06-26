@@ -14,9 +14,10 @@ class HoldingActions extends AbstractTranslatorHelper
 	 * Render action link list
 	 *
 	 * @param	Array	$item
+	 * @param	String	$listClass		Custom class for list element
 	 * @return	String
 	 */
-	public function __invoke(array $item)
+	public function __invoke(array $item, $listClass = '')
 	{
 		/** @var RecordLink $recordLink */
 		$recordLink = $this->getView()->plugin('recordLink');
@@ -24,7 +25,7 @@ class HoldingActions extends AbstractTranslatorHelper
 
 		if (isset($item['backlink'])) {
 			$actions['backlink'] = array(
-				'label' => 'zum Bestand',
+				'label' => $this->translate('hold_backlink'),
 				'href'  => $item['backlink']
 			);
 		}
@@ -32,38 +33,38 @@ class HoldingActions extends AbstractTranslatorHelper
 		if (isset($item['userActions'])) {
 			if ($item['userActions']['hold']) {
 				$actions['hold'] = array(
-					'label' => 'ausleihen',
+					'label' => $this->translate('hold_place'),
 					'href'  => $recordLink->getHoldUrl($item['holdLink'])
 				);
 			}
 			if ($item['userActions']['shortLoan']) {
 				$actions['shortloan'] = array(
-					'label' => 'Kurzausleihe',
+					'label' => $this->translate('hold_shortloan'),
 					'href'  => 'javascript:alert(\'Not implemented yet\')'
 				);
 			}
 			if ($item['userActions']['photocopyRequest']) {
 				$actions['photocopy'] = array(
-					'label' => 'Kopie bestellen',
+					'label' => $this->translate('hold_copy'),
 					'href'  => $item['userActions']['photocopyRequestLink']
 				);
 			}
 			if ($item['userActions']['bookingRequest']) {
 				$actions['booking'] = array(
-					'label' => 'Booking Request',
+					'label' => $this->translate('hold_booking'),
 					'href'  => 'javascript:alert(\'Not implemented yet\')'
 				);
 			}
 		} elseif (isset($item['holdLink'])) {
 			$actions['hold'] = array(
-				'label' => 'ausleihen',
+				'label' => $this->translate('hold_place'),
 				'href'  => $recordLink->getHoldUrl($item['holdLink'])
 			);
 		}
 
 		if (isset($item['eodlink']) && $item['eodlink']) {
 			$actions['eod'] = array(
-				'label' => $this->translator->translate('Order_EBook_tooltip'),
+				'label' => $this->translate('Order_EBook_tooltip'),
 				'href'  => $item['eodlink']
 			);
 		}
@@ -73,9 +74,25 @@ class HoldingActions extends AbstractTranslatorHelper
 		}
 
 		$data = array(
-			'actions' => $actions
+			'actions' 	=> $actions,
+			'listClass'	=> $listClass
 		);
 
 		return $this->getView()->render('Holdings/holding-actions', $data);
+	}
+
+
+
+	/**
+	 * Translate message
+	 *
+	 * @param        $message
+	 * @param string $textDomain
+	 * @param null   $locale
+	 * @return string
+	 */
+	protected function translate($message, $textDomain = 'default', $locale = null)
+	{
+		return $this->translator->translate($message, $textDomain, $locale);
 	}
 }
