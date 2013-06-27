@@ -405,3 +405,21 @@ label[for="search_favorites"] {
 .holdingActions li.eod span {
 	display: none;
 }
+
+
+/** Holding Table */
+.holdingTable th.actions {
+	width: 100px;
+}
+.holdingTable th.availability {
+	width: 150px;
+}
+.holdingTable th.location {
+	width: 120px;
+}
+.holdingTable th.signature {
+	width: 120px;
+}
+.holdingTable th.signature {
+	width: 30px;
+}
