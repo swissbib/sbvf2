@@ -28,10 +28,10 @@
 					<input type="hidden" name="submit" value="1"/>
 					<input type="hidden" name="id" value="<?= $this->escapeHtml($this->driver->getUniqueId()) ?>"/>
 					<input type="hidden" name="source"value="<?= $this->escapeHtml($this->driver->getResourceSource()) ?>"/>
-					<label for="addtag_tag"><?= $this->transEsc("Tags") ?>:</label>
+					<label for="addtag_tag"><?= $this->transEsc('Tags') ?>:</label>
 					<input id="addtag_tag" type="text" name="tag" value="" size="40" class="mainFocus <?= $this->jqueryValidation(array('required' => 'This field is required')) ?>"/>
 
-					<p><?= $this->transEsc("add_tag_note") ?></p>
+					<p><?= $this->transEsc('add_tag_note') ?></p>
 					<input type="submit" value="<?= $this->transEsc('Save') ?>"/>
 				</form>
 			</div>
