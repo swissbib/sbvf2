@@ -4,6 +4,10 @@
 $results	= $this->results;
 $facetList	= $results->getFacetList();
 
+if (!$facetList) {
+	return; // Stop rendering here if no facets are present
+}
+
 /** @var $options VuFind\Search\Solr\Options */
 $options = $this->searchOptions($this->searchClassId);
 $basicSearch = $options->getSearchAction();
@@ -15,13 +19,6 @@ $checkboxFilters = $results->getParams()->getCheckboxFacets();
 <h3><?= $this->transEsc('Narrow Search') ?></h3>
 
 <div class="facets">
-
-	<?php
-
-	$tt = $this->tabTemplate('search/sidebar/facet-checkbox', $this->activeTabKey);
-	$ddd = $this->render($tt);
-	$x = 3;
-	?>
 
 	<!-- start checkbox facet -->
 	<?=$this->render($this->tabTemplate('search/sidebar/facet-checkbox', $this->activeTabKey), array(

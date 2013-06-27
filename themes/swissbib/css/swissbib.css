@@ -405,3 +405,8 @@ label[for="search_favorites"] {
 .holdingActions li.eod span {
 	display: none;
 }
+
+a#tagRecord {
+	padding-left: 12px;
+	background: url(../images/icon_add.gif) no-repeat 0 2px;
+}
