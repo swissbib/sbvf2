@@ -10,20 +10,25 @@ $this->headTitle($this->translate('Description') . ': ' . $this->driver->getBrea
 //    $this->headScript()->appendFile($this->syndeticsPlus()->getScript());
 //}
 
-$resultItem = $this->driver;
+
+/** @var	VuFind\View\Helper\Root\Record		$viewRecord  */
+/** @var	Swissbib\RecordDriver\SolrMarc		$resultItem  */
+$resultItem	= $this->driver;
+$viewRecord	= $this->record($resultItem);
+
+
 $subjectVocabularies = $resultItem->getAllSubjectVocabularies();
 $subjects = $this->driver->getAllSubjectHeadings();
+
+/* Display Standard-IDs */
+$isbns = $this->driver->getISBNs();
+$issns = $this->driver->getISSNs();
+$ismns = $this->driver->getISMNs();
+$dois = $this->driver->getDOIs();
+$urns = $this->driver->getURNs();
+
 ?>
-
-
-	<!-- Tab-Inhalte gemaess TP detailstab -->
-
-<?php /* Display Standard-IDs */ ?>
-<?php $isbns = $this->driver->getISBNs(); ?>
-<?php $issns = $this->driver->getISSNs(); ?>
-<?php $ismns = $this->driver->getISMNs(); ?>
-<?php $dois = $this->driver->getDOIs(); ?>
-<?php $urns = $this->driver->getURNs(); ?>
+<!-- Tab-Inhalte gemaess TP detailstab -->
 <?php if (!empty($isbns) or !empty($issns) or !empty($ismns) or !empty($dois) or !empty($urns)): ?>
 	<?php $contentDisplayed = true; ?>
 	<div class="details">
@@ -153,12 +158,14 @@ $prevTitles = $this->driver->getPreviousTitles(); ?>
 
 <?php /* div-box for all notes */ ?>
 
-<?php $notes = $this->driver->getGeneralNotes() ?>
-<?php $diss = $this->driver->getDissertationNotes() ?>
-<?php $bib = $this->driver->getBibliographyNotes() ?>
-<?php $access = $this->driver->getAccessRestrictions() ?>
-<?php $credits = $this->driver->getProductionCredits() ?>
-<?php $awards = $this->driver->getAwards() ?>
+<?php
+$notes = $resultItem->getGeneralNotes();
+$diss = $resultItem->getDissertationNotes();
+$bib = $resultItem->getBibliographyNotes();
+$access = $resultItem->getAccessRestrictions();
+$credits = $resultItem->getProductionCredits();
+$awards = $resultItem->getAwards();
+?>
 <?php if (!empty($notes) or !empty($diss) or !empty($bib) or !empty($access) or !empty($credits) or !empty($awards)): ?>
 	<?php $contentDisplayed = true; ?>
 	<div class="details">
@@ -242,3 +249,28 @@ if (!empty($subjects)): ?>
 	<?php endforeach; ?>
 
 <?php endif; ?>
+
+
+<?php
+/** ================= Tags ====================== */
+/** @var \VuFind\Db\Row\Tags[]  $tagList */
+$tagList = $resultItem->getTags();
+?>
+<h4><?=$this->transEsc('Tags')?>:</h4>
+<p id="tagList">
+	<?php if (sizeof($tagList) > 0): ?>
+		<?php
+			$tagElements = array();
+			foreach ($tagList as $tag) {
+				$tagElements[] = '<a href="' . $this->url('tag-home') . '?lookfor=' . urlencode($tag->tag) . '">'
+									. $this->escapeHtml($tag->tag)
+									. '</a>'
+									. ' (' . $this->escapeHtml($tag->cnt) . ')';
+			}
+			echo implode(', ', $tagElements);
+		?>
+	<?php else: ?>
+		<?= $this->transEsc('No Tags') ?>, <?= $this->transEsc('Be the first to tag this record') ?>!
+	<?php endif; ?>
+</p>
+<p><a href="<?=$this->recordLink()->getActionUrl($resultItem, 'AddTag')?>" class="tool add tagRecord controller<?=$viewRecord->getController()?>" title="<?=$this->transEsc('Add Tag')?>" id="tagRecord"><?=$this->transEsc('Add Tag')?></a></p>

@@ -22,8 +22,8 @@ $summary				= trim(implode($resultItem->getSummary()));
 $groupID				= $resultItem->getGroup(true);
 
 $publicationDate		= $this->publicationDateMarc($resultItem->getPublicationDates());
-$openUrl				= $this->driver->openURLActive('record') ? $this->driver->getOpenURL() : false;
-$favoriteLink			= $this->recordLink()->getActionUrl($this->driver, 'Save');
+$openUrl				= $resultItem->openURLActive('record') ? $resultItem->getOpenURL() : false;
+$favoriteLink			= $this->recordLink()->getActionUrl($resultItem, 'Save');
 
 ?>
 <?/* Common parts of recordDriver's core.phtml templates*/?>
@@ -83,6 +83,5 @@ $favoriteLink			= $this->recordLink()->getActionUrl($this->driver, 'Save');
 		<?php endif; ?>
 
 	</div>
-
 
 </div>
