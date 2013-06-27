@@ -68,7 +68,7 @@ class ExtendedSolrFactoryHelper {
         //speed it up
         //I guess reading the config every time the factory and the helper is requested slows down the performance
         if (empty ($this->extendedTargets)) {
-            $tExtended = $serviceLocator->getServiceLocator()->get('Vufind\Config')->get('config')->Index->extendedTargets;
+            $tExtended = $serviceLocator->getServiceLocator()->get('Vufind\Config')->get('config')->SwissbibSearchExtensions->extendedTargets;
 
             if (!empty($tExtended)) {
                 $this->extendedTargets = explode(",", $tExtended);

@@ -23,9 +23,9 @@ class SearchController extends VFSearchController
 	protected $forceTabKey = false;
 
 	/**
-	 * @var	Array
+	 * @var	Array   search targets extended by swissbib
 	 */
-//	protected $extendedTargets = array();
+    protected $extendedTargets = array();
 
 
 	/**
@@ -51,15 +51,15 @@ class SearchController extends VFSearchController
 	 */
 	public function resultsAction()
 	{
-//        $tExtended = $this->getServiceLocator()->get('Vufind\Config')->get('config')->Index->extendedTargets;
-//
-//		if (!empty($tExtended)) {
-//			$this->extendedTargets = explode(',', $tExtended);
-//
-//			array_walk($this->extendedTargets, function (&$v) {
-//				$v = strtolower($v);
-//			});
-//		}
+        $tExtended = $this->getServiceLocator()->get('Vufind\Config')->get('config')->SwissbibSearchExtensions->extendedTargets;
+
+		if (!empty($tExtended)) {
+			$this->extendedTargets = explode(',', $tExtended);
+
+			array_walk($this->extendedTargets, function (&$v) {
+				$v = strtolower($v);
+			});
+		}
 
 		$allTabsConfig      = $this->getThemeTabsConfig();
 		$activeTabKey       = $this->getActiveTab();
@@ -205,16 +205,16 @@ class SearchController extends VFSearchController
 
 
 
-//	/**
-//	 *
-//	 * @return array|object|\VuFind\Search\Results\PluginManager
-//	 */
-//	protected function getResultsManager()
-//	{
-//		if (!empty($this->extendedTargets) && in_array(strtolower($this->searchClassId), $this->extendedTargets)) {
-//			return $this->getServiceLocator()->get('Swissbib\SearchResultsPluginManager');
-//		} else {
-//			return parent::getResultsManager();
-//		}
-//	}
+	/**
+	 *
+	 * @return array|object|\VuFind\Search\Results\PluginManager
+	 */
+	protected function getResultsManager()
+	{
+		if (!empty($this->extendedTargets) && in_array(strtolower($this->searchClassId), $this->extendedTargets)) {
+			return $this->getServiceLocator()->get('Swissbib\SearchResultsPluginManager');
+		} else {
+			return parent::getResultsManager();
+		}
+	}
 }
