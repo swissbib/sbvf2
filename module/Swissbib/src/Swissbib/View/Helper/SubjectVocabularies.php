@@ -24,10 +24,12 @@ class SubjectVocabularies extends AbstractHelper
 		$titleMesh		= '<h4>MESH</h4>';
 		$titleBisacsh	= '<h4>BISAC</h4>';
 		$titleIdszbz	= '<h4>IDS ZBZ</h4>';
+		$itemlist		= '';
 
         foreach ($subjectVocabularies as $vocab => $subjectVocabulary) {
             switch($vocab) {
                 case 'gnd':
+					$terms = array();
                     foreach ($subjectVocabulary as $fields) {
                         foreach ($fields as $subfields); {
                             if (isset($subfields['a'])) {
