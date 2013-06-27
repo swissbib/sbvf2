@@ -1,15 +1,15 @@
 <?php
 /** @var Array[] $items */
 ?>
-<table class="holdings-items">
+<table class="holdings-items holdingTable">
 	<thead>
 		<tr>
-			<th>&nbsp;</th>
-			<th><?=$this->transEsc('Availability')?></th>
-			<th><?=$this->transEsc('Location')?></th>
-			<th><?=$this->transEsc('Call Number')?></th>
-			<th><?=$this->transEsc('hold_qr')?></th>
-			<th><?=$this->transEsc('Description')?></th>
+			<th class="actions">&nbsp;</th>
+			<th class="availability"><?=$this->transEsc('Availability')?></th>
+			<th class="location"><?=$this->transEsc('Location')?></th>
+			<th class="callnr"><?=$this->transEsc('Call Number')?></th>
+			<th class="qr"><?=$this->transEsc('hold_qr')?></th>
+			<th class="description"><?=$this->transEsc('Description')?></th>
 		</tr>
 	</thead>
 	<tbody>
