@@ -108,6 +108,9 @@ class Holdings
 	/** @var  EbooksOnDemand */
 	protected $ebooksOnDemand;
 
+	/** @var  Availability */
+	protected $availability;
+
 
 
 	/**
@@ -128,7 +131,8 @@ class Holdings
 					ConfigManager $configManager,
 					Translator $translator,
 					LocationMap $locationMap,
-					EbooksOnDemand $ebooksOnDemand
+					EbooksOnDemand $ebooksOnDemand,
+					Availability $availability
 	) {
 		$this->ils            = $ilsConnection;
 		$this->configManager  = $configManager;
@@ -138,6 +142,7 @@ class Holdings
 		$this->translator     = $translator;
 		$this->locationMap	  = $locationMap;
 		$this->ebooksOnDemand = $ebooksOnDemand;
+		$this->availability	  = $availability;
 
 		/** @var Config $relationConfig */
 		$relationConfig			= $configManager->get('libadmin-groups');
@@ -441,19 +446,19 @@ class Holdings
 		$networkCode	= isset($item['network']) ? strtolower($item['network']) : '';
 
 			// Only add links for supported networks
-		if ($this->isAlephNetwork($networkCode) && $this->isRestfulNetwork($networkCode)) {
-			// Add hold link for item
-			$item['holdLink'] = $this->getHoldLink($item);
+		if ($this->isAlephNetwork($networkCode)) {
+			if ($this->isRestfulNetwork($networkCode)) {
+					// Add hold link for item
+				$item['holdLink'] = $this->getHoldLink($item);
 
-			// Add availability if supported by network
-			$item['availability'] = $this->getAvailabilityInfos($item['bibsysnumber'], $item['barcode']);
-			$item['isAvailable']  = $this->isAvailable($item['bibsysnumber'], $item['barcode']);
-
-			if ($this->isLoggedIn()) {
-				$item['userActions'] = $this->getAllowedUserActions($item);
+				if ($this->isLoggedIn()) {
+					$item['userActions'] = $this->getAllowedUserActions($item);
+				}
 			}
-		}
 
+				// Add availability
+			$item['availability'] = $this->getAvailabilityInfos($item['bibsysnumber'], $item['barcode'], $networkCode);
+		}
 
 		return $item;
 	}
@@ -963,43 +968,16 @@ class Holdings
 	/**
 	 * Get availability infos for item element
 	 *
-	 * @param    String        $sysNumber
-	 * @param    String        $barcode
+	 * @param    String  $sysNumber
+	 * @param    String  $barcode
+	 * @param     String $network
 	 * @return    Array|Boolean
 	 */
-	protected function getAvailabilityInfos($sysNumber, $barcode)
+	protected function getAvailabilityInfos($sysNumber, $barcode, $network)
 	{
-		if (!isset($this->availabilities[$sysNumber])) {
-			$this->availabilities[$sysNumber] = $this->getItemCirculationStatuses($sysNumber);
-		}
+		$userLocale	= $this->translator->getLocale();
 
-		if (!isset($this->availabilities[$sysNumber][$barcode])) {
-			$this->availabilities[$sysNumber][$barcode] = false;
-		}
-
-		return $this->availabilities[$sysNumber][$barcode];
-	}
-
-
-
-	/**
-	 * Check whether item is avilable
-	 *
-	 * @todo       Improve checks!
-	 * @see        getAvailabilityInfos
-	 * @param    String        $sysNumber
-	 * @param    String        $barcode
-	 * @return    Boolean        bool
-	 */
-	protected function isAvailable($sysNumber, $barcode)
-	{
-		$infos = $this->getAvailabilityInfos($sysNumber, $barcode);
-
-		if ($infos) {
-			return $infos['loan-status'] === 'Loan';
-		}
-
-		return false;
+		return $this->availability->getAvailability($sysNumber, $barcode, $network, $userLocale);
 	}
 
 
