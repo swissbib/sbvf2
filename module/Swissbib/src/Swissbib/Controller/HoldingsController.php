@@ -1,6 +1,7 @@
 <?php
 namespace Swissbib\Controller;
 
+use Swissbib\VuFind\ILS\Driver\Aleph;
 use Zend\View\Model\ViewModel;
 
 use VuFind\Controller\AbstractBase as BaseController;
@@ -25,22 +26,50 @@ class HoldingsController extends BaseController
 		$institution = $this->params()->fromRoute('institution');
 		$idRecord    = $this->params()->fromRoute('record');
 		$holdingsData= $this->getRecord($idRecord)->getInstitutionHoldings($institution);
-
-		$viewModel	 = new ViewModel();
-		$viewModel->setTerminal(true);
-		$viewModel->setVariables($holdingsData);
+		$template	 = 'Holdings/nodata';
 
 		if (isset($holdingsData['items'])) {
-			$viewModel->setTemplate('Holdings/items');
+			$template = 'Holdings/items';
 		} elseif (isset($holdingsData['holdings'])) {
-			$viewModel->setTemplate('Holdings/holdings');
-		} else {
-			$viewModel->setTemplate('Holdings/nodata');
+			$template = 'Holdings/holdings';
+		}
+
+		return $this->getViewModel($holdingsData, $template);
+	}
+
+
+	public function holdingItemsAction()
+	{
+		$idRecord    = $this->params()->fromRoute('record');
+		$institution = $this->params()->fromRoute('institution');
+		$offset		 = $this->params()->fromRoute('offset');
+		$year		 = $this->params()->fromQuery('year');
+		$volume		 = $this->params()->fromQuery('volume');
+		$record		 = $this->getRecord($idRecord);
+
+		/** @var Aleph $aleph */
+		$aleph		 	= $this->getILS();
+		$holdingHoldings= $aleph->getHoldingHoldings($idRecord, $institution, $offset, $year, $volume);
+
+		$data = array($holdingHoldings);
+
+		return $this->getViewModel($data, 'Holdings/holding-holding-items');
+	}
+
+
+	protected function getViewModel(array $variables = array(), $template = null, $terminal = true)
+	{
+		$viewModel = new ViewModel($variables);
+
+		if ($template) {
+			$viewModel->setTemplate($template);
+		}
+		if ($terminal) {
+			$viewModel->setTerminal(true);
 		}
 
 		return $viewModel;
 	}
-
 
 
 	/**

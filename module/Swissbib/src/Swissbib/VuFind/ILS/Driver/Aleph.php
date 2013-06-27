@@ -173,6 +173,18 @@ class Aleph extends AlephDriver
 
 
 
+
+	public function getHoldingHoldings($idRecord, $institutionCode, $offset, $year, $volume)
+	{
+//		$xmlResponse = $this->doRestDLFRequest(
+//			array('record', $idRecord 'requests', 'bookings')
+//		);
+
+		return array(1,2,3);
+	}
+
+
+
 	/**
 	 * Get booking requests
 	 *
