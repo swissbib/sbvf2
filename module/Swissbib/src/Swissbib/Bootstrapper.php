@@ -88,6 +88,11 @@ class Bootstrapper
 	 */
 	public function initTranslationFallback()
 	{
+		// Language not supported in CLI mode:
+		if (Console::isConsole()) {
+			return;
+		}
+
 		$baseDir = LOCAL_OVERRIDE_DIR . '/languages';
 
 		$callback = function ($event) use ($baseDir) {
