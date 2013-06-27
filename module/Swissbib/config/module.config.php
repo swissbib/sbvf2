@@ -18,6 +18,7 @@ use Swissbib\RecordDriver\Missing as RecordDriverMissing;
 use Swissbib\RecordDriver\Summon;
 use Swissbib\RecordDriver\WorldCat;
 use Swissbib\RecordDriver\Helper\EbooksOnDemand;
+use Swissbib\RecordDriver\Helper\Availability;
 
 return array(
 	'router'          => array(
@@ -142,8 +143,9 @@ return array(
 				$translator		= $sm->get('VuFind\Translator');
 				$locationMap	= $sm->get('Swissbib\LocationMap');
 				$eBooksOnDemand	= $sm->get('Swissbib\EbooksOnDemand');
+				$availability	= $sm->get('Swissbib\Availability');
 
-				return new HoldingsHelper($ilsConnection, $hmac, $authManager, $config, $translator, $locationMap, $eBooksOnDemand);
+				return new HoldingsHelper($ilsConnection, $hmac, $authManager, $config, $translator, $locationMap, $eBooksOnDemand, $availability);
 			},
 			'Swissbib\TargetsProxy\TargetsProxy' => function ($sm) {
 				$config        = $sm->get('VuFind\Config')->get('TargetsProxy');
@@ -180,6 +182,13 @@ return array(
 				$translator			  = $sm->get('VuFind\Translator');
 
 				return new EbooksOnDemand($eBooksOnDemandConfig, $translator);
+			},
+			'Swissbib\Availability' => function ($sm) {
+				$logger				= $sm->get('VuFind\Logger');
+				$availabilityConfig = $sm->get('VuFind\Config')->get('config')->Availability;
+				$alephNetworkConfig	= $sm->get('VuFind\Config')->get('Holdings')->AlephNetworks;
+
+				return new Availability($availabilityConfig, $alephNetworkConfig, $logger);
 			}
 		)
 	),
@@ -206,7 +215,8 @@ return array(
 			'tabTemplate'			  => 'Swissbib\View\Helper\TabTemplate',
 			'zendTranslate'           => 'Zend\I18n\View\Helper\Translate',
 			'getVersion'              => 'Swissbib\View\Helper\GetVersion',
-			'holdingActions'          => 'Swissbib\View\Helper\HoldingActions'
+			'holdingActions'          => 'Swissbib\View\Helper\HoldingActions',
+			'availabilityInfo'        => 'Swissbib\View\Helper\AvailabilityInfo'
 		),
 		'factories' => array(
 			'institutionSorter' => function ($sm) {
