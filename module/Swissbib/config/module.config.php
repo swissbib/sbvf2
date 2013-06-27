@@ -79,6 +79,17 @@ return array(
 						'action'     => 'list'
 					)
 				)
+			),
+			'holdings-holding-ajax'     => array( // load holding holdings details for record with ajax
+				'type'    => 'segment',
+				'options' => array(
+					'route'    => '/Holdings/:record/:institution/holdings[/:offset]',
+					'defaults' => array(
+						'controller' => 'holdings',
+						'action'     => 'holdingItems',
+						'offset'	 => 0
+					)
+				)
 			)
 		)
 	),
