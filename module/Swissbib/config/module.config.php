@@ -19,6 +19,7 @@ use Swissbib\RecordDriver\Summon;
 use Swissbib\RecordDriver\WorldCat;
 use Swissbib\RecordDriver\Helper\EbooksOnDemand;
 use Swissbib\RecordDriver\Helper\Availability;
+use Swissbib\Helper\BibCode;
 
 return array(
 	'router'          => array(
@@ -184,11 +185,16 @@ return array(
 				return new EbooksOnDemand($eBooksOnDemandConfig, $translator);
 			},
 			'Swissbib\Availability' => function ($sm) {
-				$logger				= $sm->get('VuFind\Logger');
+//				$logger				= $sm->get('VuFind\Logger');
+				$bibCodeHelper		= $sm->get('Swissbib\BibCodeHelper');
 				$availabilityConfig = $sm->get('VuFind\Config')->get('config')->Availability;
+
+				return new Availability($bibCodeHelper, $availabilityConfig);
+			},
+			'Swissbib\BibCodeHelper' => function ($sm) {
 				$alephNetworkConfig	= $sm->get('VuFind\Config')->get('Holdings')->AlephNetworks;
 
-				return new Availability($availabilityConfig, $alephNetworkConfig, $logger);
+				return new BibCode($alephNetworkConfig);
 			}
 		)
 	),

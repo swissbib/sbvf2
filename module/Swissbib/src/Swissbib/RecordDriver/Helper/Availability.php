@@ -5,7 +5,7 @@ use Zend\Config\Config;
 use Zend\Http\Client as HttpClient;
 use Zend\Http\Response as HttpResponse;
 
-use VuFind\Log\Logger;
+use Swissbib\Helper\BibCode;
 
 /**
  * Get availability for items
@@ -15,10 +15,8 @@ class Availability
 {
 	/** @var Config  */
 	protected $config;
-	/** @var Array  */
-	protected $idlsMap = array();
-	/** @var Logger  */
-	protected $logger;
+	/** @var  BibCode */
+	protected $bibCodeHelper;
 
 
 
@@ -26,20 +24,13 @@ class Availability
 	 * Initialize
 	 * Build IDLS mapping for networks
 	 *
-	 * @param Config $config
-	 * @param Config $alephNetworkConfig
-	 * @param Logger $logger
+	 * @param	Config		$config
+	 * @param	BibCode		$bibCodeHelper
 	 */
-	public function __construct(Config $config, Config $alephNetworkConfig, Logger $logger)
+	public function __construct(Config $config, BibCode $bibCodeHelper)
 	{
-		$this->config = $config;
-		$this->logger = $logger;
-
-		foreach ($alephNetworkConfig as $networkCode => $info) {
-			list($url, $idls) = explode(',', $info);
-
-			$this->idlsMap[$networkCode] = $idls;
-		}
+		$this->config        = $config;
+		$this->bibCodeHelper = $bibCodeHelper;
 	}
 
 
@@ -84,9 +75,7 @@ class Availability
 	 */
 	protected function getIDLS($network)
 	{
-		$network = strtolower($network);
-
-		return isset($this->idlsMap[$network]) ? $this->idlsMap[$network] : '';
+		return $this->bibCodeHelper->getBibCode($network);
 	}
 
 
