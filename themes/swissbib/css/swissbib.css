@@ -436,3 +436,20 @@ a#tagRecord {
 .holdingTable th.signature {
 	width: 30px;
 }
+
+.tabs .ui-widget-header {
+	border: none
+}
+.tabs.ui-widget-content {
+	border: none;
+}
+
+.tabs .ui-state-default,
+.tabs .ui-state-active {
+	border: none;
+	background: none;
+}
+
+.ui-tabs .ui-tabs-nav li {
+	margin: 0;
+}
