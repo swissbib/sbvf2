@@ -1,8 +1,11 @@
 <?php
 /** @var Array[] $holdings */
-/** @var Integer $idRecord */
+/** @var Integer $record */
+/** @var String $institution */
+
+$idTable	= 'holdings-holding-' . $record . '-' . $institution;
 ?>
-<table class="holdings-holding holdingTable">
+<table class="holdings-holding holdingTable" id="<?=$this->escapeHtml($idTable)?>">
 	<thead>
 		<tr>
 			<th class="actions">&nbsp;</th>
@@ -19,10 +22,13 @@
 			foreach($holdings as $holding) {
 				echo $this->render('Holdings/holding-holding.phtml', array(
 					'holding'	=> $holding,
-					'record'	=> $idRecord
+					'record'	=> $record
 				));
 			}
 		?>
 	</tbody>
 </table>
 
+<script type="text/javascript">
+	swissbib.Holdings.enableHoldingItemsPopupLinks('<?=$this->escapeHtml($idTable)?>');
+</script>

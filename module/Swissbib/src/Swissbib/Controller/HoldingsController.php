@@ -1,6 +1,7 @@
 <?php
 namespace Swissbib\Controller;
 
+use Swissbib\RecordDriver\Helper\Holdings;
 use Zend\Mvc\Exception;
 use Zend\View\Model\ViewModel;
 
@@ -28,7 +29,9 @@ class HoldingsController extends BaseController
 		$idRecord    = $this->params()->fromRoute('record');
 		$holdingsData= $this->getRecord($idRecord)->getInstitutionHoldings($institution);
 		$template	 = 'Holdings/nodata';
-		$holdingsData['idRecord'] = $idRecord;
+
+		$holdingsData['record']   	 = $idRecord;
+		$holdingsData['institution'] = $institution;
 
 		if (isset($holdingsData['items'])) {
 			$template = 'Holdings/items';
@@ -48,7 +51,8 @@ class HoldingsController extends BaseController
 	 */
 	public function holdingItemsAction()
 	{
-//		$idRecord    = $this->params()->fromRoute('record');
+		$idRecord    = $this->params()->fromRoute('record');
+		$record		 = $this->getRecord($idRecord);
 		$institution = $this->params()->fromRoute('institution');
 		$resourceId  = $this->params()->fromRoute('resource');
 		$offset      = (int)$this->params()->fromRoute('offset');
@@ -56,14 +60,24 @@ class HoldingsController extends BaseController
 		$volume      = $this->params()->fromQuery('volume');
 
 		/** @var Aleph $aleph */
-		$aleph		 	= $this->getILS();
+		$aleph		 = $this->getILS();
 		$holdingItems= $aleph->getHoldingHoldingItems($resourceId, $institution, $offset, $year, $volume);
+		$totalItems	= $aleph->getHoldingItemCount($resourceId, $institution);
+		/** @var Holdings $helper */
+		$helper		= $this->getServiceLocator()->get('Swissbib\HoldingsHelper');
+
+		foreach ($holdingItems as $index => $holdingItem) {
+			$holdingItem['institution'] = $institution;
+			$holdingItems[$index] = $helper->extendItem($holdingItem, $record);
+		}
 
 		$data = array(
 			'items'		=> $holdingItems,
 			'offset'	=> $offset,
 			'year'		=> $year,
-			'volume'	=> $volume
+			'volume'	=> $volume,
+			'filters'	=> $aleph->getResourceFilters($resourceId),
+			'total'		=> $totalItems
 		);
 
 		return $this->getViewModel($data, 'Holdings/holding-holding-items');

@@ -1,7 +1,40 @@
 <?php
 /** @var Array[] $items */
+/** @var Array[] $filters */
+/** @var Integer $offset */
+/** @var Integer $total */
+
 
 
 ?>
+<form>
 
+	<?php if (sizeof($filters['years'])): ?>
+		<label for="holding-items-filter-year">Zeige Jahr</label>
+		<select id="holding-items-filter-year">
+			<option value="">Alle Jahre</option>
+			<?php foreach ($filters['years'] as $year): ?>
+				<option><?=$year?></option>
+			<?php endforeach; ?>
+		</select>
+	<?php endif; ?>
+
+	<?php if (sizeof($filters['volumes'])): ?>
+		<label for="holding-items-filter-volume">Zeige Band</label>
+		<select id="holding-items-filter-volume">
+			<option value="">Alle Bände</option>
+			<?php foreach ($filters['volumes'] as $volume): ?>
+				<option><?=$volume?></option>
+			<?php endforeach; ?>
+		</select>
+	<?php endif; ?>
+
+	<?=$this->holdingItemsPaging($total, $offset)?>
+
+</form>
+
+<?=$this->render('Holdings/items')?>
+
+<pre style="text-align: left; font-size:12px">
 <?php print_r($items); ?>
+</pre>
