@@ -224,18 +224,11 @@ class Aleph extends AlephDriver
 		$links	= $this->getHoldingHoldingsLinkList($resourceId, $institutionCode, $offset, $year, $volume, $extraRestParams);
 		$items	= array();
 		$dataMap         = array(
-			'sequence'          => 'z37-sequence',
 			'title'             => 'z13-title',
 			'author'            => 'z13-author',
-			'dateStart'         => 'z37-booking-orig-start-time',
-			'dateEnd'           => 'z37-booking-orig-end-time',
-			'pickupLocation'    => 'z37-pickup-location',
-			'pickupSubLocation' => 'z37-delivery-sub-location',
 			'itemStatus'        => 'z30-item-status',
 			'callNumber'        => 'z30-call-no',
 			'library'           => 'z30-sub-library',
-			'note1'             => 'z37-note-1',
-			'note2'             => 'z37-note-2',
 			'barcode'           => 'z30-barcode',
 			'collection'        => 'z30-collection',
 			'description'       => 'z30-description'
@@ -243,12 +236,10 @@ class Aleph extends AlephDriver
 
 		foreach ($links as $link) {
 			$itemResponseData = $this->doHTTPRequest($link);
-			$itemData = $this->extractResponseData($itemResponseData, $dataMap);
-			$x = 1;
+			$items[] = $this->extractResponseData($itemResponseData->item, $dataMap);
 		}
 
-
-		return array();
+		return $items;
 	}
 
 
@@ -324,7 +315,7 @@ class Aleph extends AlephDriver
 		$data = array();
 
 		foreach ($map as $resultField => $path) {
-			list($group, $field) = explode('-', $path);
+			list($group, $field) = explode('-', $path, 2);
 
 			$data[$resultField] = (string)$xmlResponse->$group->$path;
 		}

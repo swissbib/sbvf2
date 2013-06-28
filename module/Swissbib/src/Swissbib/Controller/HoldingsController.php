@@ -40,25 +40,45 @@ class HoldingsController extends BaseController
 	}
 
 
+
+	/**
+	 * Get items for holding
+	 *
+	 * @return ViewModel
+	 */
 	public function holdingItemsAction()
 	{
-		$idRecord    = $this->params()->fromRoute('record');
+//		$idRecord    = $this->params()->fromRoute('record');
 		$institution = $this->params()->fromRoute('institution');
-		$resourceId	 = $this->params()->fromRoute('resource');
-		$offset		 = $this->params()->fromRoute('offset');
-		$year		 = $this->params()->fromQuery('year');
-		$volume		= $this->params()->fromQuery('volume');
+		$resourceId  = $this->params()->fromRoute('resource');
+		$offset      = (int)$this->params()->fromRoute('offset');
+		$year        = (int)$this->params()->fromQuery('year');
+		$volume      = $this->params()->fromQuery('volume');
 
 		/** @var Aleph $aleph */
 		$aleph		 	= $this->getILS();
-		$holdingHoldings= $aleph->getHoldingHoldingItems($resourceId, $institution, $offset, $year, $volume);
+		$holdingItems= $aleph->getHoldingHoldingItems($resourceId, $institution, $offset, $year, $volume);
 
-		$data = array($holdingHoldings);
+		$data = array(
+			'items'		=> $holdingItems,
+			'offset'	=> $offset,
+			'year'		=> $year,
+			'volume'	=> $volume
+		);
 
 		return $this->getViewModel($data, 'Holdings/holding-holding-items');
 	}
 
 
+
+	/**
+	 * Get view model with special template and terminated for ajax
+	 *
+	 * @param array $variables
+	 * @param null  $template
+	 * @param bool  $terminal
+	 * @return ViewModel
+	 */
 	protected function getViewModel(array $variables = array(), $template = null, $terminal = true)
 	{
 		$viewModel = new ViewModel($variables);
@@ -75,15 +95,23 @@ class HoldingsController extends BaseController
 
 
 
+	/**
+	 * Build a resource id
+	 *
+	 * @param $idRecord
+	 * @param $network
+	 * @return string
+	 */
 	protected function getResourceId($idRecord, $network)
 	{
 		/** @var BibCode $bibHelper */
 		$bibHelper	= $this->getServiceLocator()->get('Swissbib\BibCodeHelper');
-		$record		= $this->getRecord($idRecord);
+//		$record		= $this->getRecord($idRecord);
 		$idls		= $bibHelper->getBibCode($network);
 
 		return strtoupper($idls) . $idRecord;
 	}
+
 
 
 	/**
