@@ -11,6 +11,7 @@ use VuFind\Config\PluginManager as ConfigManager;
 
 use Swissbib\VuFind\ILS\Driver\Aleph;
 use Swissbib\RecordDriver\SolrMarc;
+use Swissbib\Helper\BibCode;
 
 /**
  * probably Holdings should be a subtype of ZF2 AbstractHelper
@@ -110,6 +111,8 @@ class Holdings
 
 	/** @var  Availability */
 	protected $availability;
+	/** @var BibCode  */
+	protected $bibCodeHelper;
 
 
 
@@ -122,6 +125,7 @@ class Holdings
 	 * @param    ConfigManager         $configManager
 	 * @param    Translator            $translator
 	 * @param	 LocationMap		   $locationMap
+	 * @param	 BibCode			   $bibCodeHelper
 	 * @throws    \Exception
 	 */
 	public function __construct(
@@ -132,7 +136,8 @@ class Holdings
 					Translator $translator,
 					LocationMap $locationMap,
 					EbooksOnDemand $ebooksOnDemand,
-					Availability $availability
+					Availability $availability,
+					BibCode $bibCodeHelper
 	) {
 		$this->ils            = $ilsConnection;
 		$this->configManager  = $configManager;
@@ -143,6 +148,7 @@ class Holdings
 		$this->locationMap	  = $locationMap;
 		$this->ebooksOnDemand = $ebooksOnDemand;
 		$this->availability	  = $availability;
+		$this->bibCodeHelper  = $bibCodeHelper;
 
 		/** @var Config $relationConfig */
 		$relationConfig			= $configManager->get('libadmin-groups');
@@ -174,6 +180,18 @@ class Holdings
 		$this->idItem = $idItem;
 
 		$this->setHoldingsContent($holdingsXml);
+	}
+
+
+
+	/**
+	 * Get ils driver (aleph)
+	 *
+	 * @return	Aleph
+	 */
+	protected function getIlsDriver()
+	{
+		return $this->ils->getDriver();
 	}
 
 
@@ -425,6 +443,8 @@ class Holdings
 		$item['locationMap']= $this->getLocationMapLink($item);
 			// Location label
 		$item['locationLabel'] = $this->getLocationLabel($item);
+			// Defaults to false, maybe ils will add more info
+		$item['availability'] = false;
 
 		if (!$this->isRestfulNetwork($item['network'])) {
 			$item['backlink'] = $this->getBackLink($item['network'], strtoupper($item['institution']), $item);
@@ -475,7 +495,7 @@ class Holdings
 	protected function extendHolding(array $holding, SolrMarc $recordDriver = null)
 	{
 		$holding	= $this->extendHoldingBasic($holding, $recordDriver);
-//		$holding	= $this->extendHoldingIlsActions($holding, $recordDriver); // NOT USED AT THE MOMENT
+		$holding	= $this->extendHoldingIlsActions($holding, $recordDriver); // NOT USED AT THE MOMENT
 
 		return $holding;
 	}
@@ -518,6 +538,20 @@ class Holdings
 	 */
 	protected function extendHoldingIlsActions(array $holding, SolrMarc $recordDriver = null)
 	{
+		$idls		= $this->bibCodeHelper->getBibCode($holding['network']);
+		$resourceId	= $idls . $holding['bibsysnumber'];
+		$itemsCount	= $this->getIlsDriver()->getHoldingItemCount($resourceId, $holding['institution']);
+
+		$holding['itemsLink'] = array(
+			'count'			=> $itemsCount,
+			'resource'		=> $resourceId,
+			'institution'	=> $holding['institution'],
+			'url'			=> array(
+				'record'		=> $this->idItem,
+				'institution'	=> $holding['institution'],
+				'resource'		=> $resourceId
+			)
+		);
 
 		return $holding;
 	}
@@ -535,79 +569,6 @@ class Holdings
 	protected function getEODLink(array $item, SolrMarc $recordDriver)
 	{
 		return $this->ebooksOnDemand ? $this->ebooksOnDemand->getEbooksOnDemandLink($item, $recordDriver, $this) : false;
-
-		$eodLink = false;
-
-		if ($recordDriver instanceof SolrMarc) {
-			list(,$publishYear,) = $recordDriver->getPublicationDates();
-			$formats			 = $recordDriver->getFormatsRaw();
-
-			if ($this->isValidForEodLink($publishYear, $item['institution'], $formats)) {
-				$eodLink = $this->buildEODLink($item['localid'], $item['institution'], $item['signature']);
-			}
-		}
-
-		return $eodLink;
-	}
-
-
-
-	/**
-	 * Build EOD link string
-	 *
-	 * @param	String		$sysId
-	 * @param	String		$institution
-	 * @param	String		$signature
-	 * @return	String
-	 */
-	protected function buildEODLink($sysId, $institution, $signature)
-	{
-		$bibId			= strtolower($this->configManager->get('Aleph')->Catalog->bib);
-		$instId			= urlencode($institution . $signature);
-		$userLanguage	= $this->translator->getLocale();
-		/** @var Config $eodConfig */
-		$eodConfig		= $this->configManager->get('config')->get('eBooksOnDemand');
-		$linkPattern	= $eodConfig->link;
-		$language		= $eodConfig->offsetExists('lang_' . $userLanguage) ? $eodConfig->get('lang_' . $userLanguage) : 'GER';
-
-		$data	= array(
-			'{SID}'			=> $bibId,
-			'{SYSID}'		=> $sysId,
-			'{INSTITUTION}'	=> $instId,
-			'{LANGUAGE}'	=> $language
-		);
-
-		return str_replace(array_keys($data), array_values($data), $linkPattern);
-	}
-
-
-
-	/**
-	 * Check whether conditions for EOD link match for item properties
-	 *
-	 * @param	Integer		$publishYear
-	 * @param	String		$institution
-	 * @param	String[]	$formats
-	 * @return	Boolean
-	 */
-	protected function isValidForEodLink($publishYear, $institution, array $formats)
-	{
-		$eodConfig				= $this->configManager->get('config')->get('eBooksOnDemand');
-		$maxYear				= $eodConfig->maxYear;
-		$supportedInstitutions	= array_map('strtolower', array_map('trim', explode(',', $eodConfig->institutions)));
-		$supportedFormats		= array_map('strtolower', array_map('trim', explode(',', $eodConfig->formats)));
-		$itemInstitution		= strtolower($institution);
-		$itemFormats			= array_map('strtolower', $formats);
-
-		if ($publishYear <= $maxYear) { // Before year?
-			if (in_array($itemInstitution, $supportedInstitutions)) { // Supported institution?
-				if (sizeof(array_intersect($itemFormats, $supportedFormats)) > 0) { // Supported format?
-					return true;
-				}
-			}
-		}
-
-		return false;
 	}
 
 

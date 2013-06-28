@@ -1,5 +1,6 @@
 <?php
 /** @var Array[] $holdings */
+/** @var Integer $idRecord */
 ?>
 <table class="holdings-holding holdingTable">
 	<thead>
@@ -17,7 +18,8 @@
 			// Items
 			foreach($holdings as $holding) {
 				echo $this->render('Holdings/holding-holding.phtml', array(
-					'holding'	=> $holding
+					'holding'	=> $holding,
+					'record'	=> $idRecord
 				));
 			}
 		?>

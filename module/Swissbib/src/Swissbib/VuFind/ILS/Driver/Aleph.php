@@ -172,15 +172,106 @@ class Aleph extends AlephDriver
 	}
 
 
+	protected function getHoldingHoldingsLinkList(
+					$resourceId,
+					$institutionCode = '',
+					$offset = 0,
+					$year = 0,
+					$volume = 0,
+					array $extraRestParams = array(),
+					$loadMore = false
+	) {
+		$pathElements	= array('record', $resourceId, 'items');
+		$parameters		= $extraRestParams;
+
+		if ($institutionCode) {
+			$parameters['sublibrary'] = $institutionCode;
+		}
+		if ($offset) {
+			$parameters['startPos'] = intval($offset);
+		}
+		if ($year) {
+			$parameters['year'] = intval($year);
+		}
+		if ($volume) {
+			$parameters['volume'] = intval($volume);
+		}
+
+		$xmlResponse = $this->doRestDLFRequest($pathElements, $parameters);
+
+		/** @var SimpleXMLElement[] $items */
+		$items = $xmlResponse->xpath('//item');
+		$links = array();
+
+		foreach ($items as $item) {
+			$links[] = (string)$item->attributes()->href;
+		}
+
+		return $links;
+	}
 
 
-	public function getHoldingHoldings($idRecord, $institutionCode, $offset, $year, $volume)
+
+
+	public function getHoldingHoldingItems(
+					$resourceId,
+					$institutionCode = '',
+					$offset = 0,
+					$year = 0,
+					$volume = 0,
+					array $extraRestParams = array()
+	) {
+		$links	= $this->getHoldingHoldingsLinkList($resourceId, $institutionCode, $offset, $year, $volume, $extraRestParams);
+		$items	= array();
+		$dataMap         = array(
+			'sequence'          => 'z37-sequence',
+			'title'             => 'z13-title',
+			'author'            => 'z13-author',
+			'dateStart'         => 'z37-booking-orig-start-time',
+			'dateEnd'           => 'z37-booking-orig-end-time',
+			'pickupLocation'    => 'z37-pickup-location',
+			'pickupSubLocation' => 'z37-delivery-sub-location',
+			'itemStatus'        => 'z30-item-status',
+			'callNumber'        => 'z30-call-no',
+			'library'           => 'z30-sub-library',
+			'note1'             => 'z37-note-1',
+			'note2'             => 'z37-note-2',
+			'barcode'           => 'z30-barcode',
+			'collection'        => 'z30-collection',
+			'description'       => 'z30-description'
+		);
+
+		foreach ($links as $link) {
+			$itemResponseData = $this->doHTTPRequest($link);
+			$itemData = $this->extractResponseData($itemResponseData, $dataMap);
+			$x = 1;
+		}
+
+
+		return array();
+	}
+
+
+
+	/**
+	 *
+	 *
+	 * @param        $resourceId
+	 * @param string $institutionCode
+	 * @param int    $offset
+	 * @param int    $year
+	 * @param int    $volume
+	 * @return	Integer
+	 */
+	public function getHoldingItemCount($resourceId, $institutionCode = '', $offset = 0, $year = 0, $volume = 0)
 	{
-//		$xmlResponse = $this->doRestDLFRequest(
-//			array('record', $idRecord 'requests', 'bookings')
-//		);
+		$links	= $this->getHoldingHoldingsLinkList(	$resourceId,
+														$institutionCode,
+														$offset,
+														$year,
+														$volume);
 
-		return array(1,2,3);
+		return sizeof($links);
 	}
 
 
