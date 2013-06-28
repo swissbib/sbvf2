@@ -132,6 +132,29 @@ swissbib.Holdings = {
 		height	= height|| 760;
 
 		window.open(url, 'map-popup', 'height=' + height + ',width=' + width).focus();
+	},
+
+	enableHoldingItemsPopupLinks: function(idTable) {
+		var that = this;
+
+		$('#' + idTable + ' a[rel=items]').click(function(event){
+			event.preventDefault();
+			var setup = $.proxy(that.setupItemsPopup, that),
+				dialog = $('<div>').dialog({
+				autoOpen: false,
+				height: 600,
+				width: 800,
+				title: event.target.title || 'Holdings',
+				resizable: false
+			}).load(event.target.href, function(responseText, responseStatus, response){
+				dialog.dialog('open');
+				setup();
+			});
+		});
+	},
+
+	setupItemsPopup: function() {
+		console.log('setupItemsPopup');
 	}
 
 };

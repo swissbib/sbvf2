@@ -416,7 +416,7 @@ class Holdings
 	 * @param	SolrMarc	$recordDriver
 	 * @return	Array
 	 */
-	protected function extendItem(array $item, SolrMarc $recordDriver = null)
+	public function extendItem(array $item, SolrMarc $recordDriver = null)
 	{
 		$item	= $this->extendItemBasic($item, $recordDriver);
 		$item	= $this->extendItemIlsActions($item, $recordDriver);
@@ -446,7 +446,7 @@ class Holdings
 			// Defaults to false, maybe ils will add more info
 		$item['availability'] = false;
 
-		if (!$this->isRestfulNetwork($item['network'])) {
+		if (isset($item['network']) && !$this->isRestfulNetwork($item['network'])) {
 			$item['backlink'] = $this->getBackLink($item['network'], strtoupper($item['institution']), $item);
 		}
 

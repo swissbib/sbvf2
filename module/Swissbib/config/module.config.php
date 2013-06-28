@@ -232,7 +232,8 @@ return array(
 			'zendTranslate'           => 'Zend\I18n\View\Helper\Translate',
 			'getVersion'              => 'Swissbib\View\Helper\GetVersion',
 			'holdingActions'          => 'Swissbib\View\Helper\HoldingActions',
-			'availabilityInfo'        => 'Swissbib\View\Helper\AvailabilityInfo'
+			'availabilityInfo'        => 'Swissbib\View\Helper\AvailabilityInfo',
+			'holdingItemsPaging'      => 'Swissbib\View\Helper\HoldingItemsPaging'
 		),
 		'factories' => array(
 			'institutionSorter' => function ($sm) {

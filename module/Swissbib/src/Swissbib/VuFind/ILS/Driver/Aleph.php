@@ -9,6 +9,8 @@ use DateTime;
 class Aleph extends AlephDriver
 {
 
+	protected $itemLinks;
+
 	/**
 	 * Get data for photo copies
 	 *
@@ -181,33 +183,38 @@ class Aleph extends AlephDriver
 					array $extraRestParams = array(),
 					$loadMore = false
 	) {
-		$pathElements	= array('record', $resourceId, 'items');
-		$parameters		= $extraRestParams;
+		if (!is_array($this->itemLinks) || true) {
+			$pathElements	= array('record', $resourceId, 'items');
+			$parameters		= $extraRestParams;
 
-		if ($institutionCode) {
-			$parameters['sublibrary'] = $institutionCode;
-		}
-		if ($offset) {
-			$parameters['startPos'] = intval($offset);
-		}
-		if ($year) {
-			$parameters['year'] = intval($year);
-		}
-		if ($volume) {
-			$parameters['volume'] = intval($volume);
+			if ($institutionCode) {
+				$parameters['sublibrary'] = $institutionCode;
+			}
+			if ($offset) {
+				$parameters['startPos'] = intval($offset);
+			}
+			if ($year) {
+				$parameters['year'] = intval($year);
+			}
+			if ($volume) {
+				$parameters['volume'] = intval($volume);
+			}
+
+			$xmlResponse = $this->doRestDLFRequest($pathElements, $parameters);
+
+			/** @var SimpleXMLElement[] $items */
+			$items = $xmlResponse->xpath('//item');
+			$links = array();
+
+			foreach ($items as $item) {
+				$links[] = (string)$item->attributes()->href;
+			}
+
+			$this->itemLinks = $links;
 		}
 
-		$xmlResponse = $this->doRestDLFRequest($pathElements, $parameters);
 
-		/** @var SimpleXMLElement[] $items */
-		$items = $xmlResponse->xpath('//item');
-		$links = array();
-
-		foreach ($items as $item) {
-			$links[] = (string)$item->attributes()->href;
-		}
-
-		return $links;
+		return $this->itemLinks;
 	}
 
 
@@ -219,6 +226,7 @@ class Aleph extends AlephDriver
 					$offset = 0,
 					$year = 0,
 					$volume = 0,
+					$numItems = 20,
 					array $extraRestParams = array()
 	) {
 		$links	= $this->getHoldingHoldingsLinkList($resourceId, $institutionCode, $offset, $year, $volume, $extraRestParams);
@@ -230,16 +238,49 @@ class Aleph extends AlephDriver
 			'callNumber'        => 'z30-call-no',
 			'library'           => 'z30-sub-library',
 			'barcode'           => 'z30-barcode',
-			'collection'        => 'z30-collection',
+			'location'   	    => 'z30-collection',
 			'description'       => 'z30-description'
 		);
 
-		foreach ($links as $link) {
+		foreach ($links as $index => $link) {
 			$itemResponseData = $this->doHTTPRequest($link);
-			$items[] = $this->extractResponseData($itemResponseData->item, $dataMap);
+			$itemData			= $this->extractResponseData($itemResponseData->item, $dataMap);
+
+			$itemData['availability'] = false;
+			$itemData['locationLabel'] = 'xxx';
+			$itemData['signature'] = 'xxx';
+
+			$items[] = $itemData;
 		}
 
 		return $items;
+	}
+
+
+
+	/**
+	 *
+	 *
+	 * @param $resourceId
+	 * @return	Array[]
+	 */
+	public function getResourceFilters($resourceId)
+	{
+		$pathElements	= array('record', $resourceId, 'filters');
+		$xmlResponse	= $this->doRestDLFRequest($pathElements);
+
+		$yearNodes		= $xmlResponse->{'record-filters'}->xpath('//year');
+		$years 			= array_map('trim', $yearNodes);
+		sort($years);
+
+		$volumeNodes	= $xmlResponse->{'record-filters'}->xpath('//volume');
+		$volumes	= array_map('trim', $volumeNodes);
+		sort($volumes);
+
+		return array(
+			'years'		=> $years,
+			'volumes'	=> $volumes
+		);
 	}
 
 
@@ -262,7 +303,7 @@ class Aleph extends AlephDriver
 														$year,
 														$volume);
 
-		return sizeof($links);
+		return sizeof($links) + $offset;
 	}
 
 

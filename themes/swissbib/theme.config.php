@@ -10,15 +10,13 @@ return array(
 		'patches/patch_ie7.css:all:IE 7',
 		//'patches/patch_ie6.css:all:IE 6', (we don't support IE6 in the future)
 		'blueprint.css',
-		'swissbib.css',
-		'../js/lib/lightcase/css/lightcase.css'
+		'swissbib.css'
     ),
     'js' => array(
         'jquery/jquery-1.10.1.min.js',
 		'jquery/ui/jquery-ui.min.js',
 
 		'lib/jstorage.min.js', //used for favorites - there is still some amount of JS code inline of the page -> Todo: Refactoring in upcoming Sprints
-		'lib/lightcase/lightcase.js',
 
 		'jquery/plugin/jquery-migrate-1.2.1.js',
 		'jquery/plugin/jquery.easing.js',
