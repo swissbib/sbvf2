@@ -25,7 +25,7 @@ $showLists = (!empty($this->nonContainingLists) || (empty($this->containingLists
 		<!-- begin: content -->
 		<div id="content">
 
-			<h1><?= $this->transEsc("add_favorite_prefix") ?> <?= $this->escapeHtml($this->driver->getBreadcrumb()) ?> <?= $this->transEsc("add_favorite_suffix") ?></h1>
+			<h1><?= $this->transEsc('add_favorite_prefix') ?> <?= $this->escapeHtml($this->driver->getBreadcrumb()) ?> <?= $this->transEsc('add_favorite_suffix') ?></h1>
 
 			<form method="post" action="" name="saveRecord">
 				<input type="hidden" name="submit" value="1"/>
@@ -83,7 +83,7 @@ $showLists = (!empty($this->nonContainingLists) || (empty($this->containingLists
 						<div class="fieldbox">
 							<label class="displayBlock" for="add_mytags"><?= $this->transEsc('Add Tags') ?></label>
 							<input class="mainFocus" id="add_mytags" type="text" name="mytags" value="" size="50"/>
-							<p><?= $this->transEsc("add_tag_note") ?></p>
+							<p><?= $this->transEsc('add_tag_note') ?></p>
 
 							<br/>
 
