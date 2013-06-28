@@ -1,40 +1,60 @@
 <?php
 /** @var Array[] $items */
 /** @var Array[] $filters */
-/** @var Integer $offset */
+/** @var Integer $page */
 /** @var Integer $total */
+/** @var Integer $year */
+/** @var Integer $volume */
+/** @var Array $baseUrlParams */
 
+$baseUrl	= $this->url('holdings-holding-items', $baseUrlParams) . '?';
+$fullUrl	= $baseUrl . '?';
 
+if($year) {
+	$fullUrl .= '&year=' . urlencode($year);
+}
+if($volume) {
+	$fullUrl .= '&volume=' . urlencode($volume);
+}
 
 ?>
-<form>
+<form id="holdings-items-filter-form" action="<?=$this->escapeHtml($baseUrl)?>">
+	<input type="hidden" name="page" value="<?=$this->escapeHtml($page)?>">
 
-	<?php if (sizeof($filters['years'])): ?>
-		<label for="holding-items-filter-year">Zeige Jahr</label>
-		<select id="holding-items-filter-year">
-			<option value="">Alle Jahre</option>
-			<?php foreach ($filters['years'] as $year): ?>
-				<option><?=$year?></option>
-			<?php endforeach; ?>
-		</select>
-	<?php endif; ?>
-
-	<?php if (sizeof($filters['volumes'])): ?>
-		<label for="holding-items-filter-volume">Zeige Band</label>
-		<select id="holding-items-filter-volume">
-			<option value="">Alle Bände</option>
-			<?php foreach ($filters['volumes'] as $volume): ?>
-				<option><?=$volume?></option>
-			<?php endforeach; ?>
-		</select>
-	<?php endif; ?>
-
-	<?=$this->holdingItemsPaging($total, $offset)?>
+	<table>
+		<tr>
+			<td>
+				<?php if (sizeof($filters['years'])): ?>
+					<label for="holding-items-filter-year">Zeige Jahr</label>
+					<select id="holding-items-filter-year" name="year">
+						<option value="">Alle Jahre</option>
+						<?php foreach ($filters['years'] as $yearValue): ?>
+							<option <?=($yearValue==$year?'selected="selected"':'')?>><?=$yearValue?></option>
+						<?php endforeach; ?>
+					</select>
+				<?php endif; ?>
+			</td>
+			<td>
+				<?php if (sizeof($filters['volumes'])): ?>
+					<label for="holding-items-filter-volume">Zeige Band</label>
+					<select id="holding-items-filter-volume" name="volume">
+						<option value="">Alle Bände</option>
+						<?php foreach ($filters['volumes'] as $volumeValue): ?>
+							<option <?=($volumeValue==$volume?'selected="selected"':'')?>><?=$volumeValue?></option>
+						<?php endforeach; ?>
+					</select>
+				<?php endif; ?>
+			</td>
+			<td>
+				<?=$this->holdingItemsPaging($fullUrl, $total, $page)?>
+			</td>
+		</tr>
+	</table>
 
 </form>
 
 <?=$this->render('Holdings/items')?>
 
 <pre style="text-align: left; font-size:12px">
-<?php print_r($items); ?>
+<?php /*print_r($items);*/ ?>
 </pre>

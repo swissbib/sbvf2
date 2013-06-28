@@ -55,9 +55,11 @@ class HoldingsController extends BaseController
 		$record		 = $this->getRecord($idRecord);
 		$institution = $this->params()->fromRoute('institution');
 		$resourceId  = $this->params()->fromRoute('resource');
-		$offset      = (int)$this->params()->fromRoute('offset');
+		$page     	 = (int)$this->params()->fromQuery('page', 1);
 		$year        = (int)$this->params()->fromQuery('year');
 		$volume      = $this->params()->fromQuery('volume');
+
+		$offset		= ($page -1) * 20;
 
 		/** @var Aleph $aleph */
 		$aleph		 = $this->getILS();
@@ -72,12 +74,17 @@ class HoldingsController extends BaseController
 		}
 
 		$data = array(
-			'items'		=> $holdingItems,
-			'offset'	=> $offset,
-			'year'		=> $year,
-			'volume'	=> $volume,
-			'filters'	=> $aleph->getResourceFilters($resourceId),
-			'total'		=> $totalItems
+			'items'			=> $holdingItems,
+			'page'			=> $page,
+			'year'			=> $year,
+			'volume'		=> $volume,
+			'filters'		=> $aleph->getResourceFilters($resourceId),
+			'total'			=> $totalItems,
+			'baseUrlParams'	=> array(
+				'institution'	=> $institution,
+				'record'		=> $idRecord,
+				'resource'		=> $resourceId
+			)
 		);
 
 		return $this->getViewModel($data, 'Holdings/holding-holding-items');

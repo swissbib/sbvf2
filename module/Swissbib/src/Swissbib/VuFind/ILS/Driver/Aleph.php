@@ -242,7 +242,9 @@ class Aleph extends AlephDriver
 			'description'       => 'z30-description'
 		);
 
-		foreach ($links as $index => $link) {
+		$linksToExtend = array_slice($links, 0, $numItems);
+
+		foreach ($linksToExtend as $link) {
 			$itemResponseData = $this->doHTTPRequest($link);
 			$itemData			= $this->extractResponseData($itemResponseData->item, $dataMap);
 

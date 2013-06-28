@@ -140,21 +140,49 @@ swissbib.Holdings = {
 		$('#' + idTable + ' a[rel=items]').click(function(event){
 			event.preventDefault();
 			var setup = $.proxy(that.setupItemsPopup, that),
-				dialog = $('<div>').dialog({
+				popup = $('#holdings-items-popup');
+
+			popup.html('');
+
+			var dialog= popup.dialog({
 				autoOpen: false,
-				height: 600,
-				width: 800,
+				height: 650,
+				width: 900,
 				title: event.target.title || 'Holdings',
 				resizable: false
 			}).load(event.target.href, function(responseText, responseStatus, response){
-				dialog.dialog('open');
-				setup();
-			});
+				setup(dialog);
+			}).dialog('open');
 		});
 	},
 
 	setupItemsPopup: function() {
-		console.log('setupItemsPopup');
+		var that	 	= this,
+			container	= $('#holdings-items-popup'),
+			form		= container.find('form');
+
+		container.find('a').click(function(event){
+			event.preventDefault();
+			that.updateHoldingsPopup(event.target.href);
+		});
+		container.find('select').change(function(event){
+			$.ajax({
+				url: form.attr('action'),
+				data: form.serialize(),
+				success: function(response){
+					container.html(response);
+					that.setupItemsPopup();
+				}
+			});
+		});
+	},
+
+	updateHoldingsPopup: function(url) {
+		var that = this;
+
+		$('#holdings-items-popup').load(url, function(){
+			that.setupItemsPopup();
+		});
 	}
 
 };

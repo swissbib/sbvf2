@@ -1,0 +1,42 @@
+<?php
+/** @var Integer $pages */
+/** @var Integer $active */
+/** @var String $url */
+/** @var Integer $startPage */
+/** @var Integer $endPage */
+
+?>
+<div class="paging" id="holding-items-popup-paging">
+	<?php if ($pages > 1): ?>
+
+		<?php if($active>1): ?>
+			<a href="<?=$url?>&amp;page=0" title="zum Anfang" class="paging_first">zum Anfang</a>
+			<a href="<?=$url?>&amp;page=<?=$active-1?>" title="Vorheriger" class="paging_back">Vorheriger</a>
+		<?php endif; ?>
+
+		<div class="paging_pages">
+			<ul>
+
+				<?php for($pageNum=$startPage; $pageNum<$endPage; $pageNum++): ?>
+					<?php if($pageNum===$active): ?>
+						<li>
+							<span><?=$pageNum?></span>
+						</li>
+					<?php else: ?>
+						<li>
+							<a title="Seite <?=$pageNum?>" href="<?=$url?>&amp;page=<?=$pageNum?>"> <?=$pageNum?></a>
+						</li>
+					<?php endif; ?>
+				<?php endfor; ?>
+
+			</ul>
+		</div>
+
+		<?php if($active<$pages): ?>
+			<a class="paging_forward" title="Nächster" href="<?=$url?>&amp;page=<?=$active+1?>">Nächster</a>
+			<a class="paging_last" title="zum Ende" href="<?=$url?>&amp;page=<?=$pages?>">zum Ende</a>
+		<?php endif; ?>
+
+	<?php endif; ?>
+
+</div>
