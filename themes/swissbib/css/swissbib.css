@@ -453,3 +453,15 @@ a#tagRecord {
 .ui-tabs .ui-tabs-nav li {
 	margin: 0;
 }
+
+
+#holdings-items-filter-form {
+	border: 1px solid #CCCCCC;
+	margin-bottom: 10px;
+	padding: 5px;
+	text-align: left;
+}
+
+#holdings-items-filter-form td {
+	width: 32%;
+}

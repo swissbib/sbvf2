@@ -74,6 +74,10 @@ $holdings		= $recordDriver->getHoldingsStructure();
 
 <?php endforeach; ?>
 
+<div id="holdings-items-popup" style="display:none">
+	Loading...
+</div>
+
 <script type="text/javascript">
 	swissbib.Holdings.initRecord('<?=$recordDriver->getUniqueID();?>');
 </script>
