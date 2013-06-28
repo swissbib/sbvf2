@@ -82,10 +82,10 @@ return array(
 					)
 				)
 			),
-			'holdings-holding-ajax'     => array( // load holding holdings details for record with ajax
+			'holdings-holding-items'     => array( // load holding holdings details for record with ajax
 				'type'    => 'segment',
 				'options' => array(
-					'route'    => '/Holdings/:record/:institution/holdings[/:offset]',
+					'route'    => '/Holdings/:record/:institution/items/:resource[/:offset]',
 					'defaults' => array(
 						'controller' => 'holdings',
 						'action'     => 'holdingItems',
@@ -145,8 +145,18 @@ return array(
 				$locationMap	= $sm->get('Swissbib\LocationMap');
 				$eBooksOnDemand	= $sm->get('Swissbib\EbooksOnDemand');
 				$availability	= $sm->get('Swissbib\Availability');
+				$bibCodeHelper	= $sm->get('Swissbib\BibCodeHelper');
 
-				return new HoldingsHelper($ilsConnection, $hmac, $authManager, $config, $translator, $locationMap, $eBooksOnDemand, $availability);
+				return new HoldingsHelper(	$ilsConnection,
+											$hmac,
+											$authManager,
+											$config,
+											$translator,
+											$locationMap,
+											$eBooksOnDemand,
+											$availability,
+											$bibCodeHelper
+										);
 			},
 			'Swissbib\TargetsProxy\TargetsProxy' => function ($sm) {
 				$config        = $sm->get('VuFind\Config')->get('TargetsProxy');

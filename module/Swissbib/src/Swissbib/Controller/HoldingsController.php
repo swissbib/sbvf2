@@ -1,13 +1,14 @@
 <?php
 namespace Swissbib\Controller;
 
-use Swissbib\VuFind\ILS\Driver\Aleph;
+use Zend\Mvc\Exception;
 use Zend\View\Model\ViewModel;
 
 use VuFind\Controller\AbstractBase as BaseController;
-use VuFind\Record\Loader as RecordLoader;
 
 use Swissbib\RecordDriver\SolrMarc;
+use Swissbib\VuFind\ILS\Driver\Aleph;
+use Swissbib\Helper\BibCode;
 
 /**
  * Serve holdings data (items and holdings) for solr records over ajax
@@ -27,6 +28,7 @@ class HoldingsController extends BaseController
 		$idRecord    = $this->params()->fromRoute('record');
 		$holdingsData= $this->getRecord($idRecord)->getInstitutionHoldings($institution);
 		$template	 = 'Holdings/nodata';
+		$holdingsData['idRecord'] = $idRecord;
 
 		if (isset($holdingsData['items'])) {
 			$template = 'Holdings/items';
@@ -42,14 +44,14 @@ class HoldingsController extends BaseController
 	{
 		$idRecord    = $this->params()->fromRoute('record');
 		$institution = $this->params()->fromRoute('institution');
+		$resourceId	 = $this->params()->fromRoute('resource');
 		$offset		 = $this->params()->fromRoute('offset');
 		$year		 = $this->params()->fromQuery('year');
-		$volume		 = $this->params()->fromQuery('volume');
-		$record		 = $this->getRecord($idRecord);
+		$volume		= $this->params()->fromQuery('volume');
 
 		/** @var Aleph $aleph */
 		$aleph		 	= $this->getILS();
-		$holdingHoldings= $aleph->getHoldingHoldings($idRecord, $institution, $offset, $year, $volume);
+		$holdingHoldings= $aleph->getHoldingHoldingItems($resourceId, $institution, $offset, $year, $volume);
 
 		$data = array($holdingHoldings);
 
@@ -69,6 +71,18 @@ class HoldingsController extends BaseController
 		}
 
 		return $viewModel;
+	}
+
+
+
+	protected function getResourceId($idRecord, $network)
+	{
+		/** @var BibCode $bibHelper */
+		$bibHelper	= $this->getServiceLocator()->get('Swissbib\BibCodeHelper');
+		$record		= $this->getRecord($idRecord);
+		$idls		= $bibHelper->getBibCode($network);
+
+		return strtoupper($idls) . $idRecord;
 	}
 
 

@@ -24,10 +24,10 @@ class Availability
 	 * Initialize
 	 * Build IDLS mapping for networks
 	 *
-	 * @param	Config		$config
 	 * @param	BibCode		$bibCodeHelper
+	 * @param	Config		$config
 	 */
-	public function __construct(Config $config, BibCode $bibCodeHelper)
+	public function __construct(BibCode $bibCodeHelper, Config $config)
 	{
 		$this->config        = $config;
 		$this->bibCodeHelper = $bibCodeHelper;
