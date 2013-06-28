@@ -62,14 +62,17 @@ class HoldingsController extends BaseController
 		$offset		= ($page -1) * 20;
 
 		/** @var Aleph $aleph */
-		$aleph		 = $this->getILS();
-		$holdingItems= $aleph->getHoldingHoldingItems($resourceId, $institution, $offset, $year, $volume);
-		$totalItems	= $aleph->getHoldingItemCount($resourceId, $institution);
+		$aleph        = $this->getILS();
+		$holdingItems = $aleph->getHoldingHoldingItems($resourceId, $institution, $offset, $year, $volume);
+		$totalItems   = $aleph->getHoldingItemCount($resourceId, $institution);
 		/** @var Holdings $helper */
-		$helper		= $this->getServiceLocator()->get('Swissbib\HoldingsHelper');
+		$helper      = $this->getServiceLocator()->get('Swissbib\HoldingsHelper');
+		$networkCode = $this->getNetworkFromResource($resourceId);
 
 		foreach ($holdingItems as $index => $holdingItem) {
 			$holdingItem['institution'] = $institution;
+			$holdingItem['network']     = $networkCode;
+			$holdingItem['bibsysnumber']= str_ireplace($networkCode, '', $resourceId);
 			$holdingItems[$index] = $helper->extendItem($holdingItem, $record);
 		}
 
@@ -114,6 +117,15 @@ class HoldingsController extends BaseController
 		return $viewModel;
 	}
 
+
+	protected function getNetworkFromResource($resourceId)
+	{
+		/** @var BibCode $bibHelper */
+		$bibHelper	= $this->getServiceLocator()->get('Swissbib\BibCodeHelper');
+		$bibCode	= strtoupper(substr($resourceId, 0, 5));
+
+		return $bibHelper->getNetworkCode($bibCode);
+	}
 
 
 	/**

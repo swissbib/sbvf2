@@ -235,10 +235,11 @@ class Aleph extends AlephDriver
 			'title'             => 'z13-title',
 			'author'            => 'z13-author',
 			'itemStatus'        => 'z30-item-status',
-			'callNumber'        => 'z30-call-no',
+			'signature'         => 'z30-call-no',
 			'library'           => 'z30-sub-library',
 			'barcode'           => 'z30-barcode',
-			'location'   	    => 'z30-collection',
+			'location_expanded' => 'z30-collection',
+			'location_code'		=> 'z30-collection',
 			'description'       => 'z30-description'
 		);
 
@@ -246,13 +247,8 @@ class Aleph extends AlephDriver
 
 		foreach ($linksToExtend as $link) {
 			$itemResponseData = $this->doHTTPRequest($link);
-			$itemData			= $this->extractResponseData($itemResponseData->item, $dataMap);
 
-			$itemData['availability'] = false;
-			$itemData['locationLabel'] = 'xxx';
-			$itemData['signature'] = 'xxx';
-
-			$items[] = $itemData;
+			$items[] = $this->extractResponseData($itemResponseData->item, $dataMap);
 		}
 
 		return $items;
