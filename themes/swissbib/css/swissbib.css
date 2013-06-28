@@ -406,6 +406,11 @@ label[for="search_favorites"] {
 	display: none;
 }
 
+
+#tab-collectionlist form[name=bulkActionForm] table.data {
+	width: 740px;
+}
+
 a#tagRecord {
 	padding-left: 12px;
 	background: url(../images/icon_add.gif) no-repeat 0 2px;
