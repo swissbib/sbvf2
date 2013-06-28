@@ -1,0 +1,88 @@
+<!-- begin: col1 (sidebar)  -->
+
+
+
+<div id="col1" class="sidebar">
+    <div id="col1_content" class="clearfix">
+        <!-- begin: sidebar -->
+        <div id="sidebar">
+
+        </div>
+        <!-- end: sidebar -->
+    </div>
+</div>
+<!-- end: col1 (sidebar) -->
+<!-- begin: col3 (content) -->
+<div id="col3" class="content">
+    <div id="col3_content" class="clearfix">
+        <!-- begin: content -->
+
+        <div id="content">
+
+
+            <? if (!empty($this->loadFavoriteInstitutions)): ?>
+
+                <!--todo:  da gibt es wohl Methoden dass inline script besser zu verpacken???-->
+
+                <script type="text/javascript">
+                    $.jStorage.flush();
+                    var libraryNameArray = [
+                        <? $i=1; foreach ($this->loadFavoriteInstitutions as $institution): ?>
+                            <?=  "\"" . $institution . "\"" ?> <?= sizeof($this->loadFavoriteInstitutions)  > $i ? ",\n":"\n"; $i++    ?>
+                        <? endforeach; ?>
+                    ];
+
+                    $.jStorage.set("libraryList",libraryNameArray);
+
+                </script>
+
+
+            <? endif; ?>
+
+
+
+            <div id="add-favorites">
+                <form   action="#"   onSubmit="return false;" method="get">
+                    <h2>Zu Favoriten hinzufügen</h2>
+
+                    <fieldset>
+                        <div class="fieldbox">
+                            <label for="libraryname" class="label"><strong>Bibliotheksname</strong> (name / code / place)</label>
+                            <input  type="text"  id="libraryname" class="text large" />
+                        </div>
+
+                    </fieldset>
+                </form>
+            </div>
+
+            <ul class="accordion-group">
+
+
+                <li class="accordion">
+                    <h2 class="accordion-header">Meine Favoriten</h2>
+                    <div id="favoriteaccordion">
+
+
+
+                        <div id="message"></div>
+                        <ul>
+
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+
+
+
+
+        </div>
+        <!-- end: content -->
+    </div>
+    <div id="ie_clearing">
+        &nbsp;
+    </div>
+</div>
+<!-- end: col3 (content) -->
+
+
+<?= $this->inlineScript()->appendFile("sbfavorites.js"); ?>

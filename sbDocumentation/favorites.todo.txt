@@ -1,0 +1,84 @@
+
+Bis jetzt gemacht
+
+1) Aktivierung der types zur Erweiterung der Optionen und Parameter für die SOLR Suche
+
+-> Ersatz der VuFind PluginFactories in Search/Options Search/Params und Search/Results
+ so dass je ein erweiterter PluginManager von Swissbib verwendet wird.
+ (plus ein kleiner Helper zur Vereinfachung: ExtendedSolrFactoryHelper)
+
+ Diese erstellen Solr Options- Params- und Results-typen in Search/Solr
+
+letztere können verwendet werden um Optionen, Parameter der SOLR Suche zu beeinflussen
+
+  -> Beispiel: Results->createBackendParameters()
+
+  Achtung: Die ist schon ein Gemisch aus alter Searchcomponent und dem neuen VuFindSearch Modul
+
+
+  Aktiviert wird das Ganze in SearchConttroller->getResultsManager() und der Konfiguration
+
+  [SwissbibSearchExtensions]
+  ;possibility to configure a comma seperated list of targets which should be extended by the swissbib module
+  ;currently only Solr is supported
+  ;only targets with the correct spelling are taken into account
+  ;without this property the basic functionality of VuFind will be used
+  extendedTargets=Solr
+
+
+2) Controller und snippet zur Anzeige von Favoriten
+- FavoritesController
+- favorites/display.phtml
+
+- Erweiterung der Haupnavigation zur Anzeige des Favoritenitems auch im nichtangemeldeten Zustand
+
+
+todo: Fabian
+1) bessers sessionHandling in displayAction:
+ich verwende jetzt einfach den Objektcache
+ -> wollte mich darin einlesen ob und wie ich die VuFind Mechanismen verwenden kann oder direkt Zend Session Komponenten verwenden muss
+ -> jetzt muss er filecache in local/cache gelöscht werden, damit die Anzeige funktioniert
+2) liefere die notwendigen Daten aus libadmin
+(s. displayAction - jetzt habe ich nur ein Testarray)
+
+
+3) Anzeige von ausgewählten INstitutionen (autosuggestion)
+ -> Einbau und leichte Anpassung der bisher verwendeten JavaScripts
+
+4) Anzeige der ausgewählten Institutionen in Struktur Netzwerk / Institution
+-> Mockup aus themes/swissbib/images/mockupFavorites.txt
+todo Fabian:
+- Aufbau der Struktur nach Auswahl
+- Löschen von einzelnen items bei entsprechendem Aufruf
+
+
+
+
+5) todo Günter
+
+Erweiterung der Suche (boosting) bei ausgewählten Institutionen
+-> Absprache mit Fabian:
+Wie kann ich die Institutionen aus der session lesen (s. oben)
+
+Idee wie Facetten gebilted werden: (Günter)
+-> Bildung von sogenannten QueryFacets (muss ich noch evaluieren - Montag)
+
+
+6) todo Fabian
+a) - Anzeige der Facetten aus der resultlist
+(Abhängig von 5)
+
+b) Vollanzeige
+
+c) Anzeige der Struktur auf Kontopage des Benutzers nach Anmeldung (weniger wichtig)
+
+
+
+
+
+
+
+
+
+
+

@@ -79,7 +79,19 @@ return array(
 						'action'     => 'list'
 					)
 				)
-			)
+			),
+            'favorites-display'     => array( // display defined favorite institutions
+                'type'    => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route'    => '/Favorites',
+                    'defaults' => array(
+                        'controller' => 'favorites',
+                        'action'     => 'display'
+                    )
+                )
+            )
+
+
 		)
 	),
 	'console'         => array(
@@ -114,7 +126,8 @@ return array(
 			'search'       => 'Swissbib\Controller\SearchController',
 			'summon'       => 'Swissbib\Controller\SummonController',
 			'holdings'     => 'Swissbib\Controller\HoldingsController',
-			'tab40import'  => 'Swissbib\Controller\Tab40ImportController'
+			'tab40import'  => 'Swissbib\Controller\Tab40ImportController',
+			'favorites'    => 'Swissbib\Controller\FavoritesController'
 		)
 	),
 	'service_manager' => array(
@@ -320,6 +333,7 @@ return array(
             'jquery-ui/js/jquery-ui.js',
             'lightbox.js',
             'common.js',
+
             //has a dependency to jQuery so has to be linked after this general component
             //move it into the swissbib libs
         ),
