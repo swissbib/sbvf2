@@ -1130,6 +1130,10 @@ class Holdings
 	 */
 	protected function getHoldLink(array $holdingItem)
 	{
+		if (!isset($holdingItem['localid'])) {
+			return null;
+		}
+
 		$linkValues = array(
 			'id'      => $holdingItem['localid'], // $this->idItem,
 			'item_id' => $this->buildItemId($holdingItem)
