@@ -248,8 +248,7 @@ return array(
 		'recorddriver_tabs'	=> array(
 			'VuFind\RecordDriver\SolrMarc' => array(
 				'tabs' => array(
-					'UserComments'	=> null, // Disable user comments tab
-                    'HierarchyTree' => null,
+					'UserComments'	=> null
 				)
 			),
 			'VuFind\RecordDriver\Summon' => array(
@@ -320,9 +319,16 @@ return array(
 					}
 				)
 			),
+			'hierarchy_driver' => array(
+				'factories' => array(
+					'series' => function ($sm) {
+						return \VuFind\Hierarchy\Driver\Factory::get($sm->getServiceLocator(), 'HierarchySeries');
+					},
+				)
+			),
 			'hierarchy_treerenderer' => array(
 				'invokables' => array(
-					'jstree' => 'Swissbib\VuFind\Hierarchy\TreeRenderer\JSTree',
+					'jstree' => 'Swissbib\VuFind\Hierarchy\TreeRenderer\JSTree'
 				)
 			)
 		)
@@ -336,11 +342,11 @@ return array(
     'swissbib' => array(
         'ignore_css_assets' => array(
             'blueprint/screen.css',
-            'jquery-ui.css'
+            'css/smoothness/jquery-ui.css'
         ),
 
         'ignore_js_assets' => array(
-            'jquery.min.js',
+            'jquery.min.js', // jquery 1.6
             'jquery.form.js',
             'jquery.metadata.js',
             'jquery.validate.min.js',
