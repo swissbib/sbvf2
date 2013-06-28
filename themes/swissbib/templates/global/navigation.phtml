@@ -10,7 +10,7 @@
 		<li class="nav_home">
 			<a href="<?=$this->url('search-home');?>">Home</a>
 		</li>
-		<?php if( $isLoggedIn ): ?>
+		<?if ( $isLoggedIn ): ?>
 			<li>
 				<a href="<?=$this->url('myresearch-home');?>"><?= $this->transEsc('menu.swissbib') ?></a>
 				<ul class="subnavigation">
@@ -31,7 +31,25 @@
 					</li>
 				</ul>
 			</li>
-		<?php endif; ?>
+
+        <? else: ?>
+
+
+			<li>
+                <a href="<?=$this->url('myresearch-home');?>"><?= $this->transEsc('menu.swissbib') ?></a>
+                <ul class="subnavigation">
+                    <li>
+                        <a href="<?=$this->url('favorites-display')?>"><?=$this->transEsc('Favoriten definieren')?></a>
+                    </li>
+                </ul>
+            </li>
+
+
+
+
+
+
+		<? endif; ?>
 		<li>
 			<a href="<?=$this->url('help-page',array('topic'=>'About'));?>"><?= $this->transEsc('menu.service.information') ?></a>
 		</li>
