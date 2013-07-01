@@ -783,7 +783,7 @@ h3.facet_more a {
  .tab {
  	padding:20px 20px 10px 20px;
 	margin:0;
-	background-color:#FFFFFF;
+	background-color:#FFFFFF !important;
 	zoom:1;
  }
 .tabs ul.ui-tabs-nav {
@@ -817,13 +817,13 @@ h3.facet_more a {
 	color:#000000;
 	text-decoration:none;
 }
-.tabs ul.ui-tabs-nav li.ui-tabs-selected {
+.tabs ul.ui-tabs-nav li.ui-tabs-active {
 	background-color:#FFFFFF;
 	background-image:url(../../images/divider_tab-active.gif);
 	margin-left:-5px;
 	padding-left:5px;
 }
-.tabs ul.ui-tabs-nav li.ui-tabs-selected a, .tabs ul.ui-tabs-nav li a:focus  {
+.tabs ul.ui-tabs-nav li.ui-tabs-active a, .tabs ul.ui-tabs-nav li a:focus  {
 	color:#000000;
 	text-decoration:none;
 }
