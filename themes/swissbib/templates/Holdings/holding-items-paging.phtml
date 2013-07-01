@@ -10,21 +10,23 @@
 	<?php if ($pages > 1): ?>
 
 		<?php if($active>1): ?>
-			<a href="<?=$url?>&amp;page=0" title="zum Anfang" class="paging_first">zum Anfang</a>
-			<a href="<?=$url?>&amp;page=<?=$active-1?>" title="Vorheriger" class="paging_back">Vorheriger</a>
+			<?php if($pages > 5): ?>
+				<a href="<?=$url?>&amp;page=0" title="<?=$this->transEsc('Start Page')?>" class="paging_first"><?=$this->transEsc('Start Page')?></a>
+			<?php endif; ?>
+			<a href="<?=$url?>&amp;page=<?=$active-1?>" title="<?=$this->transEsc('Prev')?>" class="paging_back"><?=$this->transEsc('Prev')?></a>
 		<?php endif; ?>
 
 		<div class="paging_pages">
 			<ul>
 
-				<?php for($pageNum=$startPage; $pageNum<$endPage; $pageNum++): ?>
+				<?php for($pageNum=$startPage; $pageNum<=$endPage; $pageNum++): ?>
 					<?php if($pageNum===$active): ?>
 						<li>
 							<span><?=$pageNum?></span>
 						</li>
 					<?php else: ?>
 						<li>
-							<a title="Seite <?=$pageNum?>" href="<?=$url?>&amp;page=<?=$pageNum?>"> <?=$pageNum?></a>
+							<a title="<?=$this->transEsc('pagination.page')?> <?=$pageNum?>" href="<?=$url?>&amp;page=<?=$pageNum?>"> <?=$pageNum?></a>
 						</li>
 					<?php endif; ?>
 				<?php endfor; ?>
@@ -33,8 +35,10 @@
 		</div>
 
 		<?php if($active<$pages): ?>
-			<a class="paging_forward" title="Nächster" href="<?=$url?>&amp;page=<?=$active+1?>">Nächster</a>
-			<a class="paging_last" title="zum Ende" href="<?=$url?>&amp;page=<?=$pages?>">zum Ende</a>
+			<a class="paging_forward" title="<?=$this->transEsc('Next');?>" href="<?=$url?>&amp;page=<?=$active+1?>"><?=$this->transEsc('Next');?></a>
+			<?php if($pages > 5): ?>
+				<a class="paging_last" title="<?=$this->transEsc('End Page')?>" href="<?=$url?>&amp;page=<?=$pages?>"><?=$this->transEsc('End Page')?></a>
+			<?php endif; ?>
 		<?php endif; ?>
 
 	<?php endif; ?>
