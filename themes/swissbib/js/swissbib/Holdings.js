@@ -150,8 +150,9 @@ swissbib.Holdings = {
 		popup.html('');
 
 		var dialog = popup.dialog({
+			height: 600,
 			minHeight: 500,
-			maxHeight: 800,
+			maxHeight: 700,
 			width: 900,
 			title: dialogTitle || 'Holdings',
 			resizable: false

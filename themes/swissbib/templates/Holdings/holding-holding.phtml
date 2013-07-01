@@ -1,10 +1,21 @@
 <?php
 /** @var Array $holding */
+/** @var String $recordTitle */
 
-$mapLink	= isset($holding['locationMap']) && $holding['locationMap'] ?
-				'<a href="' . $holding['locationMap'] . '" class="holdingMapLink">' . $this->transEsc('Show_Location_Map') . '</a>' :
-				'';
-$moreDetailsLink	= $holding['itemsLink']['count'] ? '<a href="javascript:swissbib.Holdings.openHoldingItemsPopup(\'' . $this->url('holdings-holding-items', $holding['itemsLink']['url']) . '\', \'Test Title\')" title="Holdings Test Title">Enthält ' . $holding['itemsLink']['count'] . ' Items</a>' : 'Keine Items gefunden';
+if (isset($holding['locationMap']) && $holding['locationMap']) {
+	$mapLink = '<a href="' . $holding['locationMap'] . '" class="holdingMapLink">' . $this->transEsc('Show_Location_Map') . '</a>';
+} else {
+	$mapLink = '';
+}
+
+if ($holding['itemsLink']['count']) {
+	$popupDataUrl	= $this->url('holdings-holding-items', $holding['itemsLink']['url']);
+	$popupHref		= 'javascript:swissbib.Holdings.openHoldingItemsPopup(\'' . $popupDataUrl . '\', \'' . $this->escapeHtml($recordTitle) . '\')';
+	$popupLinkLabel	= 'Enthält ' . $holding['itemsLink']['count'] . ' Items';
+	$moreDetailsLink= '<a href="' . $popupHref . '" title="Show Holdings">' . $popupLinkLabel . '</a>';
+} else {
+	$moreDetailsLink= 'Keine Items gefunden';
+}
 
 ?>
 <tr>
