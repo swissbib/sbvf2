@@ -61,7 +61,7 @@ class FavoritesController extends BaseController
             //-> the real values should be a subset of our libadmin data
 
 
-            $cache->setItem("favoriteInstitutions",$testInstitutions);
+            $cache->setItem("favoriteInstitutions","loaded");
             $viewModel->setVariable("loadFavoriteInstitutions",$testInstitutions);
 
 

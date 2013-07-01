@@ -20,7 +20,7 @@ var doFavorites = {
         var sentFavorite = function(favoriteID) {
 
             //currentUrl = favorites_servlet_url + "?type=addFavorite&favoriteId=" + favoriteID;
-            var currentUrl = "http://localhost/vufind/Favorites";
+            var currentUrl = "http://sb-vf1.swissbib.unibas.ch/vufind/Favorites";
             var favorites_url = "/vufind/themes/swissbib/images/mockupFavorites.txt";
 
 
