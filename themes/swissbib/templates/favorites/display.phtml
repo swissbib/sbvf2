@@ -1,7 +1,8 @@
+<?php
+/** @var Array $availableInstitutions */
+
+?>
 <!-- begin: col1 (sidebar)  -->
-
-
-
 <div id="col1" class="sidebar">
     <div id="col1_content" class="clearfix">
         <!-- begin: sidebar -->
@@ -19,25 +20,28 @@
 
         <div id="content">
 
+			<?php if(false): ?>
 
-            <? if (!empty($this->loadFavoriteInstitutions)): ?>
+				<? if (!empty($this->loadFavoriteInstitutions)): ?>
 
-                <!--todo:  da gibt es wohl Methoden dass inline script besser zu verpacken???-->
+					<!--todo:  da gibt es wohl Methoden dass inline script besser zu verpacken???-->
 
-                <script type="text/javascript">
-                    $.jStorage.flush();
-                    var libraryNameArray = [
-                        <? $i=1; foreach ($this->loadFavoriteInstitutions as $institution): ?>
-                            <?=  "\"" . $institution . "\"" ?> <?= sizeof($this->loadFavoriteInstitutions)  > $i ? ",\n":"\n"; $i++    ?>
-                        <? endforeach; ?>
-                    ];
+					<script type="text/javascript">
+						$.jStorage.flush();
+						var libraryNameArray = [
+							<? $i=1; foreach ($this->loadFavoriteInstitutions as $institution): ?>
+								<?=  "\"" . $institution . "\"" ?> <?= sizeof($this->loadFavoriteInstitutions)  > $i ? ",\n":"\n"; $i++    ?>
+							<? endforeach; ?>
+						];
 
-                    $.jStorage.set("libraryList",libraryNameArray);
+						$.jStorage.set("libraryList",libraryNameArray);
 
-                </script>
+					</script>
 
 
-            <? endif; ?>
+				<? endif; ?>
+
+			<?php endif; ?>
 
 
 
@@ -73,6 +77,7 @@
             </ul>
 
 
+			<?=$this->render('favorites/selectionList')?>
 
 
         </div>
@@ -84,5 +89,11 @@
 </div>
 <!-- end: col3 (content) -->
 
+<script type="text/javascript">
+	jQuery(function(){
+		swissbib.FavoriteInstitutions.init(<?=json_encode($availableInstitutions)?>);
+	});
+</script>
 
-<?= $this->inlineScript()->appendFile("sbfavorites.js"); ?>
+
+<?php /** $this->inlineScript()->appendFile("sbfavorites.js");*/ ?>

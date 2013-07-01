@@ -10,13 +10,16 @@
 		<li class="nav_home">
 			<a href="<?=$this->url('search-home');?>">Home</a>
 		</li>
-		<?if ( $isLoggedIn ): ?>
-			<li>
-				<a href="<?=$this->url('myresearch-home');?>"><?= $this->transEsc('menu.swissbib') ?></a>
-				<ul class="subnavigation">
-                    <li>
-                        <a href="<?=$this->url('search-settings');?>"><?=$this->transEsc('My_Search_Settings')?></a>
-                    </li>
+		<li>
+			<a href="<?=$this->url('myresearch-home');?>"><?= $this->transEsc('menu.swissbib') ?></a>
+			<ul class="subnavigation">
+				<li>
+					<a href="<?=$this->url('myresearch-favorite-institutions')?>"><?= $this->transEsc('menu.mylibraries') ?></a>
+				</li>
+				<?if ( $isLoggedIn ): ?>
+					<li>
+						<a href="<?=$this->url('search-settings');?>"><?=$this->transEsc('My_Search_Settings')?></a>
+					</li>
 					<li>
 						<a href="<?=$this->url('myresearch-favorites');?>"><?=$this->transEsc('Favorites')?></a>
 					</li>
@@ -26,30 +29,9 @@
 					<li>
 						<a href="#">Meine Suchdienste</a>
 					</li>
-					<li>
-						<a href="#"><?= $this->transEsc('menu.mylibraries') ?></a>
-					</li>
-				</ul>
-			</li>
-
-        <? else: ?>
-
-
-			<li>
-                <a href="<?=$this->url('myresearch-home');?>"><?= $this->transEsc('menu.swissbib') ?></a>
-                <ul class="subnavigation">
-                    <li>
-                        <a href="<?=$this->url('favorites-display')?>"><?=$this->transEsc('Favoriten definieren')?></a>
-                    </li>
-                </ul>
-            </li>
-
-
-
-
-
-
-		<? endif; ?>
+				<? endif; ?>
+			</ul>
+		</li>
 		<li>
 			<a href="<?=$this->url('help-page',array('topic'=>'About'));?>"><?= $this->transEsc('menu.service.information') ?></a>
 		</li>
