@@ -19,6 +19,8 @@ use Swissbib\RecordDriver\Summon;
 use Swissbib\RecordDriver\WorldCat;
 use Swissbib\RecordDriver\Helper\EbooksOnDemand;
 use Swissbib\RecordDriver\Helper\Availability;
+use Swissbib\Favorites\DataSource as FavoritesDataSource;
+use Swissbib\Favorites\Manager as FavoritesManager;
 
 return array(
 	'router'          => array(
@@ -81,12 +83,12 @@ return array(
 					)
 				)
 			),
-            'favorites-display'     => array( // display defined favorite institutions
-                'type'    => 'Zend\Mvc\Router\Http\Literal',
+            'myresearch-favorite-institutions' => array( // display defined favorite institutions
+                'type'    => 'segment',
                 'options' => array(
-                    'route'    => '/Favorites',
+                    'route'    => '/MyResearch/FavoriteInstitutions[/:action]',
                     'defaults' => array(
-                        'controller' => 'favorites',
+                        'controller' => 'institutionFavorites',
                         'action'     => 'display'
                     )
                 )
@@ -121,14 +123,14 @@ return array(
 	),
 	'controllers'     => array(
 		'invokables' => array(
-			'helppage'     => 'Swissbib\Controller\HelpPageController',
-			'libadminsync' => 'Swissbib\Controller\LibadminSyncController',
-			'my-research'  => 'Swissbib\Controller\MyResearchController',
-			'search'       => 'Swissbib\Controller\SearchController',
-			'summon'       => 'Swissbib\Controller\SummonController',
-			'holdings'     => 'Swissbib\Controller\HoldingsController',
-			'tab40import'  => 'Swissbib\Controller\Tab40ImportController',
-			'favorites'    => 'Swissbib\Controller\FavoritesController'
+			'helppage'    		 => 'Swissbib\Controller\HelpPageController',
+			'libadminsync'		 => 'Swissbib\Controller\LibadminSyncController',
+			'my-research' 		 => 'Swissbib\Controller\MyResearchController',
+			'search'      		 => 'Swissbib\Controller\SearchController',
+			'summon'      		 => 'Swissbib\Controller\SummonController',
+			'holdings'    		 => 'Swissbib\Controller\HoldingsController',
+			'tab40import' 		 => 'Swissbib\Controller\Tab40ImportController',
+			'institutionFavorites'=> 'Swissbib\Controller\FavoritesController'
 		)
 	),
 	'service_manager' => array(
@@ -191,6 +193,18 @@ return array(
 				$alephNetworkConfig	= $sm->get('VuFind\Config')->get('Holdings')->AlephNetworks;
 
 				return new Availability($availabilityConfig, $alephNetworkConfig, $logger);
+			},
+			'Swissbib\FavoriteInstitutions\DataSource' => function ($sm) {
+				$objectCache	= $sm->get('VuFind\CacheManager')->getCache('object');
+				$configManager	= $sm->get('VuFind\Config');
+
+				return new FavoritesDataSource($objectCache, $configManager);
+			},
+			'Swissbib\FavoriteInstitutions\Manager' => function ($sm) {
+				$userTable		=  $sm->get('VuFind\DbTablePluginManager')->get('user');
+				$sessionStorage	=  $sm->get('VuFind\SessionManager')->getStorage();
+
+				return new FavoritesManager($userTable, $sessionStorage);
 			}
 		)
 	),
@@ -329,11 +343,6 @@ return array(
 			)
 		)
 	),
-	//'swissbib' => array(
-	//	'ignore_assets' => array(
-	//		'blueprint/screen.css',
-	//		'jquery-ui.css'
-	//	),
 
     'swissbib' => array(
         'ignore_css_assets' => array(

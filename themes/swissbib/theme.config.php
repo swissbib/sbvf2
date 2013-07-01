@@ -42,8 +42,9 @@ return array(
 		'swissbib/AdvancedSearch.js',
   		'swissbib/Holdings.js',
 		'swissbib/searchsettings.js',
-		'swissbib/autocomplete.base.js', //used for current highlighting based on java servlet, probably replaced by default VuFind mechanism
-		'swissbib/autocomplete.initialize.js',
+		//'swissbib/autocomplete.base.js', //used for current highlighting based on java servlet, probably replaced by default VuFind mechanism
+		//'swissbib/autocomplete.initialize.js',
+		'swissbib/FavoriteInstitutions.js',
 
 		'blueprint/commonFromBluePrint.js',
 

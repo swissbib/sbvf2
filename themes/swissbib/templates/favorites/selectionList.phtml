@@ -1,0 +1,10 @@
+<?php
+/** @var Array $userInstitutions */
+?>
+<p>List of selected institutions</p>
+
+<ul>
+	<?php foreach ($userInstitutions as $institutionCode => $institutionLabel): ?>
+		<li><?=$institutionLabel?></li>
+	<?php endforeach; ?>
+</ul>
