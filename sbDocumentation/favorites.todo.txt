@@ -74,6 +74,27 @@ c) Anzeige der Struktur auf Kontopage des Benutzers nach Anmeldung (weniger wich
 
 
 
+6) Router (Frage)
+
+module.config.php
+
+            'favorites-display'     => array( // display defined favorite institutions
+                'type'    => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route'    => '/Favorites',
+                    'defaults' => array(
+                        'controller' => 'favorites',
+                        'action'     => 'display'
+                    )
+                )
+            )
+
+
+Welchen Routertyp würdest Du nehmen?
+Habe in den Sachen zuwenig Routine
+
+
+
 
 
 
