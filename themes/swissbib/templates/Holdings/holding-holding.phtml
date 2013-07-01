@@ -8,13 +8,14 @@ if (isset($holding['locationMap']) && $holding['locationMap']) {
 	$mapLink = '';
 }
 
-if ($holding['itemsLink']['count']) {
+if (isset($holding['itemsLink']) && $holding['itemsLink']['count']) {
 	$popupDataUrl	= $this->url('holdings-holding-items', $holding['itemsLink']['url']);
 	$popupHref		= 'javascript:swissbib.Holdings.openHoldingItemsPopup(\'' . $popupDataUrl . '\', \'' . $this->escapeHtml($recordTitle) . '\')';
-	$popupLinkLabel	= 'Enthält ' . $holding['itemsLink']['count'] . ' Items';
+//	$popupLinkLabel	= 'Enthält ' . $holding['itemsLink']['count'] . ' Items';
+	$popupLinkLabel	= $this->transEsc('holdings_items_found');
 	$moreDetailsLink= '<a href="' . $popupHref . '" title="Show Holdings">' . $popupLinkLabel . '</a>';
 } else {
-	$moreDetailsLink= 'Keine Items gefunden';
+	$moreDetailsLink= $this->transEsc('holdings_noitems');
 }
 
 ?>
