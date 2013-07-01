@@ -2,6 +2,7 @@
 /** @var Array[] $holdings */
 /** @var Integer $record */
 /** @var String $institution */
+/** @var String $recordTitle */
 
 $idTable	= 'holdings-holding-' . $record . '-' . $institution;
 ?>
@@ -21,8 +22,9 @@ $idTable	= 'holdings-holding-' . $record . '-' . $institution;
 			// Items
 			foreach($holdings as $holding) {
 				echo $this->render('Holdings/holding-holding.phtml', array(
-					'holding'	=> $holding,
-					'record'	=> $record
+					'holding'		=> $holding,
+					'record'		=> $record,
+					'recordTitle'	=> $recordTitle
 				));
 			}
 		?>

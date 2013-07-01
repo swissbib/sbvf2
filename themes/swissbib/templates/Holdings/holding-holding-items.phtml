@@ -21,7 +21,7 @@ if($volume) {
 <form id="holdings-items-filter-form" action="<?=$this->escapeHtml($baseUrl)?>">
 	<input type="hidden" name="page" value="<?=$this->escapeHtml($page)?>">
 
-	<table>
+	<table id="holdings-items-header">
 		<tr>
 			<td>
 				<?php if (sizeof($filters['years'])): ?>

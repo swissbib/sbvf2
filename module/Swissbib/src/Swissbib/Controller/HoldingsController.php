@@ -29,10 +29,12 @@ class HoldingsController extends BaseController
 	{
 		$institution = $this->params()->fromRoute('institution');
 		$idRecord    = $this->params()->fromRoute('record');
-		$holdingsData= $this->getRecord($idRecord)->getInstitutionHoldings($institution);
+		$record		 = $this->getRecord($idRecord);
+		$holdingsData= $record->getInstitutionHoldings($institution);
 		$template	 = 'Holdings/nodata';
 
 		$holdingsData['record']   	 = $idRecord;
+		$holdingsData['recordTitle'] = $record->getTitle();
 		$holdingsData['institution'] = $institution;
 
 		if (isset($holdingsData['items'])) {
