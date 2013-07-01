@@ -479,6 +479,13 @@ a#tagRecord {
 	padding-bottom: 20px;
 }
 
+/** Hide availability column temporary */
+.holdings-items.holdingTable th:nth-child(2),
+.holdings-items.holdingTable td:nth-child(2) {
+  display: none;
+}
+
+
 
 /** Loading mask */
 
