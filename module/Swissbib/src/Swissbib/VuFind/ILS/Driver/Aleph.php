@@ -295,20 +295,19 @@ class Aleph extends AlephDriver
 	 *
 	 * @param        $resourceId
 	 * @param string $institutionCode
-	 * @param int    $offset
 	 * @param int    $year
 	 * @param int    $volume
 	 * @return	Integer
 	 */
-	public function getHoldingItemCount($resourceId, $institutionCode = '', $offset = 0, $year = 0, $volume = 0)
+	public function getHoldingItemCount($resourceId, $institutionCode = '', $year = 0, $volume = 0)
 	{
 		$links	= $this->getHoldingHoldingsLinkList(	$resourceId,
 														$institutionCode,
-														$offset,
+														0,
 														$year,
 														$volume);
 
-		return sizeof($links) + $offset;
+		return sizeof($links);
 	}
 
 

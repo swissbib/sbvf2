@@ -53,8 +53,8 @@ if($volume) {
 
 </form>
 
-<?=$this->render('Holdings/items')?>
-
-<pre style="text-align: left; font-size:12px">
-<?php /*print_r($items);*/ ?>
-</pre>
+<?php if (sizeof($items)): ?>
+	<?=$this->render('Holdings/items')?>
+<?php else: ?>
+	<p>Für die aktuell Filterauswahl sind keine Daten vorhanden</p>
+<?php endif; ?>
