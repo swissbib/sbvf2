@@ -6,6 +6,7 @@
 /** @var Integer $year */
 /** @var Integer $volume */
 /** @var Array $baseUrlParams */
+/** @var String $institution */
 
 $baseUrl	= $this->url('holdings-holding-items', $baseUrlParams) . '?';
 $fullUrl	= $baseUrl . '?';
@@ -16,6 +17,8 @@ if($year) {
 if($volume) {
 	$fullUrl .= '&volume=' . urlencode($volume);
 }
+
+$institutionLabel	= $this->zendTranslate(strtolower($institution), 'institution');
 
 ?>
 <form id="holdings-items-filter-form" action="<?=$this->escapeHtml($baseUrl)?>">
@@ -52,6 +55,8 @@ if($volume) {
 	</table>
 
 </form>
+
+<h4><?=$this->escapeHtml($institutionLabel)?></h4>
 
 <?php if (sizeof($items)): ?>
 	<?=$this->render('Holdings/items')?>
