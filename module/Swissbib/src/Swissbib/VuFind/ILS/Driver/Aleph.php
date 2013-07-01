@@ -180,8 +180,7 @@ class Aleph extends AlephDriver
 					$offset = 0,
 					$year = 0,
 					$volume = 0,
-					array $extraRestParams = array(),
-					$loadMore = false
+					array $extraRestParams = array()
 	) {
 		if (!is_array($this->itemLinks) || true) {
 			$pathElements	= array('record', $resourceId, 'items');
@@ -191,7 +190,7 @@ class Aleph extends AlephDriver
 				$parameters['sublibrary'] = $institutionCode;
 			}
 			if ($offset) {
-				$parameters['startPos'] = intval($offset);
+				$parameters['startPos'] = intval($offset) + 1;
 			}
 			if ($year) {
 				$parameters['year'] = intval($year);

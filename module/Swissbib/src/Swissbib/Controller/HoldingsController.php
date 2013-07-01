@@ -76,6 +76,9 @@ class HoldingsController extends BaseController
 		$bibSysNumber		= $dummyHoldingItem['bibsysnumber'];
 		$admCode			= $dummyHoldingItem['adm_code'];
 		$resourceFilters	= $aleph->getResourceFilters($resourceId);
+		$extendingOptions	= array(
+								   'availability'	=> false
+								);
 
 			// Add missing data to holding items
 		foreach ($holdingItems as $index => $holdingItem) {
@@ -83,9 +86,7 @@ class HoldingsController extends BaseController
 			$holdingItem['network']    		= $networkCode;
 			$holdingItem['bibsysnumber']	= $bibSysNumber;
 			$holdingItem['adm_code']		= $admCode;
-			$holdingItems[$index] 			= $helper->extendItem($holdingItem, $record, array(
-																						   'availability'	=> false
-																					 	 ));
+			$holdingItems[$index] 			= $helper->extendItem($holdingItem, $record, $extendingOptions);
 		}
 
 		$data = array(
