@@ -18,6 +18,7 @@ use Swissbib\RecordDriver\Missing as RecordDriverMissing;
 use Swissbib\RecordDriver\Summon;
 use Swissbib\RecordDriver\WorldCat;
 use Swissbib\RecordDriver\Helper\EbooksOnDemand;
+use Swissbib\RecordDriver\Helper\Availability;
 
 return array(
 	'router'          => array(
@@ -131,8 +132,9 @@ return array(
 				$translator		= $sm->get('VuFind\Translator');
 				$locationMap	= $sm->get('Swissbib\LocationMap');
 				$eBooksOnDemand	= $sm->get('Swissbib\EbooksOnDemand');
+				$availability	= $sm->get('Swissbib\Availability');
 
-				return new HoldingsHelper($ilsConnection, $hmac, $authManager, $config, $translator, $locationMap, $eBooksOnDemand);
+				return new HoldingsHelper($ilsConnection, $hmac, $authManager, $config, $translator, $locationMap, $eBooksOnDemand, $availability);
 			},
 			'Swissbib\TargetsProxy\TargetsProxy' => function ($sm) {
 				$config        = $sm->get('VuFind\Config')->get('TargetsProxy');
@@ -169,6 +171,13 @@ return array(
 				$translator			  = $sm->get('VuFind\Translator');
 
 				return new EbooksOnDemand($eBooksOnDemandConfig, $translator);
+			},
+			'Swissbib\Availability' => function ($sm) {
+				$logger				= $sm->get('VuFind\Logger');
+				$availabilityConfig = $sm->get('VuFind\Config')->get('config')->Availability;
+				$alephNetworkConfig	= $sm->get('VuFind\Config')->get('Holdings')->AlephNetworks;
+
+				return new Availability($availabilityConfig, $alephNetworkConfig, $logger);
 			}
 		)
 	),
@@ -195,7 +204,8 @@ return array(
 			'tabTemplate'			  => 'Swissbib\View\Helper\TabTemplate',
 			'zendTranslate'           => 'Zend\I18n\View\Helper\Translate',
 			'getVersion'              => 'Swissbib\View\Helper\GetVersion',
-			'holdingActions'          => 'Swissbib\View\Helper\HoldingActions'
+			'holdingActions'          => 'Swissbib\View\Helper\HoldingActions',
+			'availabilityInfo'        => 'Swissbib\View\Helper\AvailabilityInfo'
 		),
 		'factories' => array(
 			'institutionSorter' => function ($sm) {
@@ -221,8 +231,7 @@ return array(
 		'recorddriver_tabs'	=> array(
 			'VuFind\RecordDriver\SolrMarc' => array(
 				'tabs' => array(
-					'UserComments'	=> null, // Disable user comments tab
-                    'HierarchyTree' => null,
+					'UserComments'	=> null
 				)
 			),
 			'VuFind\RecordDriver\Summon' => array(
@@ -293,9 +302,16 @@ return array(
 					}
 				)
 			),
+			'hierarchy_driver' => array(
+				'factories' => array(
+					'series' => function ($sm) {
+						return \VuFind\Hierarchy\Driver\Factory::get($sm->getServiceLocator(), 'HierarchySeries');
+					},
+				)
+			),
 			'hierarchy_treerenderer' => array(
 				'invokables' => array(
-					'jstree' => 'Swissbib\VuFind\Hierarchy\TreeRenderer\JSTree',
+					'jstree' => 'Swissbib\VuFind\Hierarchy\TreeRenderer\JSTree'
 				)
 			)
 		)
@@ -309,11 +325,11 @@ return array(
     'swissbib' => array(
         'ignore_css_assets' => array(
             'blueprint/screen.css',
-            'jquery-ui.css'
+            'css/smoothness/jquery-ui.css'
         ),
 
         'ignore_js_assets' => array(
-            'jquery.min.js',
+            'jquery.min.js', // jquery 1.6
             'jquery.form.js',
             'jquery.metadata.js',
             'jquery.validate.min.js',
