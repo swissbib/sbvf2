@@ -517,7 +517,7 @@ class Holdings
 	protected function extendHolding(array $holding, SolrMarc $recordDriver = null)
 	{
 		$holding	= $this->extendHoldingBasic($holding, $recordDriver);
-		$holding	= $this->extendHoldingIlsActions($holding, $recordDriver); // NOT USED AT THE MOMENT
+		$holding	= $this->extendHoldingIlsActions($holding, $recordDriver);
 
 		return $holding;
 	}
@@ -560,20 +560,26 @@ class Holdings
 	 */
 	protected function extendHoldingIlsActions(array $holding, SolrMarc $recordDriver = null)
 	{
-		$idls		= $this->bibCodeHelper->getBibCode($holding['network']);
-		$resourceId	= $idls . $holding['bibsysnumber'];
-		$itemsCount	= $this->getIlsDriver()->getHoldingItemCount($resourceId, $holding['institution']);
+		$networkCode = $holding['network'];
 
-		$holding['itemsLink'] = array(
-			'count'			=> $itemsCount,
-			'resource'		=> $resourceId,
-			'institution'	=> $holding['institution'],
-			'url'			=> array(
-				'record'		=> $this->idItem,
-				'institution'	=> $holding['institution'],
-				'resource'		=> $resourceId
-			)
-		);
+		if ($this->isAlephNetwork($networkCode)) {
+			if ($this->isRestfulNetwork($networkCode)) {
+				$idls		= $this->bibCodeHelper->getBibCode($holding['network']);
+				$resourceId	= $idls . $holding['bibsysnumber'];
+				$itemsCount	= $this->getIlsDriver()->getHoldingItemCount($resourceId, $holding['institution']);
+
+				$holding['itemsLink'] = array(
+					'count'			=> $itemsCount,
+					'resource'		=> $resourceId,
+					'institution'	=> $holding['institution'],
+					'url'			=> array(
+						'record'		=> $this->idItem,
+						'institution'	=> $holding['institution'],
+						'resource'		=> $resourceId
+					)
+				);
+			}
+		}
 
 		return $holding;
 	}
