@@ -4,11 +4,17 @@ namespace Swissbib\View\Helper;
 use Zend\View\Helper\AbstractHelper;
 
 /**
- * [Description]
+ * Build holdings items paging
  *
  */
 class HoldingItemsPaging extends AbstractHelper
 {
+
+	/**
+	 * @var	Integer
+	 */
+	protected $pageSize = 10;
+
 	public function __invoke($baseUrl, $total, $activePage = 1)
 	{
 		$maxPages	= 10;
@@ -18,7 +24,7 @@ class HoldingItemsPaging extends AbstractHelper
 		$endPage	= $startPage + $maxPages > $total ? $total : $startPage + $maxPages;
 
 		$data = array(
-			'pages'		=> ceil($total/20),
+			'pages'		=> ceil($total/$this->pageSize),
 			'active'	=> $activePage,
 			'url'		=> $baseUrl,
 			'startPage'	=> $startPage,

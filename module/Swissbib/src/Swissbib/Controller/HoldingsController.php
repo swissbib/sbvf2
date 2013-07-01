@@ -1,7 +1,6 @@
 <?php
 namespace Swissbib\Controller;
 
-use Swissbib\RecordDriver\Helper\Holdings;
 use Zend\Mvc\Exception;
 use Zend\View\Model\ViewModel;
 
@@ -10,6 +9,7 @@ use VuFind\Controller\AbstractBase as BaseController;
 use Swissbib\RecordDriver\SolrMarc;
 use Swissbib\VuFind\ILS\Driver\Aleph;
 use Swissbib\Helper\BibCode;
+use Swissbib\RecordDriver\Helper\Holdings;
 
 /**
  * Serve holdings data (items and holdings) for solr records over ajax
@@ -17,6 +17,8 @@ use Swissbib\Helper\BibCode;
  */
 class HoldingsController extends BaseController
 {
+	/** @var	Integer		page size for holding items popup */
+	protected $PAGESIZE_HOLDINGITEMS = 10;
 
 	/**
 	 * Get list for items or holdings, depending on the data
@@ -39,13 +41,14 @@ class HoldingsController extends BaseController
 			$template = 'Holdings/holdings';
 		}
 
-		return $this->getViewModel($holdingsData, $template);
+		return $this->getAjaxViewModel($holdingsData, $template);
 	}
 
 
 
 	/**
-	 * Get items for holding
+	 * Get items of a holding
+	 * Displayed in a popup, opened from a holdings/items list in holdings tab
 	 *
 	 * @return ViewModel
 	 */
@@ -58,22 +61,27 @@ class HoldingsController extends BaseController
 		$page     	 = (int)$this->params()->fromQuery('page', 1);
 		$year        = (int)$this->params()->fromQuery('year');
 		$volume      = $this->params()->fromQuery('volume');
-
-		$offset		= ($page -1) * 20;
+		$offset		 = ($page-1)*$this->PAGESIZE_HOLDINGITEMS;
 
 		/** @var Aleph $aleph */
 		$aleph        = $this->getILS();
-		$holdingItems = $aleph->getHoldingHoldingItems($resourceId, $institution, $offset, $year, $volume);
+		$holdingItems = $aleph->getHoldingHoldingItems($resourceId, $institution, $offset, $year, $volume, $this->PAGESIZE_HOLDINGITEMS);
 		$totalItems   = $aleph->getHoldingItemCount($resourceId, $institution);
 		/** @var Holdings $helper */
 		$helper      = $this->getServiceLocator()->get('Swissbib\HoldingsHelper');
-		$networkCode = $this->getNetworkFromResource($resourceId);
+		$dummyHoldingItem	= $this->getFirstHoldingItem($idRecord, $institution);
+		$networkCode		= $dummyHoldingItem['network'];
+		$bibSysNumber		= $dummyHoldingItem['bibsysnumber'];
+		$admCode			= $dummyHoldingItem['adm_code'];
+		$resourceFilters	= $aleph->getResourceFilters($resourceId);
 
+			// Add missing data to holding items
 		foreach ($holdingItems as $index => $holdingItem) {
-			$holdingItem['institution'] = $institution;
-			$holdingItem['network']     = $networkCode;
-			$holdingItem['bibsysnumber']= str_ireplace($networkCode, '', $resourceId);
-			$holdingItems[$index] = $helper->extendItem($holdingItem, $record);
+			$holdingItem['institution']		= $institution;
+			$holdingItem['network']    		= $networkCode;
+			$holdingItem['bibsysnumber']	= $bibSysNumber;
+			$holdingItem['adm_code']		= $admCode;
+			$holdingItems[$index] 			= $helper->extendItem($holdingItem, $record);
 		}
 
 		$data = array(
@@ -81,8 +89,8 @@ class HoldingsController extends BaseController
 			'page'			=> $page,
 			'year'			=> $year,
 			'volume'		=> $volume,
-			'filters'		=> $aleph->getResourceFilters($resourceId),
-			'total'			=> $totalItems,
+			'filters'		=> $resourceFilters,
+			'total'			=> $totalItems, // for paging
 			'baseUrlParams'	=> array(
 				'institution'	=> $institution,
 				'record'		=> $idRecord,
@@ -90,8 +98,23 @@ class HoldingsController extends BaseController
 			)
 		);
 
-		return $this->getViewModel($data, 'Holdings/holding-holding-items');
+		return $this->getAjaxViewModel($data, 'Holdings/holding-holding-items');
 	}
+
+
+
+	/**
+	 * @param $idRecord
+	 * @param $institutionCode
+	 * @return	Array
+	 */
+	protected function getFirstHoldingItem($idRecord, $institutionCode)
+	{
+		$holdingItems = $this->getRecord($idRecord)->getInstitutionHoldings($institutionCode, false);
+
+		return $holdingItems['holdings'][0];
+	}
+
 
 
 
@@ -103,7 +126,7 @@ class HoldingsController extends BaseController
 	 * @param bool  $terminal
 	 * @return ViewModel
 	 */
-	protected function getViewModel(array $variables = array(), $template = null, $terminal = true)
+	protected function getAjaxViewModel(array $variables = array(), $template = null, $terminal = true)
 	{
 		$viewModel = new ViewModel($variables);
 
@@ -118,14 +141,35 @@ class HoldingsController extends BaseController
 	}
 
 
+
+	/**
+	 * Extract network from resource id
+	 * The five first chars of the resource are the bib code.
+	 * Convert the bib code into network code
+	 *
+	 * @todo	Is there a more stable version to do this? It works, but..
+	 * @param	String		$resourceId
+	 * @return	String
+	 */
 	protected function getNetworkFromResource($resourceId)
 	{
-		/** @var BibCode $bibHelper */
-		$bibHelper	= $this->getServiceLocator()->get('Swissbib\BibCodeHelper');
 		$bibCode	= strtoupper(substr($resourceId, 0, 5));
 
-		return $bibHelper->getNetworkCode($bibCode);
+		return $this->getBibCodeHelper()->getNetworkCode($bibCode);
 	}
+
+
+
+	/**
+	 * Get bib code helper service
+	 *
+	 * @return BibCode $bibHelper
+	 */
+	protected function getBibCodeHelper()
+	{
+		return $this->getServiceLocator()->get('Swissbib\BibCodeHelper');
+	}
+
 
 
 	/**
@@ -139,7 +183,6 @@ class HoldingsController extends BaseController
 	{
 		/** @var BibCode $bibHelper */
 		$bibHelper	= $this->getServiceLocator()->get('Swissbib\BibCodeHelper');
-//		$record		= $this->getRecord($idRecord);
 		$idls		= $bibHelper->getBibCode($network);
 
 		return strtoupper($idls) . $idRecord;

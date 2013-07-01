@@ -109,7 +109,9 @@ class Availability
 	 */
 	protected function fetch($url)
 	{
-		$client = new HttpClient($url);
+		$client = new HttpClient($url, array(
+							'timeout'      => 3
+					   ));
 
 		/** @var HttpResponse $response */
 		$response = $client->send();

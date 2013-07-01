@@ -465,3 +465,15 @@ a#tagRecord {
 #holdings-items-filter-form td {
 	width: 32%;
 }
+
+#holdings-items-popup {
+	padding-bottom: 20px;
+}
+
+.loadmask-msg {
+	border-color:#ccc !important;
+	background-color: #F89205 !important;
+}
+.loadmask-msg div {
+	border-color: #fc9405 !important;
+}

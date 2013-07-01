@@ -203,15 +203,15 @@ class Holdings
 	 * @param		SolrMarc	$recordDriver
 	 * @return    Array[]|Boolean            Contains lists for items and holdings {items=>[],holdings=>[]}
 	 */
-	public function getHoldings(SolrMarc $recordDriver, $institutionCode)
+	public function getHoldings(SolrMarc $recordDriver, $institutionCode, $extend = true)
 	{
 		if ($this->holdingData === false) {
 			$this->holdingData = array();
 
 			if ($this->hasItems()) {
-				$this->holdingData['items'] = $this->getItemsData($recordDriver, $institutionCode);
+				$this->holdingData['items'] = $this->getItemsData($recordDriver, $institutionCode, $extend);
 			} elseif ($this->hasHoldings()) {
-				$this->holdingData['holdings'] = $this->getHoldingData($recordDriver, $institutionCode);
+				$this->holdingData['holdings'] = $this->getHoldingData($recordDriver, $institutionCode, $extend);
 			}
 		}
 
@@ -376,17 +376,20 @@ class Holdings
 	 * Get holding items for an institution
 	 *
 	 * @param	SolrMarc	$recordDriver
-	 * @param    String $institutionCode
-	 * @return    Array   Institution Items
+	 * @param	String		$institutionCode
+	 * @param	Boolean		$extend
+	 * @return	Array		Institution Items
 	 */
-	protected function getItemsData(SolrMarc $recordDriver, $institutionCode)
+	protected function getItemsData(SolrMarc $recordDriver, $institutionCode, $extend = true)
 	{
 		$fieldName          = 949; // Field code for item information in holdings xml
 		$institutionItems = $this->geHoldingsData($fieldName, $this->fieldMapping, $institutionCode);
 
-		foreach ($institutionItems as $index => $item) {
-				// Add extra information for item
-			$institutionItems[$index] = $this->extendItem($item, $recordDriver);
+		if ($extend) {
+			foreach ($institutionItems as $index => $item) {
+					// Add extra information for item
+				$institutionItems[$index] = $this->extendItem($item, $recordDriver);
+			}
 		}
 
 		return $institutionItems;
@@ -634,7 +637,7 @@ class Holdings
 		$ilsDriver = $this->ils->getDriver();
 		$patron    = $this->getPatron();
 
-		$itemId  = $item['localid'] . $item['sequencenumber'];
+		$itemId  = $item['bibsysnumber'] . $item['sequencenumber'];
 		$groupId = $this->buildItemId($item);
 
 		$allowedActions = $ilsDriver->getAllowedActionsForItem($patron['id'], $itemId, $groupId);
@@ -662,7 +665,7 @@ class Holdings
 		$queryParams = array(
 			'func'           => 'item-photo-request',
 			'doc_library'    => $item['adm_code'],
-			'adm_doc_number' => $item['localid'],
+			'adm_doc_number' => $item['bibsysnumber'],
 			'item_sequence'  => $item['sequencenumber'],
 			'bib_doc_num'    => $item['bibsysnumber'],
 			'bib_library'    => 'DSV01'
@@ -974,15 +977,18 @@ class Holdings
 	 *
 	 * @param	SolrMarc	$recordDriver
 	 * @param	String		$institutionCode
+	 * @param	Boolean		$extend
 	 * @return    Array[]
 	 */
-	protected function getHoldingData(SolrMarc $recordDriver, $institutionCode)
+	protected function getHoldingData(SolrMarc $recordDriver, $institutionCode, $extend = true)
 	{
 		$fieldName          = 852; // Field code for item information in holdings xml
 		$institutionHoldings = $this->geHoldingsData($fieldName, $this->fieldMapping, $institutionCode);
 
-		foreach ($institutionHoldings as $index => $holding) {
-			$institutionHoldings[$index] = $this->extendHolding($holding, $recordDriver);
+		if ($extend) {
+			foreach ($institutionHoldings as $index => $holding) {
+				$institutionHoldings[$index] = $this->extendHolding($holding, $recordDriver);
+			}
 		}
 
 		return $institutionHoldings;
@@ -1113,8 +1119,8 @@ class Holdings
 	 */
 	protected function buildItemId(array $holdingItem)
 	{
-		if (isset($holdingItem['adm_code']) && isset($holdingItem['localid']) && isset($holdingItem['sequencenumber'])) {
-			return $holdingItem['adm_code'] . $holdingItem['localid'] . $holdingItem['sequencenumber'];
+		if (isset($holdingItem['adm_code']) && isset($holdingItem['bibsysnumber']) && isset($holdingItem['sequencenumber'])) {
+			return $holdingItem['adm_code'] . $holdingItem['bibsysnumber'] . $holdingItem['sequencenumber'];
 		}
 
 		return 'incompleteItemData';
@@ -1130,12 +1136,12 @@ class Holdings
 	 */
 	protected function getHoldLink(array $holdingItem)
 	{
-		if (!isset($holdingItem['localid'])) {
+		if (!isset($holdingItem['bibsysnumber'])) {
 			return null;
 		}
 
 		$linkValues = array(
-			'id'      => $holdingItem['localid'], // $this->idItem,
+			'id'      => $holdingItem['bibsysnumber'], // $this->idItem,
 			'item_id' => $this->buildItemId($holdingItem)
 		);
 
