@@ -843,7 +843,9 @@ class SolrMarc extends VuFindSolrMarc
 	 */
 	public function getHierarchyType()
 	{
-		return $this->mainConfig->Hierarchy->driver;
+		$type = parent::getHierarchyType();
+
+		return $type ? $type : $this->mainConfig->Hierarchy->driver;
 	}
 
 
