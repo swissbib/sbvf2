@@ -134,54 +134,83 @@ swissbib.Holdings = {
 		window.open(url, 'map-popup', 'height=' + height + ',width=' + width).focus();
 	},
 
-	enableHoldingItemsPopupLinks: function(idTable) {
-		var that = this;
 
-		$('#' + idTable + ' a[rel=items]').click(function(event){
-			event.preventDefault();
-			var setup = $.proxy(that.setupItemsPopup, that),
-				popup = $('#holdings-items-popup');
 
-			popup.html('');
+	/**
+	 * Open popup with details about holding items
+	 *
+	 * @param	{String}	contentUrl		URL to load popup content from
+	 * @param	{String}	dialogTitle		Title of dialog
+	 */
+	openHoldingItemsPopup: function(contentUrl, dialogTitle) {
+		var that	= this,
+			popup	= $('#holdings-items-popup');
 
-			var dialog= popup.dialog({
-				autoOpen: false,
-				height: 650,
-				width: 900,
-				title: event.target.title || 'Holdings',
-				resizable: false
-			}).load(event.target.href, function(responseText, responseStatus, response){
-				setup(dialog);
-			}).dialog('open');
+			// Clear content
+		popup.html('');
+
+		var dialog = popup.dialog({
+			minHeight: 500,
+			maxHeight: 800,
+			width: 900,
+			title: dialogTitle || 'Holdings',
+			resizable: false
+		});
+
+		popup.mask("Loading...");
+
+		dialog.load(contentUrl, function(responseText, responseStatus, response){
+			that.setupItemsPopup(dialog);
 		});
 	},
 
-	setupItemsPopup: function() {
-		var that	 	= this,
-			container	= $('#holdings-items-popup'),
-			form		= container.find('form');
 
-		container.find('a').click(function(event){
+
+	/**
+	 * Enable special features in popup
+	 * Observe filter changes and paging links
+	 *
+	 * @param	{Object}	dialog
+	 */
+	setupItemsPopup: function(dialog) {
+		var that	 = this,
+			popup	= $('#holdings-items-popup'),
+			paging	= $('#holding-items-popup-paging'),
+			form	= popup.find('form');
+
+		popup.unmask();
+
+		paging.find('a').click(function(event){
 			event.preventDefault();
-			that.updateHoldingsPopup(event.target.href);
+			that.updateHoldingsPopup(event.target.href, dialog);
 		});
-		container.find('select').change(function(event){
+		popup.find('select').change(function(event){
+			popup.mask("Loading...");
 			$.ajax({
 				url: form.attr('action'),
 				data: form.serialize(),
 				success: function(response){
-					container.html(response);
-					that.setupItemsPopup();
+					popup.html(response);
+					that.setupItemsPopup(dialog);
 				}
 			});
 		});
 	},
 
-	updateHoldingsPopup: function(url) {
-		var that = this;
 
-		$('#holdings-items-popup').load(url, function(){
-			that.setupItemsPopup();
+	/**
+	 * Load new content from URL and install handlers again
+	 *
+	 * @param	{String}	url
+	 */
+	updateHoldingsPopup: function(url, dialog) {
+		var that	= this,
+			popup	= $('#holdings-items-popup');
+
+		popup.mask("Loading...");
+
+		popup.load(url, function(){
+			that.setupItemsPopup(dialog);
 		});
 	}
 

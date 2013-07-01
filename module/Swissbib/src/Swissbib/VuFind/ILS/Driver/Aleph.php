@@ -226,21 +226,22 @@ class Aleph extends AlephDriver
 					$offset = 0,
 					$year = 0,
 					$volume = 0,
-					$numItems = 20,
+					$numItems = 10,
 					array $extraRestParams = array()
 	) {
 		$links	= $this->getHoldingHoldingsLinkList($resourceId, $institutionCode, $offset, $year, $volume, $extraRestParams);
 		$items	= array();
 		$dataMap         = array(
-			'title'             => 'z13-title',
-			'author'            => 'z13-author',
-			'itemStatus'        => 'z30-item-status',
-			'signature'         => 'z30-call-no',
-			'library'           => 'z30-sub-library',
-			'barcode'           => 'z30-barcode',
-			'location_expanded' => 'z30-collection',
-			'location_code'		=> 'z30-collection',
-			'description'       => 'z30-description'
+			'title'             	=> 'z13-title',
+			'author'            	=> 'z13-author',
+			'itemStatus'        	=> 'z30-item-status',
+			'signature'         	=> 'z30-call-no',
+			'library'           	=> 'z30-sub-library',
+			'barcode'           	=> 'z30-barcode',
+			'location_expanded' 	=> 'z30-collection',
+			'location_code'			=> 'z30-collection',
+			'description'       	=> 'z30-description',
+			'raw-sequence-number'	=> 'z30-item-sequence'
 		);
 
 		$linksToExtend = array_slice($links, 0, $numItems);
@@ -248,7 +249,13 @@ class Aleph extends AlephDriver
 		foreach ($linksToExtend as $link) {
 			$itemResponseData = $this->doHTTPRequest($link);
 
-			$items[] = $this->extractResponseData($itemResponseData->item, $dataMap);
+			$item = $this->extractResponseData($itemResponseData->item, $dataMap);
+
+			if (isset($item['raw-sequence-number'])) {
+				$item['sequencenumber'] = sprintf('%06d', trim(str_replace('.', '', $item['raw-sequence-number'])));
+			}
+
+			$items[] = $item;
 		}
 
 		return $items;
