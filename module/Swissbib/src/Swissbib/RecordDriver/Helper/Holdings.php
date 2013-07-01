@@ -417,12 +417,13 @@ class Holdings
 	 *
 	 * @param	Array		$item
 	 * @param	SolrMarc	$recordDriver
+	 * @param	Array		$extendingOptions
 	 * @return	Array
 	 */
-	public function extendItem(array $item, SolrMarc $recordDriver = null)
+	public function extendItem(array $item, SolrMarc $recordDriver, array $extendingOptions = array())
 	{
-		$item	= $this->extendItemBasic($item, $recordDriver);
-		$item	= $this->extendItemIlsActions($item, $recordDriver);
+		$item	= $this->extendItemBasic($item, $recordDriver, $extendingOptions);
+		$item	= $this->extendItemIlsActions($item, $recordDriver, $extendingOptions);
 
 		return $item;
 	}
@@ -436,21 +437,32 @@ class Holdings
 	 *
 	 * @param	Array		$item
 	 * @param	SolrMarc	$recordDriver
+	 * @param	Array		$extendingOptions
 	 * @return	Array
 	 */
-	protected function extendItemBasic(array $item, SolrMarc $recordDriver)
+	protected function extendItemBasic(array $item, SolrMarc $recordDriver = null, array $extendingOptions = array())
 	{
 			// EOD LINK
-		$item['eodlink']	= $this->getEODLink($item, $recordDriver);
+		if (!isset($extendingOptions['eod']) || $extendingOptions['eod']) {
+			$item['eodlink']	= $this->getEODLink($item, $recordDriver);
+		}
+
 			// Location Map Link
-		$item['locationMap']= $this->getLocationMapLink($item);
+		if (!isset($extendingOptions['map']) || $extendingOptions['map']) {
+			$item['locationMap']= $this->getLocationMapLink($item);
+		}
+
 			// Location label
-		$item['locationLabel'] = $this->getLocationLabel($item);
+		if (!isset($extendingOptions['location']) || $extendingOptions['location']) {
+			$item['locationLabel'] = $this->getLocationLabel($item);
+		}
 			// Defaults to false, maybe ils will add more info
 		$item['availability'] = false;
 
-		if (isset($item['network']) && !$this->isRestfulNetwork($item['network'])) {
-			$item['backlink'] = $this->getBackLink($item['network'], strtoupper($item['institution']), $item);
+		if (!isset($extendingOptions['backlink']) || $extendingOptions['backlink']) {
+			if (isset($item['network']) && !$this->isRestfulNetwork($item['network'])) {
+				$item['backlink'] = $this->getBackLink($item['network'], strtoupper($item['institution']), $item);
+			}
 		}
 
 		return $item;
@@ -462,9 +474,10 @@ class Holdings
 	 *
 	 * @param	Array    	$item
 	 * @param	SolrMarc	$recordDriver
+	 * @param	Array		$extendingOptions
 	 * @return  Array
 	 */
-	protected function extendItemIlsActions(array $item, SolrMarc $recordDriver = null)
+	protected function extendItemIlsActions(array $item, SolrMarc $recordDriver = null, array $extendingOptions = array())
 	{
 		$networkCode	= isset($item['network']) ? strtolower($item['network']) : '';
 
@@ -472,15 +485,21 @@ class Holdings
 		if ($this->isAlephNetwork($networkCode)) {
 			if ($this->isRestfulNetwork($networkCode)) {
 					// Add hold link for item
-				$item['holdLink'] = $this->getHoldLink($item);
+				if (!isset($extendingOptions['hold']) || $extendingOptions['hold']) {
+					$item['holdLink'] = $this->getHoldLink($item);
+				}
 
-				if ($this->isLoggedIn()) {
-					$item['userActions'] = $this->getAllowedUserActions($item);
+				if (!isset($extendingOptions['actions']) || $extendingOptions['actions']) {
+					if ($this->isLoggedIn()) {
+						$item['userActions'] = $this->getAllowedUserActions($item);
+					}
 				}
 			}
 
 				// Add availability
-			$item['availability'] = $this->getAvailabilityInfos($item['bibsysnumber'], $item['barcode'], $networkCode);
+			if (!isset($extendingOptions['availability']) || $extendingOptions['availability']) {
+				$item['availability'] = $this->getAvailabilityInfos($item['bibsysnumber'], $item['barcode'], $networkCode);
+			}
 		}
 
 		return $item;
@@ -569,7 +588,7 @@ class Holdings
 	 * @param	SolrMarc	$recordDriver
 	 * @return	String|Boolean
 	 */
-	protected function getEODLink(array $item, SolrMarc $recordDriver)
+	protected function getEODLink(array $item, SolrMarc $recordDriver = null)
 	{
 		return $this->ebooksOnDemand ? $this->ebooksOnDemand->getEbooksOnDemandLink($item, $recordDriver, $this) : false;
 	}

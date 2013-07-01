@@ -68,7 +68,7 @@ class HoldingsController extends BaseController
 		/** @var Aleph $aleph */
 		$aleph        = $this->getILS();
 		$holdingItems = $aleph->getHoldingHoldingItems($resourceId, $institution, $offset, $year, $volume, $this->PAGESIZE_HOLDINGITEMS);
-		$totalItems   = $aleph->getHoldingItemCount($resourceId, $institution);
+		$totalItems   = $aleph->getHoldingItemCount($resourceId, $institution, $year, $volume);
 		/** @var Holdings $helper */
 		$helper      = $this->getServiceLocator()->get('Swissbib\HoldingsHelper');
 		$dummyHoldingItem	= $this->getFirstHoldingItem($idRecord, $institution);
@@ -83,7 +83,9 @@ class HoldingsController extends BaseController
 			$holdingItem['network']    		= $networkCode;
 			$holdingItem['bibsysnumber']	= $bibSysNumber;
 			$holdingItem['adm_code']		= $admCode;
-			$holdingItems[$index] 			= $helper->extendItem($holdingItem, $record);
+			$holdingItems[$index] 			= $helper->extendItem($holdingItem, $record, array(
+																						   'availability'	=> false
+																					 	 ));
 		}
 
 		$data = array(
