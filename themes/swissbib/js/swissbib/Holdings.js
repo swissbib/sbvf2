@@ -33,12 +33,12 @@ swissbib.Holdings = {
 	 */
 	onInstitutionClick: function(idRecord, event) {
 		var isLoaded = !!$.data(event.target, 'loaded'),
-			idParts, groupCode, institutionCode;
+				dataParts, groupCode, institutionCode;
 
 		if( !isLoaded ) {
-			idParts 		= event.target.id.split('_');
-			groupCode		= idParts[2];
-			institutionCode	= idParts[3];
+			dataParts 		= $(event.target).data('holding').split('-');
+			groupCode		= dataParts[0];
+			institutionCode	= dataParts[1];
 
 				// Start ajax spinner
 			this.startSpinner(institutionCode);
@@ -61,7 +61,7 @@ swissbib.Holdings = {
 	loadHoldingTable: function(idRecord, groupCode, institutionCode) {
 		var url 		= window.path + '/Holdings/' + idRecord + '/' + institutionCode,
 			callback	= $.proxy(this.onHoldingTableLoaded, this, idRecord, groupCode, institutionCode),
-			container	= $('#holdings-data-' + groupCode + '-' + institutionCode);
+			container	= $('.holdings-data-' + groupCode + '-' + institutionCode);
 
 		container.load(url, '', callback);
 	},
@@ -93,9 +93,11 @@ swissbib.Holdings = {
 	 * @param	{String}	institutionCode
 	 */
 	startSpinner: function(institutionCode) {
-		$('#holdings-ajax-spinner-' + institutionCode).css({
+		var loaderBox = $('.holdings-ajax-spinner-' + institutionCode);
+		loaderBox.css({
 			display: 'inline-block'
-		}).sprite({
+		});
+		loaderBox.find('.spinner').sprite({
 			fps: 10,
 			no_of_frames: 12
 		}).spStart();

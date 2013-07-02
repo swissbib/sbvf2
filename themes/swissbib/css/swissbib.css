@@ -365,10 +365,12 @@ label[for="search_favorites"] {
 }
 
 .holdingsAjaxSpinner {
+	display: none;
+}
+.holdingsAjaxSpinner .spinner {
 	width: 26px;
 	height: 26px;
-	/*display: inline-block;*/
-	display: none;
+	display: inline-block;
 	background: url(../images/ajax_spinner.png) no-repeat 0 0;
 	vertical-align: middle;
 }
@@ -499,7 +501,7 @@ a#tagRecord {
 
 
 
-#library_toggler_favorite span {
+#library-toggler-favorite span {
 	background: url(../images/icon_favorit_library.gif) no-repeat right 1px;
 	padding-right: 20px;
 }
