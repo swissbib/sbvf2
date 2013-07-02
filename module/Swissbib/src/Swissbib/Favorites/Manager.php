@@ -53,6 +53,12 @@ class Manager
 	}
 
 
+	public function extendUserInstitutionsForListing(array $institutions)
+	{
+
+	}
+
+
 	protected function saveInSession(array $institutions)
 	{
 		$this->session[$this->SESSION_DATA] = $institutions;
