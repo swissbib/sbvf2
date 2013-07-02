@@ -4,8 +4,7 @@ namespace Swissbib\Controller;
 
 use Zend\View\Model\ViewModel;
 
-use VuFind\Controller\AbstractBase as BaseController;
-
+use Swissbib\Controller\BaseController;
 use Swissbib\Favorites\DataSource as FavoriteDataSource;
 use Swissbib\Favorites\Manager as FavoriteManager;
 
@@ -22,13 +21,28 @@ class FavoritesController extends BaseController
 	 */
 	public function displayAction()
 	{
-		$availableInstitutions	= $this->getAvailableInstitutions();
+			// Are institutions already in browser cache?
+		if ($this->getFavoriteManager()->hasInstitutionsDownloaded()) {
+			$availableInstitutions	= false;
+		} else {
+			$availableInstitutions	= $this->getAvailableInstitutions();
+
+				// mark as downloaded
+			$this->getFavoriteManager()->setInstitutionsDownloaded();
+		}
+
 		$userInstitutions		= $this->getUserInstitutions();
 
 		$data = array(
 			'availableInstitutions' => $availableInstitutions,
 			'userInstitutions'		=> $userInstitutions
 		);
+
+//		$this->addFavoriteInstitution('a274');
+//		$this->addFavoriteInstitution('a276');
+//		$this->addFavoriteInstitution('a278');
+//		$this->addFavoriteInstitution('a281');
+//		$this->addFavoriteInstitution('a282');
 
 
         //todo: besseres sessionhandling
@@ -57,9 +71,42 @@ class FavoritesController extends BaseController
 
 	public function selectionListAction()
 	{
-		return new ViewModel();
+		$userInstitutions	= $this->getUserInstitutions();
+
+//		return $this->getA
+
+//		return new ViewModel();
+
+		return $this->getAjaxViewModel(array(
+											'userInstitutions'	=> $userInstitutions
+									   ));
 	}
 
+
+
+
+	protected function addFavoriteInstitution($institutionCode)
+	{
+		$userInstitutions = $this->getUserInstitutions();
+
+		if (!in_array($institutionCode, $userInstitutions)) {
+			$userInstitutions[] = $institutionCode;
+
+			$this->getFavoriteManager()->saveUserFavorites($userInstitutions);
+		}
+	}
+
+
+	protected function removeFavoriteInstitution($institutionCode)
+	{
+		$userInstitutions = $this->getUserInstitutions();
+
+		if ($pos = array_search($institutionCode, $userInstitutions)) {
+			unset($userInstitutions[$pos]);
+
+			$this->getFavoriteManager()->saveUserFavorites($userInstitutions);
+		}
+	}
 
 
 	/**
@@ -68,35 +115,36 @@ class FavoritesController extends BaseController
 	 */
 	protected function getAvailableInstitutions()
 	{
-		/** @var FavoriteDataSource $favoriteDataSource */
-		$favoriteDataSource = $this->getServiceLocator()->get('Swissbib\FavoriteInstitutions\DataSource');
-
-		return $favoriteDataSource->getFavoriteInstitutions();
+		return $this->getFavoriteDataSource()->getFavoriteInstitutions();
 	}
 
 
 	protected function getUserInstitutions()
 	{
-		/** @var FavoriteManager $favoriteManager */
-		$favoriteManager	= $this->getServiceLocator()->get('Swissbib\FavoriteInstitutions\Manager');
-
-		return $favoriteManager->getUserFavorites();
+		return $this->getFavoriteManager()->getUserFavorites();
 	}
 
 
-	protected function addFavoriteInstitution($institutionCode)
+	/**
+	 *
+	 *
+	 * @return	FavoriteManager
+	 */
+	protected function getFavoriteManager()
 	{
-
+		return $this->getServiceLocator()->get('Swissbib\FavoriteInstitutions\Manager');
 	}
 
 
-	protected function removeFavoriteInstitution()
+
+	/**
+	 *
+	 *
+	 * @return	FavoriteDataSource
+	 */
+	protected function getFavoriteDataSource()
 	{
-
+		return $this->getServiceLocator()->get('Swissbib\FavoriteInstitutions\DataSource');
 	}
-
-
-
-
 
 }

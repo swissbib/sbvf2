@@ -4,8 +4,7 @@ namespace Swissbib\Controller;
 use Zend\Mvc\Exception;
 use Zend\View\Model\ViewModel;
 
-use VuFind\Controller\AbstractBase as BaseController;
-
+use Swissbib\Controller\BaseController;
 use Swissbib\RecordDriver\SolrMarc;
 use Swissbib\VuFind\ILS\Driver\Aleph;
 use Swissbib\Helper\BibCode;
@@ -119,31 +118,6 @@ class HoldingsController extends BaseController
 		$holdingItems = $this->getRecord($idRecord)->getInstitutionHoldings($institutionCode, false);
 
 		return $holdingItems['holdings'][0];
-	}
-
-
-
-
-	/**
-	 * Get view model with special template and terminated for ajax
-	 *
-	 * @param array $variables
-	 * @param null  $template
-	 * @param bool  $terminal
-	 * @return ViewModel
-	 */
-	protected function getAjaxViewModel(array $variables = array(), $template = null, $terminal = true)
-	{
-		$viewModel = new ViewModel($variables);
-
-		if ($template) {
-			$viewModel->setTemplate($template);
-		}
-		if ($terminal) {
-			$viewModel->setTerminal(true);
-		}
-
-		return $viewModel;
 	}
 
 

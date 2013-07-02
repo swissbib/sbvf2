@@ -11,7 +11,10 @@ use VuFind\Db\Table\User as UserTable;
  */
 class Manager
 {
-	protected $SESSION_KEY = 'institution-favorites';
+	protected $SESSION_DATA = 'institution-favorites';
+
+	protected $SESSION_DOWNLOADED = 'institution-favorites-downloaded';
+
 	/** @var UserTable  */
 	protected $userTable;
 	/** @var SessionStorageInterface  */
@@ -25,16 +28,35 @@ class Manager
 
 	public function getUserFavorites()
 	{
-		if (!isset($this->session[$this->SESSION_KEY])) {
-			$this->session[$this->SESSION_KEY] = array();
+		if (!isset($this->session[$this->SESSION_DATA])) {
+			$this->session[$this->SESSION_DATA] = array();
 		}
 
-		return $this->session[$this->SESSION_KEY];
+		return $this->session[$this->SESSION_DATA];
+	}
+
+
+	public function hasInstitutionsDownloaded()
+	{
+		return isset($this->session[$this->SESSION_DOWNLOADED]);
+	}
+
+	public function setInstitutionsDownloaded()
+	{
+		$this->session[$this->SESSION_DOWNLOADED] = true;
 	}
 
 
 	public function saveUserFavorites(array $favoriteInstitutions)
 	{
-
+		$this->saveInSession($favoriteInstitutions);
 	}
+
+
+	protected function saveInSession(array $institutions)
+	{
+		$this->session[$this->SESSION_DATA] = $institutions;
+	}
+
+
 }
