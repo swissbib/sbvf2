@@ -45,15 +45,12 @@ return array(
 
 		'swissbib/AdvancedSearch.js',
   		'swissbib/Holdings.js',
-		'swissbib/searchsettings.js',
-		//'swissbib/autocomplete.base.js', //used for current highlighting based on java servlet, probably replaced by default VuFind mechanism
-		//'swissbib/autocomplete.initialize.js',
-		//'swissbib/sbfavorites.js',
+  		'swissbib/HoldingFavorites.js',
 		'swissbib/FavoriteInstitutions.js',
+		'swissbib/searchsettings.js',
 
 		'blueprint/commonFromBluePrint.js',
 
-		//'swissbib/favorites.js', probably only used on one page - lazy load?
         //'swissbib/bibtip.js', only used in fullview lazy load for this specific code?
         //'swissbib/fullview.js', only used in full view lazy load?
 		//'blueprint/record.js',

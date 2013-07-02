@@ -9,7 +9,7 @@ $holdings		= $this->extractFavoriteInstitutionsForHoldings($holdings);
 ?>
 <?php foreach($holdings as $groupCode => $group): ?>
 	<!-- begin: innerbox <?=$groupCode?> -->
-	<div class="innerbox grey">
+	<div class="innerbox grey holdingsBox" id="holdings-<?=$groupCode?>">
 		<?php
 			$expandLib	= isset($_GET['expandlib']) ? $_GET['expandlib'] : '';
 			$expandedOrCollapsedClass = 'collapsed';
@@ -37,20 +37,20 @@ $holdings		= $this->extractFavoriteInstitutionsForHoldings($holdings);
 			</script>
 		<? endif; ?>
 
-		<h3 class="toggler persist <?= $expandedOrCollapsedClass ?>" id="library_toggler_<?=$groupCode?>">
+		<h3 class="toggler persist <?= $expandedOrCollapsedClass ?>" id="library-toggler-<?=$groupCode?>">
 			<span><?=$this->zendTranslate($group['label'], 'group')?></span>
 		</h3>
-		<div class="library_toggler_<?=$groupCode?>">
+		<div class="library-toggler-<?=$groupCode?>">
 
 			<div class="innerbox">
 				<?php foreach($group['institutions'] as $institutionCode => $institution): ?>
-					<h4 class="toggler institutionToggler" id="stock_toggler_<?=$groupCode?>_<?=$institutionCode?>">
+					<h4 class="toggler institutionToggler stock-toggler-<?=$groupCode?>-<?=$institutionCode?>" data-holding="<?=$groupCode?>-<?=$institutionCode?>">
 						<?=$this->escapeHtml($this->zendTranslate($institution['label'], 'institution'))?>
 					</h4>
 
-					<ul class="miniactions">
-						<li class="miniaction_favorite_remove">
-							<a href="#" title="Bibliothek aus Favoriten entfernen">Bibliothek aus Favoriten entfernen</a>
+					<ul class="miniactions miniactions-<?=$institutionCode?>">
+						<li class="institutionFavorite">
+							<a href="javascript:void(0)" title="Bibliothek aus Favoriten entfernen">Bibliothek aus Favoriten entfernen</a>
 						</li>
 						<?php if (isset($institution['bibinfolink']) && $institution['bibinfolink']): ?>
 							<li class="miniaction_link">
@@ -61,8 +61,11 @@ $holdings		= $this->extractFavoriteInstitutionsForHoldings($holdings);
 						<?php endif; ?>
 					</ul>
 
-					<div class="stock_toggler_<?=$groupCode?>_<?=$institutionCode?>" id="holdings-data-<?=$groupCode?>-<?=$institutionCode?>">
-						<p><div class="holdingsAjaxSpinner" id="holdings-ajax-spinner-<?=$institutionCode?>"></div> <span>Loading...</span></p>
+					<div class="stock-toggler-<?=$groupCode?>_<?=$institutionCode?> holdings-data-<?=$groupCode?>-<?=$institutionCode?>">
+						<div class="holdingsAjaxSpinner holdings-ajax-spinner-<?=$institutionCode?>">
+							<span class="spinner"></span>
+							<span>Loading...</span>
+						</div>
 					</div>
 				<?php endforeach; ?>
 
@@ -78,5 +81,6 @@ $holdings		= $this->extractFavoriteInstitutionsForHoldings($holdings);
 </div>
 
 <script type="text/javascript">
-	swissbib.Holdings.initRecord('<?=$recordDriver->getUniqueID();?>');
+	swissbib.Holdings.initRecord('<?=$recordDriver->getUniqueID()?>');
+	swissbib.HoldingFavorites.initRecord('<?=$recordDriver->getUniqueID()?>');
 </script>
