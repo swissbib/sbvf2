@@ -132,6 +132,87 @@ swissbib.Holdings = {
 		height	= height|| 760;
 
 		window.open(url, 'map-popup', 'height=' + height + ',width=' + width).focus();
+	},
+
+
+
+	/**
+	 * Open popup with details about holding items
+	 *
+	 * @param	{String}	contentUrl		URL to load popup content from
+	 * @param	{String}	dialogTitle		Title of dialog
+	 */
+	openHoldingItemsPopup: function(contentUrl, dialogTitle) {
+		var that	= this,
+			popup	= $('#holdings-items-popup');
+
+			// Clear content
+		popup.html('');
+
+		var dialog = popup.dialog({
+			height: 600,
+			minHeight: 500,
+			maxHeight: 700,
+			width: 900,
+			title: dialogTitle || 'Holdings',
+			resizable: false
+		});
+
+		popup.mask("Loading...");
+
+		dialog.load(contentUrl, function(responseText, responseStatus, response){
+			that.setupItemsPopup(dialog);
+		});
+	},
+
+
+
+	/**
+	 * Enable special features in popup
+	 * Observe filter changes and paging links
+	 *
+	 * @param	{Object}	dialog
+	 */
+	setupItemsPopup: function(dialog) {
+		var that	 = this,
+			popup	= $('#holdings-items-popup'),
+			paging	= $('#holding-items-popup-paging'),
+			form	= popup.find('form');
+
+		popup.unmask();
+
+		paging.find('a').click(function(event){
+			event.preventDefault();
+			that.updateHoldingsPopup(event.target.href, dialog);
+		});
+		popup.find('select').change(function(event){
+			popup.mask("Loading...");
+			$.ajax({
+				url: form.attr('action'),
+				data: form.serialize(),
+				success: function(response){
+					popup.html(response);
+					that.setupItemsPopup(dialog);
+				}
+			});
+		});
+	},
+
+
+	/**
+	 * Load new content from URL and install handlers again
+	 *
+	 * @param	{String}	url
+	 */
+	updateHoldingsPopup: function(url, dialog) {
+		var that	= this,
+			popup	= $('#holdings-items-popup');
+
+		popup.mask("Loading...");
+
+		popup.load(url, function(){
+			that.setupItemsPopup(dialog);
+		});
 	}
 
 };

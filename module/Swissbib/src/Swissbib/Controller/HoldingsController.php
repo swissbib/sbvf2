@@ -1,12 +1,15 @@
 <?php
 namespace Swissbib\Controller;
 
+use Zend\Mvc\Exception;
 use Zend\View\Model\ViewModel;
 
 use VuFind\Controller\AbstractBase as BaseController;
-use VuFind\Record\Loader as RecordLoader;
 
 use Swissbib\RecordDriver\SolrMarc;
+use Swissbib\VuFind\ILS\Driver\Aleph;
+use Swissbib\Helper\BibCode;
+use Swissbib\RecordDriver\Helper\Holdings;
 
 /**
  * Serve holdings data (items and holdings) for solr records over ajax
@@ -14,6 +17,8 @@ use Swissbib\RecordDriver\SolrMarc;
  */
 class HoldingsController extends BaseController
 {
+	/** @var	Integer		page size for holding items popup */
+	protected $PAGESIZE_HOLDINGITEMS = 10;
 
 	/**
 	 * Get list for items or holdings, depending on the data
@@ -24,21 +29,169 @@ class HoldingsController extends BaseController
 	{
 		$institution = $this->params()->fromRoute('institution');
 		$idRecord    = $this->params()->fromRoute('record');
-		$holdingsData= $this->getRecord($idRecord)->getInstitutionHoldings($institution);
+		$record		 = $this->getRecord($idRecord);
+		$holdingsData= $record->getInstitutionHoldings($institution);
+		$template	 = 'Holdings/nodata';
 
-		$viewModel	 = new ViewModel();
-		$viewModel->setTerminal(true);
-		$viewModel->setVariables($holdingsData);
+		$holdingsData['record']   	 = $idRecord;
+		$holdingsData['recordTitle'] = $record->getTitle();
+		$holdingsData['institution'] = $institution;
 
 		if (isset($holdingsData['items'])) {
-			$viewModel->setTemplate('Holdings/items');
+			$template = 'Holdings/items';
 		} elseif (isset($holdingsData['holdings'])) {
-			$viewModel->setTemplate('Holdings/holdings');
-		} else {
-			$viewModel->setTemplate('Holdings/nodata');
+			$template = 'Holdings/holdings';
+		}
+
+		return $this->getAjaxViewModel($holdingsData, $template);
+	}
+
+
+
+	/**
+	 * Get items of a holding
+	 * Displayed in a popup, opened from a holdings/items list in holdings tab
+	 *
+	 * @return ViewModel
+	 */
+	public function holdingItemsAction()
+	{
+		$idRecord    = $this->params()->fromRoute('record');
+		$record		 = $this->getRecord($idRecord);
+		$institution = $this->params()->fromRoute('institution');
+		$resourceId  = $this->params()->fromRoute('resource');
+		$page     	 = (int)$this->params()->fromQuery('page', 1);
+		$year        = (int)$this->params()->fromQuery('year');
+		$volume      = $this->params()->fromQuery('volume');
+		$offset		 = ($page-1)*$this->PAGESIZE_HOLDINGITEMS;
+
+		/** @var Aleph $aleph */
+		$aleph        = $this->getILS();
+		$holdingItems = $aleph->getHoldingHoldingItems($resourceId, $institution, $offset, $year, $volume, $this->PAGESIZE_HOLDINGITEMS);
+		$totalItems   = $aleph->getHoldingItemCount($resourceId, $institution, $year, $volume);
+		/** @var Holdings $helper */
+		$helper      = $this->getServiceLocator()->get('Swissbib\HoldingsHelper');
+		$dummyHoldingItem	= $this->getFirstHoldingItem($idRecord, $institution);
+		$networkCode		= $dummyHoldingItem['network'];
+		$bibSysNumber		= $dummyHoldingItem['bibsysnumber'];
+		$admCode			= $dummyHoldingItem['adm_code'];
+		$resourceFilters	= $aleph->getResourceFilters($resourceId);
+		$extendingOptions	= array(
+								   'availability'	=> false
+								);
+
+			// Add missing data to holding items
+		foreach ($holdingItems as $index => $holdingItem) {
+			$holdingItem['institution']		= $institution;
+			$holdingItem['network']    		= $networkCode;
+			$holdingItem['bibsysnumber']	= $bibSysNumber;
+			$holdingItem['adm_code']		= $admCode;
+			$holdingItems[$index] 			= $helper->extendItem($holdingItem, $record, $extendingOptions);
+		}
+
+		$data = array(
+			'items'			=> $holdingItems,
+			'institution'	=> $institution,
+			'page'			=> $page,
+			'year'			=> $year,
+			'volume'		=> $volume,
+			'filters'		=> $resourceFilters,
+			'total'			=> $totalItems, // for paging
+			'baseUrlParams'	=> array(
+				'institution'	=> $institution,
+				'record'		=> $idRecord,
+				'resource'		=> $resourceId
+			)
+		);
+
+		return $this->getAjaxViewModel($data, 'Holdings/holding-holding-items');
+	}
+
+
+
+	/**
+	 * @param $idRecord
+	 * @param $institutionCode
+	 * @return	Array
+	 */
+	protected function getFirstHoldingItem($idRecord, $institutionCode)
+	{
+		$holdingItems = $this->getRecord($idRecord)->getInstitutionHoldings($institutionCode, false);
+
+		return $holdingItems['holdings'][0];
+	}
+
+
+
+
+	/**
+	 * Get view model with special template and terminated for ajax
+	 *
+	 * @param array $variables
+	 * @param null  $template
+	 * @param bool  $terminal
+	 * @return ViewModel
+	 */
+	protected function getAjaxViewModel(array $variables = array(), $template = null, $terminal = true)
+	{
+		$viewModel = new ViewModel($variables);
+
+		if ($template) {
+			$viewModel->setTemplate($template);
+		}
+		if ($terminal) {
+			$viewModel->setTerminal(true);
 		}
 
 		return $viewModel;
+	}
+
+
+
+	/**
+	 * Extract network from resource id
+	 * The five first chars of the resource are the bib code.
+	 * Convert the bib code into network code
+	 *
+	 * @todo	Is there a more stable version to do this? It works, but..
+	 * @param	String		$resourceId
+	 * @return	String
+	 */
+	protected function getNetworkFromResource($resourceId)
+	{
+		$bibCode	= strtoupper(substr($resourceId, 0, 5));
+
+		return $this->getBibCodeHelper()->getNetworkCode($bibCode);
+	}
+
+
+
+	/**
+	 * Get bib code helper service
+	 *
+	 * @return BibCode $bibHelper
+	 */
+	protected function getBibCodeHelper()
+	{
+		return $this->getServiceLocator()->get('Swissbib\BibCodeHelper');
+	}
+
+
+
+	/**
+	 * Build a resource id
+	 *
+	 * @param $idRecord
+	 * @param $network
+	 * @return string
+	 */
+	protected function getResourceId($idRecord, $network)
+	{
+		/** @var BibCode $bibHelper */
+		$bibHelper	= $this->getServiceLocator()->get('Swissbib\BibCodeHelper');
+		$idls		= $bibHelper->getBibCode($network);
+
+		return strtoupper($idls) . $idRecord;
 	}
 
 

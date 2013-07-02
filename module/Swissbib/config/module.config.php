@@ -19,6 +19,7 @@ use Swissbib\RecordDriver\Summon;
 use Swissbib\RecordDriver\WorldCat;
 use Swissbib\RecordDriver\Helper\EbooksOnDemand;
 use Swissbib\RecordDriver\Helper\Availability;
+use Swissbib\Helper\BibCode;
 use Swissbib\Favorites\DataSource as FavoritesDataSource;
 use Swissbib\Favorites\Manager as FavoritesManager;
 
@@ -83,6 +84,16 @@ return array(
 					)
 				)
 			),
+			'holdings-holding-items'     => array( // load holding holdings details for record with ajax
+				'type'    => 'segment',
+				'options' => array(
+					'route'    => '/Holdings/:record/:institution/items/:resource',
+					'defaults' => array(
+						'controller' => 'holdings',
+						'action'     => 'holdingItems'
+					)
+				)
+			),
             'myresearch-favorite-institutions' => array( // display defined favorite institutions
                 'type'    => 'segment',
                 'options' => array(
@@ -93,8 +104,6 @@ return array(
                     )
                 )
             )
-
-
 		)
 	),
 	'console'         => array(
@@ -123,14 +132,13 @@ return array(
 	),
 	'controllers'     => array(
 		'invokables' => array(
-			'helppage'    		 => 'Swissbib\Controller\HelpPageController',
-			'libadminsync'		 => 'Swissbib\Controller\LibadminSyncController',
-			'my-research' 		 => 'Swissbib\Controller\MyResearchController',
-			'search'      		 => 'Swissbib\Controller\SearchController',
-			'summon'      		 => 'Swissbib\Controller\SummonController',
-			'holdings'    		 => 'Swissbib\Controller\HoldingsController',
-			'tab40import' 		 => 'Swissbib\Controller\Tab40ImportController',
-			'institutionFavorites'=> 'Swissbib\Controller\FavoritesController'
+			'helppage'     => 'Swissbib\Controller\HelpPageController',
+			'libadminsync' => 'Swissbib\Controller\LibadminSyncController',
+			'my-research'  => 'Swissbib\Controller\MyResearchController',
+			'search'       => 'Swissbib\Controller\SearchController',
+			'summon'       => 'Swissbib\Controller\SummonController',
+			'holdings'     => 'Swissbib\Controller\HoldingsController',
+			'tab40import'  => 'Swissbib\Controller\Tab40ImportController'
 		)
 	),
 	'service_manager' => array(
@@ -188,11 +196,16 @@ return array(
 				return new EbooksOnDemand($eBooksOnDemandConfig, $translator);
 			},
 			'Swissbib\Availability' => function ($sm) {
-				$logger				= $sm->get('VuFind\Logger');
+//				$logger				= $sm->get('VuFind\Logger');
+				$bibCodeHelper		= $sm->get('Swissbib\BibCodeHelper');
 				$availabilityConfig = $sm->get('VuFind\Config')->get('config')->Availability;
+
+				return new Availability($bibCodeHelper, $availabilityConfig);
+			},
+			'Swissbib\BibCodeHelper' => function ($sm) {
 				$alephNetworkConfig	= $sm->get('VuFind\Config')->get('Holdings')->AlephNetworks;
 
-				return new Availability($availabilityConfig, $alephNetworkConfig, $logger);
+				return new BibCode($alephNetworkConfig);
 			},
 			'Swissbib\FavoriteInstitutions\DataSource' => function ($sm) {
 				$objectCache	= $sm->get('VuFind\CacheManager')->getCache('object');
@@ -343,6 +356,11 @@ return array(
 			)
 		)
 	),
+	//'swissbib' => array(
+	//	'ignore_assets' => array(
+	//		'blueprint/screen.css',
+	//		'jquery-ui.css'
+	//	),
 
     'swissbib' => array(
         'ignore_css_assets' => array(
@@ -358,7 +376,6 @@ return array(
             'jquery-ui/js/jquery-ui.js',
             'lightbox.js',
             'common.js',
-
             //has a dependency to jQuery so has to be linked after this general component
             //move it into the swissbib libs
         ),
