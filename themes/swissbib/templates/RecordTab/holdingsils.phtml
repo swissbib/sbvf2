@@ -3,11 +3,10 @@
 /** @var	Swissbib\RecordDriver\SolrMarc	$recordDriver  */
 $recordDriver	= $this->driver;
 $holdings		= $recordDriver->getHoldingsStructure();
+	// Copy favorites to own container
+$holdings		= $this->extractFavoriteInstitutionsForHoldings($holdings);
 
 ?>
-
-<?//= $this->render('RecordTab/mylibraries.phtml') ?>
-
 <?php foreach($holdings as $groupCode => $group): ?>
 	<!-- begin: innerbox <?=$groupCode?> -->
 	<div class="innerbox grey">
@@ -39,7 +38,7 @@ $holdings		= $recordDriver->getHoldingsStructure();
 		<? endif; ?>
 
 		<h3 class="toggler persist <?= $expandedOrCollapsedClass ?>" id="library_toggler_<?=$groupCode?>">
-			<?=$this->zendTranslate($group['label'], 'group')?>
+			<span><?=$this->zendTranslate($group['label'], 'group')?></span>
 		</h3>
 		<div class="library_toggler_<?=$groupCode?>">
 
@@ -63,7 +62,7 @@ $holdings		= $recordDriver->getHoldingsStructure();
 					</ul>
 
 					<div class="stock_toggler_<?=$groupCode?>_<?=$institutionCode?>" id="holdings-data-<?=$groupCode?>-<?=$institutionCode?>">
-						<p><div class="holdingsAjaxSpinner" id="holdings-ajax-spinner-<?=$institutionCode?>"></div> Loading...</p>
+						<p><div class="holdingsAjaxSpinner" id="holdings-ajax-spinner-<?=$institutionCode?>"></div> <span>Loading...</span></p>
 					</div>
 				<?php endforeach; ?>
 

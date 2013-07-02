@@ -496,3 +496,10 @@ a#tagRecord {
 .loadmask-msg div {
 	border-color: #fc9405 !important;
 }
+
+
+
+#library_toggler_favorite span {
+	background: url(../images/icon_favorit_library.gif) no-repeat right 1px;
+	padding-right: 20px;
+}

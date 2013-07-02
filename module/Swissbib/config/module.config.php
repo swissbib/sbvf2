@@ -24,6 +24,7 @@ use Swissbib\Favorites\DataSource as FavoritesDataSource;
 use Swissbib\Favorites\Manager as FavoritesManager;
 use Swissbib\Favorites\Manager;
 use Swissbib\View\Helper\FilterFavoriteInstitutionFacets;
+use Swissbib\View\Helper\ExtractFavoriteInstitutionsForHoldings;
 
 return array(
 	'router'          => array(
@@ -259,7 +260,8 @@ return array(
 			'zendTranslate'           => 'Zend\I18n\View\Helper\Translate',
 			'getVersion'              => 'Swissbib\View\Helper\GetVersion',
 			'holdingActions'          => 'Swissbib\View\Helper\HoldingActions',
-			'availabilityInfo'        => 'Swissbib\View\Helper\AvailabilityInfo'
+			'availabilityInfo'        => 'Swissbib\View\Helper\AvailabilityInfo',
+			'transLocation'        => 'Swissbib\View\Helper\TranslateLocation'
 		),
 		'factories' => array(
 			'institutionSorter' => function ($sm) {
@@ -273,18 +275,19 @@ return array(
 
 				return new InstitutionSorter($institutionList);
 			},
-			'transLocation'	=> function ($sm) { // Translate holding locations
-				/** @var Translator $translator */
-				$translator	= $sm->getServiceLocator()->get('VuFind\Translator');
-
-				return new TranslateLocation($translator);
-			},
 			'filterFavoriteInstitutionFacets' => function ($sm) {
 				/** @var Manager $favoriteManager */
 				$favoriteManager		= $sm->getServiceLocator()->get('Swissbib\FavoriteInstitutions\Manager');
 				$userInstitutionCodes	= $favoriteManager->getUserInstitutions();
 
 				return new FilterFavoriteInstitutionFacets($userInstitutionCodes);
+			},
+			'extractFavoriteInstitutionsForHoldings' => function ($sm) {
+				/** @var Manager $favoriteManager */
+				$favoriteManager		= $sm->getServiceLocator()->get('Swissbib\FavoriteInstitutions\Manager');
+				$userInstitutionCodes	= $favoriteManager->getUserInstitutions();
+
+				return new ExtractFavoriteInstitutionsForHoldings($userInstitutionCodes);
 			}
 		)
 	),
