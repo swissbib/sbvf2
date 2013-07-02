@@ -20,19 +20,14 @@
 
         <div id="content">
 
-            <div id="add-favorites">
-                <form   action="#"   onSubmit="return false;" method="get">
-                    <h2>Zu Favoriten hinzufügen</h2>
+			<h2>Zu Favoriten hinzufügen</h2>
 
-                    <fieldset>
-                        <div class="fieldbox">
-                            <label for="libraryname" class="label"><strong>Bibliotheksname</strong> (name / code / place)</label>
-                            <input  type="text"  id="libraryname" class="text large" />
-                        </div>
-
-                    </fieldset>
+                <form>
+					<fieldset>
+						<label for="query" class="label"><strong>Bibliotheksname</strong> (name / code / place)</label>
+						<input type="text" id="query" class="text large" />
+					</fieldset>
                 </form>
-            </div>
 
 			<div id="user-favorites">
 				<?=$this->render('favorites/selectionList')?>

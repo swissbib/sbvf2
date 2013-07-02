@@ -15,7 +15,9 @@ return array(
     ),
     'js' => array(
         'jquery/jquery-1.10.1.min.js',
+//        'jquery/jquery-1.10.1.js',
 		'jquery/ui/jquery-ui.min.js',
+//		'jquery/ui/jquery-ui.js',
 
 		'lib/jstorage.min.js', //used for favorites - there is still some amount of JS code inline of the page -> Todo: Refactoring in upcoming Sprints
 
@@ -46,6 +48,7 @@ return array(
 		'swissbib/searchsettings.js',
 		//'swissbib/autocomplete.base.js', //used for current highlighting based on java servlet, probably replaced by default VuFind mechanism
 		//'swissbib/autocomplete.initialize.js',
+		//'swissbib/sbfavorites.js',
 		'swissbib/FavoriteInstitutions.js',
 
 		'blueprint/commonFromBluePrint.js',

@@ -4,65 +4,32 @@
 ?>
 <h2>Meine Favoriten</h2>
 
-<pre>
-	<?php print_r($userInstitutionsList); ?>
-</pre>
-
-
-<ul>
-	<?php foreach ($userInstitutions as $institutionCode => $institutionLabel): ?>
-		<li><?=$institutionLabel?></li>
-	<?php endforeach; ?>
-</ul>
-
-
 <table class="data" id="favorites-table">
 
-	<tr>
+	<?php foreach ($userInstitutionsList as $groupCode => $groupInstitutions): ?>
 
-		<td colspan="2">
-			<strong>IDS Basel/Bern</strong>
-		</td>
+		<tr>
+			<td colspan="2">
+				<strong><?=$this->escapeHtml($this->zendTranslate($groupCode, 'group'))?></strong>
+			</td>
 
-	</tr>
+		</tr>
 
+		<?php foreach ($groupInstitutions as $institutionCode): ?>
 
-	<tr>
-		<td style="padding-left: 2em;" class="nodivider">
-			Uni Basel - UB Hauptbibliothek
+			<tr>
+				<td style="padding-left: 2em" class="nodivider">
+					<?=$this->escapeHtml($this->zendTranslate($institutionCode, 'institution'))?>
 
-			<a href="http://aleph.unibas.ch/F/?func=library&sub_library=A100" class="externallink"
-			   title="Bibliotheksinformation"></a>
+					<a href="http://aleph.unibas.ch/F/?func=library&sub_library=A100" class="externallink" title="Bibliotheksinformation"></a>
+				</td>
+				<td class="right">
+					<a href="#" class="linkbutton icon_delete deleteFavoriteInstitution" title="Favorit löschen" data-institution="<?=$institutionCode?>"><span>löschen</span></a>
+				</td>
+			</tr>
 
-		</td>
-		<td class="right">
-			<a href="#" class="linkbutton icon_delete"
-			   title="Favoritengruppe Uni Basel - UB Hauptbibliothek löschen"><span>löschen -> create delete service</span></a>
-		</td>
-	</tr>
+		<?php endforeach; ?>
 
-
-	<tr>
-
-		<td colspan="2">
-			<strong>Aargauer Bibliotheksnetz</strong>
-		</td>
-
-	</tr>
-
-
-	<tr>
-		<td style="padding-left: 2em;" class="nodivider">
-			Alte Kantonsschule Aarau
-
-			<a href="http://aleph.ag.ch/F?func=library&sub_library=AKS" class="externallink"
-			   title="Bibliotheksinformation"></a>
-
-		</td>
-		<td class="right">
-			<a href="#" class="linkbutton icon_delete" title="Favoritengruppe Alte Kantonsschule Aarau löschen"><span>löschen -> create delete service</span></a>
-		</td>
-	</tr>
-
+	<?php endforeach; ?>
 
 </table>
