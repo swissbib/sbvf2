@@ -21,21 +21,25 @@ class FavoritesController extends BaseController
 	 */
 	public function displayAction()
 	{
+		$favoriteManager = $this->getFavoriteManager();
+
 			// Are institutions already in browser cache?
-		if ($this->getFavoriteManager()->hasInstitutionsDownloaded()) {
+		if ($favoriteManager->hasInstitutionsDownloaded()) {
 			$availableInstitutions	= false;
 		} else {
 			$availableInstitutions	= $this->getAvailableInstitutions();
 
 				// mark as downloaded
-			$this->getFavoriteManager()->setInstitutionsDownloaded();
+			$favoriteManager->setInstitutionsDownloaded();
 		}
 
 		$userInstitutions		= $this->getUserInstitutions();
+		$userInstitutionList	= $favoriteManager->extendUserInstitutionsForListing($userInstitutions);
 
 		$data = array(
 			'availableInstitutions' => $availableInstitutions,
-			'userInstitutions'		=> $userInstitutions
+			'userInstitutions'		=> $userInstitutions,
+			'userInstitutionsList'	=> $userInstitutionList
 		);
 
 //		$this->addFavoriteInstitution('a274');
@@ -92,7 +96,7 @@ class FavoritesController extends BaseController
 		if (!in_array($institutionCode, $userInstitutions)) {
 			$userInstitutions[] = $institutionCode;
 
-			$this->getFavoriteManager()->saveUserFavorites($userInstitutions);
+			$this->getFavoriteManager()->saveUserInstitutions($userInstitutions);
 		}
 	}
 
@@ -104,7 +108,7 @@ class FavoritesController extends BaseController
 		if ($pos = array_search($institutionCode, $userInstitutions)) {
 			unset($userInstitutions[$pos]);
 
-			$this->getFavoriteManager()->saveUserFavorites($userInstitutions);
+			$this->getFavoriteManager()->saveUserInstitutions($userInstitutions);
 		}
 	}
 
@@ -121,7 +125,7 @@ class FavoritesController extends BaseController
 
 	protected function getUserInstitutions()
 	{
-		return $this->getFavoriteManager()->getUserFavorites();
+		return $this->getFavoriteManager()->getUserInstitutions();
 	}
 
 
