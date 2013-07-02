@@ -45,6 +45,7 @@ use VuFind\Config\PluginManager;
 class Params extends VFSolrParams {
 
 
+    protected $favoritesManager;
 
 
     /**
@@ -53,9 +54,23 @@ class Params extends VFSolrParams {
      * @param \VuFind\Search\Base\Options  $options      Options to use
      * @param \VuFind\Config\PluginManager $configLoader Config loader
      */
-    public function __construct($options, PluginManager $configLoader)
+    public function __construct($options, PluginManager $configLoader,$favoritesManger)
     {
+
         parent::__construct($options, $configLoader);
+
+        $this->favoritesManager = $favoritesManger;
+
+
+
+    }
+
+    public function getUserFavoritesInstitutions() {
+        if (! empty($this->favoritesManager) ) {
+            return $this->favoritesManager->getUserInstitutions();
+        } else {
+            return array();
+        }
 
     }
 
