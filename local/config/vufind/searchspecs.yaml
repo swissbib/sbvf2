@@ -317,9 +317,7 @@ AllFields:
     - topic^500
     - geographic^300
     - genre^300
-    - allfields_unstemmed^10
     - fulltext_unstemmed^10
-    - allfields
     - fulltext
   QueryFields:
     0:
