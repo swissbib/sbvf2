@@ -99,6 +99,11 @@ class Manager
 	{
 		$listing	= array();
 
+		foreach ($institutions as $institutionCode) {
+			$groupCode	= isset($this->groupMapping[$institutionCode]) ? $this->groupMapping[$institutionCode] : 'unknown';
+
+			$listing[$groupCode][] = $institutionCode;
+		}
 
 		return $listing;
 	}

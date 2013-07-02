@@ -227,7 +227,7 @@ return array(
 			'Swissbib\FavoriteInstitutions\Manager' => function ($sm) {
 				$userTable		= $sm->get('VuFind\DbTablePluginManager')->get('user');
 				$sessionStorage	= $sm->get('VuFind\SessionManager')->getStorage();
-				$groupMapping	= $sm->get('VuFind\Config')->get('libadmin-groups');
+				$groupMapping	= $sm->get('VuFind\Config')->get('libadmin-groups')->institutions;
 
 				return new FavoritesManager($userTable, $sessionStorage, $groupMapping);
 			}

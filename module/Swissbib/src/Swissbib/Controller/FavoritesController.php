@@ -65,31 +65,66 @@ class FavoritesController extends BaseController
 
 	public function addAction()
 	{
-		$institutionCode	= $this->params()->fromQuery('institution');
+		$institutionCode	= $this->params()->fromPost('institution');
 
+		if ($institutionCode) {
+			$this->addUserInstitution($institutionCode);
+		}
 
-
-
+		return $this->getSelectionList();
 	}
 
 
-	public function selectionListAction()
+
+	/**
+	 * Delete a user institution
+	 *
+	 * @return	ViewModel
+	 */
+	public function deleteAction()
 	{
-		$userInstitutions	= $this->getUserInstitutions();
+		$institutionCode	= $this->params()->fromPost('institution');
 
-//		return $this->getA
+		if ($institutionCode) {
+			$this->removeUserInstitution($institutionCode);
+		}
 
-//		return new ViewModel();
+		return $this->getSelectionList();
+	}
+
+
+
+	/**
+	 * Get select list view model
+	 *
+	 * @return	ViewModel
+	 */
+	public function getSelectionList()
+	{
+		$userInstitutionsList	= $this->getUserInstitutionsList();
 
 		return $this->getAjaxViewModel(array(
-											'userInstitutions'	=> $userInstitutions
-									   ));
+											'userInstitutionsList'	=> $userInstitutionsList
+									   ), 'favorites/selectionList');
 	}
 
 
 
+	/**
+	 *
+	 *
+	 * @return	Array[]
+	 */
+	protected function getUserInstitutionsList()
+	{
+		$userInstitutions = $this->getUserInstitutions();
 
-	protected function addFavoriteInstitution($institutionCode)
+		return $this->getFavoriteManager()->extendUserInstitutionsForListing($userInstitutions);
+	}
+
+
+
+	protected function addUserInstitution($institutionCode)
 	{
 		$userInstitutions = $this->getUserInstitutions();
 
@@ -101,11 +136,11 @@ class FavoritesController extends BaseController
 	}
 
 
-	protected function removeFavoriteInstitution($institutionCode)
+	protected function removeUserInstitution($institutionCode)
 	{
 		$userInstitutions = $this->getUserInstitutions();
 
-		if ($pos = array_search($institutionCode, $userInstitutions)) {
+		if (($pos = array_search($institutionCode, $userInstitutions)) !== false) {
 			unset($userInstitutions[$pos]);
 
 			$this->getFavoriteManager()->saveUserInstitutions($userInstitutions);
