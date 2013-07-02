@@ -3,7 +3,7 @@ namespace Swissbib\Favorites;
 
 use Zend\Config\Config;
 use Zend\Session\Storage\StorageInterface as SessionStorageInterface;
-use VuFind\Db\Table\User as UserTable;
+use VuFind\Auth\Manager as AuthManager;
 
 /**
  * Manage user favorites
@@ -16,27 +16,30 @@ class Manager
 
 	protected $SESSION_DOWNLOADED = 'institution-favorites-downloaded';
 
-	/** @var UserTable  */
-	protected $userTable;
 	/** @var SessionStorageInterface  */
 	protected $session;
 	/** @var  Config */
 	protected $groupMapping;
+	/** @var  AuthManager */
+	protected $authManager;
 
 
 
 	/**
 	 * Initialize
 	 *
-	 * @param UserTable               $userTable
-	 * @param SessionStorageInterface $session
+	 * @param	SessionStorageInterface $session
 	 * @param	Config					$groupMapping
+	 * @param	AuthManager				$authManager
 	 */
-	public function __construct(UserTable $userTable, SessionStorageInterface $session, Config $groupMapping)
-	{
-		$this->userTable	= $userTable;
+	public function __construct(
+					SessionStorageInterface $session,
+					Config $groupMapping,
+					AuthManager $authManager
+	) {
 		$this->session		= $session;
 		$this->groupMapping	= $groupMapping;
+		$this->authManager	= $authManager;
 	}
 
 
@@ -49,7 +52,7 @@ class Manager
 	 */
 	public function getUserInstitutions()
 	{
-		return $this->getFromSession();
+		return $this->authManager->isLoggedIn() ? $this->getFromDatabase() : $this->getFromSession();
 	}
 
 
@@ -80,11 +83,12 @@ class Manager
 	/**
 	 * Save user institutions
 	 *
-	 * @param	String[]	$institutions
+	 * @param	String[]	$institutionCodes
 	 */
-	public function saveUserInstitutions(array $institutions)
+	public function saveUserInstitutions(array $institutionCodes)
 	{
-		$this->saveInSession($institutions);
+		$test = $this->authManager->isLoggedIn();
+		$this->authManager->isLoggedIn() !== false ? $this->saveInDatabase($institutionCodes) : $this->saveInSession($institutionCodes);
 	}
 
 
@@ -125,11 +129,14 @@ class Manager
 	/**
 	 * Save institutions as user setting in database
 	 *
-	 * @param	String[]	$institutions
+	 * @param	String[]	$institutionCodes
 	 */
-	protected function saveInDatabase(array $institutions)
+	protected function saveInDatabase(array $institutionCodes)
 	{
-		// implement
+		$user = $this->authManager->isLoggedIn();
+
+		$user->favorite_institutions = implode(',', $institutionCodes);
+		$user->save();
 	}
 
 
@@ -157,6 +164,8 @@ class Manager
 	 */
 	protected function getFromDatabase()
 	{
-		return array();
+		$favoriteList	= $this->authManager->isLoggedIn()->favorite_institutions;
+
+		return $favoriteList ? explode(',', $favoriteList) : array();
 	}
 }
