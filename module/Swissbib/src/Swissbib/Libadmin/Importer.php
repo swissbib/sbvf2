@@ -307,8 +307,13 @@ class Importer implements ServiceLocatorAwareInterface
 
 		foreach ($data as $group) {
 			foreach ($group['institutions'] as $institution) {
-				if ($institution['favorite']) {
-					$favorites[] = strtolower($institution['bib_code']);
+				if ($institution['favorite'] || true) {
+					$institutionCode	= strtolower($institution['bib_code']);
+
+					$favorites[$institutionCode] = trim('(' . $institution['bib_code'] . ') '
+															. $institution['address']['address']
+															. ' ' . $institution['address']['zip']
+															. ' ' . $institution['address']['city']);
 				}
 			}
 		}

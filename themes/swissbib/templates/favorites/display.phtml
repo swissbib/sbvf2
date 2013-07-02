@@ -1,5 +1,5 @@
 <?php
-/** @var Array $availableInstitutions */
+/** @var Array $autocompleterData */
 
 ?>
 <!-- begin: col1 (sidebar)  -->
@@ -44,7 +44,7 @@
 
 <script type="text/javascript">
 	jQuery(function(){
-		swissbib.FavoriteInstitutions.init(<?=json_encode($availableInstitutions)?>);
+		swissbib.FavoriteInstitutions.init(<?=json_encode($autocompleterData)?>);
 	});
 </script>
 

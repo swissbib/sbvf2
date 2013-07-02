@@ -90,13 +90,13 @@ class Manager
 
 
 	/**
+	 * Get listing data for user institutions
 	 *
-	 *
-	 * @param	String[]	$institutions
 	 * @return	Array[]
 	 */
-	public function extendUserInstitutionsForListing(array $institutions)
+	public function getUserInstitutionsListingData()
 	{
+		$institutions= $this->getUserInstitutions();
 		$listing	= array();
 
 		foreach ($institutions as $institutionCode) {

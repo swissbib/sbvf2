@@ -46,11 +46,11 @@ class DataSource
 		if ($this->isCached()) {
 			return $this->getCachedData();
 		} else {
-			$favoriteList	= $this->loadFavoriteData();
+			$institutionAutocompleteData = $this->loadInstitutionFavoriteData();
 
-			$this->setCachedData($favoriteList);
+			$this->setCachedData($institutionAutocompleteData);
 
-			return $favoriteList;
+			return $institutionAutocompleteData;
 		}
 	}
 
@@ -99,7 +99,7 @@ class DataSource
 	 *
 	 * @return	Array
 	 */
-	protected function loadFavoriteData()
+	protected function loadInstitutionFavoriteData()
 	{
 		/** @var Config $config */
 		$config	= $this->configManager->get('favorite-institutions');
