@@ -132,13 +132,14 @@ return array(
 	),
 	'controllers'     => array(
 		'invokables' => array(
-			'helppage'     => 'Swissbib\Controller\HelpPageController',
-			'libadminsync' => 'Swissbib\Controller\LibadminSyncController',
-			'my-research'  => 'Swissbib\Controller\MyResearchController',
-			'search'       => 'Swissbib\Controller\SearchController',
-			'summon'       => 'Swissbib\Controller\SummonController',
-			'holdings'     => 'Swissbib\Controller\HoldingsController',
-			'tab40import'  => 'Swissbib\Controller\Tab40ImportController'
+			'helppage'    			=> 'Swissbib\Controller\HelpPageController',
+			'libadminsync'			=> 'Swissbib\Controller\LibadminSyncController',
+			'my-research' 			=> 'Swissbib\Controller\MyResearchController',
+			'search'      			=> 'Swissbib\Controller\SearchController',
+			'summon'      			=> 'Swissbib\Controller\SummonController',
+			'holdings'    			=> 'Swissbib\Controller\HoldingsController',
+			'tab40import' 			=> 'Swissbib\Controller\Tab40ImportController',
+			'institutionFavorites'  => 'Swissbib\Controller\FavoritesController'
 		)
 	),
 	'service_manager' => array(
@@ -156,8 +157,18 @@ return array(
 				$locationMap	= $sm->get('Swissbib\LocationMap');
 				$eBooksOnDemand	= $sm->get('Swissbib\EbooksOnDemand');
 				$availability	= $sm->get('Swissbib\Availability');
+				$bibCodeHelper	= $sm->get('Swissbib\BibCodeHelper');
 
-				return new HoldingsHelper($ilsConnection, $hmac, $authManager, $config, $translator, $locationMap, $eBooksOnDemand, $availability);
+				return new HoldingsHelper(	$ilsConnection,
+											$hmac,
+											$authManager,
+											$config,
+											$translator,
+											$locationMap,
+											$eBooksOnDemand,
+											$availability,
+											$bibCodeHelper
+											);
 			},
 			'Swissbib\TargetsProxy\TargetsProxy' => function ($sm) {
 				$config        = $sm->get('VuFind\Config')->get('TargetsProxy');
