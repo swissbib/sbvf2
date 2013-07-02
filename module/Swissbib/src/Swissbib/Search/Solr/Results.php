@@ -53,24 +53,68 @@ class Results extends VFSolrResults {
         parent::__construct($params);
     }
 
-    //public function performAndProcessSearch() {
-    //    parent::performAndProcessSearch();
-    //}
-
-
-    //protected function performSearch () {
-    //    parent::performSearch();
-    //}
-
 
     protected function createBackendParameters(AbstractQuery $query, Params $params)  {
 
         $paramBag = parent::createBackendParameters($query,$params);
 
-        //only as an example how to use
+        //with SOLR 4.3 AND is no longer the default parameter
         $paramBag->add("q.op","AND");
+
+
+        //create query parameters for favorites
+        $favoriteInstitutions =  $this->getParams()->getUserFavoritesInstitutions();
+        if (sizeof( $favoriteInstitutions > 0 )) {
+
+            //facet parameter has to be true in case it's false
+            $paramBag->remove("facet");
+            $paramBag->add("facet","true");
+
+            foreach ($favoriteInstitutions as $instititution) {
+
+                $paramBag->add("facet.query","institution:" . $instititution);
+                $paramBag->add("facet.query","institution:" . $instititution);
+
+            }
+
+            foreach ($favoriteInstitutions as $instititution) {
+
+                $paramBag->add("bq","institution:" . $instititution . "^5000");
+
+            }
+
+        }
+
         return $paramBag;
 
+    }
+
+
+    public function getFavoritesFacets() {
+
+        $favoritesWithNonZero = array();
+        $iterator  = $this->responseFacets->getQueryFacets()->getIterator();;
+
+        while($iterator->valid()) {
+
+            if (strpos($iterator->key(), "institution:" ) === 0 && $iterator->current() > 0) {
+
+                $tParts = explode(":",$iterator->key());
+
+                $facetItem = array(
+                    "value" => $tParts[1],
+                    "displayText" => $tParts[1], //todo: how to translate the value??
+                    "count" => $iterator->current(),
+                    "isApplied" => false //todo: lookup used filters to decide if this item should be applied
+                );
+
+                $favoritesWithNonZero [] = $facetItem;
+            }
+
+            $iterator->next();
+        }
+
+        return $favoritesWithNonZero;
     }
 
 }
