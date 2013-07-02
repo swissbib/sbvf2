@@ -9,6 +9,8 @@ use DateTime;
 class Aleph extends AlephDriver
 {
 
+	protected $itemLinks;
+
 	/**
 	 * Get data for photo copies
 	 *
@@ -172,6 +174,142 @@ class Aleph extends AlephDriver
 	}
 
 
+	protected function getHoldingHoldingsLinkList(
+					$resourceId,
+					$institutionCode = '',
+					$offset = 0,
+					$year = 0,
+					$volume = 0,
+					array $extraRestParams = array()
+	) {
+		if (!is_array($this->itemLinks) || true) {
+			$pathElements	= array('record', $resourceId, 'items');
+			$parameters		= $extraRestParams;
+
+			if ($institutionCode) {
+				$parameters['sublibrary'] = $institutionCode;
+			}
+			if ($offset) {
+				$parameters['startPos'] = intval($offset) + 1;
+			}
+			if ($year) {
+				$parameters['year'] = intval($year);
+			}
+			if ($volume) {
+				$parameters['volume'] = intval($volume);
+			}
+
+			$xmlResponse = $this->doRestDLFRequest($pathElements, $parameters);
+
+			/** @var SimpleXMLElement[] $items */
+			$items = $xmlResponse->xpath('//item');
+			$links = array();
+
+			foreach ($items as $item) {
+				$links[] = (string)$item->attributes()->href;
+			}
+
+			$this->itemLinks = $links;
+		}
+
+
+		return $this->itemLinks;
+	}
+
+
+
+
+	public function getHoldingHoldingItems(
+					$resourceId,
+					$institutionCode = '',
+					$offset = 0,
+					$year = 0,
+					$volume = 0,
+					$numItems = 10,
+					array $extraRestParams = array()
+	) {
+		$links	= $this->getHoldingHoldingsLinkList($resourceId, $institutionCode, $offset, $year, $volume, $extraRestParams);
+		$items	= array();
+		$dataMap         = array(
+			'title'             	=> 'z13-title',
+			'author'            	=> 'z13-author',
+			'itemStatus'        	=> 'z30-item-status',
+			'signature'         	=> 'z30-call-no',
+			'library'           	=> 'z30-sub-library',
+			'barcode'           	=> 'z30-barcode',
+			'location_expanded' 	=> 'z30-collection',
+			'location_code'			=> 'z30-collection',
+			'description'       	=> 'z30-description',
+			'raw-sequence-number'	=> 'z30-item-sequence'
+		);
+
+		$linksToExtend = array_slice($links, 0, $numItems);
+
+		foreach ($linksToExtend as $link) {
+			$itemResponseData = $this->doHTTPRequest($link);
+
+			$item = $this->extractResponseData($itemResponseData->item, $dataMap);
+
+			if (isset($item['raw-sequence-number'])) {
+				$item['sequencenumber'] = sprintf('%06d', trim(str_replace('.', '', $item['raw-sequence-number'])));
+			}
+
+			$items[] = $item;
+		}
+
+		return $items;
+	}
+
+
+
+	/**
+	 *
+	 *
+	 * @param $resourceId
+	 * @return	Array[]
+	 */
+	public function getResourceFilters($resourceId)
+	{
+		$pathElements	= array('record', $resourceId, 'filters');
+		$xmlResponse	= $this->doRestDLFRequest($pathElements);
+
+		$yearNodes		= $xmlResponse->{'record-filters'}->xpath('//year');
+		$years 			= array_map('trim', $yearNodes);
+		sort($years);
+
+		$volumeNodes	= $xmlResponse->{'record-filters'}->xpath('//volume');
+		$volumes	= array_map('trim', $volumeNodes);
+		sort($volumes);
+
+		return array(
+			'years'		=> $years,
+			'volumes'	=> $volumes
+		);
+	}
+
+
+
+	/**
+	 *
+	 *
+	 * @param        $resourceId
+	 * @param string $institutionCode
+	 * @param int    $year
+	 * @param int    $volume
+	 * @return	Integer
+	 */
+	public function getHoldingItemCount($resourceId, $institutionCode = '', $year = 0, $volume = 0)
+	{
+		$links	= $this->getHoldingHoldingsLinkList(	$resourceId,
+														$institutionCode,
+														0,
+														$year,
+														$volume);
+
+		return sizeof($links);
+	}
+
+
 
 	/**
 	 * Get booking requests
@@ -221,7 +359,7 @@ class Aleph extends AlephDriver
 		$data = array();
 
 		foreach ($map as $resultField => $path) {
-			list($group, $field) = explode('-', $path);
+			list($group, $field) = explode('-', $path, 2);
 
 			$data[$resultField] = (string)$xmlResponse->$group->$path;
 		}

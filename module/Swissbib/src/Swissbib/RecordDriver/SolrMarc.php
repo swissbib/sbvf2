@@ -814,11 +814,12 @@ class SolrMarc extends VuFindSolrMarc
 	 * Get holdings data
 	 *
 	 * @param    String 		$institutionCode
+	 * @param	Boolean		$extend
 	 * @return    Array|Boolean
 	 */
-	public function getInstitutionHoldings($institutionCode)
+	public function getInstitutionHoldings($institutionCode, $extend = true)
 	{
-		return $this->getHoldingsHelper()->getHoldings($this, $institutionCode);
+		return $this->getHoldingsHelper()->getHoldings($this, $institutionCode, $extend);
 	}
 
 
@@ -1135,5 +1136,24 @@ class SolrMarc extends VuFindSolrMarc
 
 			// Fallback to base method if no custom field found
 		return parent::getFieldData($field, $fieldIndex);
+	}
+
+
+
+	/**
+	 * @inheritDoc
+	 * @note	Prevent php error for invalid index data. parent_id and sequence should contain the same amount of values which correspond
+	 * @return	Array
+	 */
+	public function getHierarchyPositionsInParents()
+	{
+		if (isset($this->fields['hierarchy_parent_id'])
+		            && isset($this->fields['hierarchy_sequence'])) {
+			if (sizeof($this->fields['hierarchy_parent_id']) > sizeof($this->fields['hierarchy_sequence'])) {
+				$this->fields['hierarchy_parent_id'] = array_slice($this->fields['hierarchy_parent_id'], 0, sizeof($this->fields['hierarchy_sequence']));
+			}
+		}
+
+		return parent::getHierarchyPositionsInParents();
 	}
 }
