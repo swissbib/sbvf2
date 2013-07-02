@@ -4,20 +4,26 @@
 /** @var String $activeTabKey */
 /** @var Vufind\Search\Base\Results $results */
 
-if (!isset($facetList['institution'])) {
+
+$favorites = $results->getFavoritesFacets();
+
+
+if (!sizeof($favorites) > 0) {
+//if (!isset($facetList['institution'])) {
 	return; // Stop of no institution facets are set
 }
 
-$institutionFacets	= $this->filterFavoriteInstitutionFacets($facetList['institution']['list']);
+//$institutionFacets	= $this->filterFavoriteInstitutionFacets($facetList['institution']['list']);
 
-if (!sizeof($institutionFacets)) {
-	return; // No favorite institutions in facet list found
-}
+//if (!sizeof($institutionFacets)) {
+//	return; // No favorite institutions in facet list found
+//}
 
 $institutionFacets	= $this->SortAndPrepareFacetList(
 										$results,
 										'institution',
-										$institutionFacets,
+										//$institutionFacets,
+                                        $favorites,
 										$basicSearch,
 										array('tab' => ucfirst($activeTabKey))
 									);
