@@ -1,6 +1,7 @@
 <?php
 namespace Swissbib\Favorites;
 
+use Zend\Config\Config;
 use Zend\Session\Storage\StorageInterface as SessionStorageInterface;
 use VuFind\Db\Table\User as UserTable;
 
@@ -19,14 +20,121 @@ class Manager
 	protected $userTable;
 	/** @var SessionStorageInterface  */
 	protected $session;
+	/** @var  Config */
+	protected $groupMapping;
 
-	public function __construct(UserTable $userTable, SessionStorageInterface $session)
+
+
+	/**
+	 * Initialize
+	 *
+	 * @param UserTable               $userTable
+	 * @param SessionStorageInterface $session
+	 * @param	Config					$groupMapping
+	 */
+	public function __construct(UserTable $userTable, SessionStorageInterface $session, Config $groupMapping)
 	{
 		$this->userTable	= $userTable;
 		$this->session		= $session;
+		$this->groupMapping	= $groupMapping;
 	}
 
-	public function getUserFavorites()
+
+
+	/**
+	 * Get user institutions
+	 *
+	 * @return	String[]
+	 * @todo	Do login check
+	 */
+	public function getUserInstitutions()
+	{
+		return $this->getFromSession();
+	}
+
+
+
+	/**
+	 * Check whether download flag is set
+	 *
+	 * @return	Boolean
+	 */
+	public function hasInstitutionsDownloaded()
+	{
+		return isset($this->session[$this->SESSION_DOWNLOADED]);
+	}
+
+
+
+	/**
+	 * Set downloaded flag in session
+	 *
+	 */
+	public function setInstitutionsDownloaded()
+	{
+		$this->session[$this->SESSION_DOWNLOADED] = true;
+	}
+
+
+
+	/**
+	 * Save user institutions
+	 *
+	 * @param	String[]	$institutions
+	 */
+	public function saveUserInstitutions(array $institutions)
+	{
+		$this->saveInSession($institutions);
+	}
+
+
+
+	/**
+	 *
+	 *
+	 * @param	String[]	$institutions
+	 * @return	Array[]
+	 */
+	public function extendUserInstitutionsForListing(array $institutions)
+	{
+		$listing	= array();
+
+
+		return $listing;
+	}
+
+
+
+	/**
+	 * ave institutions in session
+	 *
+	 * @param	String[]	$institutions
+	 */
+	protected function saveInSession(array $institutions)
+	{
+		$this->session[$this->SESSION_DATA] = $institutions;
+	}
+
+
+
+	/**
+	 * Save institutions as user setting in database
+	 *
+	 * @param	String[]	$institutions
+	 */
+	protected function saveInDatabase(array $institutions)
+	{
+		// implement
+	}
+
+
+
+	/**
+	 * Get user institutions from session
+	 *
+	 * @return	String[]
+	 */
+	protected function getFromSession()
 	{
 		if (!isset($this->session[$this->SESSION_DATA])) {
 			$this->session[$this->SESSION_DATA] = array();
@@ -36,33 +144,14 @@ class Manager
 	}
 
 
-	public function hasInstitutionsDownloaded()
+
+	/**
+	 * Get user institutions from database
+	 *
+	 * @return	String[]
+	 */
+	protected function getFromDatabase()
 	{
-		return isset($this->session[$this->SESSION_DOWNLOADED]);
+		return array();
 	}
-
-	public function setInstitutionsDownloaded()
-	{
-		$this->session[$this->SESSION_DOWNLOADED] = true;
-	}
-
-
-	public function saveUserFavorites(array $favoriteInstitutions)
-	{
-		$this->saveInSession($favoriteInstitutions);
-	}
-
-
-	public function extendUserInstitutionsForListing(array $institutions)
-	{
-
-	}
-
-
-	protected function saveInSession(array $institutions)
-	{
-		$this->session[$this->SESSION_DATA] = $institutions;
-	}
-
-
 }
