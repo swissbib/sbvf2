@@ -22,6 +22,8 @@ use Swissbib\RecordDriver\Helper\Availability;
 use Swissbib\Helper\BibCode;
 use Swissbib\Favorites\DataSource as FavoritesDataSource;
 use Swissbib\Favorites\Manager as FavoritesManager;
+use Swissbib\Favorites\Manager;
+use Swissbib\View\Helper\FilterFavoriteInstitutionFacets;
 
 return array(
 	'router'          => array(
@@ -276,6 +278,13 @@ return array(
 				$translator	= $sm->getServiceLocator()->get('VuFind\Translator');
 
 				return new TranslateLocation($translator);
+			},
+			'filterFavoriteInstitutionFacets' => function ($sm) {
+				/** @var Manager $favoriteManager */
+				$favoriteManager		= $sm->getServiceLocator()->get('Swissbib\FavoriteInstitutions\Manager');
+				$userInstitutionCodes	= $favoriteManager->getUserInstitutions();
+
+				return new FilterFavoriteInstitutionFacets($userInstitutionCodes);
 			}
 		)
 	),

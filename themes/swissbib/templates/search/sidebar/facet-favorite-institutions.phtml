@@ -1,0 +1,39 @@
+<?php
+/** @var Array[] $facetList */
+/** @var String $basicSearch */
+/** @var String $activeTabKey */
+/** @var Vufind\Search\Base\Results $results */
+
+if (!isset($facetList['institution'])) {
+	return; // Stop of no institution facets are set
+}
+
+$institutionFacets	= $this->filterFavoriteInstitutionFacets($facetList['institution']['list']);
+
+if (!sizeof($institutionFacets)) {
+	return; // No favorite institutions in facet list found
+}
+
+$institutionFacets	= $this->SortAndPrepareFacetList(
+										$results,
+										'institution',
+										$institutionFacets,
+										$basicSearch,
+										array('tab' => ucfirst($activeTabKey))
+									);
+
+?>
+<!-- facet start: favorite institutions -->
+<div class="facet" id="facet_favorite_institution">
+	<h5 class="toggler persist expanded" id="facet_toggler_favorite_institution">
+		Favorite Institutions
+	</h5>
+	<ul class="facet_toggler_favorite_institution">
+
+		<?php foreach ($institutionFacets as $institutionFacet): ?>
+			<?=$this->facetItem($institutionFacet, 'institution')?>
+		<?php endforeach; ?>
+
+	</ul>
+</div>
+<!-- facet -->

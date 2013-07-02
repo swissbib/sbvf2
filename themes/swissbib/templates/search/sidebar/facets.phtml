@@ -20,6 +20,14 @@ $checkboxFilters = $results->getParams()->getCheckboxFacets();
 
 <div class="facets">
 
+	<?=$this->render($this->tabTemplate('search/sidebar/facet-favorite-institutions', $this->activeTabKey), array(
+																				 'results'    		=> $results,
+																				 'facetList'  		=> $facetList,
+																				 'basicSearch'		=> $basicSearch,
+																				 'facetConfig' 		=> $facetConfig,
+																				 'activeTabKey'		=> $this->activeTabKey
+																			))?>
+
 	<!-- start checkbox facet -->
 	<?=$this->render($this->tabTemplate('search/sidebar/facet-checkbox', $this->activeTabKey), array(
 																				   'results'		=> $results,
