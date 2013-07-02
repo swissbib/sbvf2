@@ -1,7 +1,6 @@
 <?php
 namespace Swissbib\Controller;
 
-
 use Zend\View\Model\ViewModel;
 
 use Swissbib\Controller\BaseController;
@@ -14,6 +13,7 @@ use Swissbib\Favorites\Manager as FavoriteManager;
  */
 class FavoritesController extends BaseController
 {
+
 	/**
 	 * show list of already defined favorites
 	 *
@@ -25,44 +25,32 @@ class FavoritesController extends BaseController
 
 			// Are institutions already in browser cache?
 		if ($favoriteManager->hasInstitutionsDownloaded()) {
-			$availableInstitutions	= false;
+			$autocompleterData	= false;
 		} else {
-			$availableInstitutions	= $this->getAvailableInstitutions();
+			$autocompleterData	= $this->getAutocompleterData();
 
 				// mark as downloaded
 			$favoriteManager->setInstitutionsDownloaded();
 		}
 
-		$userInstitutions		= $this->getUserInstitutions();
-		$userInstitutionList	= $favoriteManager->extendUserInstitutionsForListing($userInstitutions);
-
 		$data = array(
-			'availableInstitutions' => $availableInstitutions,
-			'userInstitutions'		=> $userInstitutions,
-			'userInstitutionsList'	=> $userInstitutionList
+			'autocompleterData' 	=> $autocompleterData,
+			'userInstitutionsList'	=> $this->getUserInstitutionsList()
 		);
 
-//		$this->addFavoriteInstitution('a274');
-//		$this->addFavoriteInstitution('a276');
-//		$this->addFavoriteInstitution('a278');
-//		$this->addFavoriteInstitution('a281');
-//		$this->addFavoriteInstitution('a282');
-
-
-        //todo: besseres sessionhandling
-        //ich verwende hier den object cache, der im filesystem gespeichert wird,
-        //wir brauchen aber den user cache
-        //wie bekomme ich den? Ich benötge gerade zviel Zeit dies nachzuschauen. - Merc!
-
-
-
         //facetquery   ->>> facet.query=institution:z01
-
 
         return new ViewModel($data);
 	}
 
 
+
+	/**
+	 * Add an institution to users favorite list
+	 * Return view for selection
+	 *
+	 * @return	ViewModel
+	 */
 	public function addAction()
 	{
 		$institutionCode	= $this->params()->fromPost('institution');
@@ -101,29 +89,30 @@ class FavoritesController extends BaseController
 	 */
 	public function getSelectionList()
 	{
-		$userInstitutionsList	= $this->getUserInstitutionsList();
-
 		return $this->getAjaxViewModel(array(
-											'userInstitutionsList'	=> $userInstitutionsList
+											'userInstitutionsList'	=> $this->getUserInstitutionsList()
 									   ), 'favorites/selectionList');
 	}
 
 
 
 	/**
-	 *
+	 * Get data for user institution list
 	 *
 	 * @return	Array[]
 	 */
 	protected function getUserInstitutionsList()
 	{
-		$userInstitutions = $this->getUserInstitutions();
-
-		return $this->getFavoriteManager()->extendUserInstitutionsForListing($userInstitutions);
+		return $this->getFavoriteManager()->getUserInstitutionsListingData();
 	}
 
 
 
+	/**
+	 * Add an institution to users favorite list
+	 *
+	 * @param	String		$institutionCode
+	 */
 	protected function addUserInstitution($institutionCode)
 	{
 		$userInstitutions = $this->getUserInstitutions();
@@ -136,6 +125,12 @@ class FavoritesController extends BaseController
 	}
 
 
+
+	/**
+	 * Remove an institution from users favorite list
+	 *
+	 * @param	String		$institutionCode
+	 */
 	protected function removeUserInstitution($institutionCode)
 	{
 		$userInstitutions = $this->getUserInstitutions();
@@ -148,7 +143,30 @@ class FavoritesController extends BaseController
 	}
 
 
+
 	/**
+	 * Get autocompleter user institutions data
+	 * Fetch the translated institution name from label files and append general info (not translated)
+	 *
+	 * @return	Array
+	 */
+	protected function getAutocompleterData()
+	{
+		$availableInstitutions	= $this->getAvailableInstitutions();
+		$data					= array();
+		$translator				= $this->getServiceLocator()->get('VuFind\Translator');
+
+		foreach ($availableInstitutions as $institutionCode => $additionalInfo) {
+			$data[$institutionCode]	= $translator->translate($institutionCode, 'institution') . ' ' . $additionalInfo;
+		}
+
+		return $data;
+	}
+
+
+
+	/**
+	 * Get all available institutions
 	 *
 	 * @return	Array
 	 */
@@ -158,10 +176,17 @@ class FavoritesController extends BaseController
 	}
 
 
+
+	/**
+	 * Get institutions which are users favorite
+	 *
+	 * @return	String[]
+	 */
 	protected function getUserInstitutions()
 	{
 		return $this->getFavoriteManager()->getUserInstitutions();
 	}
+
 
 
 	/**
@@ -185,5 +210,4 @@ class FavoritesController extends BaseController
 	{
 		return $this->getServiceLocator()->get('Swissbib\FavoriteInstitutions\DataSource');
 	}
-
 }
