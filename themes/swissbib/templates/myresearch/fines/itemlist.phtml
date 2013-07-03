@@ -22,7 +22,7 @@
 			<td><?=isset($record['duedate']) ? $this->escapeHtml($record['duedate']) : ''?></td>
 			<td><?=isset($record['fine']) ? $this->escapeHtml($record['fine']) : ''?></td>
 			<td><?=isset($record['amount']) ? $this->safeMoneyFormat($record['amount'] / 100.00) : ''?></td>
-			<td><?=isset($record['balance']) ? $this->safeMoneyFormat($record['balance'] / 100.00) : ''?></td>
+			<td><?=isset($record['balance']) ? $record['balance'] / 100.00 : ''?>.- CHF</td>
 		</tr>
 	<?php endforeach; ?>
 </table>
