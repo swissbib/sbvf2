@@ -12,7 +12,6 @@ use Swissbib\Libadmin\Importer as LibadminImporter;
 use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
 use Swissbib\View\Helper\InstitutionSorter;
 use Swissbib\Tab40Import\Importer as Tab40Importer;
-use Swissbib\View\Helper\TranslateLocation;
 use Swissbib\RecordDriver\Helper\LocationMap;
 use Swissbib\RecordDriver\Missing as RecordDriverMissing;
 use Swissbib\RecordDriver\Summon;
@@ -24,6 +23,7 @@ use Swissbib\Favorites\DataSource as FavoritesDataSource;
 use Swissbib\Favorites\Manager as FavoritesManager;
 use Swissbib\Favorites\Manager;
 use Swissbib\View\Helper\ExtractFavoriteInstitutionsForHoldings;
+use Swissbib\View\Helper\IsFavoriteInstitution;
 
 return array(
 	'router'          => array(
@@ -280,6 +280,13 @@ return array(
 				$userInstitutionCodes	= $favoriteManager->getUserInstitutions();
 
 				return new ExtractFavoriteInstitutionsForHoldings($userInstitutionCodes);
+			},
+			'isFavoriteInstitution' => function ($sm) {
+				/** @var Manager $favoriteManager */
+				$favoriteManager		= $sm->getServiceLocator()->get('Swissbib\FavoriteInstitutions\Manager');
+				$userInstitutionCodes	= $favoriteManager->getUserInstitutions();
+
+				return new IsFavoriteInstitution($userInstitutionCodes);
 			}
 		)
 	),
