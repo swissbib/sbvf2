@@ -1,6 +1,6 @@
 <?php
 
-/** @var $results VuFind\Search\Solr\Results */
+/** @var \Swissbib\Search\Solr\Results $results  */
 $results	= $this->results;
 $facetList	= $results->getFacetList();
 
@@ -19,14 +19,6 @@ $checkboxFilters = $results->getParams()->getCheckboxFacets();
 <h3><?= $this->transEsc('Narrow Search') ?></h3>
 
 <div class="facets">
-
-	<?=$this->render($this->tabTemplate('search/sidebar/facet-favorite-institutions', $this->activeTabKey), array(
-																				 'results'    		=> $results,
-																				 'facetList'  		=> $facetList,
-																				 'basicSearch'		=> $basicSearch,
-																				 'facetConfig' 		=> $facetConfig,
-																				 'activeTabKey'		=> $this->activeTabKey
-																			))?>
 
 	<!-- start checkbox facet -->
 	<?=$this->render($this->tabTemplate('search/sidebar/facet-checkbox', $this->activeTabKey), array(
