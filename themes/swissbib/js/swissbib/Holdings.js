@@ -36,9 +36,9 @@ swissbib.Holdings = {
 				dataParts, groupCode, institutionCode;
 
 		if( !isLoaded ) {
-			dataParts 		= $(event.target).data('holding').split('-');
-			groupCode		= dataParts[0];
-			institutionCode	= dataParts[1];
+			dataParts 		= $(event.target).attr('id').split('-');
+			groupCode		= dataParts[2];
+			institutionCode	= dataParts[3];
 
 				// Start ajax spinner
 			this.startSpinner(institutionCode);
@@ -61,7 +61,7 @@ swissbib.Holdings = {
 	loadHoldingTable: function(idRecord, groupCode, institutionCode) {
 		var url 		= window.path + '/Holdings/' + idRecord + '/' + institutionCode,
 			callback	= $.proxy(this.onHoldingTableLoaded, this, idRecord, groupCode, institutionCode),
-			container	= $('.holdings-data-' + groupCode + '-' + institutionCode);
+			container	= $('.holding-institution-' + groupCode + '-' + institutionCode);
 
 		container.load(url, '', callback);
 	},
@@ -80,7 +80,7 @@ swissbib.Holdings = {
 	 */
 	onHoldingTableLoaded: function(idRecord, groupCode, institutionCode, responseText, status, response) {
 		if( status === 'error' ) {
-			$('#holdings-data-' + groupCode + '-' + institutionCode).html('Request failed. Information is currently not available');
+			$('#holdings-institution-' + groupCode + '-' + institutionCode).html('Request failed. Information is currently not available');
 		}
 //		console.log('Table for institution was loaded');
 	},
@@ -93,7 +93,7 @@ swissbib.Holdings = {
 	 * @param	{String}	institutionCode
 	 */
 	startSpinner: function(institutionCode) {
-		var loaderBox = $('.holdings-ajax-spinner-' + institutionCode);
+		var loaderBox = $('.holding-ajax-spinner-' + institutionCode);
 		loaderBox.css({
 			display: 'inline-block'
 		});

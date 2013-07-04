@@ -41,7 +41,7 @@ swissbib.HoldingFavorites = {
 
 	extractInstitutionCodes: function(items) {
 		return $.map(items, function(node, index){
-			return $(node).data('holding').split('-').pop();
+			return $(node).attr('id').split('-').pop();
 		});
 	}
 
