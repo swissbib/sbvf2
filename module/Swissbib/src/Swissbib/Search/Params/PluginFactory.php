@@ -95,7 +95,8 @@ class PluginFactory extends VFParamsPluginFactory {
             // Clone the options instance in case caller modifies it:
             return new $class(
                 clone($options),
-                $serviceLocator->getServiceLocator()->get('VuFind\Config')
+                $serviceLocator->getServiceLocator()->get('VuFind\Config'),
+                $serviceLocator->getServiceLocator()->get("Swissbib\FavoriteInstitutions\Manager")
             );
         } else {
 
