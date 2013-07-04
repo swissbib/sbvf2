@@ -15,9 +15,10 @@ $toggleLabel		= $this->transEsc('more_info_toggle');
 	<?php
 		$facetId         = strtolower($facetGroup);
 		$facetGroupLabel = $facetGroupData['label'];
+		$facetField		 = isset($facetGroupData['field']) ? $facetGroupData['field'] : $facetGroup; // Optional override of field name
 		$facetGroupItems = $this->SortAndPrepareFacetList(
 												$results,
-												$facetGroup,
+												$facetField,
 												$facetGroupData['list'],
 												$basicSearch,
 												array('tab' => ucfirst($this->activeTabKey))
@@ -33,31 +34,31 @@ $toggleLabel		= $this->transEsc('more_info_toggle');
 
 	?>
 	<!-- facet start: <?=$facetGroup?> -->
-	<div class="facet" id="facet_<?= $facetId ?>">
-		<h5 class="toggler persist expanded" id="facet_toggler_<?= $facetId ?>">
-			<?= $this->escapeHtml($facetGroupLabel) ?>
+	<div class="facet" id="facet_<?=$facetId ?>">
+		<h5 class="toggler persist expanded" id="facet_toggler_<?=$facetId ?>">
+			<?=$this->transEsc($facetGroupLabel) ?>
 		</h5>
-		<ul class="facet_toggler_<?= $facetId ?>">
+		<ul class="facet_toggler_<?=$facetId ?>">
 
 			<?php foreach ($facetGroupItems as $facet): ?>
 				<?php if ($itemsCount++ >= $amountItemsShown) break; /* Limit initially shown items per facet*/ ?>
-				<?=$this->facetItem($facet, $facetGroup)?>
+				<?=$this->facetItem($facet, $facetField)?>
 			<?php endforeach; ?>
 
 			<?php if ($amountItems > $amountItemsShown): /* Show "more facets" link if there are more */ ?>
 				<?php $amountMore = $amountItems - $amountItemsShown ?>
-				<li id="more<?= $facetId ?>" class="facet_more">
-					<a href="javascript:moreFacets('<?= $facetId ?>')" title="<?=$toggleLabel?>">
-						<?=$toggleLabel?> (<?= $amountMore ?>)
+				<li id="more<?=$facetId ?>" class="facet_more">
+					<a href="javascript:moreFacets('<?=$facetId ?>')" title="<?=$toggleLabel?>">
+						<?=$toggleLabel?> (<?=$amountMore ?>)
 					</a>
 				</li>
-				<div id="narrowGroupHidden_<?= $facetId ?>" class="offscreen">
+				<div id="narrowGroupHidden_<?=$facetId ?>" class="offscreen">
 					<?php while ($itemsCount < $amountItems): ?>
-						<?= $this->facetItem($facetGroupItems[$itemsCount++], $facetGroup) ?>
+						<?=$this->facetItem($facetGroupItems[$itemsCount++], $facetField) ?>
 					<?php endwhile; ?>
-					<li id="less<?= $facetId ?>" class="facet_more">
-						<a href="javascript:lessFacets('<?= $facetId ?>')" title="<?=$toggleLabel?>">
-							<?=$toggleLabel?> (<?= $amountMore ?>)
+					<li id="less<?=$facetId ?>" class="facet_more">
+						<a href="javascript:lessFacets('<?=$facetId?>')" title="<?=$toggleLabel?>">
+							<?=$toggleLabel?> (<?=$amountMore ?>)
 						</a>
 					</li>
 				</div>
