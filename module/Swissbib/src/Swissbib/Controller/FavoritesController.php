@@ -53,13 +53,18 @@ class FavoritesController extends BaseController
 	 */
 	public function addAction()
 	{
-		$institutionCode	= $this->params()->fromPost('institution');
+		$institutionCode= $this->params()->fromPost('institution');
+		$sendList		= !!$this->params()->fromPost('list');
 
 		if ($institutionCode) {
 			$this->addUserInstitution($institutionCode);
 		}
 
-		return $this->getSelectionList();
+		if ($sendList) {
+			return $this->getSelectionList();
+		} else {
+			return $this->getResponse();
+		}
 	}
 
 
@@ -72,12 +77,17 @@ class FavoritesController extends BaseController
 	public function deleteAction()
 	{
 		$institutionCode	= $this->params()->fromPost('institution');
+		$sendList		= !!$this->params()->fromPost('list');
 
 		if ($institutionCode) {
 			$this->removeUserInstitution($institutionCode);
 		}
 
-		return $this->getSelectionList();
+		if ($sendList) {
+			return $this->getSelectionList();
+		} else {
+			return $this->getResponse();
+		}
 	}
 
 

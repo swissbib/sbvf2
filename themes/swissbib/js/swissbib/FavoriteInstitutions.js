@@ -150,7 +150,8 @@ swissbib.FavoriteInstitutions = {
 		var that= this,
 		url = this.baseUrl + '/' + action,
 		data= {
-			institution: institutionCode
+			institution: institutionCode,
+			list: true
 		};
 
 		$('#user-favorites').load(url, data, function(){
