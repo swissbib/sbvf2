@@ -1,15 +1,15 @@
 <table id="bookings-table">
 	<thead>
 		<tr>
-			<th>Nr.</th>
-			<th>Titel</th>
-			<th>Buchung von</th>
-			<th>Buchung bis</th>
-			<th>Ort der Abholung</th>
-			<th>Status</th>
-			<th>Signatur</th>
-			<th>Info</th>
-			<th>Bibliothek</th>
+			<th>&nbsp;</th>
+			<th><?=$this->transEsc('Title')?></th>
+			<th><?=$this->transEsc('date_from')?></th>
+			<th><?=$this->transEsc('date_to')?></th>
+			<th><?=$this->transEsc('Place of Delivery') ?></th>
+			<th><?=$this->transEsc('Status') ?></th>
+            <th><?=$this->transEsc('Library') ?></th>
+			<th><?=$this->transEsc('Call Number') ?></th>
+			<th><?=$this->transEsc('Note') ?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -21,77 +21,10 @@
 				<td><?=date('d/m/y H:i', $booking['dateEnd'])?></td>
 				<td><?=$this->escapeHtml($booking['pickupLocation'])?></td>
 				<td><?=$this->escapeHtml($booking['itemStatus'])?></td>
+                <td><?=$this->escapeHtml($booking['library'])?></td>
 				<td><?=$this->escapeHtml($booking['callNumber'])?></td>
 				<td></td>
-				<td><?=$this->escapeHtml($booking['library'])?></td>
 			</tr>
 		<?php endforeach; ?>
 	</tbody>
 </table>
-
-
-<?php foreach($this->bookings as $index => $booking): ?>
-	<?php
-		$bookingData = array(
-			'gebucht von'	=> date('d/m/y H:i', $booking['dateStart']),
-			'gebucht bis'	=> date('d/m/y H:i', $booking['dateEnd']),
-			'Notiz'			=> trim($booking['note1'] . $booking['note2']),
-			'Abholort'		=> $booking['pickupLocation'],
-			'Abholstelle'	=> $booking['pickupSubLocation']
-		);
-		$copyData = array(
-			'Exemplarstrichcode'=> $booking['barcode'],
-			'Exemplarstatus'	=> $booking['itemStatus'],
-			'Zweigstelle'		=> $booking['library'],
-			'Standort'			=> $booking['collection'],
-			'Signatur'			=> $booking['callNumber'],
-			'Beschreibung'		=> $booking['description']
-		);
-	?>
-	<div class="bookingDetail" id="photocopy-<?=$index?>-detail" style="display: none">
-		<h2>Details für Buchung <?=$index+1?></h2>
-		<table>
-			<tbody>
-				<?php foreach($bookingData as $label => $value): ?>
-					<tr>
-						<th width="100"><?=$this->escapeHtml($label)?></th>
-						<td><?=$this->escapeHtml($value)?></td>
-					</tr>
-				<?php endforeach; ?>
-			</tbody>
-		</table>
-
-		<h2>Details zum Exemplar</h2>
-		<table>
-			<tbody>
-				<?php foreach($copyData as $label => $value): ?>
-					<tr>
-						<th width="100"><?=$this->escapeHtml($label)?></th>
-						<td><?=$this->escapeHtml($value)?></td>
-					</tr>
-				<?php endforeach; ?>
-			</tbody>
-		</table>
-
-	</div>
-<?php endforeach; ?>
-
-<script type="text/javascript">
-	$(document).ready(function() {
-		$('#bookings-table').find('tbody tr').click(function(){
-			var detail = $('#' + this.id + '-detail');
-
-			if( detail.is(':visible') ) {
-				detail.hide();
-			} else {
-				$('.bookingDetail').hide();
-
-				detail.show();
-
-				 $('html, body').animate({
-					 scrollTop: detail.offset().top
-				 }, 2000);
-			}
-		});
-	});
-</script>
