@@ -1,5 +1,5 @@
 <?php
-
+namespace Swissbib\Search\Solr;
 
 /**
  * swissbib / VuFind enhancements to extend the VuFind Params type for the Solr target
@@ -31,34 +31,45 @@
  * @link     http://www.swissbib.org
  */
 
-namespace Swissbib\Search\Solr;
-
-
-use VuFind\Search\Solr\Params as VFSolrParams;
+use VuFind\Search\Solr\Params as VuFindSolrParams;
 use VuFind\Config\PluginManager;
-
-
+use VuFind\Search\Base\Options;
+use Swissbib\Favorites\Manager as FavoriteManager;
 
 /*
  * Class to extend the core VF2 SOLR functionality related to Parameters
  */
-class Params extends VFSolrParams {
+class Params extends VuFindSolrParams
+{
+
+	/** @var FavoriteManager  */
+	protected $favoritesManager;
 
 
 
+	/**
+	 * Constructor
+	 *
+	 * @param	Options  			$options      	Options to use
+	 * @param	PluginManager		$configLoader	Config loader
+	 * @param	FavoriteManager		$favoritesManger
+	 */
+	public function __construct($options, PluginManager $configLoader, $favoritesManger)
+	{
+		parent::__construct($options, $configLoader);
 
-    /**
-     * Constructor
-     *
-     * @param \VuFind\Search\Base\Options  $options      Options to use
-     * @param \VuFind\Config\PluginManager $configLoader Config loader
-     */
-    public function __construct($options, PluginManager $configLoader)
-    {
-        parent::__construct($options, $configLoader);
-
-    }
+		$this->favoritesManager = $favoritesManger;
+	}
 
 
 
+	/**
+	 * Get user institutions
+	 *
+	 * @return	String[]
+	 */
+	public function getUserFavoritesInstitutions()
+	{
+		return $this->favoritesManager->getUserInstitutions();
+	}
 }

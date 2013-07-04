@@ -33,7 +33,7 @@ class LocationMap extends LocationMapBase
 		$isItemAvailable      = true; // Implement availability check with holdings helper
 		$hasSignature         = isset($item['signature']) && !empty($item['signature']) && $item['signature'] !== '-';
 		$accessibleConfigKey  = $item['institution'] . '_codes';
-		$isAccessible         = $this->isValueInConfigList($accessibleConfigKey, strtolower($item['location_code']));
+		$isAccessible         = isset($item['location_code']) && $this->isValueInConfigList($accessibleConfigKey, strtolower($item['location_code']));
 		$circulatingConfigKey = $item['institution'] . '_status';
 		$isCirculating		  = true;
 

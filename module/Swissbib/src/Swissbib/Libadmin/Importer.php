@@ -162,7 +162,10 @@ class Importer implements ServiceLocatorAwareInterface
 		$this->result->addInfo('Store group -> institution relations');
 		$statusRelations = $this->storeGroupInstitutionRelations($data);
 
-		return $statusInstitution && $statusInfoLinks && $statusGroups && $statusRelations;
+		$this->result->addInfo('Store favorite institutions');
+		$statusFavorites = $this->storeFavorites($data);
+
+		return $statusInstitution && $statusInfoLinks && $statusGroups && $statusRelations && $statusFavorites;
 	}
 
 
@@ -270,7 +273,7 @@ class Importer implements ServiceLocatorAwareInterface
 			$relations['institutions'][$relation['institution']] = $relation['group'];
 		}
 
-			// Write cofig file
+			// Write config file
 		try {
 			$storageFile     = $writer->saveConfigFile($relations, 'libadmin-groups');
 			$numInstitutions = sizeof($relations['institutions']);
@@ -281,6 +284,49 @@ class Importer implements ServiceLocatorAwareInterface
 			$this->result->addSuccess($message);
 		} catch (\Exception $e) {
 			$this->result->addError('Failed saving group->institution relation config');
+			$this->result->addError($e->getMessage());
+			$status = false;
+		}
+
+		return $status;
+	}
+
+
+
+	/**
+	 * Store favorite institutions as config file
+	 *
+	 * @param	Array	$data
+	 * @return	Boolean
+	 */
+	protected function storeFavorites(array $data)
+	{
+		$writer   	= new LibadminWriter(LOCAL_OVERRIDE_DIR . '/config/vufind');
+		$status		= true;
+		$favorites	= array();
+
+		foreach ($data as $group) {
+			foreach ($group['institutions'] as $institution) {
+				if ($institution['favorite'] || true) {
+					$institutionCode	= strtolower($institution['bib_code']);
+
+					$favorites[$institutionCode] = trim('(' . $institution['bib_code'] . ') '
+															. $institution['address']['address']
+															. ' ' . $institution['address']['zip']
+															. ' ' . $institution['address']['city']);
+				}
+			}
+		}
+
+			// Write config file
+		try {
+			$storageFile     = $writer->saveConfigFile($favorites, 'favorite-institutions');
+			$numInstitutions = sizeof($favorites);
+			$message		= 'Saved favorite institutions (' . $numInstitutions . ')' . ' config file to ' . $storageFile;
+
+			$this->result->addSuccess($message);
+		} catch (\Exception $e) {
+			$this->result->addError('Failed saving institution favorites relation config');
 			$this->result->addError($e->getMessage());
 			$status = false;
 		}
@@ -345,7 +391,7 @@ class Importer implements ServiceLocatorAwareInterface
 	{
 		try {
 			$url = $this->getApiEndpointUrl();
-		} catch (Exceptions\Fetch $e) {
+		} catch (\Exception $e) {
 			$this->result->addError($e->getMessage());
 
 			throw new Exceptions\Fetch('Stopped sync. Cannot start synchronization because API URL is invalid');
