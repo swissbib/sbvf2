@@ -296,9 +296,11 @@
 	text-align:left;
 	text-decoration: none;
 }
-.ui-autocomplete li a:hover,
 .ui-autocomplete li a.ui-state-hover {
 	background-color:#D4F2CE;
+}
+.ui-autocomplete li a.ui-state-focus {
+	margin: -1px 0;
 }
 
 
