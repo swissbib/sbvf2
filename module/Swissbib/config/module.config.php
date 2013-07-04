@@ -23,7 +23,6 @@ use Swissbib\Helper\BibCode;
 use Swissbib\Favorites\DataSource as FavoritesDataSource;
 use Swissbib\Favorites\Manager as FavoritesManager;
 use Swissbib\Favorites\Manager;
-use Swissbib\View\Helper\FilterFavoriteInstitutionFacets;
 use Swissbib\View\Helper\ExtractFavoriteInstitutionsForHoldings;
 
 return array(
@@ -274,13 +273,6 @@ return array(
 				}
 
 				return new InstitutionSorter($institutionList);
-			},
-			'filterFavoriteInstitutionFacets' => function ($sm) {
-				/** @var Manager $favoriteManager */
-				$favoriteManager		= $sm->getServiceLocator()->get('Swissbib\FavoriteInstitutions\Manager');
-				$userInstitutionCodes	= $favoriteManager->getUserInstitutions();
-
-				return new FilterFavoriteInstitutionFacets($userInstitutionCodes);
 			},
 			'extractFavoriteInstitutionsForHoldings' => function ($sm) {
 				/** @var Manager $favoriteManager */
