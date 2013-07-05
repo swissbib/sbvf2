@@ -48,7 +48,8 @@ class QrCodeHolding extends AbstractTranslatorHelper
 
 		return $this->getView()->render('Holdings/qr-code', array(
 																 'item'	=> $item,
-																 'url'	=> $qrCodeUrl
+																 'url'	=> $qrCodeUrl,
+																 'text'	=> $text
 															));
 	}
 }
