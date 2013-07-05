@@ -25,6 +25,7 @@ use Swissbib\Favorites\Manager;
 use Swissbib\View\Helper\ExtractFavoriteInstitutionsForHoldings;
 use Swissbib\View\Helper\IsFavoriteInstitution;
 use Swissbib\Search\Helper\ExtendedSolrFactoryHelper;
+use Swissbib\View\Helper\QrCode as QrCodeViewHelper;
 
 return array(
 	'router'          => array(
@@ -87,7 +88,7 @@ return array(
 					)
 				)
 			),
-			'holdings-holding-items'     => array( // load holding holdings details for record with ajax
+			'holdings-holding-items' => array( // load holding holdings details for record with ajax
 				'type'    => 'segment',
 				'options' => array(
 					'route'    => '/Holdings/:record/:institution/items/:resource',
@@ -97,16 +98,16 @@ return array(
 					)
 				)
 			),
-            'myresearch-favorite-institutions' => array( // display defined favorite institutions
-                'type'    => 'segment',
-                'options' => array(
-                    'route'    => '/MyResearch/FavoriteInstitutions[/:action]',
-                    'defaults' => array(
-                        'controller' => 'institutionFavorites',
-                        'action'     => 'display'
-                    )
-                )
-            )
+			'myresearch-favorite-institutions' => array( // display defined favorite institutions
+				'type'    => 'segment',
+				'options' => array(
+					'route'    => '/MyResearch/FavoriteInstitutions[/:action]',
+					'defaults' => array(
+						'controller' => 'institutionFavorites',
+						'action'     => 'display'
+					)
+				)
+			)
 		)
 	),
 	'console'         => array(
@@ -135,20 +136,21 @@ return array(
 	),
 	'controllers'     => array(
 		'invokables' => array(
-			'helppage'    			=> 'Swissbib\Controller\HelpPageController',
-			'libadminsync'			=> 'Swissbib\Controller\LibadminSyncController',
-			'my-research' 			=> 'Swissbib\Controller\MyResearchController',
-			'search'      			=> 'Swissbib\Controller\SearchController',
-			'summon'      			=> 'Swissbib\Controller\SummonController',
-			'holdings'    			=> 'Swissbib\Controller\HoldingsController',
-			'tab40import' 			=> 'Swissbib\Controller\Tab40ImportController',
+			'helppage'     => 'Swissbib\Controller\HelpPageController',
+			'libadminsync' => 'Swissbib\Controller\LibadminSyncController',
+			'my-research'  => 'Swissbib\Controller\MyResearchController',
+			'search'       => 'Swissbib\Controller\SearchController',
+			'summon'       => 'Swissbib\Controller\SummonController',
+			'holdings'     => 'Swissbib\Controller\HoldingsController',
+			'tab40import'  => 'Swissbib\Controller\Tab40ImportController',
 			'institutionFavorites'  => 'Swissbib\Controller\FavoritesController'
 		)
 	),
 	'service_manager' => array(
 		'invokables' => array(
 			'VuFindTheme\ResourceContainer'       => 'Swissbib\VuFind\ResourceContainer',
-			'Swissbib\RecordDriverHoldingsHelper' => 'Swissbib\RecordDriver\Helper\Holdings'
+			'Swissbib\RecordDriverHoldingsHelper' => 'Swissbib\RecordDriver\Helper\Holdings',
+			'Swissbib\QRCode'					  => 'Swissbib\CRCode\QrCodeService'
 		),
 		'factories'  => array(
 			'Swissbib\HoldingsHelper'    => function ($sm) {
@@ -210,8 +212,7 @@ return array(
 				return new EbooksOnDemand($eBooksOnDemandConfig, $translator);
 			},
 			'Swissbib\Availability' => function ($sm) {
-//				$logger				= $sm->get('VuFind\Logger');
-				$bibCodeHelper		= $sm->get('Swissbib\BibCodeHelper');
+				$bibCodeHelper	= $sm->get('Swissbib\BibCodeHelper');
 				$availabilityConfig = $sm->get('VuFind\Config')->get('config')->Availability;
 
 				return new Availability($bibCodeHelper, $availabilityConfig);
@@ -222,21 +223,21 @@ return array(
 				return new BibCode($alephNetworkConfig);
 			},
 			'Swissbib\FavoriteInstitutions\DataSource' => function ($sm) {
-				$objectCache	= $sm->get('VuFind\CacheManager')->getCache('object');
-				$configManager	= $sm->get('VuFind\Config');
+				$objectCache   = $sm->get('VuFind\CacheManager')->getCache('object');
+				$configManager = $sm->get('VuFind\Config');
 
 				return new FavoritesDataSource($objectCache, $configManager);
 			},
-			'Swissbib\FavoriteInstitutions\Manager' => function ($sm) {
-				$sessionStorage	= $sm->get('VuFind\SessionManager')->getStorage();
-				$groupMapping	= $sm->get('VuFind\Config')->get('libadmin-groups')->institutions;
+			'Swissbib\FavoriteInstitutions\Manager'    => function ($sm) {
+				$sessionStorage = $sm->get('VuFind\SessionManager')->getStorage();
+				$groupMapping   = $sm->get('VuFind\Config')->get('libadmin-groups')->institutions;
 				$authManager    = $sm->get('VuFind\AuthManager');
 
 				return new FavoritesManager($sessionStorage, $groupMapping, $authManager);
 			},
-			'Swissbib\ExtendedSolrFactoryHelper' => function ($sm) {
-				$config = $sm->get('Vufind\Config')->get('config')->SwissbibSearchExtensions;
-				$extendedTargets	= explode(',', $config->extendedTargets);
+			'Swissbib\ExtendedSolrFactoryHelper'       => function ($sm) {
+				$config          = $sm->get('Vufind\Config')->get('config')->SwissbibSearchExtensions;
+				$extendedTargets = explode(',', $config->extendedTargets);
 
 				return new ExtendedSolrFactoryHelper($extendedTargets);
 			}
@@ -267,7 +268,8 @@ return array(
 			'getVersion'              => 'Swissbib\View\Helper\GetVersion',
 			'holdingActions'          => 'Swissbib\View\Helper\HoldingActions',
 			'availabilityInfo'        => 'Swissbib\View\Helper\AvailabilityInfo',
-			'transLocation'        => 'Swissbib\View\Helper\TranslateLocation'
+			'transLocation'        => 'Swissbib\View\Helper\TranslateLocation',
+			'qrCodeHolding'			  => 'Swissbib\View\Helper\QrCodeHolding'
 		),
 		'factories' => array(
 			'institutionSorter' => function ($sm) {
@@ -287,6 +289,11 @@ return array(
 				$userInstitutionCodes	= $favoriteManager->getUserInstitutions();
 
 				return new ExtractFavoriteInstitutionsForHoldings($userInstitutionCodes);
+			},
+			'qrCode' => function ($sm) {
+				$qrCodeService = $sm->getServiceLocator()->get('Swissbib\QRCode');
+
+				return new QrCodeViewHelper($qrCodeService);
 			},
 			'isFavoriteInstitution' => function ($sm) {
 				/** @var Manager $favoriteManager */
