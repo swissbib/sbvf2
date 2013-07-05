@@ -3,14 +3,13 @@
 /** @var	Swissbib\RecordDriver\SolrMarc	$recordDriver  */
 $recordDriver	= $this->driver;
 $holdings		= $recordDriver->getHoldingsStructure();
+	// Copy favorites to own container
+$holdings		= $this->extractFavoriteInstitutionsForHoldings($holdings);
 
 ?>
-
-<?//= $this->render('RecordTab/mylibraries.phtml') ?>
-
 <?php foreach($holdings as $groupCode => $group): ?>
 	<!-- begin: innerbox <?=$groupCode?> -->
-	<div class="innerbox grey">
+	<div class="innerbox grey holdingsBox" id="holdings-<?=$groupCode?>">
 		<?php
 			$expandLib	= isset($_GET['expandlib']) ? $_GET['expandlib'] : '';
 			$expandedOrCollapsedClass = 'collapsed';
@@ -38,32 +37,38 @@ $holdings		= $recordDriver->getHoldingsStructure();
 			</script>
 		<? endif; ?>
 
-		<h3 class="toggler persist <?= $expandedOrCollapsedClass ?>" id="library_toggler_<?=$groupCode?>">
-			<?=$this->zendTranslate($group['label'], 'group')?>
+		<h3 class="toggler persist <?= $expandedOrCollapsedClass ?>" id="holding-group-<?=$groupCode?>">
+			<span><?=$this->zendTranslate($group['label'], 'group')?></span>
 		</h3>
-		<div class="library_toggler_<?=$groupCode?>">
+		<div class="holding-group-<?=$groupCode?>">
 
 			<div class="innerbox">
 				<?php foreach($group['institutions'] as $institutionCode => $institution): ?>
-					<h4 class="toggler institutionToggler" id="stock_toggler_<?=$groupCode?>_<?=$institutionCode?>">
-						<?=$this->escapeHtml($this->zendTranslate($institution['label'], 'institution'))?>
-					</h4>
+					<div class="institutionBox institution-<?=$institutionCode?>-box" id="holding-institution-<?=$groupCode?>-<?=$institutionCode?>-box">
+						<h4 id="holding-institution-<?=$groupCode?>-<?=$institutionCode?>" class="toggler institutionToggler">
+							<?=$this->escapeHtml($this->zendTranslate($institution['label'], 'institution'))?>
+						</h4>
 
-					<ul class="miniactions">
-						<li class="miniaction_favorite_remove">
-							<a href="#" title="Bibliothek aus Favoriten entfernen">Bibliothek aus Favoriten entfernen</a>
-						</li>
-						<?php if (isset($institution['bibinfolink']) && $institution['bibinfolink']): ?>
-							<li class="miniaction_link">
-								<a href="<?=$this->escapeHtml($institution['bibinfolink']['url'])?>" class="externallink" title="<?=$this->transEsc('Library_Information')?>">
-                                    <?=$this->transEsc('Library_Information')?>
-								</a>
+						<ul class="miniactions miniactions-<?=$institutionCode?>">
+							<li class="institutionFavorite">
+								<?php $favoriteLabel = isset($institution['favorite']) ? 'mylibraries.remove' : 'mylibraries.add'; ?>
+								<a href="javascript:void(0)" title="<?=$this->transEsc($favoriteLabel)?>"><?=$this->transEsc($favoriteLabel)?></a>
 							</li>
-						<?php endif; ?>
-					</ul>
+							<?php if (isset($institution['bibinfolink']) && $institution['bibinfolink']): ?>
+								<li class="miniaction_link">
+									<a href="<?=$this->escapeHtml($institution['bibinfolink']['url'])?>" class="externallink" title="<?=$this->transEsc('Library_Information')?>">
+										<?=$this->transEsc('Library_Information')?>
+									</a>
+								</li>
+							<?php endif; ?>
+						</ul>
 
-					<div class="stock_toggler_<?=$groupCode?>_<?=$institutionCode?>" id="holdings-data-<?=$groupCode?>-<?=$institutionCode?>">
-						<p><div class="holdingsAjaxSpinner" id="holdings-ajax-spinner-<?=$institutionCode?>"></div> Loading...</p>
+						<div class="holding-institution-<?=$groupCode?>-<?=$institutionCode?>">
+							<div class="holdingsAjaxSpinner holding-ajax-spinner-<?=$institutionCode?>">
+								<span class="spinner"></span>
+								<span>Loading...</span>
+							</div>
+						</div>
 					</div>
 				<?php endforeach; ?>
 
@@ -74,6 +79,12 @@ $holdings		= $recordDriver->getHoldingsStructure();
 
 <?php endforeach; ?>
 
+<div id="holdings-items-popup" style="display:none">
+	Loading...
+</div>
+
 <script type="text/javascript">
-	swissbib.Holdings.initRecord('<?=$recordDriver->getUniqueID();?>');
+	swissbib.Holdings.initRecord('<?=$recordDriver->getUniqueID()?>');
+	swissbib.HoldingFavorites.initRecord('<?=$recordDriver->getUniqueID()?>');
+	vufindString.favoriteReload = '<?=$this->transEsc('mylibraries.reload')?>';
 </script>
