@@ -1,7 +1,6 @@
 <?php
 /**
- * Abstract SearchObject Recommendations Module (needs to be extended to use
- * a particular search object).
+ * Abstract base class for pulling Summon-specific recommendations.
  *
  * PHP version 5
  *
@@ -29,8 +28,7 @@
 namespace VuFind\Recommend;
 
 /**
- * Abstract SearchObject Recommendations Module (needs to be extended to use
- * a particular search object).
+ * Abstract base class for pulling Summon-specific recommendations.
  *
  * @category VuFind2
  * @package  Recommendations
@@ -38,28 +36,28 @@ namespace VuFind\Recommend;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:recommendation_modules Wiki
  */
-abstract class SearchObject implements RecommendInterface
+abstract class AbstractSummonRecommend implements RecommendInterface
 {
     /**
-     * Results object
+     * Database details
      *
-     * @var \VuFind\Search\Base\Results
+     * @var \VuFind\Search\Summon\Results
      */
     protected $results;
 
     /**
-     * Number of results to show
-     *
-     * @var int
-     */
-    protected $limit;
-
-    /**
-     * Name of request parameter to use for search query
+     * Request parameter to pull query from
      *
      * @var string
      */
-    protected $requestParam;
+    protected $requestParam = 'lookfor';
+
+    /**
+     * User query
+     *
+     * @var string
+     */
+    protected $lookfor;
 
     /**
      * Results plugin manager
@@ -89,11 +87,9 @@ abstract class SearchObject implements RecommendInterface
      */
     public function setConfig($settings)
     {
-        $settings = explode(':', $settings);
-        $this->requestParam = empty($settings[0]) ? 'lookfor' : $settings[0];
-        $this->limit
-            = (isset($settings[1]) && is_numeric($settings[1]) && $settings[1] > 0)
-            ? intval($settings[1]) : 5;
+        // Only one setting -- HTTP request field containing search terms (ignored
+        // if $searchObject is Summon type).
+        $this->requestParam = empty($settings) ? $this->requestParam : $settings;
     }
 
     /**
@@ -112,32 +108,8 @@ abstract class SearchObject implements RecommendInterface
      */
     public function init($params, $request)
     {
-        // See if we can determine the label for the current search type; first
-        // check for an override in the GET parameters, then look at the incoming
-        // params object....
-        $typeLabel = $request->get('typeLabel');
-        $type = $request->get('type');
-        if (empty($typeLabel) && !empty($type)) {
-            $typeLabel = $params->getOptions()->getLabelForBasicHandler($type);
-        }
-
-        // Extract a search query:
-        $lookfor = $request->get($this->requestParam);
-        if (empty($lookfor) && is_object($params)) {
-            $lookfor = $params->getQuery()->getAllTerms();
-        }
-
-        // Set up the parameters:
-        $this->results = $this->resultsManager->get($this->getSearchClassId());
-        $params = $this->results->getParams();
-        $params->setLimit($this->limit);
-        $params->setBasicSearch(
-            $lookfor,
-            $params->getOptions()->getBasicHandlerForLabel($typeLabel)
-        );
-
-        // Perform the search:
-        $this->results->performAndProcessSearch();
+        // Save search query in case we need it later:
+        $this->lookfor = $request->get($this->requestParam);
     }
 
     /**
@@ -153,23 +125,21 @@ abstract class SearchObject implements RecommendInterface
      */
     public function process($results)
     {
-        // No action needed.
+        // If we received a Summon search object, we'll use that.  If not, we need
+        // to create a new Summon search object using the specified request 
+        // parameter for search terms.
+        if ($results->getParams()->getSearchClassId() != 'Summon') {
+            $results = $this->resultsManager->get('Summon');
+            $results->getParams()->setBasicSearch($this->lookfor, 'AllFields');
+            $results->performAndProcessSearch();
+        }
+        $this->results = $results;
     }
 
     /**
-     * Get search results.
+     * Get specific results needed by template.
      *
-     * @return \VuFind\Search\Base\Results
+     * @return array
      */
-    public function getResults()
-    {
-        return $this->results;
-    }
-
-    /**
-     * Get the search class ID to use for building search objects.
-     *
-     * @return string
-     */
-    abstract protected function getSearchClassId();
+    abstract public function getResults();
 }

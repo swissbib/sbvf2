@@ -1,11 +1,10 @@
 <?php
-
 /**
- * ZF2 module definition for the VF2 http service
+ * SummonBestBets Recommendations Module
  *
  * PHP version 5
  *
- * Copyright (C) Villanova University 2012, 2013.
+ * Copyright (C) Villanova University 2010.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2,
@@ -21,38 +20,33 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @category VuFind2
- * @package  Http
- * @author   David Maus <maus@hab.de>
+ * @package  Recommendations
+ * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org
+ * @link     http://vufind.org/wiki/vufind2:recommendation_modules Wiki
  */
-namespace VuFindHttp;
+namespace VuFind\Recommend;
 
 /**
- * ZF2 module definition for the VF2 HTTP service.
+ * SummonBestBets Recommendations Module
+ *
+ * This class provides best bets recommendations by doing a search of Summon.
  *
  * @category VuFind2
- * @package  Http
- * @author   David Maus <maus@hab.de>
+ * @package  Recommendations
+ * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org
+ * @link     http://vufind.org/wiki/vufind2:recommendation_modules Wiki
  */
-class Module
+class SummonBestBets extends AbstractSummonRecommend
 {
     /**
-     * Return autoloader configuration.
+     * Get best bets results.
      *
      * @return array
      */
-    public function getAutoloaderConfig()
+    public function getResults()
     {
-        return array(
-            'Zend\Loader\StandardAutoloader' => array(
-                'namespaces' => array(
-                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
-                ),
-            ),
-        );
+        return $this->results->getBestBets();
     }
-
 }
