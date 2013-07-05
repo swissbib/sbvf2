@@ -2,8 +2,10 @@
 .idea
 build
 cli/removeLocalCacheLocalosc.sh
+cli/syncLocal.sh
 local/config/vufind/config.ini
 local/config/vufind/libadmin-groups.ini
+local/config/vufind/favorite-institutions.ini
 local/languages/location/*
 local/httpd-vufind.conf
 local/cache/*

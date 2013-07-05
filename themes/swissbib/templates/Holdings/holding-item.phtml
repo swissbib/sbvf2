@@ -1,13 +1,11 @@
 <?php
 /** @var Array $item */
+/** @var String $record */
+/** @var String $recordTitle */
 
-$desc		= '';
 $mapLink	= '';
+$description= isset($item['description']) ? $item['description'] : '';
 
-	// Temporary usage for error info
-if (isset($item['error'])) {
-	$desc = $item['error'];
-}
 if (isset($item['locationMap']) && $item['locationMap']) {
 	$mapLink = '<a href="' . $item['locationMap'] . '" class="holdingMapLink">' . $this->transEsc('Show_Location_Map') . '</a>';
 }
@@ -18,6 +16,6 @@ if (isset($item['locationMap']) && $item['locationMap']) {
     <td><?=$this->availabilityInfo($item['availability'])?></td>
 	<td><?=$this->escapeHtml($item['locationLabel'])?><?=$mapLink?></td>
 	<td><?=$this->escapeHtml($item['signature'])?></td>
-    <td>QR</td>
-	<td><?=$this->escapeHtml($desc)?></td>
+	<td><?=$this->qrCodeHolding($item, $recordTitle)?></td>
+	<td><?=$this->escapeHtml($description)?></td>
 </tr>

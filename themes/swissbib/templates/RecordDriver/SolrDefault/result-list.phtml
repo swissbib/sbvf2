@@ -19,7 +19,7 @@ $favoriteLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
 	<td class="small center nodivider"><?=$this->recordIndex?></td>
     <!-- Column 2: Memo list -->
 	<td class="nodivider">
-		<a href="<?=$favoriteLink?>" class="icon_notepad_add"><?=$this->transEsc('Add to favorites')?></a>
+		<a href="<?=$favoriteLink?>" class="icon_notepad_add" title="<?=$this->transEsc('Add to favorites')?>" /a>
 	</td>
     <!-- Column 3: Teaser-image / Thumbnail -->
 	<td class="right nodivider">
@@ -56,10 +56,6 @@ $favoriteLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
 			<?=$viewRecord->getFormatList()?>
         <!-- <h6 class="icon_format_book">Buch</h6> -->
             <?php if(!empty($groupID) && !strcmp($results->getParams()->getSearchHandler(),'FRBR') == 0   ) : ?>
-
-
-
-
                 <a href="<?= $this->url($results->getOptions()->getSearchAction()) .  "?lookfor=" . $groupID . "&type=FRBR&limit=" . $results->getParams()->getLimit()  ?>" class="linkbutton icon_show" title="<?=$this->transEsc('FRBR_Button')?>">
 					<span><?=$this->transEsc('FRBR_Button')?></span>
 				</a>
@@ -74,5 +70,8 @@ $favoriteLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
 	</td>
 	<td class="right">
 		<?=$this->render('search/results/libraries.phtml')?>
+		<?php if ($this->isFavoriteInstitution($resultItem->getInstitutions())): ?>
+			<img src="<?= $this->basePath('themes/swissbib/images/icon_favorit_library.gif') ?>" alt="Favourite library icon (heart)" class="favourite-library">
+		<?php endif; ?>
 	</td>
 </tr>

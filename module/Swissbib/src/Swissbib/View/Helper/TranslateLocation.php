@@ -2,31 +2,14 @@
 namespace Swissbib\View\Helper;
 
 use Zend\I18n\Translator\Translator;
-use Zend\View\Helper\AbstractHelper;
+use Zend\I18n\View\Helper\AbstractTranslatorHelper;
 
 /**
  * Translate locations
  *
  */
-class TranslateLocation extends AbstractHelper
+class TranslateLocation extends AbstractTranslatorHelper
 {
-	/** @var Translator  */
-	protected $translator;
-
-
-
-	/**
-	 * Initialize with translator
-	 *
-	 * @param	Translator	$translator
-	 */
-	public function __construct(Translator $translator)
-	{
-		$this->translator = $translator;
-	}
-
-
-
 	/**
 	 * Translate location
 	 *

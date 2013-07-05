@@ -10,11 +10,14 @@ return array(
 		'patches/patch_ie7.css:all:IE 7',
 		//'patches/patch_ie6.css:all:IE 6', (we don't support IE6 in the future)
 		'blueprint.css',
-		'swissbib.css'
+		'swissbib.css',
+		'../js/jquery/plugin/loadmask/jquery.loadmask.css'
     ),
     'js' => array(
         'jquery/jquery-1.10.1.min.js',
+//        'jquery/jquery-1.10.1.js',
 		'jquery/ui/jquery-ui.min.js',
+//		'jquery/ui/jquery-ui.js',
 
 		'lib/jstorage.min.js', //used for favorites - there is still some amount of JS code inline of the page -> Todo: Refactoring in upcoming Sprints
 
@@ -26,6 +29,7 @@ return array(
 		'jquery/plugin/jquery.spritely.js',	// sprite animation, e.g. for ajax spinner
 		'jquery/plugin/jquery.validate.min.js',
 		'jquery/plugin/jquery.hoverintent.js',
+		'jquery/plugin/loadmask/jquery.loadmask.js',
 
 		'swissbib-jq-plugins/hint.js',
 		'swissbib-jq-plugins/menunav.js',
@@ -41,13 +45,12 @@ return array(
 
 		'swissbib/AdvancedSearch.js',
   		'swissbib/Holdings.js',
+  		'swissbib/HoldingFavorites.js',
+		'swissbib/FavoriteInstitutions.js',
 		'swissbib/searchsettings.js',
-		'swissbib/autocomplete.base.js', //used for current highlighting based on java servlet, probably replaced by default VuFind mechanism
-		'swissbib/autocomplete.initialize.js',
 
 		'blueprint/commonFromBluePrint.js',
 
-		//'swissbib/favorites.js', probably only used on one page - lazy load?
         //'swissbib/bibtip.js', only used in fullview lazy load for this specific code?
         //'swissbib/fullview.js', only used in full view lazy load?
 		//'blueprint/record.js',

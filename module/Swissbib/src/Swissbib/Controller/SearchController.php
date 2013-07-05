@@ -7,14 +7,16 @@ use Zend\Session\Container as SessionContainer;
 use Zend\View\Model\ViewModel;
 use Zend\View\Resolver\ResolverInterface;
 
-use VuFind\Controller\SearchController as VFSearchController;
-use VuFind\Search\Memory as VFMemory;
+use VuFind\Controller\SearchController as VuFindSearchController;
+use VuFind\Search\Results\PluginManager as VuFindSearchResultsPluginManager;
+
+use Swissbib\Search\Results\PluginManager as SwissbibSearchResultsPluginManager;
 
 /**
  * @package       Swissbib
  * @subpackage    Controller
  */
-class SearchController extends VFSearchController
+class SearchController extends VuFindSearchController
 {
 
 	/**
@@ -23,9 +25,9 @@ class SearchController extends VFSearchController
 	protected $forceTabKey = false;
 
 	/**
-	 * @var	Array
+	 * @var	String[]   search targets extended by swissbib
 	 */
-//	protected $extendedTargets = array();
+    protected $extendedTargets;
 
 
 	/**
@@ -51,16 +53,6 @@ class SearchController extends VFSearchController
 	 */
 	public function resultsAction()
 	{
-//        $tExtended = $this->getServiceLocator()->get('Vufind\Config')->get('config')->Index->extendedTargets;
-//
-//		if (!empty($tExtended)) {
-//			$this->extendedTargets = explode(',', $tExtended);
-//
-//			array_walk($this->extendedTargets, function (&$v) {
-//				$v = strtolower($v);
-//			});
-//		}
-
 		$allTabsConfig      = $this->getThemeTabsConfig();
 		$activeTabKey       = $this->getActiveTab();
 		$resultsFacetConfig = $this->getFacetConfig();
@@ -205,16 +197,25 @@ class SearchController extends VFSearchController
 
 
 
-//	/**
-//	 *
-//	 * @return array|object|\VuFind\Search\Results\PluginManager
-//	 */
-//	protected function getResultsManager()
-//	{
-//		if (!empty($this->extendedTargets) && in_array(strtolower($this->searchClassId), $this->extendedTargets)) {
-//			return $this->getServiceLocator()->get('Swissbib\SearchResultsPluginManager');
-//		} else {
-//			return parent::getResultsManager();
-//		}
-//	}
+	/**
+	 * Get results manager
+	 * If target is extended, get a customized manager
+	 *
+	 * @return	VuFindSearchResultsPluginManager|SwissbibSearchResultsPluginManager
+	 */
+	protected function getResultsManager()
+	{
+		if (!isset($this->extendedTargets)) {
+			$mainConfig						= $this->getServiceLocator()->get('Vufind\Config')->get('config');
+			$extendedTargetsSearchClassList = $mainConfig->SwissbibSearchExtensions->extendedTargets;
+
+			$this->extendedTargets = array_map('trim', explode(',', $extendedTargetsSearchClassList));
+		}
+
+		if (in_array($this->searchClassId, $this->extendedTargets)) {
+			return $this->getServiceLocator()->get('Swissbib\SearchResultsPluginManager');
+		}
+
+		return parent::getResultsManager();
+	}
 }
