@@ -1,7 +1,6 @@
 <?php
 /**
- * Abstract SearchObject Recommendations Module (needs to be extended to use
- * a particular search object).
+ * SummonResultsDeferred Recommendations Module
  *
  * PHP version 5
  *
@@ -22,6 +21,7 @@
  *
  * @category VuFind2
  * @package  Recommendations
+ * @author   Lutz Biedinger <lutz.biedinger@gmail.com>
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:recommendation_modules Wiki
@@ -29,54 +29,46 @@
 namespace VuFind\Recommend;
 
 /**
- * Abstract SearchObject Recommendations Module (needs to be extended to use
- * a particular search object).
+ * SummonResultsDeferred Recommendations Module
+ *
+ * This class sets up an AJAX call to trigger a call to the SummonResults
+ * module.  
  *
  * @category VuFind2
  * @package  Recommendations
- * @author   Demian Katz <demian.katz@villanova.edu>
+ * @author   Lutz Biedinger <lutz.biedigner@gmail.com>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:recommendation_modules Wiki
  */
-abstract class SearchObject implements RecommendInterface
+class SummonResultsDeferred implements RecommendInterface
 {
     /**
-     * Results object
-     *
-     * @var \VuFind\Search\Base\Results
-     */
-    protected $results;
-
-    /**
-     * Number of results to show
-     *
-     * @var int
-     */
-    protected $limit;
-
-    /**
-     * Name of request parameter to use for search query
+     * Raw configuration parameters
      *
      * @var string
      */
-    protected $requestParam;
+    protected $rawParams;
 
     /**
-     * Results plugin manager
+     * Current search query
      *
-     * @var \VuFind\Search\Results\PluginManager
+     * @var string
      */
-    protected $resultsManager;
+    protected $lookfor;
 
     /**
-     * Constructor
+     * Label for current search type
      *
-     * @param \VuFind\Search\Results\PluginManager $results Results plugin manager
+     * @var string
      */
-    public function __construct(\VuFind\Search\Results\PluginManager $results)
-    {
-        $this->resultsManager = $results;
-    }
+    protected $typeLabel = '';
+
+    /**
+     * Configuration parameters processed for submission via AJAX
+     *
+     * @var string
+     */
+    protected $processedParams;
 
     /**
      * setConfig
@@ -89,11 +81,7 @@ abstract class SearchObject implements RecommendInterface
      */
     public function setConfig($settings)
     {
-        $settings = explode(':', $settings);
-        $this->requestParam = empty($settings[0]) ? 'lookfor' : $settings[0];
-        $this->limit
-            = (isset($settings[1]) && is_numeric($settings[1]) && $settings[1] > 0)
-            ? intval($settings[1]) : 5;
+        $this->rawParams = $settings;
     }
 
     /**
@@ -112,32 +100,37 @@ abstract class SearchObject implements RecommendInterface
      */
     public function init($params, $request)
     {
-        // See if we can determine the label for the current search type; first
-        // check for an override in the GET parameters, then look at the incoming
-        // params object....
-        $typeLabel = $request->get('typeLabel');
-        $type = $request->get('type');
-        if (empty($typeLabel) && !empty($type)) {
-            $typeLabel = $params->getOptions()->getLabelForBasicHandler($type);
+        // Parse out parameters:
+        $settings = explode(':', $this->rawParams);
+
+        // Make sure all elements of the params array are filled in, even if just
+        // with a blank string, so we can rebuild the parameters to pass through
+        // AJAX later on!
+        for ($i = 0; $i < 2; $i++) {
+            $settings[$i] = isset($settings[$i]) ? $settings[$i] : '';
         }
 
-        // Extract a search query:
-        $lookfor = $request->get($this->requestParam);
-        if (empty($lookfor) && is_object($params)) {
-            $lookfor = $params->getQuery()->getAllTerms();
+        // Collect the best possible search term(s):
+        $lookforParam = empty($settings[0]) ? 'lookfor' : $settings[0];
+        $this->lookfor =  $request->get($lookforParam, '');
+        if (empty($this->lookfor) && is_object($params)) {
+            $this->lookfor = $params->getQuery()->getAllTerms();
+        }
+        $this->lookfor = trim($this->lookfor);
+
+        // Collect the label for the current search type:
+        if (is_object($params)) {
+            $this->typeLabel = $params->getOptions()->getLabelForBasicHandler(
+                $params->getSearchHandler()
+            );
         }
 
-        // Set up the parameters:
-        $this->results = $this->resultsManager->get($this->getSearchClassId());
-        $params = $this->results->getParams();
-        $params->setLimit($this->limit);
-        $params->setBasicSearch(
-            $lookfor,
-            $params->getOptions()->getBasicHandlerForLabel($typeLabel)
-        );
+        // In AJAX mode, the query will always be found in the 'lookfor' parameter,
+        // so override the setting:
+        $settings[0] = 'lookfor';
 
-        // Perform the search:
-        $this->results->performAndProcessSearch();
+        // Now rebuild the parameters to pass via AJAX:
+        $this->processedParams = implode(':', $settings);
     }
 
     /**
@@ -153,23 +146,18 @@ abstract class SearchObject implements RecommendInterface
      */
     public function process($results)
     {
-        // No action needed.
+        // No action needed
     }
 
     /**
-     * Get search results.
-     *
-     * @return \VuFind\Search\Base\Results
-     */
-    public function getResults()
-    {
-        return $this->results;
-    }
-
-    /**
-     * Get the search class ID to use for building search objects.
+     * Get the URL parameters needed to make the AJAX recommendation request.
      *
      * @return string
      */
-    abstract protected function getSearchClassId();
+    public function getUrlParams()
+    {
+        return 'mod=SummonResults&params=' . urlencode($this->processedParams)
+            . '&lookfor=' . urlencode($this->lookfor)
+            . '&typeLabel=' . urlencode($this->typeLabel);
+    }
 }
