@@ -405,7 +405,7 @@ class Aleph extends AbstractBase
      * @param string $method        HTTP method
      * @param string $body          HTTP body
      *
-     * @return SimpleXMLElement
+     * @return \SimpleXMLElement
      */
     protected function doRestDLFRequest($path_elements, $params = null,
         $method='GET', $body = null

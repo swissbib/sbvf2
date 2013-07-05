@@ -1,8 +1,13 @@
 <?php
 /** @var Array[] $holdings */
 /** @var \Swissbib\RecordDriver\SolrMarc $record */
+/** @var Integer $record */
+/** @var String $institution */
+/** @var String $recordTitle */
+
+$idTable	= 'holdings-holding-' . $record . '-' . $institution;
 ?>
-<table class="holdings-holding holdingTable">
+<table class="holdings-holding holdingTable" id="<?=$this->escapeHtml($idTable)?>">
 	<thead>
 		<tr>
 			<th class="actions">&nbsp;</th>
@@ -18,11 +23,11 @@
 			// Items
 			foreach($holdings as $holding) {
 				echo $this->render('Holdings/holding-holding.phtml', array(
-					'holding'	=> $holding,
-					'record'	=> $record
+					'holding'		=> $holding,
+					'record'		=> $record,
+					'recordTitle'	=> $recordTitle
 				));
 			}
 		?>
 	</tbody>
 </table>
-
