@@ -105,7 +105,7 @@ class Results extends VuFindSolrResults
 
 		foreach ($queryFacets as $queryFacet) {
 			if ($queryFacet['field'] === 'institution') {
-				$sortKey	= $queryFacet['count'] . '_' . $queryFacet['value']; // Sortable but unique key
+				$sortKey	= sprintf('%09d', $queryFacet['count']) . '_' . $queryFacet['value']; // Sortable but unique key
 
 				$facetListItems[$sortKey] = array(
 					'value'			=> $queryFacet['value'],
@@ -121,7 +121,7 @@ class Results extends VuFindSolrResults
 		}
 
 			// Sort by count (which is the key)
-		ksort($facetListItems);
+		krsort($facetListItems);
 		$facetListItems = array_values($facetListItems);
 
 		return array(
