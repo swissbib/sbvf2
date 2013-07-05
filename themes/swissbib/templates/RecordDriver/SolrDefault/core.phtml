@@ -24,6 +24,7 @@ $groupID				= $resultItem->getGroup(true);
 $publicationDate		= $this->publicationDateMarc($resultItem->getPublicationDates());
 $openUrl				= $resultItem->openURLActive('record') ? $resultItem->getOpenURL() : false;
 $favoriteLink			= $this->recordLink()->getActionUrl($resultItem, 'Save');
+$highlightedFulltext	= $resultItem->getHighlightedFulltext();
 
 ?>
 <?/* Common parts of recordDriver's core.phtml templates*/?>
@@ -80,6 +81,11 @@ $favoriteLink			= $this->recordLink()->getActionUrl($resultItem, 'Save');
 		<?php if ($openUrl): ?>
 			<h4>OpenURL:</h4>
 			<p><?=$this->openUrl($openUrl)?></p>
+		<?php endif; ?>
+
+		<?php if ($highlightedFulltext): ?>
+			<h4>Fulltext:</h4>
+			<p><?=$this->highlight($openUrl)?></p>
 		<?php endif; ?>
 
 	</div>
