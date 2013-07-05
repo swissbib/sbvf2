@@ -1,28 +1,31 @@
+<!-- display fines -->
 <table class="datagrid fines" summary="<?=$this->transEsc('Your Fines')?>">
 	<tr>
+        <th>&nbsp;</th>
+        <th><?=$this->transEsc('Fine')?></th>
 		<th><?=$this->transEsc('Title')?></th>
-		<th><?=$this->transEsc('Checked Out')?></th>
-		<th><?=$this->transEsc('Due Date')?></th>
-		<th><?=$this->transEsc('Fine')?></th>
-		<th><?=$this->transEsc('Fee')?></th>
-		<th><?=$this->transEsc('Balance')?></th>
+		<th><?=$this->transEsc('Library')?></th>
+		<th><?=$this->transEsc('Call Number')?></th>
+        <th><?=$this->transEsc('Fee')?></th>
+        <th><?=$this->transEsc('Checked Out')?></th>
 	</tr>
 	<?php foreach($this->fines as $record): ?>
 		<tr>
+            <td>Nr. +1</td>
+            <td>hier z31-description</td>
 			<td>
 				<?php if( empty($record['title']) ): ?>
 					<?= $this->transEsc('not_applicable') ?>
 				<?php elseif( !isset($record['id']) ): ?>
 					<?= $this->escapeHtml(trim($record['title'], '/:')) ?>
 				<? else: ?>
-					<a href="<?=$this->url('record', array('id' => (string)$record['id']))?>"><?=$this->escapeHtml(trim($record['title'], '/:'))?></a>
+					<?=$this->escapeHtml(trim($record['title'], '/:'))?>
 				<?php endif; ?>
 			</td>
-			<td><?=isset($record['checkout']) ? $this->escapeHtml($record['checkout']) : ''?></td>
-			<td><?=isset($record['duedate']) ? $this->escapeHtml($record['duedate']) : ''?></td>
-			<td><?=isset($record['fine']) ? $this->escapeHtml($record['fine']) : ''?></td>
+			<td>z30-sub-library</td>
+			<td>z30-call-no</td>
 			<td><?=isset($record['amount']) ? $this->safeMoneyFormat($record['amount'] / 100.00) : ''?></td>
-			<td><?=isset($record['balance']) ? $record['balance'] / 100.00 : ''?>.- CHF</td>
+			<td><?=isset($record['checkout']) ? $this->escapeHtml($record['checkout']) : ''?></td>
 		</tr>
 	<?php endforeach; ?>
 </table>
