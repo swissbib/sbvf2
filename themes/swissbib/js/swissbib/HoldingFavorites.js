@@ -31,8 +31,6 @@ swissbib.HoldingFavorites = {
 		var that = this, allMiniActions, notFavorised,
 			favoriteInstitutionCodes = this.getFavoriteInstitutionCodes();
 
-		this.baseUrl = window.path + this.baseUrl;
-
 		$.each(favoriteInstitutionCodes, function(index, institutionCode){
 			$('.miniactions-' + institutionCode).find('.institutionFavorite')
 					.addClass('miniaction_favorite_remove')
