@@ -11,8 +11,19 @@ $toggleLabel		= $this->transEsc('more_info_toggle');
 ?>
 <?php /* Iterate over facet groups (topic, author, language, ... */ ?>
 <?php foreach ($facetList as $facetGroup => $facetGroupData): ?>
-
 	<?php
+			// Check if there are not applied facets available
+		$hasNotAppliedFacets = false;
+		foreach ($facetGroupData['list'] as $facetItem) {
+			if (!$facetItem['isApplied']) {
+				$hasNotAppliedFacets = true;
+				break;
+			}
+		}
+		if (!$hasNotAppliedFacets) {
+			continue;
+		}
+
 		$facetId         = strtolower($facetGroup);
 		$facetGroupLabel = $facetGroupData['label'];
 		$facetField		 = isset($facetGroupData['field']) ? $facetGroupData['field'] : $facetGroup; // Optional override of field name

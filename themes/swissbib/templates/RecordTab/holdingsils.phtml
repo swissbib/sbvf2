@@ -51,7 +51,8 @@ $holdings		= $this->extractFavoriteInstitutionsForHoldings($holdings);
 
 						<ul class="miniactions miniactions-<?=$institutionCode?>">
 							<li class="institutionFavorite">
-								<a href="javascript:void(0)" title="Bibliothek aus Favoriten entfernen">Bibliothek aus Favoriten entfernen</a>
+								<?php $favoriteLabel = isset($institution['favorite']) ? 'mylibraries.remove' : 'mylibraries.add'; ?>
+								<a href="javascript:void(0)" title="<?=$this->transEsc($favoriteLabel)?>"><?=$this->transEsc($favoriteLabel)?></a>
 							</li>
 							<?php if (isset($institution['bibinfolink']) && $institution['bibinfolink']): ?>
 								<li class="miniaction_link">

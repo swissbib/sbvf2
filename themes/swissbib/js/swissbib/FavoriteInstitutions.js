@@ -154,8 +154,11 @@ swissbib.FavoriteInstitutions = {
 			list: true
 		};
 
+		$('#user-favorites').mask('Update...');
+
 		$('#user-favorites').load(url, data, function(){
 			that.installHandlers();
+			$('#user-favorites').unmask();
 		});
 	},
 

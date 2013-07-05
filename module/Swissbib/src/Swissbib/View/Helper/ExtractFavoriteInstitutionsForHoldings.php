@@ -39,6 +39,9 @@ class ExtractFavoriteInstitutionsForHoldings extends AbstractTranslatorHelper
 			foreach ($groupData['institutions'] as $institutionCode => $institution) {
 				if (isset($this->userInstitutionCodes[$institutionCode])) {
 					$favoriteInstitutions[$institutionCode] = $institution;
+						// Mark as favorite in favorite group and original group
+					$favoriteInstitutions[$institutionCode]['favorite'] = true;
+					$holdings[$group]['institutions'][$institutionCode]['favorite'] = true;
 				}
 			}
 		}
