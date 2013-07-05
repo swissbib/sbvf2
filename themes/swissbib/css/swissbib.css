@@ -450,3 +450,8 @@ a#tagRecord {
 .ui-tabs .ui-tabs-nav li {
 	margin: 0;
 }
+
+
+.qrCodeIcon {
+	cursor: pointer;
+}

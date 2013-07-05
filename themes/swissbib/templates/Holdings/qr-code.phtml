@@ -1,0 +1,8 @@
+<?php
+	$windowId	= isset($item['bibsysnumber']) ? $item['bibsysnumber'] : md5(time());
+?>
+<img src="<?= $this->basePath('themes/swissbib/images/qr_code.png') ?>" title="QR-Code" class="qrCodeIcon" onclick="swissbib.Holdings.showQrCode('<?=$windowId?>', '<?=$url?>')">
+<?php $x = $item; ?>
+<div id="qrcode-<?=$windowId?>" style="display: none" title="QR Code">
+	<img src="" title="QR Code">
+</div>

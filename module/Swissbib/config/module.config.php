@@ -19,6 +19,7 @@ use Swissbib\RecordDriver\Summon;
 use Swissbib\RecordDriver\WorldCat;
 use Swissbib\RecordDriver\Helper\EbooksOnDemand;
 use Swissbib\RecordDriver\Helper\Availability;
+use Swissbib\View\Helper\QrCode;
 
 return array(
 	'router'          => array(
@@ -205,7 +206,8 @@ return array(
 			'zendTranslate'           => 'Zend\I18n\View\Helper\Translate',
 			'getVersion'              => 'Swissbib\View\Helper\GetVersion',
 			'holdingActions'          => 'Swissbib\View\Helper\HoldingActions',
-			'availabilityInfo'        => 'Swissbib\View\Helper\AvailabilityInfo'
+			'availabilityInfo'        => 'Swissbib\View\Helper\AvailabilityInfo',
+			'qrCodeHolding'			  => 'Swissbib\View\Helper\QrCodeHolding'
 		),
 		'factories' => array(
 			'institutionSorter' => function ($sm) {
@@ -224,6 +226,11 @@ return array(
 				$translator	= $sm->getServiceLocator()->get('VuFind\Translator');
 
 				return new TranslateLocation($translator);
+			},
+			'qrCode' => function ($sm) {
+				$qrCodeService = $sm->getServiceLocator()->get('QRCode');
+
+				return new QrCode($qrCodeService);
 			}
 		)
 	),
