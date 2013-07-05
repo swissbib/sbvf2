@@ -101,10 +101,20 @@ return array(
 			'myresearch-favorite-institutions' => array( // display defined favorite institutions
 				'type'    => 'segment',
 				'options' => array(
-					'route'    => '/MyResearch/FavoriteInstitutions[/:action]',
+					'route'    => '/MyResearch/Favorites[/:action]',
 					'defaults' => array(
 						'controller' => 'institutionFavorites',
 						'action'     => 'display'
+					)
+				)
+			),
+			'myresearch-favorites' => array( // Override vufind favorites route. Rename to Lists
+				'type' => 'Zend\Mvc\Router\Http\Literal',
+				'options' => array(
+					'route'    => '/MyResearch/Lists',
+					'defaults' => array(
+						'controller' => 'myresearch',
+						'action'     => 'favorites'
 					)
 				)
 			)
