@@ -87,6 +87,26 @@ return array(
 						'action'     => 'list'
 					)
 				)
+			),
+			'holdings-holding-items' => array( // load holding holdings details for record with ajax
+				'type'    => 'segment',
+				'options' => array(
+					'route'    => '/Holdings/:record/:institution/items/:resource',
+					'defaults' => array(
+						'controller' => 'holdings',
+						'action'     => 'holdingItems'
+					)
+				)
+			),
+			'myresearch-favorite-institutions' => array( // display defined favorite institutions
+				'type'    => 'segment',
+				'options' => array(
+					'route'    => '/MyResearch/FavoriteInstitutions[/:action]',
+					'defaults' => array(
+						'controller' => 'institutionFavorites',
+						'action'     => 'display'
+					)
+				)
 			)
 		)
 	),
@@ -122,7 +142,8 @@ return array(
 			'search'       => 'Swissbib\Controller\SearchController',
 			'summon'       => 'Swissbib\Controller\SummonController',
 			'holdings'     => 'Swissbib\Controller\HoldingsController',
-			'tab40import'  => 'Swissbib\Controller\Tab40ImportController'
+			'tab40import'  => 'Swissbib\Controller\Tab40ImportController',
+			'institutionFavorites'  => 'Swissbib\Controller\FavoritesController'
 		)
 	),
 	'service_manager' => array(
@@ -140,8 +161,18 @@ return array(
 				$locationMap	= $sm->get('Swissbib\LocationMap');
 				$eBooksOnDemand	= $sm->get('Swissbib\EbooksOnDemand');
 				$availability	= $sm->get('Swissbib\Availability');
+				$bibCodeHelper	= $sm->get('Swissbib\BibCodeHelper');
 
-				return new HoldingsHelper($ilsConnection, $hmac, $authManager, $config, $translator, $locationMap, $eBooksOnDemand, $availability);
+				return new HoldingsHelper(	$ilsConnection,
+											$hmac,
+											$authManager,
+											$config,
+											$translator,
+											$locationMap,
+											$eBooksOnDemand,
+											$availability,
+											$bibCodeHelper
+											);
 			},
 			'Swissbib\TargetsProxy\TargetsProxy' => function ($sm) {
 				$config        = $sm->get('VuFind\Config')->get('TargetsProxy');
@@ -180,11 +211,34 @@ return array(
 				return new EbooksOnDemand($eBooksOnDemandConfig, $translator);
 			},
 			'Swissbib\Availability' => function ($sm) {
-				$logger				= $sm->get('VuFind\Logger');
+				$bibCodeHelper	= $sm->get('Swissbib\BibCodeHelper');
 				$availabilityConfig = $sm->get('VuFind\Config')->get('config')->Availability;
+
+				return new Availability($bibCodeHelper, $availabilityConfig);
+			},
+			'Swissbib\BibCodeHelper' => function ($sm) {
 				$alephNetworkConfig	= $sm->get('VuFind\Config')->get('Holdings')->AlephNetworks;
 
-				return new Availability($availabilityConfig, $alephNetworkConfig, $logger);
+				return new BibCode($alephNetworkConfig);
+			},
+			'Swissbib\FavoriteInstitutions\DataSource' => function ($sm) {
+				$objectCache   = $sm->get('VuFind\CacheManager')->getCache('object');
+				$configManager = $sm->get('VuFind\Config');
+
+				return new FavoritesDataSource($objectCache, $configManager);
+			},
+			'Swissbib\FavoriteInstitutions\Manager'    => function ($sm) {
+				$sessionStorage = $sm->get('VuFind\SessionManager')->getStorage();
+				$groupMapping   = $sm->get('VuFind\Config')->get('libadmin-groups')->institutions;
+				$authManager    = $sm->get('VuFind\AuthManager');
+
+				return new FavoritesManager($sessionStorage, $groupMapping, $authManager);
+			},
+			'Swissbib\ExtendedSolrFactoryHelper'       => function ($sm) {
+				$config          = $sm->get('Vufind\Config')->get('config')->SwissbibSearchExtensions;
+				$extendedTargets = explode(',', $config->extendedTargets);
+
+				return new ExtendedSolrFactoryHelper($extendedTargets);
 			}
 		)
 	),

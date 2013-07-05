@@ -14,19 +14,16 @@ class QrCodeHolding extends AbstractTranslatorHelper
 	/** @var  QrCode */
 	protected $qrCodeHelper;
 
-	public function __invoke(array $item, SolrMarc $record)
+	public function __invoke(array $item, $recordTitle = '')
 	{
 		if (!$this->qrCodeHelper) {
 			$this->qrCodeHelper = $this->getView()->plugin('qrCode');
 		}
 
-		$title	= $record->getTitle();
-		$institution	= '';
-
 		$data = array();
 
-		if ($title) {
-			$data[] = $title;
+		if ($recordTitle) {
+			$data[] = $recordTitle;
 		}
 		if ($item['institution']) {
 			$data[] = $this->translator->translate(strtolower($item['institution']), 'institution');

@@ -1,6 +1,7 @@
 <?php
 /** @var Array $item */
-/** @var \Swissbib\RecordDriver\SolrMarc $record */
+/** @var String $record */
+/** @var String $recordTitle */
 
 $mapLink	= '';
 $description= isset($item['description']) ? $item['description'] : '';
@@ -15,6 +16,6 @@ if (isset($item['locationMap']) && $item['locationMap']) {
     <td><?=$this->availabilityInfo($item['availability'])?></td>
 	<td><?=$this->escapeHtml($item['locationLabel'])?><?=$mapLink?></td>
 	<td><?=$this->escapeHtml($item['signature'])?></td>
-	<td><?=$this->qrCodeHolding($item, $record)?></td>
+	<td><?=$this->qrCodeHolding($item, $recordTitle)?></td>
 	<td><?=$this->escapeHtml($description)?></td>
 </tr>
