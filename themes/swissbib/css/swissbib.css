@@ -458,6 +458,17 @@ a#tagRecord {
 	cursor: pointer;
 }
 
+.qrCodePopup img {
+	margin-top: 50px;
+}
+
+.qrCodePopup .infotext {
+	position: absolute;
+	bottom: 0;
+	color: #AAAAAA;
+	padding: 5px;
+}
+
 
 #holdings-items-filter-form {
 

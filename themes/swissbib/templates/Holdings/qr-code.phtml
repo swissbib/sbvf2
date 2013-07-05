@@ -3,6 +3,7 @@
 ?>
 <img src="<?= $this->basePath('themes/swissbib/images/qr_code.png') ?>" title="QR-Code" class="qrCodeIcon" onclick="swissbib.Holdings.showQrCode('<?=$windowId?>', '<?=$url?>')">
 <?php $x = $item; ?>
-<div id="qrcode-<?=$windowId?>" style="display: none" title="QR Code">
+<div id="qrcode-<?=$windowId?>" style="display: none" class="qrCodePopup" title="QR Code">
 	<img src="" title="QR Code">
+	<div class="infotext"><?=$this->transEsc('qrcode.info')?></div>
 </div>

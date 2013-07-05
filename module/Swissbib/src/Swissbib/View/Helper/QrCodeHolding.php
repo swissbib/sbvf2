@@ -1,12 +1,11 @@
 <?php
 namespace Swissbib\View\Helper;
 
-use Swissbib\RecordDriver\SolrMarc;
 use Zend\I18n\View\Helper\AbstractTranslatorHelper;
 use QRCode\Service\QRCode as QRCodeService;
 
 /**
- * [Description]
+ * Build holding qr code url
  *
  */
 class QrCodeHolding extends AbstractTranslatorHelper
@@ -14,6 +13,15 @@ class QrCodeHolding extends AbstractTranslatorHelper
 	/** @var  QrCode */
 	protected $qrCodeHelper;
 
+
+
+	/**
+	 * Build CRCode image source url for holding
+	 *
+	 * @param	Array	$item
+	 * @param	String	$recordTitle
+	 * @return	String
+	 */
 	public function __invoke(array $item, $recordTitle = '')
 	{
 		if (!$this->qrCodeHelper) {
@@ -22,23 +30,21 @@ class QrCodeHolding extends AbstractTranslatorHelper
 
 		$data = array();
 
-		if ($recordTitle) {
+		if (!empty($recordTitle)) {
 			$data[] = $recordTitle;
 		}
-		if ($item['institution']) {
+		if (!empty($item['institution'])) {
 			$data[] = $this->translator->translate(strtolower($item['institution']), 'institution');
 		}
-		if ($item['locationLabel']) {
+		if (!empty($item['locationLabel'])) {
 			$data[] = $item['locationLabel'];
 		}
-		if ($item['signature']) {
+		if (!empty($item['signature'])) {
 			$data[] = $item['signature'];
 		}
 
 		$text		= implode(', ', $data);
-		$qrCodeUrl	= $this->qrCodeHelper->source($text, 250);
-
-//		http://chart.apis.google.com/chart?cht=qr&chs=230x230&choe=UTF-8&chl=Conjoncture+%C3%A9conomique%20-%20Uni+Basel+-+WWZ-Bibliothek+%2F+SWA,%20+:%20-
+		$qrCodeUrl	= $this->qrCodeHelper->source($text, 250, false);
 
 		return $this->getView()->render('Holdings/qr-code', array(
 																 'item'	=> $item,
