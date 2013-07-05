@@ -12,7 +12,6 @@
         <th><?=$this->transEsc("hold_queue_position") ?></th>
         <th><?=$this->transEsc('pick_up_location') ?></th>
         <th><?=$this->transEsc('Status')?></th>
-        <th><?=$this->transEsc('Info')?></th>
         <th><?=$this->transEsc('Library')?></th>
         <th><?=$this->transEsc('Call Number')?></th>
     </tr>
@@ -27,17 +26,14 @@
     <tr>
         <td><?=$index+1?></td>
         <td><input type="checkbox"></td>
-        <td><?=$this->escapeHtml($ilsDetails['title']) ?></td>
+        <td><?=$this->escapeHtml($ilsDetails['title']) ?> + if(exists(z30-description)</td>
         <td><?=$this->escapeHtml($ilsDetails['create']) ?></td>
         <td><?=$this->escapeHtml($ilsDetails['position']) ?></td>
         <td><?=$this->escapeHtml($ilsDetails['location']) ?></td>
-        <td><?=$this->escapeHtml($ilsDetails['status']) ?></td>
-        <td>Zusatzinfo</td>
-        <td>Bibliothek</td>
-        <td>Signatur</td>
+        <td><?=$this->escapeHtml($ilsDetails['status']) ?> fällig am: + if(exists(z37-balancer-date)</td>
+        <td>Bibliothek (z30-sub-library)</td>
+        <td>Signatur (z30-call-no)</td>
     </tr>
         <?php endforeach; ?>
     </tbody>
 </table>
-
-<p>für Logik im blueprint-Theme siehe /themes/blueprint/myresearch/holds.phtml</p>
