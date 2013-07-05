@@ -200,20 +200,21 @@ class Bootstrapper
 		$namespaces = array(
 			'Db\Table','Search\Results','Search\Options', 'Search\Params'
 		);
-		foreach ($namespaces as $ns) {
-			$serviceName = 'Swissbib\\' . str_replace('\\', '', $ns) . 'PluginManager';
-			$factory     = function ($sm) use ($config, $ns) {
-				$className = 'Swissbib\\' . $ns . '\PluginManager';
-				$configKey = strtolower(str_replace('\\', '_', $ns));
+
+		foreach ($namespaces as $namespace) {
+			$plainNamespace	= str_replace('\\', '', $namespace);
+			$configKey		= strtolower(str_replace('\\', '_', $namespace));
+			$serviceName	= 'Swissbib\\' . $plainNamespace . 'PluginManager';
+			$serviceConfig	= $config['swissbib']['plugin_managers'][$configKey];
+			$className		= 'Swissbib\\' . $namespace . '\PluginManager';
+
+			$pluginManagerFactoryService = function ($sm) use ($className, $serviceConfig) {
 				return new $className(
-					new \Zend\ServiceManager\Config(
-						$config['swissbib']['plugin_managers'][$configKey]
-					)
+					new \Zend\ServiceManager\Config($serviceConfig)
 				);
 			};
 
-			$serviceManager->setFactory($serviceName, $factory);
+			$serviceManager->setFactory($serviceName, $pluginManagerFactoryService);
 		}
 	}
-
 }

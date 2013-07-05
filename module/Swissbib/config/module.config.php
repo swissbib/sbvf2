@@ -24,6 +24,7 @@ use Swissbib\Favorites\Manager as FavoritesManager;
 use Swissbib\Favorites\Manager;
 use Swissbib\View\Helper\ExtractFavoriteInstitutionsForHoldings;
 use Swissbib\View\Helper\IsFavoriteInstitution;
+use Swissbib\Search\Helper\ExtendedSolrFactoryHelper;
 
 return array(
 	'router'          => array(
@@ -232,6 +233,12 @@ return array(
 				$authManager    = $sm->get('VuFind\AuthManager');
 
 				return new FavoritesManager($sessionStorage, $groupMapping, $authManager);
+			},
+			'Swissbib\ExtendedSolrFactoryHelper' => function ($sm) {
+				$config = $sm->get('Vufind\Config')->get('config')->SwissbibSearchExtensions;
+				$extendedTargets	= explode(',', $config->extendedTargets);
+
+				return new ExtendedSolrFactoryHelper($extendedTargets);
 			}
 		)
 	),
