@@ -141,13 +141,18 @@ class ImportController extends AbstractBase
         $configLoader = $this->getServiceLocator()->get('VuFind\Config');
         $crawlConfig = $configLoader->get('webcrawl');
 
-        // Get the time we started indexing -- we'll delete records older than this date
-        // after everything is finished.  Note that we subtract a few seconds for safety.
+        // Get the time we started indexing -- we'll delete records older than this
+        // date after everything is finished.  Note that we subtract a few seconds
+        // for safety.
         $startTime = date('Y-m-d\TH:i:s\Z', time() - 5);
+
+        // Are we in verbose mode?
+        $verbose = isset($crawlConfig->General->verbose)
+            && $crawlConfig->General->verbose;
 
         // Loop through sitemap URLs in the config file.
         foreach ($crawlConfig->Sitemaps->url as $current) {
-            $this->harvestSitemap($current);
+            $this->harvestSitemap($current, $verbose);
         }
 
         // Perform the delete of outdated records:
@@ -163,13 +168,18 @@ class ImportController extends AbstractBase
      * Process a sitemap URL, either harvesting its contents directly or recursively
      * reading in child sitemaps.
      *
-     * @param string $url URL of sitemap to read.
+     * @param string $url     URL of sitemap to read.
+     * @param bool   $verbose Are we in verbose mode?
      *
      * @return bool       True on success, false on error.
      */
-    protected function harvestSitemap($url)
+    protected function harvestSitemap($url, $verbose = false)
     {
-        $retVal = false;
+        if ($verbose) {
+            Console::writeLine("Harvesting $url...");
+        }
+
+        $retVal = true;
 
         $file = tempnam('/tmp', 'sitemap');
         file_put_contents($file, file_get_contents($url));
@@ -179,17 +189,18 @@ class ImportController extends AbstractBase
             $results = isset($xml->sitemap) ? $xml->sitemap : array();
             foreach ($results as $current) {
                 if (isset($current->loc)) {
-                    $success = $this->harvestSitemap((string)$current->loc);
-                    if (!$success) {
-                        return $success;
+                    if (!$this->harvestSitemap((string)$current->loc, $verbose)) {
+                        $retVal = false;
                     }
                 }
             }
 
             try {
                 $this->performImport($file, 'sitemap.properties', 'SolrWeb');
-                $retVal = true;
             } catch (\Exception $e) {
+                if ($verbose) {
+                    Console::writeLine(get_class($e) . ': ' . $e->getMessage());
+                }
                 $retVal = false;
             }
         }

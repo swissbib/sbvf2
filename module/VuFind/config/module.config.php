@@ -593,6 +593,11 @@ $config = array(
                             $sm->getServiceLocator()->get('VuFind\Config')
                         );
                     },
+                    'summonbestbets' => function ($sm) {
+                        return new \VuFind\Recommend\SummonBestBets(
+                            $sm->getServiceLocator()->get('VuFind\SearchResultsPluginManager')
+                        );
+                    },
                     'summondatabases' => function ($sm) {
                         return new \VuFind\Recommend\SummonDatabases(
                             $sm->getServiceLocator()->get('VuFind\SearchResultsPluginManager')
@@ -631,6 +636,7 @@ $config = array(
                     'openlibrarysubjectsdeferred' => 'VuFind\Recommend\OpenLibrarySubjectsDeferred',
                     'pubdatevisajax' => 'VuFind\Recommend\PubDateVisAjax',
                     'resultgooglemapajax' => 'VuFind\Recommend\ResultGoogleMapAjax',
+                    'summonresultsdeferred' => 'VuFind\Recommend\SummonResultsDeferred',
                     'switchtype' => 'VuFind\Recommend\SwitchType',
                 ),
             ),

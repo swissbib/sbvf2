@@ -12,13 +12,20 @@ use Swissbib\Libadmin\Importer as LibadminImporter;
 use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
 use Swissbib\View\Helper\InstitutionSorter;
 use Swissbib\Tab40Import\Importer as Tab40Importer;
-use Swissbib\View\Helper\TranslateLocation;
 use Swissbib\RecordDriver\Helper\LocationMap;
 use Swissbib\RecordDriver\Missing as RecordDriverMissing;
 use Swissbib\RecordDriver\Summon;
 use Swissbib\RecordDriver\WorldCat;
 use Swissbib\RecordDriver\Helper\EbooksOnDemand;
 use Swissbib\RecordDriver\Helper\Availability;
+use Swissbib\Helper\BibCode;
+use Swissbib\Favorites\DataSource as FavoritesDataSource;
+use Swissbib\Favorites\Manager as FavoritesManager;
+use Swissbib\Favorites\Manager;
+use Swissbib\View\Helper\ExtractFavoriteInstitutionsForHoldings;
+use Swissbib\View\Helper\IsFavoriteInstitution;
+use Swissbib\Search\Helper\ExtendedSolrFactoryHelper;
+use Swissbib\View\Helper\QrCode as QrCodeViewHelper;
 
 return array(
 	'router'          => array(
@@ -80,6 +87,26 @@ return array(
 						'action'     => 'list'
 					)
 				)
+			),
+			'holdings-holding-items' => array( // load holding holdings details for record with ajax
+				'type'    => 'segment',
+				'options' => array(
+					'route'    => '/Holdings/:record/:institution/items/:resource',
+					'defaults' => array(
+						'controller' => 'holdings',
+						'action'     => 'holdingItems'
+					)
+				)
+			),
+			'myresearch-favorite-institutions' => array( // display defined favorite institutions
+				'type'    => 'segment',
+				'options' => array(
+					'route'    => '/MyResearch/FavoriteInstitutions[/:action]',
+					'defaults' => array(
+						'controller' => 'institutionFavorites',
+						'action'     => 'display'
+					)
+				)
 			)
 		)
 	),
@@ -115,13 +142,15 @@ return array(
 			'search'       => 'Swissbib\Controller\SearchController',
 			'summon'       => 'Swissbib\Controller\SummonController',
 			'holdings'     => 'Swissbib\Controller\HoldingsController',
-			'tab40import'  => 'Swissbib\Controller\Tab40ImportController'
+			'tab40import'  => 'Swissbib\Controller\Tab40ImportController',
+			'institutionFavorites'  => 'Swissbib\Controller\FavoritesController'
 		)
 	),
 	'service_manager' => array(
 		'invokables' => array(
 			'VuFindTheme\ResourceContainer'       => 'Swissbib\VuFind\ResourceContainer',
-			'Swissbib\RecordDriverHoldingsHelper' => 'Swissbib\RecordDriver\Helper\Holdings'
+			'Swissbib\RecordDriverHoldingsHelper' => 'Swissbib\RecordDriver\Helper\Holdings',
+			'Swissbib\QRCode'					  => 'Swissbib\CRCode\QrCodeService'
 		),
 		'factories'  => array(
 			'Swissbib\HoldingsHelper'    => function ($sm) {
@@ -133,8 +162,18 @@ return array(
 				$locationMap	= $sm->get('Swissbib\LocationMap');
 				$eBooksOnDemand	= $sm->get('Swissbib\EbooksOnDemand');
 				$availability	= $sm->get('Swissbib\Availability');
+				$bibCodeHelper	= $sm->get('Swissbib\BibCodeHelper');
 
-				return new HoldingsHelper($ilsConnection, $hmac, $authManager, $config, $translator, $locationMap, $eBooksOnDemand, $availability);
+				return new HoldingsHelper(	$ilsConnection,
+											$hmac,
+											$authManager,
+											$config,
+											$translator,
+											$locationMap,
+											$eBooksOnDemand,
+											$availability,
+											$bibCodeHelper
+											);
 			},
 			'Swissbib\TargetsProxy\TargetsProxy' => function ($sm) {
 				$config        = $sm->get('VuFind\Config')->get('TargetsProxy');
@@ -173,11 +212,34 @@ return array(
 				return new EbooksOnDemand($eBooksOnDemandConfig, $translator);
 			},
 			'Swissbib\Availability' => function ($sm) {
-				$logger				= $sm->get('VuFind\Logger');
+				$bibCodeHelper	= $sm->get('Swissbib\BibCodeHelper');
 				$availabilityConfig = $sm->get('VuFind\Config')->get('config')->Availability;
+
+				return new Availability($bibCodeHelper, $availabilityConfig);
+			},
+			'Swissbib\BibCodeHelper' => function ($sm) {
 				$alephNetworkConfig	= $sm->get('VuFind\Config')->get('Holdings')->AlephNetworks;
 
-				return new Availability($availabilityConfig, $alephNetworkConfig, $logger);
+				return new BibCode($alephNetworkConfig);
+			},
+			'Swissbib\FavoriteInstitutions\DataSource' => function ($sm) {
+				$objectCache   = $sm->get('VuFind\CacheManager')->getCache('object');
+				$configManager = $sm->get('VuFind\Config');
+
+				return new FavoritesDataSource($objectCache, $configManager);
+			},
+			'Swissbib\FavoriteInstitutions\Manager'    => function ($sm) {
+				$sessionStorage = $sm->get('VuFind\SessionManager')->getStorage();
+				$groupMapping   = $sm->get('VuFind\Config')->get('libadmin-groups')->institutions;
+				$authManager    = $sm->get('VuFind\AuthManager');
+
+				return new FavoritesManager($sessionStorage, $groupMapping, $authManager);
+			},
+			'Swissbib\ExtendedSolrFactoryHelper'       => function ($sm) {
+				$config          = $sm->get('Vufind\Config')->get('config')->SwissbibSearchExtensions;
+				$extendedTargets = explode(',', $config->extendedTargets);
+
+				return new ExtendedSolrFactoryHelper($extendedTargets);
 			}
 		)
 	),
@@ -205,7 +267,9 @@ return array(
 			'zendTranslate'           => 'Zend\I18n\View\Helper\Translate',
 			'getVersion'              => 'Swissbib\View\Helper\GetVersion',
 			'holdingActions'          => 'Swissbib\View\Helper\HoldingActions',
-			'availabilityInfo'        => 'Swissbib\View\Helper\AvailabilityInfo'
+			'availabilityInfo'        => 'Swissbib\View\Helper\AvailabilityInfo',
+			'transLocation'        => 'Swissbib\View\Helper\TranslateLocation',
+			'qrCodeHolding'			  => 'Swissbib\View\Helper\QrCodeHolding'
 		),
 		'factories' => array(
 			'institutionSorter' => function ($sm) {
@@ -219,11 +283,24 @@ return array(
 
 				return new InstitutionSorter($institutionList);
 			},
-			'transLocation'	=> function ($sm) { // Translate holding locations
-				/** @var Translator $translator */
-				$translator	= $sm->getServiceLocator()->get('VuFind\Translator');
+			'extractFavoriteInstitutionsForHoldings' => function ($sm) {
+				/** @var Manager $favoriteManager */
+				$favoriteManager		= $sm->getServiceLocator()->get('Swissbib\FavoriteInstitutions\Manager');
+				$userInstitutionCodes	= $favoriteManager->getUserInstitutions();
 
-				return new TranslateLocation($translator);
+				return new ExtractFavoriteInstitutionsForHoldings($userInstitutionCodes);
+			},
+			'qrCode' => function ($sm) {
+				$qrCodeService = $sm->getServiceLocator()->get('Swissbib\QRCode');
+
+				return new QrCodeViewHelper($qrCodeService);
+			},
+			'isFavoriteInstitution' => function ($sm) {
+				/** @var Manager $favoriteManager */
+				$favoriteManager		= $sm->getServiceLocator()->get('Swissbib\FavoriteInstitutions\Manager');
+				$userInstitutionCodes	= $favoriteManager->getUserInstitutions();
+
+				return new IsFavoriteInstitution($userInstitutionCodes);
 			}
 		)
 	),
