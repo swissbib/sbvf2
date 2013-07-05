@@ -408,10 +408,6 @@ label[for="search_favorites"] {
 	display: none;
 }
 
-a#tagRecord {
-	padding-left: 12px;
-	background: url(../images/icon_add.gif) no-repeat 0 2px;
-}
 
 #tab-collectionlist form[name=bulkActionForm] table.data {
 	width: 740px;
@@ -421,6 +417,7 @@ a#tagRecord {
 	padding-left: 12px;
 	background: url(../images/icon_add.gif) no-repeat 0 2px;
 }
+
 
 /** Holding Table */
 .holdingTable th.actions {
@@ -454,6 +451,28 @@ a#tagRecord {
 
 .ui-tabs .ui-tabs-nav li {
 	margin: 0;
+}
+
+
+.qrCodeIcon {
+	cursor: pointer;
+}
+
+.qrCodePopup img {
+	margin-top: 70px;
+}
+
+.qrCodePopup .infotext {
+	position: absolute;
+	top: 0;
+	color: #AAAAAA;
+	padding: 5px;
+}
+
+.qrCodePopup .datatext {
+	position: absolute;
+	bottom: 0;
+	padding: 5px;
 }
 
 
