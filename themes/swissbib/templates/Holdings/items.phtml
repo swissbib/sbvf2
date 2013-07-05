@@ -1,5 +1,6 @@
 <?php
 /** @var Array[] $items */
+/** @var \Swissbib\RecordDriver\SolrMarc $record */
 ?>
 <table class="holdings-items holdingTable">
 	<thead>
@@ -17,7 +18,8 @@
 			// Items
 			foreach($items as $item) {
 				echo $this->render('Holdings/holding-item.phtml', array(
-					'item'	=> $item
+					'item'	=> $item,
+					'record'	=> $record
 				));
 			}
 		?>
