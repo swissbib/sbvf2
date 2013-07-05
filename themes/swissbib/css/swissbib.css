@@ -365,10 +365,12 @@ label[for="search_favorites"] {
 }
 
 .holdingsAjaxSpinner {
+	display: none;
+}
+.holdingsAjaxSpinner .spinner {
 	width: 26px;
 	height: 26px;
-	/*display: inline-block;*/
-	display: none;
+	display: inline-block;
 	background: url(../images/ajax_spinner.png) no-repeat 0 0;
 	vertical-align: middle;
 }
@@ -454,4 +456,54 @@ a#tagRecord {
 
 .qrCodeIcon {
 	cursor: pointer;
+}
+
+
+#holdings-items-filter-form {
+
+	margin-bottom: 10px;
+}
+
+#holdings-items-filter-form td {
+	width: 32%;
+}
+
+#holdings-items-header label {
+	font-size: 0.9em;
+}
+#holding-items-popup-paging {
+	font-size: 0.75em;
+}
+
+#holdings-items-header td {
+	border-right: none;
+}
+
+#holdings-items-popup {
+	padding-bottom: 20px;
+}
+
+/** Hide availability column temporary */
+.holdings-items.holdingTable th:nth-child(2),
+.holdings-items.holdingTable td:nth-child(2) {
+  display: none;
+}
+
+
+
+/** Loading mask */
+
+.loadmask-msg {
+	border-color:#ccc !important;
+	background-color: #F89205 !important;
+}
+.loadmask-msg div {
+	border-color: #fc9405 !important;
+}
+
+
+
+#library-toggler-favorite span {
+	background: url(../images/icon_favorit_library.gif) no-repeat right 1px;
+	padding-right: 20px;
 }

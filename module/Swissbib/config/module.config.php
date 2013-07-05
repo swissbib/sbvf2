@@ -12,13 +12,19 @@ use Swissbib\Libadmin\Importer as LibadminImporter;
 use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
 use Swissbib\View\Helper\InstitutionSorter;
 use Swissbib\Tab40Import\Importer as Tab40Importer;
-use Swissbib\View\Helper\TranslateLocation;
 use Swissbib\RecordDriver\Helper\LocationMap;
 use Swissbib\RecordDriver\Missing as RecordDriverMissing;
 use Swissbib\RecordDriver\Summon;
 use Swissbib\RecordDriver\WorldCat;
 use Swissbib\RecordDriver\Helper\EbooksOnDemand;
 use Swissbib\RecordDriver\Helper\Availability;
+use Swissbib\Helper\BibCode;
+use Swissbib\Favorites\DataSource as FavoritesDataSource;
+use Swissbib\Favorites\Manager as FavoritesManager;
+use Swissbib\Favorites\Manager;
+use Swissbib\View\Helper\ExtractFavoriteInstitutionsForHoldings;
+use Swissbib\View\Helper\IsFavoriteInstitution;
+use Swissbib\Search\Helper\ExtendedSolrFactoryHelper;
 use Swissbib\View\Helper\QrCode;
 
 return array(
@@ -207,6 +213,7 @@ return array(
 			'getVersion'              => 'Swissbib\View\Helper\GetVersion',
 			'holdingActions'          => 'Swissbib\View\Helper\HoldingActions',
 			'availabilityInfo'        => 'Swissbib\View\Helper\AvailabilityInfo',
+			'transLocation'        => 'Swissbib\View\Helper\TranslateLocation',
 			'qrCodeHolding'			  => 'Swissbib\View\Helper\QrCodeHolding'
 		),
 		'factories' => array(
@@ -221,16 +228,24 @@ return array(
 
 				return new InstitutionSorter($institutionList);
 			},
-			'transLocation'	=> function ($sm) { // Translate holding locations
-				/** @var Translator $translator */
-				$translator	= $sm->getServiceLocator()->get('VuFind\Translator');
+			'extractFavoriteInstitutionsForHoldings' => function ($sm) {
+				/** @var Manager $favoriteManager */
+				$favoriteManager		= $sm->getServiceLocator()->get('Swissbib\FavoriteInstitutions\Manager');
+				$userInstitutionCodes	= $favoriteManager->getUserInstitutions();
 
-				return new TranslateLocation($translator);
+				return new ExtractFavoriteInstitutionsForHoldings($userInstitutionCodes);
 			},
 			'qrCode' => function ($sm) {
 				$qrCodeService = $sm->getServiceLocator()->get('QRCode');
 
 				return new QrCode($qrCodeService);
+			},
+			'isFavoriteInstitution' => function ($sm) {
+				/** @var Manager $favoriteManager */
+				$favoriteManager		= $sm->getServiceLocator()->get('Swissbib\FavoriteInstitutions\Manager');
+				$userInstitutionCodes	= $favoriteManager->getUserInstitutions();
+
+				return new IsFavoriteInstitution($userInstitutionCodes);
 			}
 		)
 	),
