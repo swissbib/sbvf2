@@ -215,6 +215,27 @@ swissbib.Holdings = {
 		popup.load(url, function(){
 			that.setupItemsPopup(dialog);
 		});
+	},
+
+
+
+	/**
+	 * Show QR code window
+	 *
+	 * @param	{String}		winKey
+	 * @param	{String}		url
+	 */
+	showQrCode: function(winKey, url)
+	{
+		var win = $('#qrcode-' + winKey);
+
+		$('img', win).attr('src', url);
+		win.dialog({
+			height: 300,
+			width: 300,
+			modal: false,
+			resizable: false
+		});
 	}
 
 };
