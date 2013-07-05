@@ -25,7 +25,7 @@ use Swissbib\Favorites\Manager;
 use Swissbib\View\Helper\ExtractFavoriteInstitutionsForHoldings;
 use Swissbib\View\Helper\IsFavoriteInstitution;
 use Swissbib\Search\Helper\ExtendedSolrFactoryHelper;
-use Swissbib\View\Helper\QrCode;
+use Swissbib\View\Helper\QrCode as QrCodeViewHelper;
 
 return array(
 	'router'          => array(
@@ -149,7 +149,8 @@ return array(
 	'service_manager' => array(
 		'invokables' => array(
 			'VuFindTheme\ResourceContainer'       => 'Swissbib\VuFind\ResourceContainer',
-			'Swissbib\RecordDriverHoldingsHelper' => 'Swissbib\RecordDriver\Helper\Holdings'
+			'Swissbib\RecordDriverHoldingsHelper' => 'Swissbib\RecordDriver\Helper\Holdings',
+			'Swissbib\QRCode'					  => 'Swissbib\CRCode\QrCodeService'
 		),
 		'factories'  => array(
 			'Swissbib\HoldingsHelper'    => function ($sm) {
@@ -290,9 +291,9 @@ return array(
 				return new ExtractFavoriteInstitutionsForHoldings($userInstitutionCodes);
 			},
 			'qrCode' => function ($sm) {
-				$qrCodeService = $sm->getServiceLocator()->get('QRCode');
+				$qrCodeService = $sm->getServiceLocator()->get('Swissbib\QRCode');
 
-				return new QrCode($qrCodeService);
+				return new QrCodeViewHelper($qrCodeService);
 			},
 			'isFavoriteInstitution' => function ($sm) {
 				/** @var Manager $favoriteManager */

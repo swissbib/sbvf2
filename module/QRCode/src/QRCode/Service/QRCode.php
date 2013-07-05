@@ -10,13 +10,13 @@ class QRCode {
      * Properties for the qrcode
      * @var Array
      */
-    private $properties = array();
+	protected $properties = array();
     
     /**
      * The Final Endpoint
      * @var String The final endpoint 
      */
-    private $endpoint = null;
+    protected $endpoint = null;
     
     /**
      * The Start endpoint

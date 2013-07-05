@@ -2,7 +2,7 @@
 namespace Swissbib\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
-use QRCode\Service\QRCode as QRCodeService;
+use Swissbib\CRCode\QrCodeService;
 
 /**
  * Build a qr code link or image
@@ -43,7 +43,9 @@ class QrCode extends AbstractHelper
 		$qrCode = clone $this->qrCodeService;
 
 		if (isset($options['data'])) {
-			$qrCode->setData($options['data']);
+			$encode = isset($options['encodeData']) ? $options['encodeData'] : true;
+
+			$qrCode->setData($options['data'], $encode);
 		}
 		if (isset($options['charset'])) {
 			$qrCode->setCharset($options['charset']);
@@ -104,21 +106,33 @@ class QrCode extends AbstractHelper
 	 *
 	 * @param	String		$text
 	 * @param	Integer		$size
+	 * @param	Boolean		$encode
 	 * @return	String
 	 */
-	public function image($text, $size)
+	public function image($text, $size, $encode = true)
 	{
 		return $this->img(array(
 							   'data'		=> $text,
+							   'encodeData'	=> !!$encode,
 							   'dimensions' => array($size, $size)
 						  ));
 	}
 
 
-	public function source($text, $size)
+
+	/**
+	 * Simplified version of url
+	 *
+	 * @param	String		$text
+	 * @param	Integer		$size
+	 * @param	Boolean		$encode
+	 * @return	String
+	 */
+	public function source($text, $size, $encode = true)
 	{
 		return $this->url(array(
 							   'data'		=> $text,
+							   'encodeData'	=> !!$encode,
 							   'dimensions' => array($size, $size)
 						  ));
 	}

@@ -231,8 +231,8 @@ swissbib.Holdings = {
 
 		$('img', win).attr('src', url);
 		win.dialog({
-			height: 300,
-			width: 300,
+			height: 450,
+			width: 450,
 			modal: false,
 			resizable: false
 		});
