@@ -31,52 +31,39 @@
 			<div class="hold-form">
 				<form action="" method="post">
 
+                    <?php if( in_array("pickUpLocation", $this->extraHoldFields) ): ?>
+                    <div>
+                        <?php if( count($this->pickup) > 1 ): ?>
+                        <?
+                        if( isset($this->gatheredDetails['pickUpLocation']) && !empty($this->gatheredDetails['pickUpLocation']) ) {
+                            $selected = $this->gatheredDetails['pickUpLocation'];
+                        }
+                        elseif( isset($this->homeLibrary) ) {
+                            $selected = $this->homeLibrary;
+                        }
+                        else {
+                            $selected = $this->defaultPickup;
+                        }
+                        ?>
+                        <strong><?=$this->transEsc('pick_up_location')?>:</strong><br/>
+                        <select name="gatheredDetails[pickUpLocation]">
+                            <?php foreach($this->pickup as $lib): ?>
+                            <option value="<?=$this->escapeHtml($lib['locationID'])?>"<?=($selected == $lib['locationID']) ? ' selected="selected"' : ''?>>
+                                <?=$this->escapeHtml($lib['locationDisplay'])?>
+                            </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <?php else: ?>
+                        <input type="hidden" name="gatheredDetails[pickUpLocation]" value="<?=$this->escapeHtml($this->defaultPickup)?>"/>
+                        <?php endif; ?>
+                    </div>
+                    <?php endif; ?>
+
 					<?php if( in_array("comments", $this->extraHoldFields) ): ?>
 						<div>
 							<strong><?=$this->transEsc('Comments')?>:</strong><br/>
 							<textarea rows="3" cols="20"
 									  name="gatheredDetails[comment]"><?=isset($this->gatheredDetails['comment']) ? $this->escapeHtml($this->gatheredDetails['comment']) : ''?></textarea>
-						</div>
-					<?php endif; ?>
-
-					<?php if( in_array("requiredByDate", $this->extraHoldFields) ): ?>
-						<div>
-							<strong><?=$this->transEsc('hold_required_by')?>: </strong>
-							<?php
-								$requiredByDate = isset($this->gatheredDetails['requiredBy']) && !empty($this->gatheredDetails['requiredBy']) ? $this->gatheredDetails['requiredBy'] : $this->defaultRequiredDate
-							?>
-
-							<div id="requiredByHolder">
-								<input id="requiredByDate" type="text" name="gatheredDetails[requiredBy]" value="<?=$this->escapeHtml($requiredByDate)?>" size="8"/>
-								<strong>(<?=$this->dateTime()->getDisplayDateFormat()?>)</strong></div>
-						</div>
-					<?php endif; ?>
-
-					<?php if( in_array("pickUpLocation", $this->extraHoldFields) ): ?>
-						<div>
-							<?php if( count($this->pickup) > 1 ): ?>
-								<?
-								if( isset($this->gatheredDetails['pickUpLocation']) && !empty($this->gatheredDetails['pickUpLocation']) ) {
-									$selected = $this->gatheredDetails['pickUpLocation'];
-								}
-								elseif( isset($this->homeLibrary) ) {
-									$selected = $this->homeLibrary;
-								}
-								else {
-									$selected = $this->defaultPickup;
-								}
-								?>
-								<strong><?=$this->transEsc('pick_up_location')?>:</strong><br/>
-								<select name="gatheredDetails[pickUpLocation]">
-									<?php foreach($this->pickup as $lib): ?>
-										<option value="<?=$this->escapeHtml($lib['locationID'])?>"<?=($selected == $lib['locationID']) ? ' selected="selected"' : ''?>>
-											<?=$this->escapeHtml($lib['locationDisplay'])?>
-										</option>
-									<?php endforeach; ?>
-								</select>
-							<?php else: ?>
-								<input type="hidden" name="gatheredDetails[pickUpLocation]" value="<?=$this->escapeHtml($this->defaultPickup)?>"/>
-							<?php endif; ?>
 						</div>
 					<?php endif; ?>
 
