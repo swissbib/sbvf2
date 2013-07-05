@@ -25,6 +25,6 @@ if (isset($holding['itemsLink']) && $holding['itemsLink']['count']) {
     <td><?=$moreDetailsLink?></td>
     <td><?=$this->escapeHtml($holding['locationLabel'])?><?=$mapLink?></td>
 	<td><?=$this->escapeHtml($holding['signature'])?></td>
-	<td><?=$this->qrCodeHolding($holding, $record)?></td>
+	<td><?=$this->qrCodeHolding($holding, $recordTitle)?></td>
 	<td><?=$this->escapeHtml($holding['holding_information'])?></td>
 </tr>
