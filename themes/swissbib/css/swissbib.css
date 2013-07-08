@@ -501,8 +501,8 @@ a#tagRecord {
 }
 
 /** Hide availability column temporary */
-.holdings-items.holdingTable th:nth-child(2),
-.holdings-items.holdingTable td:nth-child(2) {
+#holdings-items-popup .holdings-items.holdingTable th:nth-child(2),
+#holdings-items-popup .holdings-items.holdingTable td:nth-child(2) {
   display: none;
 }
 
