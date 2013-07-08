@@ -17,19 +17,19 @@
 			<? if( !empty($this->saved) || !empty($this->unsaved) ): ?>
 
 				<? if( !empty($this->saved) ): ?>
-					<h1><?=$this->transEsc("history_saved_searches")?></h1>
+					<h1><?=$this->transEsc('history_saved_searches')?></h1>
 					<?= $this->context()->renderInContext('search/history-table.phtml', array('showSaved' => true)); ?>
 				<? endif; ?>
 
 				<? if( !empty($this->unsaved) ): ?>
-					<h1><?=$this->transEsc("history_recent_searches")?></h1>
+					<h1><?=$this->transEsc('history_recent_searches')?></h1>
 					<?= $this->context()->renderInContext('search/history-table.phtml', array('showSaved' => false)); ?>
-					<a href="?purge=true" class="delete"><?=$this->transEsc("history_purge")?></a>
+					<a href="?purge=true" class="delete"><?=$this->transEsc('history_purge')?></a>
 				<? endif; ?>
 
 			<? else: ?>
-				<h1><?=$this->transEsc("history_recent_searches")?></h1>
-				<?= $this->transEsc("history_no_searches") ?>
+				<h1><?=$this->transEsc('history_recent_searches')?></h1>
+				<p><?= $this->transEsc('history_no_searches') ?></p>
 			<? endif; ?>
 
 		</div>
