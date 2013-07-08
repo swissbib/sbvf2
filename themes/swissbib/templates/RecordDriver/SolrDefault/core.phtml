@@ -24,12 +24,13 @@ $groupID				= $resultItem->getGroup(true);
 $publicationDate		= $this->publicationDateMarc($resultItem->getPublicationDates());
 $openUrl				= $resultItem->openURLActive('record') ? $resultItem->getOpenURL() : false;
 $favoriteLink			= $this->recordLink()->getActionUrl($resultItem, 'Save');
+$highlightedFulltext	= $resultItem->getHighlightedFulltext();
 
 ?>
 <?/* Common parts of recordDriver's core.phtml templates*/?>
 <!-- col -->
 <div class="c25l">
-	<a title="<?=$this->transEsc('Add to favorites')?>" class="icon_notepad_add_link" href="<?=$favoriteLink?>">
+	<a title="<?=$this->transEsc('memorizelistadd')?>" class="icon_notepad_add_link" href="<?=$favoriteLink?>">
 		<img src="<?=$thumbnailSrc?>" class="dropshadow"/>
 	</a>
 </div>
@@ -80,6 +81,11 @@ $favoriteLink			= $this->recordLink()->getActionUrl($resultItem, 'Save');
 		<?php if ($openUrl): ?>
 			<h4>OpenURL:</h4>
 			<p><?=$this->openUrl($openUrl)?></p>
+		<?php endif; ?>
+
+		<?php if ($highlightedFulltext): ?>
+			<h4><?=$this->transEsc('fulltexthighlight')?>: </h4>
+			<p><?=$this->highlight($highlightedFulltext)?></p>
 		<?php endif; ?>
 
 	</div>

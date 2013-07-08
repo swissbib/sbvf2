@@ -1,16 +1,16 @@
 <?php
-namespace Swissbib\Search\Options;
+namespace Swissbib\VuFind\Search\Options;
 
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 use VuFind\Search\Options\PluginFactory as VuFindOptionsPluginFactory;
 
-use Swissbib\Search\Helper\ExtendedSolrFactoryHelper;
+use Swissbib\VuFind\Search\Helper\ExtendedSolrFactoryHelper;
 
 /**
  *  VuFind enhancements to extend the VuFind Options type for the Solr target
  *
- * @package Swissbib\Search\Options
+ * @package Swissbib\VuFind\Search\Options
  */
 class PluginFactory extends VuFindOptionsPluginFactory
 {

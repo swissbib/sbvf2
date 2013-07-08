@@ -536,6 +536,10 @@ pre {
 }
 
 
+span.highlight {
+	font-weight: bold;
+}
+
 #sidebar .subnavigation ul li a {
 	word-wrap: break-word;
 }
