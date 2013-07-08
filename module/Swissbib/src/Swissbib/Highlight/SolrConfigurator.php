@@ -28,6 +28,12 @@ class SolrConfigurator
 
 
 
+	/**
+	 * Initialize with event manager and highlight config
+	 *
+	 * @param SharedEventManagerInterface $eventsManager
+	 * @param Config                      $config
+	 */
 	public function __construct(SharedEventManagerInterface $eventsManager, Config $config)
 	{
 		$this->eventsManager = $eventsManager;
@@ -80,12 +86,14 @@ class SolrConfigurator
 						}
 					}
 
+						// All all highlight config fields
 					foreach ($this->config as $key => $value) {
 						$params->set('hl.' . $key, $value);
 					}
 				}
 			}
 		}
+
 		return $event;
 	}
 }
