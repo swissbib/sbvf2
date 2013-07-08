@@ -11,35 +11,4 @@ use Swissbib\Favorites\Manager as FavoriteManager;
  */
 class Params extends VuFindSolrParams
 {
-
-	/** @var FavoriteManager  */
-	protected $favoritesManager;
-
-
-
-	/**
-	 * Constructor
-	 *
-	 * @param	Options  			$options      	Options to use
-	 * @param	PluginManager		$configLoader	Config loader
-	 * @param	FavoriteManager		$favoritesManger
-	 */
-	public function __construct($options, PluginManager $configLoader, $favoritesManger)
-	{
-		parent::__construct($options, $configLoader);
-
-		$this->favoritesManager = $favoritesManger;
-	}
-
-
-
-	/**
-	 * Get user institutions
-	 *
-	 * @return	String[]
-	 */
-	public function getUserFavoritesInstitutions()
-	{
-		return $this->favoritesManager->getUserInstitutions();
-	}
 }
