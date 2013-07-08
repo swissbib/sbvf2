@@ -24,8 +24,9 @@ use Swissbib\Favorites\Manager as FavoritesManager;
 use Swissbib\Favorites\Manager;
 use Swissbib\View\Helper\ExtractFavoriteInstitutionsForHoldings;
 use Swissbib\View\Helper\IsFavoriteInstitution;
-use Swissbib\Search\Helper\ExtendedSolrFactoryHelper;
+use Swissbib\VuFind\Search\Helper\ExtendedSolrFactoryHelper;
 use Swissbib\View\Helper\QrCode as QrCodeViewHelper;
+use Swissbib\Highlight\SolrConfigurator as HighlightSolrConfigurator;
 
 return array(
 	'router'          => array(
@@ -250,6 +251,12 @@ return array(
 				$extendedTargets = explode(',', $config->extendedTargets);
 
 				return new ExtendedSolrFactoryHelper($extendedTargets);
+			},
+			'Swissbib\Highlight\SolrConfigurator' => function ($sm) {
+				$config			= $sm->get('Vufind\Config')->get('config')->Highlight;
+				$eventsManager	= $sm->get('SharedEventManager');
+
+				return new HighlightSolrConfigurator($eventsManager, $config);
 			}
 		)
 	),
@@ -279,7 +286,8 @@ return array(
 			'holdingActions'          => 'Swissbib\View\Helper\HoldingActions',
 			'availabilityInfo'        => 'Swissbib\View\Helper\AvailabilityInfo',
 			'transLocation'        => 'Swissbib\View\Helper\TranslateLocation',
-			'qrCodeHolding'			  => 'Swissbib\View\Helper\QrCodeHolding'
+			'qrCodeHolding'			  => 'Swissbib\View\Helper\QrCodeHolding',
+			'holdingItemsPaging'	  => 'Swissbib\View\Helper\HoldingItemsPaging'
 		),
 		'factories' => array(
 			'institutionSorter' => function ($sm) {
@@ -334,8 +342,8 @@ return array(
 		'plugin_managers' => array(
 			'search_backend'	=> array(
 				'factories'	=> array(
-//					'Solr' => 'VuFind\Search\Factory\SolrDefaultBackendFactory',
-					'Summon'	=> 'Swissbib\Search\Factory\SummonBackendFactory',
+					'Solr' 		=> 'Swissbib\VuFind\Search\Factory\SolrDefaultBackendFactory',
+					'Summon'	=> 'Swissbib\VuFind\Search\Factory\SummonBackendFactory',
 //					'WorldCat' => 'VuFind\Search\Factory\WorldCatBackendFactory',
 				)
 			),
@@ -443,14 +451,14 @@ return array(
 			),
 
             'search_options' => array(
-                'abstract_factories' => array('Swissbib\Search\Options\PluginFactory'),
+                'abstract_factories' => array('Swissbib\VuFind\Search\Options\PluginFactory'),
             ),
             'search_params' => array(
-                'abstract_factories' => array('Swissbib\Search\Params\PluginFactory'),
+                'abstract_factories' => array('Swissbib\VuFind\Search\Params\PluginFactory'),
             ),
 
             'search_results' => array(
-                'abstract_factories' => array('Swissbib\Search\Results\PluginFactory'),
+                'abstract_factories' => array('Swissbib\VuFind\Search\Results\PluginFactory'),
             ),
 
 		),
