@@ -534,3 +534,8 @@ pre {
 	white-space: normal;
 	margin-bottom: 3px;
 }
+
+
+#sidebar .subnavigation ul li a {
+	word-wrap: break-word;
+}

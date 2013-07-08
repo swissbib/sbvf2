@@ -1,10 +1,5 @@
 <?php
 /** @var VuFind\RecordDriver\SolrDefault $transaction */
-
-$rowCounter = 0;
-
-//var_dump($this->transactions[0]);
-
 ?>
 <table>
 	<thead>
@@ -26,7 +21,6 @@ $rowCounter = 0;
 				//$isNonMissingRecord	= is_a($transaction, 'VuFind\\RecordDriver\\SolrDefault') && !is_a($transaction, 'VuFind\\RecordDriver\\Missing');
 				$isRenewable		= isset($ilsDetails['renewable']) && $ilsDetails['renewable'] && isset($ilsDetails['renew_details']);
 				$safeId 			= preg_replace('/[^a-zA-Z0-9]/', '', $transaction->getUniqueId());
-//				var_dump($ilsDetails);
 			?>
 			<tr>
 				<td><?=$index+1?></td>
@@ -36,10 +30,10 @@ $rowCounter = 0;
                 <td><?=$this->escapeHtml($ilsDetails['title'])?></td>
 				<td><?=$this->escapeHtml($ilsDetails['loandate'])?></td>
 				<td>
-                    <?if ($ilsDetails['status'] != 'Active'): ?>
-                        <?=$this->escapeHtml($ilsDetails['duedate'])?> (<?=$this->escapeHtml($ilsDetails['status'])?>)
+                    <?if ($ilsDetails['status'] == 'Active'): ?>
+						<?=$this->escapeHtml($ilsDetails['duedate'])?>
                     <? else: ?>
-                        <?=$this->escapeHtml($ilsDetails['duedate'])?>
+						<?=$this->escapeHtml($ilsDetails['duedate'])?> (<?=$this->escapeHtml($ilsDetails['status'])?>)
                     <? endif; ?>
                 </td>
 				<td><?=$this->escapeHtml($ilsDetails['renewals'])?> (<?=$this->transEsc('of')?> 5)</td>

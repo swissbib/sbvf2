@@ -21,10 +21,8 @@
 			<? if( !empty($this->transactions) ): ?>
 				<? if( $this->renewForm ): ?>
 					<form name="renewals" action="" method="post" id="renewals">
-					<div class="toolbar">
-						<input type="submit" class="button renew" name="renewSelected" value="<?=$this->transEsc("renew_selected")?>"/>
-					</div>
-					<br/>
+						<input type="submit" class="button renew" name="renewSelected" value="<?=$this->transEsc("renew_selected")?>" style="margin-bottom: 10px"/>
+					<br>
 				<? endif; ?>
 
 				<?= $this->render('myresearch/checkedout/itemlist.phtml') ?>
