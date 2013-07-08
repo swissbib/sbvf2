@@ -1,5 +1,5 @@
 <?php
-namespace Swissbib\Search\Solr;
+namespace Swissbib\VuFind\Search\Solr;
 
 use VuFind\Search\Solr\Results as VuFindSolrResults;
 use VuFindSearch\Query\AbstractQuery;

@@ -206,7 +206,7 @@ class Bootstrapper
 			$configKey		= strtolower(str_replace('\\', '_', $namespace));
 			$serviceName	= 'Swissbib\\' . $plainNamespace . 'PluginManager';
 			$serviceConfig	= $config['swissbib']['plugin_managers'][$configKey];
-			$className		= 'Swissbib\\' . $namespace . '\PluginManager';
+			$className		= 'Swissbib\\VuFind\\' . $namespace . '\PluginManager';
 
 			$pluginManagerFactoryService = function ($sm) use ($className, $serviceConfig) {
 				return new $className(
