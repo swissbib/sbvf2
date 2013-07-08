@@ -409,6 +409,80 @@ class Aleph extends AlephDriver
 
 
 	/**
+	 * Perform a RESTful DLF request.
+	 *
+	 * @param array  $path_elements URL path elements
+	 * @param array  $params        GET parameters (null for none)
+	 * @param string $method        HTTP method
+	 * @param string $body          HTTP body
+	 *
+	 * @return \SimpleXMLElement
+	 */
+	protected function doRestDLFRequestIgnoreFailures($path_elements, $params = null, $method = 'GET', $body = null)
+	{
+		$path = implode('/', $path_elements) . '/';
+		$url  = "http://$this->host:$this->dlfport/rest-dlf/" . $path;
+		$url  = $this->appendQueryString($url, $params);
+
+		return $this->doHTTPRequest($url, $method, $body);
+	}
+
+
+
+	/**
+	 * Send renew request do REST server
+	 * Use non breaking DLF request method to support failure messages (which are still a valid response)
+	 *
+	 * @param	Array	$details
+	 * @return	Array
+	 */
+	public function renewMyItems($details)
+	{
+		$patron = $details['patron'];
+		$blocks	= array();
+		foreach ($details['details'] as $id) {
+			$result = $this->doRestDLFRequestIgnoreFailures(
+				array('patron', $patron['id'], 'circulationActions', 'loans', $id),
+				null, 'POST', null
+			);
+
+			if ($result->renewals && $result->renewals->institution && $result->renewals->institution->loan) {
+				$blocks = array(
+					(string)$result->renewals->institution->loan->status
+				);
+			}
+		}
+
+		return array('blocks' => $blocks, 'details' => array());
+	}
+
+
+
+	/**
+	 * Get my transactions response items
+	 *
+	 * @param	Array		$user
+	 * @param	Boolean		$history
+	 * @return	\SimpleXMLElement[]
+	 */
+	protected function getMyTransactionsResponse(array $user, $history = false)
+	{
+		$userId    = $user['id'];
+		$transList = array();
+		$params    = array("view" => "full");
+		if ($history) {
+			$params["type"] = "history";
+		}
+		$xml = $this->doRestDLFRequest(
+			array('patron', $userId, 'circulationActions', 'loans'), $params
+		);
+
+		return $xml->xpath('//loan');
+	}
+
+
+
+	/**
 	 * Get Patron Transactions
 	 *
 	 * This is responsible for retrieving all transactions (i.e. checked out items)
@@ -424,68 +498,39 @@ class Aleph extends AlephDriver
 	 */
 	public function getMyTransactions($user, $history = false)
 	{
-		$userId    = $user['id'];
-		$transList = array();
-		$params    = array("view" => "full");
-		if ($history) {
-			$params["type"] = "history";
-		}
-		$xml = $this->doRestDLFRequest(
-			array('patron', $userId, 'circulationActions', 'loans'), $params
+		$transactionsResponseItems	= $this->getMyTransactionsResponse($user, $history);
+		$dataMap         = array(
+			'barcode'		=> 'z30-barcode',
+			'title'			=> 'z13-title',
+			'doc-number'	=> 'z36-doc-number',
+			'item-sequence'	=> 'z36-item-sequence',
+			'sequence'		=> 'z36-sequence',
+			'loaned'		=> 'z36-loan-date',
+			'due'			=> 'z36-due-date',
+			'status'		=> 'z36-status',
+			'return'		=> 'z36-returned-date',
+			'renewals'		=> 'z36-no-renewal',
+			'library'		=> 'z30-sub-library',
+			'callnum'		=> 'z30-call-no'
 		);
-		foreach ($xml->xpath('//loan') as $item) {
-			$z36     = $item->z36;
-			$z13     = $item->z13;
-			$z30     = $item->z30;
-			$group   = $item->xpath('@href');
-			$group   = substr(strrchr($group[0], "/"), 1);
-			$renew   = $item->xpath('@renew');
-			$docno   = (string)$z36->{'z36-doc-number'};
-			$itemseq = (string)$z36->{'z36-item-sequence'};
-			$seq     = (string)$z36->{'z36-sequence'};
-			//$location = (string) $z36->{'z36_pickup_location'};
-			$reqnum = (string)$z36->{'z36-doc-number'}
-					. (string)$z36->{'z36-item-sequence'}
-					. (string)$z36->{'z36-sequence'};
-			$due    = $returned = null;
-			if ($history) {
-				$due      = $item->z36h->{'z36h-due-date'};
-				$returned = $item->z36h->{'z36h-returned-date'};
-			} else {
-				$due = (string)$z36->{'z36-due-date'};
-			}
-			$loaned   = (string)$z36->{'z36-loan-date'};
-			$status   = (string)$z36->{'z36-status'};
-			$renewals = (string)$z36->{'z36-no-renewal'};
-			$library  = (string)$z30->{'z30-sub-library'};
-			$callnum  = (string)$z30->{'z30-call-no'};
-			$title    = (string)$z13->{'z13-title'};
-			//$author = (string) $z13->{'z13-author'};
-			//$isbn = (string) $z13->{'z13-isbn-issn'};
-			$barcode     = (string)$z30->{'z30-barcode'};
-			$transList[] = array(
-				//'type' => $type,
-				'id'        => ($history) ? null : $this->barcodeToID($barcode),
-				'item_id'   => $group,
-				//'location' => $location,
-				'title'     => $title,
-				//'author' => $author,
-				//'isbn' => array($isbn),
-				'reqnum'    => $reqnum,
-				//'barcode' => $barcode,
-				'loandate'  => $this->parseDate($loaned),
-				'duedate'   => $this->parseDate($due),
-				'status'    => $status,
-				'returned'  => $this->parseDate($returned),
-				'renewals'  => $renewals,
-				'library'   => $library,
-				'callnum'   => $callnum,
-				//'holddate' => $holddate,
-				//'delete' => $delete,
-				'renewable' => true,
-				//'create' => $this->parseDate($create)
-			);
+		$transactionsData	= array();
+
+		foreach ($transactionsResponseItems as $transactionsResponseItem) {
+			$itemData	= $this->extractResponseData($transactionsResponseItem, $dataMap);
+			$group   	= $transactionsResponseItem->xpath('@href');
+
+				// Add special data
+			$itemData['id']			= ($history) ? null : $this->barcodeToID($itemData['barcode']);
+			$itemData['item_id']	= substr(strrchr($group[0], "/"), 1);
+			$itemData['reqnum']		= $itemData['doc-number'] . $itemData['item-sequence'] . $itemData['sequence'];
+			$itemData['loandate']	= $this->parseDate($itemData['loaned']);
+			$itemData['duedate']	= $this->parseDate($itemData['due']);
+			$itemData['returned']	= $this->parseDate($itemData['return']);
+			$itemData['renewable']	= true;
+
+			$transactionsData[] = $itemData;
 		}
-		return $transList;
+
+		return $transactionsData;
 	}
 }
