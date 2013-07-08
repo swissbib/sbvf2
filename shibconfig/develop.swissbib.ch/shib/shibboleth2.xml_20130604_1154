@@ -1,0 +1,246 @@
+<SPConfig xmlns="urn:mace:shibboleth:2.0:native:sp:config"
+    xmlns:conf="urn:mace:shibboleth:2.0:native:sp:config"
+    xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
+    xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+    xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+    clockSkew="180">
+
+<!-- 
+Added by kellerst beginning
+-->
+
+    <!-- The OutOfProcess section contains properties affecting the shibd daemon. -->
+    <OutOfProcess logger="shibd.logger">
+        <!--
+        <Extensions>
+            <Library path="odbc-store.so" fatal="true"/>
+        </Extensions>
+        -->
+    </OutOfProcess>
+
+    <!--
+    The InProcess section contains settings affecting web server modules.
+    Required for IIS, but can be removed when using other web servers.
+    -->
+    <InProcess logger="native.logger">
+        <ISAPI normalizeRequest="true" safeHeaderNames="true">
+            <!--
+            Maps IIS Instance ID values to the host scheme/name/port. The name is
+            required so that the proper <Host> in the request map above is found without
+            having to cover every possible DNS/IP combination the user might enter.
+            -->
+            <Site id="1" name="testvf.swissbib.ch"/>
+            <!--
+            When the port and scheme are omitted, the HTTP request's port and scheme are used.
+            If these are wrong because of virtualization, they can be explicitly set here to
+            ensure proper redirect generation.
+            -->
+            <!--
+            <Site id="42" name="virtual.example.org" scheme="https" port="443"/>
+            -->
+        </ISAPI>
+    </InProcess>
+
+    <!-- Only one listener can be defined, to connect in-process modules to shibd. -->
+    <UnixListener address="/var/run/shibboleth/shibd.sock"/>
+    <!-- <TCPListener address="127.0.0.1" port="1600" acl="127.0.0.1"/> -->
+
+    <!-- This set of components stores sessions and other persistent data in daemon memory. -->
+    <StorageService type="Memory" id="mem" cleanupInterval="900"/>
+    <SessionCache type="StorageService" StorageService="mem" cacheAssertions="false"
+                  cacheAllowance="900" inprocTimeout="900" cleanupInterval="900"/>
+    <ReplayCache StorageService="mem"/>
+    <ArtifactMap artifactTTL="180"/>
+
+    <!-- This set of components stores sessions and other persistent data in an ODBC database. -->
+    <!--
+    <StorageService type="ODBC" id="db" cleanupInterval="900">
+        <ConnectionString>
+        DRIVER=drivername;SERVER=dbserver;UID=shibboleth;PWD=password;DATABASE=shibboleth;APP=Shibboleth
+        </ConnectionString>
+    </StorageService>
+    <SessionCache type="StorageService" StorageService="db" cacheAssertions="false"
+                  cacheTimeout="3600" inprocTimeout="900" cleanupInterval="900"/>
+    <ReplayCache StorageService="db"/>
+    <ArtifactMap StorageService="db" artifactTTL="180"/>
+    -->
+
+    <!--
+    To customize behavior for specific resources on Apache, and to link vhosts or
+    resources to ApplicationOverride settings below, use web server options/commands.
+    See https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPConfigurationElements for help.
+    
+    For examples with the RequestMap XML syntax instead, see the example-shibboleth2.xml
+    file, and the https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPRequestMapHowTo topic.
+    -->
+    <RequestMapper type="Native">
+        <RequestMap>
+            <!--
+            The example requires a session for documents in /secure on the containing host with http and
+            https on the default ports. Note that the name and port in the <Host> elements MUST match
+            Apache's ServerName and Port directives or the IIS Site name in the <ISAPI> element above.
+            -->
+            <Host name="testvf.swissbib.ch">
+                <Path name="secure" authType="shibboleth" requireSession="true"/>
+            </Host>
+            <!-- Example of a second vhost mapped to a different applicationId. -->
+            <!--
+            <Host name="admin.example.org" applicationId="admin" authType="shibboleth" requireSession="true"/>
+            -->
+        </RequestMap>
+    </RequestMapper>
+
+
+
+
+
+
+
+
+<!--
+Added by kellerst end
+-->
+
+
+
+
+
+
+    <!-- The ApplicationDefaults element is where most of Shibboleth's SAML bits are defined. -->
+    <ApplicationDefaults entityID="http://testvf.swissbib.ch/shibboleth"
+                         homeURL="http://testvf.swissbib.ch/Shibboleth.sso/Session"
+                         REMOTE_USER="persistent-id targeted-id uniqueID"
+                         signing="back"
+                         requireTransportAuth="false">
+
+        <!--
+        Controls session lifetimes, address checks, cookie handling, and the protocol handlers.
+        More information on: https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPSessions
+        -->
+        <Sessions lifetime="28800"
+                  timeout="3600"
+                  relayState="ss:mem"
+                  checkAddress="false"
+                  consistentAddress="true"
+                  handlerSSL="true"
+                  cookieProps="https">
+
+            <!--
+            In order to use a default Identity Provider add an attribute like:
+            entityID="https://idp.example.org/shibboleth" to the SSO element.
+            It's value should be the entityID of the default Identity Provider.
+            More information on: https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPServiceSSO
+            -->
+            <SSO discoveryProtocol="SAMLDS"
+                 discoveryURL="https://wayf.switch.ch/SWITCHaai/WAYF">
+              SAML2
+            </SSO>
+
+            <!-- SAML and local-only logout. -->
+            <Logout>Local</Logout>
+
+            <!-- Extension service that generates "approximate" metadata based on SP configuration. -->
+            <Handler type="MetadataGenerator"
+                     Location="/Metadata"
+                     signing="false"/>
+
+            <!-- Status reporting service. The last two IP addresses are used by the AAI Resource Registry -->
+            <Handler type="Status"
+                     Location="/Status"
+                     acl="127.0.0.1 ::1 130.59.138.32 130.59.10.146"/>
+
+            <!-- Session diagnostic service. -->
+            <Handler type="Session"
+                     Location="/Session"/>
+
+            <!-- JSON feed of discovery information. -->
+            <Handler type="DiscoveryFeed"
+                     Location="/DiscoFeed"/>
+        </Sessions>
+
+        <!--
+        Allows overriding of error template information/filenames. You can
+        also add attributes with values that can be plugged into the templates.
+        More information on: https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPErrors
+        -->
+        <Errors supportContact="aai@testvf.swissbib.ch"
+                helpLocation="https://www.switch.ch/aai/help"
+                logoLocation="https://www.switch.ch/aai/design/images/SWITCHaai.gif"
+                styleSheet="https://www.switch.ch/aai/design/shib-error.css"/>
+
+<MetadataProvider type="Chaining">
+		<TransportOption provider="CURL" option="10004">proxy.unibas.ch:3128</TransportOption> 
+
+        <!-- Download and verify SWITCHaai metadata -->
+        <MetadataProvider type="XML"
+                          validate="true"
+                          uri="http://metadata.aai.switch.ch/metadata.switchaai.xml"
+                          backingFilePath="metadata.switchaai.xml"
+                          reloadInterval="3600">
+            		  <MetadataFilter type="RequireValidUntil"
+                            	maxValidityInterval="604800"/>  <MetadataFilter type="Signature">
+            		  <TransportOption provider="CURL" option="10004">proxy.unibas.ch:3128</TransportOption>
+                          <TrustEngine type="StaticPKIX"
+                             certificate="SWITCHaaiRootCA.crt.pem"
+                             verifyDepth="2"
+                             checkRevocation="fullChain"
+                             policyMappingInhibit="true"
+                             anyPolicyInhibit="true">
+                      		  <TrustedName>SWITCHaai Metadata Signer</TrustedName>
+                      	          <PolicyOID>2.16.756.1.2.6.7</PolicyOID>
+               		   </TrustEngine>
+            </MetadataFilter>
+        </MetadataProvider>
+</MetadataProvider>
+
+        <!-- Map to extract attributes from SAML assertions. -->
+        <AttributeExtractor type="XML"
+                            validate="true"
+                            reloadChanges="false"
+                            path="attribute-map.xml"/>
+
+        <!-- Use a SAML query if no attributes are supplied during SSO. -->
+        <AttributeResolver type="Query"
+                           subjectMatch="true"/>
+
+
+        <!-- Default filtering policy for recognized attributes, lets other data pass -->
+        <AttributeFilter type="XML"
+                         validate="true"
+                         reloadChanges="false"
+                         path="attribute-policy.xml"/>
+
+        <!--
+        Certificate/Private key pairs are read in sequence.
+        Unless specificially defined only the first
+        CredentialResolver is used for attribute requests.
+        More information:
+        https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPCredentialResolver.
+        -->
+        <CredentialResolver type="Chaining">
+             <CredentialResolver type="File"
+                                 keyName="Active"
+                                 key="/etc/shibboleth/sp-key.pem"
+                                 certificate="/etc/shibboleth/sp-cert.pem"/>
+        </CredentialResolver>
+
+        <!--
+        The default settings can be overridden by creating ApplicationOverride elements.
+        More Information and examples on:
+        https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPApplicationOverride
+        -->
+    </ApplicationDefaults>
+
+    <!-- Policies that determine how to process and authenticate runtime messages. -->
+    <SecurityPolicyProvider type="XML"
+                            validate="true"
+                            reloadChanges="false"
+                            path="security-policy.xml"/>
+
+    <!-- Low-level configuration about protocols and bindings available for use. -->
+    <ProtocolProvider type="XML"
+                      validate="true"
+                      reloadChanges="false"
+                      path="protocols.xml"/>
+
+</SPConfig>
