@@ -25,11 +25,14 @@ $rowCounter = 0;
 				$ilsDetails 		= $transaction->getExtraDetail('ils_details');
 				//$isNonMissingRecord	= is_a($transaction, 'VuFind\\RecordDriver\\SolrDefault') && !is_a($transaction, 'VuFind\\RecordDriver\\Missing');
 				$isRenewable		= isset($ilsDetails['renewable']) && $ilsDetails['renewable'] && isset($ilsDetails['renew_details']);
+				$safeId 			= preg_replace('/[^a-zA-Z0-9]/', '', $transaction->getUniqueId());
 //				var_dump($ilsDetails);
 			?>
 			<tr>
 				<td><?=$index+1?></td>
-                <td><input type="checkbox"></td>
+                <td>
+					<input type="checkbox" name="renewSelectedIDS[]" value="<?=$this->escapeHtml($ilsDetails['renew_details'])?>" class="checkbox" style="margin-left: 0" id="checkbox_<?=$safeId?>" />
+				</td>
                 <td><?=$this->escapeHtml($ilsDetails['title'])?></td>
 				<td><?=$this->escapeHtml($ilsDetails['loandate'])?></td>
 				<td>
@@ -46,4 +49,3 @@ $rowCounter = 0;
 		<?php endforeach; ?>
 	</tbody>
 </table>
-<input type="submit" value="Ausgewählte Verlängern">

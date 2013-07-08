@@ -407,84 +407,85 @@ class Aleph extends AlephDriver
 	}
 
 
-/**
- * Get Patron Transactions
- *
- * This is responsible for retrieving all transactions (i.e. checked out items)
- * by a specific patron.
- *
- * @param array $user    The patron array from patronLogin
- * @param bool  $history Include history of transactions (true) or just get
- * current ones (false).
- *
- * @throws \VuFind\Exception\Date
- * @throws ILSException
- * @return array        Array of the patron's transactions on success.
- */
-public function getMyTransactions($user, $history=false)
-{
-    $userId = $user['id'];
-    $transList = array();
-    $params = array("view" => "full");
-    if ($history) {
-        $params["type"] = "history";
-    }
-    $xml = $this->doRestDLFRequest(
-        array('patron', $userId, 'circulationActions', 'loans'), $params
-    );
-    foreach ($xml->xpath('//loan') as $item) {
-        $z36 = $item->z36;
-        $z13 = $item->z13;
-        $z30 = $item->z30;
-        $group = $item->xpath('@href');
-        $group = substr(strrchr($group[0], "/"), 1);
-        $renew = $item->xpath('@renew');
-        $docno = (string) $z36->{'z36-doc-number'};
-        $itemseq = (string) $z36->{'z36-item-sequence'};
-        $seq = (string) $z36->{'z36-sequence'};
-        //$location = (string) $z36->{'z36_pickup_location'};
-        $reqnum = (string) $z36->{'z36-doc-number'}
-            . (string) $z36->{'z36-item-sequence'}
-            . (string) $z36->{'z36-sequence'};
-        $due = $returned = null;
-        if ($history) {
-            $due = $item->z36h->{'z36h-due-date'};
-            $returned = $item->z36h->{'z36h-returned-date'};
-        } else {
-            $due = (string) $z36->{'z36-due-date'};
-        }
-        $loaned = (string) $z36->{'z36-loan-date'};
-        $status = (string) $z36->{'z36-status'};
-        $renewals = (string) $z36->{'z36-no-renewal'};
-        $library = (string) $z30->{'z30-sub-library'};
-        $callnum = (string) $z30->{'z30-call-no'};
-        $title = (string) $z13->{'z13-title'};
-        //$author = (string) $z13->{'z13-author'};
-        //$isbn = (string) $z13->{'z13-isbn-issn'};
-        $barcode = (string) $z30->{'z30-barcode'};
-        $transList[] = array(
-            //'type' => $type,
-            'id' => ($history)?null:$this->barcodeToID($barcode),
-            'item_id' => $group,
-            //'location' => $location,
-            'title' => $title,
-            //'author' => $author,
-            //'isbn' => array($isbn),
-            'reqnum' => $reqnum,
-            //'barcode' => $barcode,
-            'loandate' => $this->parseDate($loaned),
-            'duedate' => $this->parseDate($due),
-            'status' => $status,
-            'returned' => $this->parseDate($returned),
-            'renewals' => $renewals,
-            'library' => $library,
-            'callnum' => $callnum,
-            //'holddate' => $holddate,
-            //'delete' => $delete,
-            'renewable' => true,
-            //'create' => $this->parseDate($create)
-        );
-    }
-    return $transList;
-}
+
+	/**
+	 * Get Patron Transactions
+	 *
+	 * This is responsible for retrieving all transactions (i.e. checked out items)
+	 * by a specific patron.
+	 *
+	 * @param array $user    The patron array from patronLogin
+	 * @param bool  $history Include history of transactions (true) or just get
+	 *                       current ones (false).
+	 *
+	 * @throws \VuFind\Exception\Date
+	 * @throws ILSException
+	 * @return array        Array of the patron's transactions on success.
+	 */
+	public function getMyTransactions($user, $history = false)
+	{
+		$userId    = $user['id'];
+		$transList = array();
+		$params    = array("view" => "full");
+		if ($history) {
+			$params["type"] = "history";
+		}
+		$xml = $this->doRestDLFRequest(
+			array('patron', $userId, 'circulationActions', 'loans'), $params
+		);
+		foreach ($xml->xpath('//loan') as $item) {
+			$z36     = $item->z36;
+			$z13     = $item->z13;
+			$z30     = $item->z30;
+			$group   = $item->xpath('@href');
+			$group   = substr(strrchr($group[0], "/"), 1);
+			$renew   = $item->xpath('@renew');
+			$docno   = (string)$z36->{'z36-doc-number'};
+			$itemseq = (string)$z36->{'z36-item-sequence'};
+			$seq     = (string)$z36->{'z36-sequence'};
+			//$location = (string) $z36->{'z36_pickup_location'};
+			$reqnum = (string)$z36->{'z36-doc-number'}
+					. (string)$z36->{'z36-item-sequence'}
+					. (string)$z36->{'z36-sequence'};
+			$due    = $returned = null;
+			if ($history) {
+				$due      = $item->z36h->{'z36h-due-date'};
+				$returned = $item->z36h->{'z36h-returned-date'};
+			} else {
+				$due = (string)$z36->{'z36-due-date'};
+			}
+			$loaned   = (string)$z36->{'z36-loan-date'};
+			$status   = (string)$z36->{'z36-status'};
+			$renewals = (string)$z36->{'z36-no-renewal'};
+			$library  = (string)$z30->{'z30-sub-library'};
+			$callnum  = (string)$z30->{'z30-call-no'};
+			$title    = (string)$z13->{'z13-title'};
+			//$author = (string) $z13->{'z13-author'};
+			//$isbn = (string) $z13->{'z13-isbn-issn'};
+			$barcode     = (string)$z30->{'z30-barcode'};
+			$transList[] = array(
+				//'type' => $type,
+				'id'        => ($history) ? null : $this->barcodeToID($barcode),
+				'item_id'   => $group,
+				//'location' => $location,
+				'title'     => $title,
+				//'author' => $author,
+				//'isbn' => array($isbn),
+				'reqnum'    => $reqnum,
+				//'barcode' => $barcode,
+				'loandate'  => $this->parseDate($loaned),
+				'duedate'   => $this->parseDate($due),
+				'status'    => $status,
+				'returned'  => $this->parseDate($returned),
+				'renewals'  => $renewals,
+				'library'   => $library,
+				'callnum'   => $callnum,
+				//'holddate' => $holddate,
+				//'delete' => $delete,
+				'renewable' => true,
+				//'create' => $this->parseDate($create)
+			);
+		}
+		return $transList;
+	}
 }
