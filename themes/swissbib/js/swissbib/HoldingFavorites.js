@@ -7,7 +7,7 @@ swissbib.HoldingFavorites = {
 	/**
 	 * @var {String}
 	 */
-	baseUrl: '/MyResearch/FavoriteInstitutions',
+	baseUrl: '/MyResearch/Favorites',
 
 
 

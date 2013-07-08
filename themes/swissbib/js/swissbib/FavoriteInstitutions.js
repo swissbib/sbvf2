@@ -1,6 +1,6 @@
 swissbib.FavoriteInstitutions = {
 
-	baseUrl: '/MyResearch/FavoriteInstitutions',
+	baseUrl: '/MyResearch/Favorites',
 
 	/**
 	 * Values for autocomplete list (cached)
