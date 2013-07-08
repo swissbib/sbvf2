@@ -6,6 +6,7 @@ use Zend\EventManager\EventInterface;
 use Zend\EventManager\SharedEventManagerInterface;
 
 use VuFindSearch\Backend\Solr\Backend;
+use VuFind\Search\Memory;
 
 /**
  * Allow configuration of solr highlighting mechanism
@@ -65,6 +66,20 @@ class SolrConfigurator
 				// Set highlighting parameters unless explicitly disabled:
 				$hl = $params->get('hl');
 				if (!isset($hl[0]) || $hl[0] != 'false') {
+
+						// Add hl.q for non query events
+					if (!$event->getParam('query', false)) {
+						$lastSearch = Memory::retrieve();
+						if ($lastSearch) {
+							$urlParams = parse_url($lastSearch);
+							parse_str($urlParams['query'], $queryParams);
+
+							if (isset($queryParams['lookfor'])) {
+								$params->set('hl.q', '*:' . urlencode($queryParams['lookfor']));
+							}
+						}
+					}
+
 					foreach ($this->config as $key => $value) {
 						$params->set('hl.' . $key, $value);
 					}

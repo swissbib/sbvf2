@@ -534,3 +534,10 @@ pre {
 	white-space: normal;
 	margin-bottom: 3px;
 }
+
+
+span.highlight {
+	background-color: yellow;
+	font-weight: bold;
+	padding: 2px;
+}
