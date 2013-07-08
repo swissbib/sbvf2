@@ -2,10 +2,10 @@
     	// Set page title
     $this->headTitle($this->translate('Checked Out Items'));
 
-    	// Set up breadcrumbs
-    $this->layout()->breadcrumbs = '<a href="' . $this->url('myresearch-home') . '">'
-        . $this->transEsc('Your Account') . '</a>' . '<span>&gt;</span><em>'
-        . $this->transEsc('Checked Out') . '</em>';
+//    	// Set up breadcrumbs
+//    $this->layout()->breadcrumbs = '<a href="' . $this->url('myresearch-home') . '">'
+//        . $this->transEsc('Your Account') . '</a>' . '<span>&gt;</span><em>'
+//        . $this->transEsc('Checked Out') . '</em>';
 ?>
 
 <?=$this->myResearchSideBar('checkedout', $this->location);?>
@@ -22,15 +22,13 @@
 				<? if( $this->renewForm ): ?>
 					<form name="renewals" action="" method="post" id="renewals">
 					<div class="toolbar">
-						<ul>
-							<li><input type="submit" class="button renew" name="renewSelected" value="<?=$this->transEsc("renew_selected")?>"/></li>
-							<li><input type="submit" class="button renewAll" name="renewAll" value="<?=$this->transEsc('renew_all')?>"/></li>
-						</ul>
+						<input type="submit" class="button renew" name="renewSelected" value="<?=$this->transEsc("renew_selected")?>"/>
 					</div>
 					<br/>
 				<? endif; ?>
 
 				<?= $this->render('myresearch/checkedout/itemlist.phtml') ?>
+
 				<? if( $this->renewForm ): ?>
 					</form>
 				<? endif; ?>
