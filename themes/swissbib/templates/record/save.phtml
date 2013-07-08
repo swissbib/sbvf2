@@ -25,7 +25,7 @@ $showLists = (!empty($this->nonContainingLists) || (empty($this->containingLists
 		<!-- begin: content -->
 		<div id="content">
 
-			<h1><?= $this->transEsc('add_favorite_prefix') ?> <?= $this->escapeHtml($this->driver->getBreadcrumb()) ?> <?= $this->transEsc('add_favorite_suffix') ?></h1>
+			<h1><?= $this->transEsc('memorizelistadd.prefix') ?> "<?= $this->escapeHtml($this->driver->getBreadcrumb()) ?>" <?= $this->transEsc('memorizelistadd.sufix') ?></h1>
 
 			<form method="post" action="" name="saveRecord">
 				<input type="hidden" name="submit" value="1"/>
@@ -35,7 +35,7 @@ $showLists = (!empty($this->nonContainingLists) || (empty($this->containingLists
 				<?php if (!empty($this->containingLists)): ?>
 					<div class="fieldbox"></div>
 						<p><?= $this->transEsc('This item is already part of the following list/lists') ?>:</p>
-						<ul>
+						<ul class="list">
 							<?php foreach ($this->containingLists as $list): ?>
 								<li>
 									<a href="<?= $this->url('userList', array('id' => $list['id'])) ?>"><?= $this->escapeHtml($list['title']) ?></a>
@@ -59,7 +59,7 @@ $showLists = (!empty($this->nonContainingLists) || (empty($this->containingLists
 										<option value="<?= $list['id'] ?>"<?php if ($list['id'] == $this->userList()->lastUsed()): ?> selected="selected"<?php endif; ?>><?= $this->escapeHtml($list['title']) ?></option>
 									<?php endforeach; ?>
 								<?php else: ?>
-									<option value=""><?= $this->transEsc('My Favorites') ?></option>
+									<option value=""><?= $this->transEsc('mymemorizelists') ?></option>
 								<?php endif; ?>
 							</select>
 						</div>
@@ -72,9 +72,11 @@ $showLists = (!empty($this->nonContainingLists) || (empty($this->containingLists
 						$createLabel = $showLists ? $this->transEsc('or create a new list') : $this->transEsc('Create a List');
 					?>
 					<div class="fieldbox">
+                        <label>
 						<a 	href="<?=$createUrl?>"
 							class="listEdit controller<?= $this->record($this->driver)->getController() ?>"
 							title="<?= $this->transEsc('Create a List') ?>"><?=$createLabel?></a>
+                        </label>
 					</div>
 				</fieldset>
 
