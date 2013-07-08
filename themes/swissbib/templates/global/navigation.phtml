@@ -13,23 +13,18 @@
 		<li>
 			<a href="<?=$this->url('myresearch-home');?>"><?= $this->transEsc('menu.swissbib') ?></a>
 			<ul class="subnavigation">
-				<li>
+                <li>
+                    <a href="<?=$this->url('myresearch-favorites');?>"><?=$this->transEsc('memorizelist')?></a>
+                </li>
+                <li>
+                    <a href="<?=$this->url('search-settings');?>"><?=$this->transEsc('My_Search_Settings')?></a>
+                </li>
+                <li>
+                    <a href="<?=$this->url('search-history')?>"><?=$this->transEsc('history_saved_searches')?></a>
+                </li>
+                <li>
 					<a href="<?=$this->url('myresearch-favorite-institutions')?>"><?= $this->transEsc('menu.mylibraries') ?></a>
 				</li>
-				<?if ( $isLoggedIn ): ?>
-					<li>
-						<a href="<?=$this->url('search-settings');?>"><?=$this->transEsc('My_Search_Settings')?></a>
-					</li>
-					<li>
-						<a href="<?=$this->url('myresearch-favorites');?>"><?=$this->transEsc('Favorites')?></a>
-					</li>
-					<li>
-						<a href="<?=$this->url('search-history')?>"><?=$this->transEsc('history_saved_searches')?></a>
-					</li>
-					<li>
-						<a href="#">Meine Suchdienste</a>
-					</li>
-				<? endif; ?>
 			</ul>
 		</li>
 		<li>
