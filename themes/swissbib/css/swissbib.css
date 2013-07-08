@@ -524,3 +524,13 @@ a#tagRecord {
 	background: url(../images/icon_favorit_library.gif) no-repeat right 1px;
 	padding-right: 20px;
 }
+
+pre {
+	background-color: #EEEEEE;
+	font-family: Courier New, Arial;
+	overflow: visible;
+	padding: 5px;
+	text-align: left;
+	white-space: normal;
+	margin-bottom: 3px;
+}
