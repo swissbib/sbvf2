@@ -1105,7 +1105,7 @@ class SolrMarc extends VuFindSolrMarc
             return '';
         }
 
-        return (isset($this->highlightDetails['fulltext'][0])) ? $this->highlightDetails['fulltext'][0] : '';
+        return (isset($this->highlightDetails['fulltext'][0])) ? trim($this->highlightDetails['fulltext'][0]) : '';
 	}
 
 
