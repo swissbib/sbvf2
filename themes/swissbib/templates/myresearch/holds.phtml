@@ -1,12 +1,12 @@
 <?
     	// Set page title
     $this->headTitle($this->translate('My Holds'));
-
-    	// Set up breadcrumbs
-    $this->layout()->breadcrumbs =
-		'<a href="' . $this->url('myresearch-home') . '">'
-	.	$this->transEsc('Your Account') . '</a>' . '<span>&gt;</span><em>'
-	.	$this->transEsc('My Holds') . '</em>';
+//
+//    	// Set up breadcrumbs
+//    $this->layout()->breadcrumbs =
+//		'<a href="' . $this->url('myresearch-home') . '">'
+//	.	$this->transEsc('Your Account') . '</a>' . '<span>&gt;</span><em>'
+//	.	$this->transEsc('My Holds') . '</em>';
 
 ?>
 
@@ -24,7 +24,9 @@
 			<? if( !empty($this->recordList) ): ?>
 				<? if( $this->cancelForm ): ?>
 					<form name="cancelForm" action="" method="post" id="cancelHold">
-					<?=$this->render('myresearch/holds/cancelform.phtml')?>
+					<input type="submit" class="button holdCancel" name="cancelSelected"
+									   value="<?=$this->translate("hold_cancel_selected") ?>"
+									   onClick="return confirm('<?=$this->translate("confirm_hold_cancel_selected_text") ?>')"/>
 				<? endif; ?>
 
 				<?=$this->render('myresearch/holds/itemlist.phtml')?>
