@@ -534,3 +534,8 @@ pre {
 	white-space: normal;
 	margin-bottom: 3px;
 }
+
+
+span.highlight {
+	font-weight: bold;
+}

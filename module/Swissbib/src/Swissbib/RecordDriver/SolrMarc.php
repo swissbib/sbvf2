@@ -1094,6 +1094,23 @@ class SolrMarc extends VuFindSolrMarc
 
 
 	/**
+	 * Get highlighted fulltext
+	 *
+	 * @return	String
+	 */
+	public function getHighlightedFulltext()
+	{
+		// Don't check for highlighted values if highlighting is disabled:
+        if (!$this->highlight) {
+            return '';
+        }
+
+        return (isset($this->highlightDetails['fulltext'][0])) ? trim($this->highlightDetails['fulltext'][0]) : '';
+	}
+
+
+
+	/**
 	 * @inheritDoc
 	 */
 	protected function getFieldData($field, $fieldIndex)
