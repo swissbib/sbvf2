@@ -6,6 +6,8 @@ use VuFindSearch\Query\AbstractQuery;
 use VuFindSearch\Query\QueryGroup;
 use VuFindSearch\ParamBag;
 
+use Swissbib\Favorites\Manager;
+
 /**
  * Class to extend the core VF2 SOLR functionality related to Solr Results
  */
@@ -42,8 +44,10 @@ class Results extends VuFindSolrResults
 	 */
 	protected function addUserInstitutions(ParamBag $backendParams)
 	{
+		/** @var Manager $favoritesManger */
+		$favoritesManger		= $this->getServiceLocator()->get('Swissbib\FavoriteInstitutions\Manager');
 		/** @var String[] $favoriteInstitutions */
-		$favoriteInstitutions = $this->getParams()->getUserFavoritesInstitutions();
+		$favoriteInstitutions	= $favoritesManger->getUserInstitutions();
 
 		if (sizeof($favoriteInstitutions > 0)) {
 				//facet parameter has to be true in case it's false
