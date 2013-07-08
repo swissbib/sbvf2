@@ -1,11 +1,11 @@
 <?php
-namespace Swissbib\Search\Results;
+namespace Swissbib\VuFind\Search\Results;
 
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 use VuFind\Search\Results\PluginFactory as VuFindResultsPluginFactory;
 
-use Swissbib\Search\Helper\ExtendedSolrFactoryHelper;
+use Swissbib\VuFind\Search\Helper\ExtendedSolrFactoryHelper;
 
 /**
  * Class PluginFactory

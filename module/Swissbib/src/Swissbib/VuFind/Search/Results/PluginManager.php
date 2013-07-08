@@ -1,5 +1,5 @@
 <?php
-namespace Swissbib\Search\Results;
+namespace Swissbib\VuFind\Search\Results;
 
 use VuFind\Search\Results\PluginManager as VuFindSearchResultsPluginManager;
 
