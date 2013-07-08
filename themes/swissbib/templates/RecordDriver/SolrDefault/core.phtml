@@ -84,7 +84,7 @@ $highlightedFulltext	= $resultItem->getHighlightedFulltext();
 		<?php endif; ?>
 
 		<?php if ($highlightedFulltext): ?>
-			<h4>Fulltext:</h4>
+			<h4><?=$this->transEsc('fulltexthighlight')?>: </h4>
 			<p><?=$this->highlight($highlightedFulltext)?></p>
 		<?php endif; ?>
 
