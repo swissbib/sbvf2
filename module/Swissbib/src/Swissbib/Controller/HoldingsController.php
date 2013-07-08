@@ -90,6 +90,8 @@ class HoldingsController extends BaseController
 
 		$data = array(
 			'items'			=> $holdingItems,
+			'record'  		=> $idRecord,
+			'recordTitle'	=> $record->getTitle(),
 			'institution'	=> $institution,
 			'page'			=> $page,
 			'year'			=> $year,
