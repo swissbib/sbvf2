@@ -81,7 +81,7 @@ class SolrConfigurator
 							parse_str($urlParams['query'], $queryParams);
 
 							if (isset($queryParams['lookfor'])) {
-								$params->set('hl.q', '*:' . urlencode($queryParams['lookfor']));
+								$params->set('hl.q', '*:"' . addslashes($queryParams['lookfor']) . '"');
 							}
 						}
 					}
