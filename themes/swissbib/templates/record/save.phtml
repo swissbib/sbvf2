@@ -72,9 +72,11 @@ $showLists = (!empty($this->nonContainingLists) || (empty($this->containingLists
 						$createLabel = $showLists ? $this->transEsc('or create a new list') : $this->transEsc('Create a List');
 					?>
 					<div class="fieldbox">
+                        <label>
 						<a 	href="<?=$createUrl?>"
 							class="listEdit controller<?= $this->record($this->driver)->getController() ?>"
 							title="<?= $this->transEsc('Create a List') ?>"><?=$createLabel?></a>
+                        </label>
 					</div>
 				</fieldset>
 
