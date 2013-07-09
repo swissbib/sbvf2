@@ -434,7 +434,7 @@ class Aleph extends AlephDriver
 	 * Use non breaking DLF request method to support failure messages (which are still a valid response)
 	 *
 	 * @param	Array	$details
-	 * @return	Array
+	 * @return	Array[]
 	 */
 	public function renewMyItems($details)
 	{
@@ -447,9 +447,10 @@ class Aleph extends AlephDriver
 			);
 
 			if ($result->renewals && $result->renewals->institution && $result->renewals->institution->loan) {
-				$blocks = array(
-					(string)$result->renewals->institution->loan->status
-				);
+				$status   = (string)$result->{'reply-text'};
+				$code     = (int)$result->{'reply-code'};
+				$reason   = (string)$result->renewals->institution->loan->status;
+				$blocks[] = $status . ': ' . $reason . ($code?' [' . $code . ']':'') . ' (' . $id . ')';
 			}
 		}
 
@@ -518,6 +519,7 @@ class Aleph extends AlephDriver
 		foreach ($transactionsResponseItems as $transactionsResponseItem) {
 			$itemData	= $this->extractResponseData($transactionsResponseItem, $dataMap);
 			$group   	= $transactionsResponseItem->xpath('@href');
+			$renewable	= (string)$transactionsResponseItem->attributes()->renew === 'Y';
 
 				// Add special data
 			$itemData['id']			= ($history) ? null : $this->barcodeToID($itemData['barcode']);
@@ -526,7 +528,7 @@ class Aleph extends AlephDriver
 			$itemData['loandate']	= $this->parseDate($itemData['loaned']);
 			$itemData['duedate']	= $this->parseDate($itemData['due']);
 			$itemData['returned']	= $this->parseDate($itemData['return']);
-			$itemData['renewable']	= true;
+			$itemData['renewable']	= $renewable;
 
 			$transactionsData[] = $itemData;
 		}
