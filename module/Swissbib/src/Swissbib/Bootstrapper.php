@@ -198,7 +198,7 @@ class Bootstrapper
 
 		// Use naming conventions to set up a bunch of services based on namespace:
 		$namespaces = array(
-			'Db\Table','Search\Results','Search\Options', 'Search\Params'
+			'Db\Table','VuFind\Search\Results','VuFind\Search\Options', 'VuFind\Search\Params'
 		);
 
 		foreach ($namespaces as $namespace) {

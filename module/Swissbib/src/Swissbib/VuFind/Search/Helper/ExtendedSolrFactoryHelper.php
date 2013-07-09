@@ -1,5 +1,5 @@
 <?php
-namespace Swissbib\Search\Helper;
+namespace Swissbib\VuFind\Search\Helper;
 
 
 class ExtendedSolrFactoryHelper
@@ -52,7 +52,7 @@ class ExtendedSolrFactoryHelper
 	public function getNamespace($name, $requestedName)
 	{
 		if ($this->isExtendedTarget($name, $requestedName)) {
-			return 'Swissbib\Search';
+			return 'Swissbib\VuFind\Search';
 		} else {
 			return 'VuFind\Search';
 		}

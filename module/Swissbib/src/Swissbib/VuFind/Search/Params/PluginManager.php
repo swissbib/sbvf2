@@ -1,5 +1,5 @@
 <?php
-namespace Swissbib\Search\Params;
+namespace Swissbib\VuFind\Search\Params;
 
 use VuFind\Search\Params\PluginManager as VFSearchParamsPluginManager;
 
