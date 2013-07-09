@@ -24,9 +24,11 @@
 			<? if( !empty($this->recordList) ): ?>
 				<? if( $this->cancelForm ): ?>
 					<form name="cancelForm" action="" method="post" id="cancelHold">
-					<input type="submit" class="button holdCancel" name="cancelSelected"
-									   value="<?=$this->translate("hold_cancel_selected") ?>"
-									   onClick="return confirm('<?=$this->translate("confirm_hold_cancel_selected_text") ?>')"/>
+					<input	type="submit" class="button holdCancel" name="cancelSelected"
+						   value="<?=$this->translate("hold_cancel_selected") ?>"
+						   onClick="return confirm('<?=$this->translate("confirm_hold_cancel_selected_text") ?>')"
+						   style="margin-bottom: 10px"/>
+					<br />
 				<? endif; ?>
 
 				<?=$this->render('myresearch/holds/itemlist.phtml')?>

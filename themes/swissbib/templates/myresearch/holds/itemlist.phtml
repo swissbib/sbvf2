@@ -6,10 +6,9 @@
     <thead>
     <tr>
         <th>&nbsp;</th>
-        <th>&nbsp;</th>
         <th><?=$this->transEsc('Title')?></th>
         <th><?=$this->transEsc('Created') ?></th>
-        <th><?=$this->transEsc("hold_queue_position") ?></th>
+        <th title="<?=$this->transEsc("hold_queue_position")?>">#</th>
         <th><?=$this->transEsc('pick_up_location') ?></th>
         <th><?=$this->transEsc('Status')?></th>
         <th><?=$this->transEsc('Library')?></th>
@@ -25,14 +24,15 @@
 		$safeId = preg_replace('/[^a-zA-Z0-9]/', '', $holding->getUniqueId());
         ?>
     <tr>
-        <td><?=$index+1?></td>
         <td>
-			<?php if (isset($ilsDetails['cancel_details'])): ?>
+			<span><?=$index+1?></span>
+
+			<?php if ($this->cancelForm && isset($ilsDetails['cancel_details'])): ?>
 				<input type="checkbox" name="cancelSelectedIDS[]" value="<?=$this->escapeHtml($ilsDetails['cancel_details']) ?>" class="checkbox" style="margin-left:0;" id="checkbox_<?=$safeId?>" />
 			<?php else: ?>
 				&nbsp;
 			<?php endif; ?>
-        </td>
+		</td>
         <td><?=$this->escapeHtml($ilsDetails['title']) ?> + if(exists(z30-description)</td>
         <td><?=$this->escapeHtml($ilsDetails['create']) ?></td>
         <td><?=$this->escapeHtml($ilsDetails['position']) ?></td>
