@@ -18,11 +18,10 @@
     <tbody>
     <?php foreach($this->recordList as $index => $holding): ?>
         <?php
-//        echo get_class($holding);
-        $ilsDetails		= $holding->getExtraDetail('ils_details');
-        //$isNonMissingRecord	= is_a($holding, 'VuFind\\RecordDriver\\SolrDefault') && !is_a($holding, 'VuFind\\RecordDriver\\Missing');
-		$safeId 		= preg_replace('/[^a-zA-Z0-9]/', '', $holding->getUniqueId());
-		$balanceInfo	= $ilsDetails['balance'] ? '<span class="balanceInfo">' . $this->transEsc('Due Date') . ': ' . $ilsDetails['balance'] . '</a>' : '';
+			$ilsDetails		= $holding->getExtraDetail('ils_details');
+			//$isNonMissingRecord	= is_a($holding, 'VuFind\\RecordDriver\\SolrDefault') && !is_a($holding, 'VuFind\\RecordDriver\\Missing');
+			$safeId 		= preg_replace('/[^a-zA-Z0-9]/', '', $holding->getUniqueId());
+			$balanceInfo	= $ilsDetails['balance'] ? '<span class="balanceInfo">' . $this->transEsc('Due Date') . ': ' . $ilsDetails['balance'] . '</a>' : '';
         ?>
     <tr>
         <td>
@@ -36,7 +35,7 @@
         <td><?=$this->escapeHtml($ilsDetails['position']) ?></td>
         <td><?=$this->escapeHtml($ilsDetails['location']) ?></td>
         <td><?=$this->escapeHtml($ilsDetails['status']) ?><?=$balanceInfo?></td>
-        <td><?=$this->escapeHtml($this->zendTranslate($ilsDetails['institution'], 'institution'))?>Bibliothek (z30-sub-library)</td>
+        <td><?=$this->escapeHtml($this->zendTranslate($ilsDetails['institution'], 'institution'))?></td>
         <td><?=$this->escapeHtml($ilsDetails['signature'])?></td>
     </tr>
         <?php endforeach; ?>

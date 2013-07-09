@@ -539,6 +539,8 @@ class Aleph extends AlephDriver
 
 
 	/**
+	 * Get my holds xml data
+	 *
 	 * @param	String		$userId
 	 * @return	\SimpleXMLElement[]
 	 */
@@ -555,6 +557,8 @@ class Aleph extends AlephDriver
 
 
 	/**
+	 * Get my holds
+	 *
 	 * @param	Array		$user
 	 * @return	Array[]
 	 */
@@ -601,5 +605,82 @@ class Aleph extends AlephDriver
 		}
 
 		return $holds;
+	}
+
+
+
+	/**
+	 * Get fine data as xml nodes from server
+	 *
+	 * @param	String		$userId
+	 * @return	\SimpleXMLElement[]
+	 */
+	protected function getMyFinesResponse($userId)
+	{
+		$xml = $this->doRestDLFRequest(
+			array('patron', $userId, 'circulationActions', 'cash'),
+			array("view" => "full")
+		);
+
+		return $xml->xpath('//cash');
+	}
+
+
+
+	/**
+	 * Get fines list
+	 *
+	 * @todo	Fetch solr ID to create a link?
+	 * @param	Array	$user
+	 * @return	Array[]
+	 */
+	public function getMyFines($user)
+	{
+		$fineResponseItems	= $this->getMyFinesResponse($user['id']);
+		$fines				= array();
+		$dataMap         = array(
+			'title'			=> 'z13-title',
+			'barcode'		=> 'z30-barcode',
+			'sum'			=> 'z31-sum',
+			'date'			=> 'z31-date',
+			'type'			=> 'z31-type',
+			'description'	=> 'z31-description',
+			'credittype'	=> 'z31-credit-debit',
+			'checkout'		=> 'z31-date',
+			'sequence'		=> 'z31-sequence',
+			'status'		=> 'z31-status',
+			'signature'		=> 'z30-call-no'
+		);
+
+		foreach ($fineResponseItems as $fineResponseItem) {
+			$itemData	= $this->extractResponseData($fineResponseItem, $dataMap);
+
+			$sum	= (float)preg_replace('/[\(\)]/', '', $itemData['sum']);
+			$factor	= $itemData['credittype'] === 'Debit' ? -1 : 1;
+
+			$itemData['amount'] 	= $factor * $sum;
+			$itemData['checkout'] 	= $this->parseDate($itemData['checkout']);
+			$itemData['id'] 		= false; // (string)$this->barcodeToID($itemData['barcode']);
+			$itemData['institution']= strtolower($fineResponseItem->{'z30-sub-library-code'});
+
+			$sortKey	= $itemData['sequence'];
+
+			$fines[$sortKey] = $itemData;
+		}
+
+			// Sort fines by sequence
+		ksort($fines);
+
+			// Sum up balance
+		$balance	= 0;
+
+		foreach ($fines as $index => $fine) {
+			$balance += $fine['amount'];
+
+			$fines[$index]['balance'] = $balance;
+		}
+
+			// Return list without sort keys
+		return array_values($fines);
 	}
 }
