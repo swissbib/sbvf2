@@ -3,11 +3,11 @@
 		// Set page title
     $this->headTitle($this->translate('My Fines'));
 
-    	// Set up breadcrumbs
-    $this->layout()->breadcrumbs =
-		'<a href="' . $this->url('myresearch-home') . '">'
-    .	$this->transEsc('Your Account') . '</a>' . '<span>&gt;</span><em>'
-    .	$this->transEsc('Fines') . '</em>';
+//    	// Set up breadcrumbs
+//    $this->layout()->breadcrumbs =
+//		'<a href="' . $this->url('myresearch-home') . '">'
+//    .	$this->transEsc('Your Account') . '</a>' . '<span>&gt;</span><em>'
+//    .	$this->transEsc('Fines') . '</em>';
 ?>
 
 <?=$this->myResearchSideBar('fines', $this->location);?>
@@ -17,15 +17,12 @@
 		<!-- begin: content -->
 		<div id="content">
 
+			<h1><?=$this->transEsc('Your Fines')?></h1>
+
 			<?php if( empty($this->fines) ): ?>
-
-				<?= $this->transEsc('You do not have any fines') ?>
-
+				<?=$this->transEsc('You do not have any fines')?>
 			<?php else: ?>
-
-				<h1><?=$this->transEsc('Your Fines')?></h1>
-				<?=$this->render('myresearch/fines/itemlist.phtml')?>
-
+				<?=$this->render('myresearch/fines/itemlist')?>
 			<?php endif; ?>
 
 		</div>
