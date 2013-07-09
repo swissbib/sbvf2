@@ -286,7 +286,8 @@ return array(
 			'holdingActions'          => 'Swissbib\View\Helper\HoldingActions',
 			'availabilityInfo'        => 'Swissbib\View\Helper\AvailabilityInfo',
 			'transLocation'        => 'Swissbib\View\Helper\TranslateLocation',
-			'qrCodeHolding'			  => 'Swissbib\View\Helper\QrCodeHolding'
+			'qrCodeHolding'			  => 'Swissbib\View\Helper\QrCodeHolding',
+			'holdingItemsPaging'	  => 'Swissbib\View\Helper\HoldingItemsPaging'
 		),
 		'factories' => array(
 			'institutionSorter' => function ($sm) {
@@ -449,14 +450,14 @@ return array(
 				),
 			),
 
-            'search_options' => array(
+            'vufind_search_options' => array(
                 'abstract_factories' => array('Swissbib\VuFind\Search\Options\PluginFactory'),
             ),
-            'search_params' => array(
+            'vufind_search_params' => array(
                 'abstract_factories' => array('Swissbib\VuFind\Search\Params\PluginFactory'),
             ),
 
-            'search_results' => array(
+            'vufind_search_results' => array(
                 'abstract_factories' => array('Swissbib\VuFind\Search\Results\PluginFactory'),
             ),
 
