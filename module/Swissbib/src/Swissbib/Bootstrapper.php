@@ -203,8 +203,9 @@ class Bootstrapper
 
 		foreach ($namespaces as $namespace) {
 			$plainNamespace	= str_replace('\\', '', $namespace);
+			$shortNamespace	= str_replace('VuFind', '', $plainNamespace);
 			$configKey		= strtolower(str_replace('\\', '_', $namespace));
-			$serviceName	= 'Swissbib\\' . $plainNamespace . 'PluginManager';
+			$serviceName	= 'Swissbib\\' . $shortNamespace . 'PluginManager';
 			$serviceConfig	= $config['swissbib']['plugin_managers'][$configKey];
 			$className		= 'Swissbib\\' . $namespace . '\PluginManager';
 
