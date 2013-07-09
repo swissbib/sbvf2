@@ -535,4 +535,71 @@ class Aleph extends AlephDriver
 
 		return $transactionsData;
 	}
+
+
+
+	/**
+	 * @param	String		$userId
+	 * @return	\SimpleXMLElement[]
+	 */
+	protected function getMyHoldsResponse($userId)
+	{
+		$xml = $this->doRestDLFRequest(
+			array('patron', $userId, 'circulationActions', 'requests', 'holds'),
+			array('view' => 'full')
+		);
+
+		return $xml->xpath('//hold-request');
+	}
+
+
+
+	/**
+	 * @param	Array		$user
+	 * @return	Array[]
+	 */
+	public function getMyHolds($user)
+	{
+		$holdResponseItems	= $this->getMyHoldsResponse($user['id']);
+		$holds				= array();
+		$dataMap         = array(
+			'location'		=> 'z37-pickup-location',
+			'title'			=> 'z13-title',
+			'author'		=> 'z13-author',
+			'isbn-raw'		=> 'z13-isbn-issn',
+			'reqnum'		=> 'z37-doc-number',
+			'barcode'		=> 'z30-barcode',
+			'expire'		=> 'z37-end-request-date',
+			'holddate'		=> 'z37-hold-date',
+			'create'		=> 'z37-open-date',
+			'status'		=> 'z37-status',
+			'sequence'		=> 'z37-sequence',
+			'balance'		=> 'z37-balancer-date',
+			'institution'	=> 'z30-sub-library-code',
+			'signature'		=> 'z30-call-no'
+		);
+
+		$holdResponseItems	= array_slice($holdResponseItems, 0, 5);
+
+		foreach ($holdResponseItems as $holdResponseItem) {
+			$itemData	= $this->extractResponseData($holdResponseItem, $dataMap);
+			$href 		= $holdResponseItem->xpath('@href');
+			$delete		= $holdResponseItem->xpath('@delete');
+
+				// Special fields which require calculation
+			$itemData['type']		= 'hold';
+			$itemData['item_id']	= substr($href[0], strrpos($href[0], '/') + 1);
+			$itemData['isbn']		= array($itemData['isbn-raw']);
+			$itemData['id']			= $this->barcodeToID($itemData['barcode']);
+			$itemData['expire']		= $this->parseDate($itemData['expire']);
+			$itemData['create']		= $this->parseDate($itemData['create']);
+			$itemData['balance']	= $itemData['balance'] === '00000000' ? false : $this->parseDate($itemData['balance']);
+			$itemData['delete']		= (string)($delete[0]) === 'Y';
+			$itemData['position']	= ltrim($itemData['sequence'], '0');
+
+			$holds[] = $itemData;
+		}
+
+		return $holds;
+	}
 }

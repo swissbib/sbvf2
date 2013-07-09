@@ -1,12 +1,12 @@
 <?php
 namespace Swissbib\Controller;
 
-use VuFind\Controller\MyResearchController as VFMyResearchController;
+use VuFind\Controller\MyResearchController as VuFindMyResearchController;
 use Swissbib\VuFind\ILS\Driver\Aleph;
 use Zend\View\Model\ViewModel;
 use Zend\Http\PhpEnvironment\Response as HttpResponse;
 
-class MyResearchController extends VFMyResearchController
+class MyResearchController extends VuFindMyResearchController
 {
 
 	/**

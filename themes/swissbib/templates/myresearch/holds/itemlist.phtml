@@ -19,27 +19,25 @@
     <?php foreach($this->recordList as $index => $holding): ?>
         <?php
 //        echo get_class($holding);
-        $ilsDetails			= $holding->getExtraDetail('ils_details');
+        $ilsDetails		= $holding->getExtraDetail('ils_details');
         //$isNonMissingRecord	= is_a($holding, 'VuFind\\RecordDriver\\SolrDefault') && !is_a($holding, 'VuFind\\RecordDriver\\Missing');
-		$safeId = preg_replace('/[^a-zA-Z0-9]/', '', $holding->getUniqueId());
+		$safeId 		= preg_replace('/[^a-zA-Z0-9]/', '', $holding->getUniqueId());
+		$balanceInfo	= $ilsDetails['balance'] ? '<span class="balanceInfo">' . $this->transEsc('Due Date') . ': ' . $ilsDetails['balance'] . '</a>' : '';
         ?>
     <tr>
         <td>
 			<span><?=$index+1?></span>
-
 			<?php if ($this->cancelForm && isset($ilsDetails['cancel_details'])): ?>
 				<input type="checkbox" name="cancelSelectedIDS[]" value="<?=$this->escapeHtml($ilsDetails['cancel_details']) ?>" class="checkbox" style="margin-left:0;" id="checkbox_<?=$safeId?>" />
-			<?php else: ?>
-				&nbsp;
 			<?php endif; ?>
 		</td>
         <td><?=$this->escapeHtml($ilsDetails['title']) ?> + if(exists(z30-description)</td>
         <td><?=$this->escapeHtml($ilsDetails['create']) ?></td>
         <td><?=$this->escapeHtml($ilsDetails['position']) ?></td>
         <td><?=$this->escapeHtml($ilsDetails['location']) ?></td>
-        <td><?=$this->escapeHtml($ilsDetails['status']) ?> fällig am: + if(exists(z37-balancer-date)</td>
-        <td>Bibliothek (z30-sub-library)</td>
-        <td>Signatur (z30-call-no)</td>
+        <td><?=$this->escapeHtml($ilsDetails['status']) ?><?=$balanceInfo?></td>
+        <td><?=$this->escapeHtml($this->zendTranslate($ilsDetails['institution'], 'institution'))?>Bibliothek (z30-sub-library)</td>
+        <td><?=$this->escapeHtml($ilsDetails['signature'])?></td>
     </tr>
         <?php endforeach; ?>
     </tbody>
