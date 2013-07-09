@@ -198,7 +198,7 @@ class Bootstrapper
 
 		// Use naming conventions to set up a bunch of services based on namespace:
 		$namespaces = array(
-			'Db\Table','Search\Results','Search\Options', 'Search\Params'
+			'Db\Table','VuFind\Search\Results','VuFind\Search\Options', 'VuFind\Search\Params'
 		);
 
 		foreach ($namespaces as $namespace) {
@@ -206,7 +206,7 @@ class Bootstrapper
 			$configKey		= strtolower(str_replace('\\', '_', $namespace));
 			$serviceName	= 'Swissbib\\' . $plainNamespace . 'PluginManager';
 			$serviceConfig	= $config['swissbib']['plugin_managers'][$configKey];
-			$className		= 'Swissbib\\VuFind\\' . $namespace . '\PluginManager';
+			$className		= 'Swissbib\\' . $namespace . '\PluginManager';
 
 			$pluginManagerFactoryService = function ($sm) use ($className, $serviceConfig) {
 				return new $className(
