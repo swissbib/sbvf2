@@ -543,3 +543,8 @@ span.highlight {
 #sidebar .subnavigation ul li a {
 	word-wrap: break-word;
 }
+
+
+tr.infoMessagesRow td {
+	padding-bottom: 20px;
+}

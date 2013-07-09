@@ -1,11 +1,11 @@
 <?php
 /** @var VuFind\RecordDriver\SolrDefault $transaction */
+/** @var Array[] $renewResult */
 ?>
 <table>
 	<thead>
 		<tr>
-			<th>&nbsp;</th>
-            <th>&nbsp;</th>
+			<th colspan="2">&nbsp;</th>
             <th><?=$this->transEsc('Title')?></th>
 			<th><?=$this->transEsc('Checked Out')?></th>
 			<th><?=$this->transEsc('Due')?></th>
@@ -17,19 +17,51 @@
 	<tbody>
 		<?php foreach($this->transactions as $index => $transaction): ?>
 			<?php
+				/** @var Array $ilsDetails */
 				$ilsDetails 		= $transaction->getExtraDetail('ils_details');
-				//$isNonMissingRecord	= is_a($transaction, 'VuFind\\RecordDriver\\SolrDefault') && !is_a($transaction, 'VuFind\\RecordDriver\\Missing');
 				$isRenewable		= isset($ilsDetails['renewable']) && $ilsDetails['renewable'] && isset($ilsDetails['renew_details']);
 				$safeId 			= preg_replace('/[^a-zA-Z0-9]/', '', $transaction->getUniqueId());
+				$infoMessages		= array();
+
+				if (isset($this->renewResult[$ilsDetails['item_id']])) {
+					$renewDetails = $this->renewResult[$ilsDetails['item_id']];
+
+					if (isset($renewDetails['success']) && $renewDetails['success']) {
+						$infoMessages[] = $this->translate('renew_success');
+					} else {
+						$infoMessages[] = $this->translate('renew_fail');
+
+						if (isset($renewDetails['sysMessage'])) {
+							$infoMessages[] = $renewDetails['sysMessage'];
+						}
+					}
+				}
+//				if (isset($ilsDetails['dueStatus']) && $ilsDetails['dueStatus'] == "overdue") {
+//					$infoMessages[] = $this->transslate("renew_item_overdue");
+//				} elseif (isset($ilsDetails['dueStatus']) && $ilsDetails['dueStatus'] == "due") {
+//					$infoMessages[] = $this->transslate("renew_item_due");
+//				}
+//				if (isset($ilsDetails['message']) && !empty($ilsDetails['message'])) {
+//					$infoMessages[] = $this->transslate($ilsDetails['message']);
+//				}
 			?>
 			<tr>
 				<td><?=$index+1?></td>
                 <td>
-					<input type="checkbox" name="renewSelectedIDS[]" value="<?=$this->escapeHtml($ilsDetails['renew_details'])?>" class="checkbox" style="margin-left: 0" id="checkbox_<?=$safeId?>" />
+					<?php if (isset($ilsDetails['renewable']) && $ilsDetails['renewable'] && isset($ilsDetails['renew_details'])): ?>
+						<input type="checkbox" name="renewSelectedIDS[]" value="<?=$this->escapeHtml($ilsDetails['renew_details'])?>" class="checkbox" style="margin-left: 0" id="checkbox_<?=$safeId?>" />
+					<?php endif; ?>
 				</td>
                 <td><?=$this->escapeHtml($ilsDetails['title'])?></td>
 				<td><?=$this->escapeHtml($ilsDetails['loandate'])?></td>
 				<td>
+					<?php
+						if (isset($this->renewResult[$ilsDetails['item_id']])) {
+							$renewDetails = $this->renewResult[$ilsDetails['item_id']];
+							$x = 3;
+						}
+
+					?>
                     <?if ($ilsDetails['status'] == 'Active'): ?>
 						<?=$this->escapeHtml($ilsDetails['duedate'])?>
                     <? else: ?>
@@ -40,6 +72,20 @@
 				<td><?=$this->escapeHtml($ilsDetails['library'])?></td>
 				<td><?=$this->escapeHtml($ilsDetails['callnum'])?></td>
 			</tr>
+
+			<?php /** Show messages for item as extra row */ ?>
+			<?php if (sizeof($infoMessages)): ?>
+				<tr class="infoMessagesRow">
+					<td colspan="8">
+						<ul>
+							<?php foreach($infoMessages as $infoMessage): ?>
+								<li><?=$this->escapeHtml($infoMessage)?></li>
+							<?php endforeach; ?>
+						</ul>
+					</td>
+				</tr>
+			<?php endif; ?>
+
 		<?php endforeach; ?>
 	</tbody>
 </table>
