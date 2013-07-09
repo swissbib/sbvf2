@@ -579,7 +579,7 @@ class Aleph extends AlephDriver
 			'signature'		=> 'z30-call-no'
 		);
 
-		$holdResponseItems	= array_slice($holdResponseItems, 0, 5);
+//		$holdResponseItems	= array_slice($holdResponseItems, 0, 5);
 
 		foreach ($holdResponseItems as $holdResponseItem) {
 			$itemData	= $this->extractResponseData($holdResponseItem, $dataMap);
