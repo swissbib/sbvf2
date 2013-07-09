@@ -8,6 +8,7 @@ $thumbnailSrc	= $thumbnail ? $thumbnail : $this->url('cover-unavailable');
 $detailLink		= $this->recordLink()->getUrl($resultItem);
 $title			= $this->mainTitle($resultItem->getShortTitle());
 $titleStatement	= $resultItem->getTitleStatement(true);
+$secondaryAuthors		= $resultItem->getSecondaryAuthors(true);
 $edition		= $resultItem->getEdition();
 $publicationDate= $this->publicationDateMarc($resultItem->getPublicationDates());
 $groupID		= $resultItem->getGroup(true);
@@ -36,26 +37,30 @@ $favoriteLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
 		<h3>
             <a href="<?=$detailLink?>" title="<?=$this->escapeHtml($title)?>" class="color singleLink"><?=$this->escapeHtml($title)?></a>
         </h3>
-		<p>
-			<?php /*var_dump($solrRecord->getSummary())*/?>
-		</p>
 
         <!-- Untertitel und Verfasserangabe -->
         <div class="meta">
             <?php if ($titleStatement['title_remainder'] or $titleStatement['statement_responsibility']): ?>
-            <? if ($titleStatement['title_remainder']); ?>
+            <?php if ($titleStatement['title_remainder']); ?>
                 <span>
                     <?=$this->escapeHtml($titleStatement['title_remainder'])?>
                 </span><br />
-            <? endif; ?>
-            <? if ($titleStatement['statement_responsibility']): ?>
+            <?php endif; ?>
+            <?php if ($titleStatement['statement_responsibility']): ?>
                 <h6>
                     <?=$this->transEsc('Author')?>:
                 </h6>
                 <span>
                     <?=$this->escapeHtml($titleStatement['statement_responsibility'])?>
                 </span><br />
-            <? endif; ?>
+            <?php else: ?>
+                <h6>
+                    <?=$this->transEsc('Author')?>:
+                </h6>
+                <span>
+                    <?=$this->escapeHtml(implode(', ', $secondaryAuthors)) ?>
+                </span>
+            <?php endif; ?>
         </div>
 
         <!-- Jahr -->

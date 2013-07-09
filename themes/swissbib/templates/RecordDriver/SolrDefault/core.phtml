@@ -13,7 +13,7 @@ $thumbnail		= $viewRecord->getThumbnail('large');
 $thumbnailSrc	= $thumbnail ? $thumbnail : $this->url('cover-unavailable');
 
 $titleStatement			= $resultItem->getTitleStatement(true);
-$secondaryAuthors		= $resultItem->getSecondaryAuthors(false);
+$secondaryAuthors		= $resultItem->getSecondaryAuthors(true);
 $publishers				= $resultItem->getPublishers(true);
 $physicalDescriptions	= $resultItem->getPhysicalDescriptions(false);
 $edition				= $resultItem->getEdition();
@@ -43,12 +43,16 @@ $highlightedFulltext	= $resultItem->getHighlightedFulltext();
 	<!-- details -->
 	<div class="details">
 
-		<?php if($titleStatement['statement_responsibility']): ?>
+		<?php if($titleStatement['statement_responsibility'] or $secondaryAuthors): ?>
 			<h4><?=$this->transEsc('Author')?>:</h4>
 			<?php if( isset($titleStatement['statement_responsibility']) ): ?>
 				<p><?=$this->escapeHtml($titleStatement['statement_responsibility'])?></p>
+            <?php else: ?>
+                <p>
+                    <?=$this->escapeHtml(implode(', ', $secondaryAuthors)) ?>
+                </p>
 			<?php endif; ?>
-		<?php endif; ?>
+        <?php endif; ?>
 
 		<?php if($publishers): ?>
 			<h4><?=$this->transEsc('Publication')?>:</h4>
