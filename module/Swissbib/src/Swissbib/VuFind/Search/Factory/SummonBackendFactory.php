@@ -5,7 +5,7 @@
  * Contains proxy detection and resp. switching of API key.
  */
 
-namespace Swissbib\Search\Factory;
+namespace Swissbib\VuFind\Search\Factory;
 
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Config\Config;

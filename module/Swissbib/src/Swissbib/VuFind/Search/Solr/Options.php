@@ -1,5 +1,5 @@
 <?php
-namespace Swissbib\Search\Solr;
+namespace Swissbib\VuFind\Search\Solr;
 
 use VuFind\Search\Solr\Options as VuFindSolrOptions;
 

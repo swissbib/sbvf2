@@ -1,5 +1,5 @@
 <?php
-namespace Swissbib\Search\Options;
+namespace Swissbib\VuFind\Search\Options;
 
 use VuFind\Search\Options\PluginManager as VuFindOptionsPluginManager;
 
