@@ -704,8 +704,8 @@ class SolrMarc extends VuFindSolrMarc
 
 			foreach ($data as $publication) {
 				$strings[] = trim(
-					(array_key_exists('name', $publication) ? $publication['name'] . ', ' : '')
-							. $publication['place']);
+					(array_key_exists('place', $publication) ? $publication['place'] . '; ' : '')
+							. $publication['name']);
 			}
 
 			$data = $strings;
