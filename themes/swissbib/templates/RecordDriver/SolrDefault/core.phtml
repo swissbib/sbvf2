@@ -12,7 +12,6 @@ $viewRecord	= $this->record($resultItem);
 $thumbnail		= $viewRecord->getThumbnail('large');
 $thumbnailSrc	= $thumbnail ? $thumbnail : $this->url('cover-unavailable');
 
-$subTitle				= $resultItem->getSubtitle(true);
 $titleStatement			= $resultItem->getTitleStatement(true);
 $secondaryAuthors		= $resultItem->getSecondaryAuthors(false);
 $publishers				= $resultItem->getPublishers(true);
@@ -38,13 +37,13 @@ $highlightedFulltext	= $resultItem->getHighlightedFulltext();
 <!-- col -->
 <div class="c75l">
 	<h2><?=$this->escapeHtml($resultItem->getShortTitle())?></h2>
-	<?php if($subTitle): ?>
-        <p><?=$this->escapeHtml($subTitle)?></p>
+	<?php if($titleStatement['title_remainder']): ?>
+        <p><?=$this->escapeHtml($titleStatement['title_remainder'])?></p>
     <?php endif ?>
 	<!-- details -->
 	<div class="details">
 
-		<?php if($titleStatement): ?>
+		<?php if($titleStatement['statement_responsibility']): ?>
 			<h4><?=$this->transEsc('Author')?>:</h4>
 			<?php if( isset($titleStatement['statement_responsibility']) ): ?>
 				<p><?=$this->escapeHtml($titleStatement['statement_responsibility'])?></p>
