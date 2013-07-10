@@ -14,4 +14,4 @@ CREATE TABLE `user_localdata` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-ALTER TABLE `user` ADD `favorite_institutions` TEXT NOT NULL DEFAULT '';
+ALTER TABLE `user` ADD `favorite_institutions` TEXT NOT NULL;
