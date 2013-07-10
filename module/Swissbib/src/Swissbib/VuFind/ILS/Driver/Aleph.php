@@ -440,6 +440,7 @@ class Aleph extends VuFindDriver
 	{
 		$patron = $details['patron'];
 		$blocks	= array();
+
 		foreach ($details['details'] as $id) {
 			$result = $this->doRestDLFRequestIgnoreFailures(
 				array('patron', $patron['id'], 'circulationActions', 'loans', $id),
