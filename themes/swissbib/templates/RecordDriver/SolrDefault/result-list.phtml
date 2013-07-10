@@ -40,34 +40,29 @@ $favoriteLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
 
         <!-- Untertitel und Verfasserangabe -->
         <div class="meta">
-            <?php if ($titleStatement['title_remainder'] or $titleStatement['statement_responsibility']): ?>
-            <?php if ($titleStatement['title_remainder']); ?>
-                <span>
-                    <?=$this->escapeHtml($titleStatement['title_remainder'])?>
-                </span><br />
-            <?php endif; ?>
-            <?php if ($titleStatement['statement_responsibility']): ?>
-                <h6>
-                    <?=$this->transEsc('Author')?>:
-                </h6>
-                <span>
-                    <?=$this->escapeHtml($titleStatement['statement_responsibility'])?>
-                </span><br />
-            <?php else: ?>
-                <h6>
-                    <?=$this->transEsc('Author')?>:
-                </h6>
-                <span>
-                    <?=$this->escapeHtml(implode(', ', $secondaryAuthors)) ?>
-                </span>
-            <?php endif; ?>
+            <?php if (isset($titleStatement['title_remainder']) || isset($titleStatement['statement_responsibility'])): ?>
+				<?php if (isset($titleStatement['title_remainder'])): ?>
+					<span>
+						<?=$this->escapeHtml($titleStatement['title_remainder'])?>
+					</span><br />
+				<?php endif; ?>
+			<?php endif; ?>
+
+			<h6><?=$this->transEsc('Author')?>:</h6>
+			<span>
+				<?php if (isset($titleStatement['statement_responsibility'])): ?>
+					<?=$this->escapeHtml($titleStatement['statement_responsibility'])?>
+				<?php else: ?>
+					<?=$this->escapeHtml(implode(', ', $secondaryAuthors)) ?>
+				<?php endif; ?>
+			</span><br />
         </div>
 
         <!-- Jahr -->
         <div class="meta">
 			<h6><?=$this->transEsc('Year')?>:</h6>
             <span><?=$this->escapeHtml($publicationDate)?></span>
-            <?php if($edition): ?>
+            <?php if ($edition): ?>
                 <h6><?=$this->transEsc('Edition')?>:</h6>
                 <span><?=$this->escapeHtml($edition)?></span>
             <?php endif; ?>
@@ -78,7 +73,7 @@ $favoriteLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
 			<?=$viewRecord->getFormatList()?>
 
         <!-- <h6 class="icon_format_book">Buch</h6> -->
-            <?php if(!empty($groupID) && !strcmp($results->getParams()->getSearchHandler(),'FRBR') == 0   ) : ?>
+            <?php if (!empty($groupID) && !strcmp($results->getParams()->getSearchHandler(),'FRBR') == 0   ) : ?>
                 <a href="<?= $this->url($results->getOptions()->getSearchAction()) .  "?lookfor=" . $groupID . "&type=FRBR&limit=" . $results->getParams()->getLimit()  ?>" class="linkbutton icon_show" title="<?=$this->transEsc('FRBR_Button')?>">
 					<span><?=$this->transEsc('FRBR_Button')?></span>
 				</a>
