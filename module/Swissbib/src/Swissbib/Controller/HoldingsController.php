@@ -29,8 +29,13 @@ class HoldingsController extends BaseController
 		$institution = $this->params()->fromRoute('institution');
 		$idRecord    = $this->params()->fromRoute('record');
 		$record		 = $this->getRecord($idRecord);
-		$holdingsData= $record->getInstitutionHoldings($institution);
 		$template	 = 'Holdings/nodata';
+
+		try {
+			$holdingsData= $record->getInstitutionHoldings($institution);
+		} catch (\Exception $e) {
+			$holdingsData = array();
+		}
 
 		$holdingsData['record']   	 = $idRecord;
 		$holdingsData['recordTitle'] = $record->getTitle();

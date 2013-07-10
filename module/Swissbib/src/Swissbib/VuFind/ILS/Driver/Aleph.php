@@ -1,12 +1,12 @@
 <?php
 namespace Swissbib\VuFind\ILS\Driver;
 
-use VuFind\ILS\Driver\Aleph as AlephDriver;
+use VuFind\ILS\Driver\Aleph as VuFindDriver;
 use \SimpleXMLElement;
 use VuFind\Exception\ILS as ILSException;
 use DateTime;
 
-class Aleph extends AlephDriver
+class Aleph extends VuFindDriver
 {
 
 	protected $itemLinks;
