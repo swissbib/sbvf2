@@ -76,7 +76,7 @@ foreach($locations as $locationKey => $locationLabel) {
 $menuItems = $staticItems + $locationItems;
 ?>
 <h3><?=$this->transEsc('Your Account')?></h3>
-<div class="subnavigation">
+<div class="subnavigation accountSidebar">
 	<ul>
 		<?php foreach($menuItems as $key => $menuItem): ?>
 			<li class="<?=$menuItem['class']?>">

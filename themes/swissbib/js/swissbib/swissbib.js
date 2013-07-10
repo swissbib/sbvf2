@@ -49,6 +49,8 @@ var swissbib = {
 		this.initHints(contextMain);
 
 		this.initBulkExport();
+
+		swissbib.Account.init();
     },
 
 
