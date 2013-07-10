@@ -283,7 +283,7 @@ class SolrMarc extends VuFindSolrMarc
 			foreach ($authors as $author) {
 				$name            = isset($author['name']) ? $author['name'] : '';
 				$forename        = isset($author['forname']) ? $author['forname'] : '';
-				$stringAuthors[] = trim($name . ' ' . $forename);
+				$stringAuthors[] = trim($forename . ' ' . $name);
 			}
 
 			$authors = $stringAuthors;
@@ -704,8 +704,8 @@ class SolrMarc extends VuFindSolrMarc
 
 			foreach ($data as $publication) {
 				$strings[] = trim(
-					(array_key_exists('name', $publication) ? $publication['name'] . ', ' : '')
-							. $publication['place']);
+					(array_key_exists('place', $publication) ? $publication['place'] . '; ' : '')
+							. $publication['name']);
 			}
 
 			$data = $strings;
