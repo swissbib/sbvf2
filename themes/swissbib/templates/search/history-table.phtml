@@ -18,7 +18,7 @@
   <tbody>
       <? foreach (($this->showSaved ? array_reverse($this->saved) : array_reverse($this->unsaved)) as $iteration => $info): ?>
           <tr>
-              <td class="small left"><?=$this->escapeHtml(date("g:ia, jS M y", $info->getStartTime()))?></td>
+              <td class="small left"><?=$this->escapeHtml(date("G:i, j.m.Y", $info->getStartTime()))?></td>
               <td>
                   <h3 class="nomargin">
                       <a class="color" href="<?=$this->url($info->getOptions()->getSearchAction()) . $info->getUrlQuery()->getParams()?>"><?
