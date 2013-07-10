@@ -40,38 +40,51 @@ $this->render('myresearch/sidebar/wrap.phtml', array(
 			</div>
 
 			<div>
-				<?php if (isset($list)): ?>
-					<h1 class="list"><?= $this->escapeHtml($list->title) ?></h1>
+                <?php if (isset($list)): ?>
+                    <div id="breadcrumb">
+                        <ul>
+                            <li class="selected">
+                                <a class="notepad" href="#"><?= $this->escapeHtml($list->title) ?></a>
+                            </li>
+                        </ul>
+                    </div>
+                    <?php if (!empty($list->description)): ?>
+                        <div class="status information">
+                            <p class="listDescription"><?= $this->escapeHtml($list->description) ?></p>
+                        </div>
+                    <?php endif; ?>
 
-					<?php if (!empty($list->description)): ?>
-						<p class="listDescription"><?= $this->escapeHtml($list->description) ?></p>
-						<hr/>
-					<?php endif; ?>
 
-					<div class="tools floatbox">
+                    <div class="tools floatbox">
+                        <?php if ($list->editAllowed($account->isLoggedIn())): ?>
+                            <a href="<?= $this->url('editList', array('id' => $list->id)) ?>"
+                               class="linkbutton"
+                               title="<?= $this->transEsc("edit_list") ?>"><span><?= $this->transEsc("edit_list") ?></span></a>
+                            <a href="<?= $this->url('myresearch-deletelist') ?>?listID=<?= urlencode($list->id) ?>"
+                               class="linkbutton icon_delete" id="deleteList<?= $list->id ?>"
+                               title="<?= $this->transEsc("delete_list") ?>"><span><?= $this->transEsc("delete_list") ?></span></a>
+                        <?php endif; ?>
 
-						<?php if ($list->editAllowed($account->isLoggedIn())): ?>
-							<a href="<?= $this->url('editList', array('id' => $list->id)) ?>"
-							   class="edit smallButton listEdit"
-							   title="<?= $this->transEsc("edit_list") ?>"><?= $this->transEsc("edit_list") ?></a>
-							<a href="<?= $this->url('myresearch-deletelist') ?>?listID=<?= urlencode($list->id) ?>"
-							   class="delete deleteList smallButton" id="deleteList<?= $list->id ?>"
-							   title="<?= $this->transEsc("delete_list") ?>"><?= $this->transEsc("delete_list") ?></a>
-						<?php endif; ?>
-
-					</div>
+                    </div>
 				<?php else: ?>
-					<h1 class="fav"><?= $this->transEsc("mymemorizelists") ?></h1>
+                    <div id="breadcrumb">
+                    <ul>
+                        <li class="selected">
+                            <a class="notepad" href="#"><?= $this->transEsc("mymemorizelists") ?></a>
+                        </li>
+                    </ul>
+                    </div>
 				<?php endif; ?>
 
+
 				<?php if ($recordTotal > 0): ?>
-					<div class="tools floatbox">
+
 						<div class="resulthead">
 							<div class="floatleft">
-								<?= $this->transEsc("Showing") ?>
+								<p><?= $this->transEsc("Showing") ?>
 								<strong><?= $this->escapeHtml($this->results->getStartRecord()) ?></strong> -
 								<strong><?= $this->escapeHtml($this->results->getEndRecord()) ?></strong>
-								<?= $this->transEsc('of') ?> <strong><?= $this->escapeHtml($recordTotal) ?></strong>
+								<?= $this->transEsc('of') ?> <strong><?= $this->escapeHtml($recordTotal) ?></strong></p>
 							</div>
 							<div class="floatright">
 								<?= $this->render('search/controls/sort.phtml') ?>
@@ -79,7 +92,7 @@ $this->render('myresearch/sidebar/wrap.phtml', array(
 							<?= $this->paginationControl($this->results->getPaginator(), 'Sliding', 'search/pagination.phtml', array('results' => $this->results)) ?>
 							<div class="clear"></div>
 						</div>
-					</div>
+
 
 					<form method="post" name="bulkActionForm" action="<?= $this->url('cart-myresearchbulk') ?>">
 
