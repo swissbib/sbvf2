@@ -37,13 +37,13 @@ $highlightedFulltext	= $resultItem->getHighlightedFulltext();
 <!-- col -->
 <div class="c75l">
 	<h2><?=$this->escapeHtml($resultItem->getShortTitle())?></h2>
-	<?php if($titleStatement['title_remainder']): ?>
+	<?php if(isset($titleStatement['title_remainder'])): ?>
         <p><?=$this->escapeHtml($titleStatement['title_remainder'])?></p>
     <?php endif ?>
 	<!-- details -->
 	<div class="details">
 
-		<?php if($titleStatement['statement_responsibility'] or $secondaryAuthors): ?>
+		<?php if(isset($titleStatement['statement_responsibility']) || $secondaryAuthors): ?>
 			<h4><?=$this->transEsc('Author')?>:</h4>
 			<?php if( isset($titleStatement['statement_responsibility']) ): ?>
 				<p><?=$this->escapeHtml($titleStatement['statement_responsibility'])?></p>
