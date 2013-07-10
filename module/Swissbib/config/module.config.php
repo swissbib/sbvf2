@@ -110,7 +110,7 @@ return array(
 				)
 			),
 			'myresearch-favorites' => array( // Override vufind favorites route. Rename to Lists
-				'type' => 'Zend\Mvc\Router\Http\Literal',
+				'type' => 'literal',
 				'options' => array(
 					'route'    => '/MyResearch/Lists',
 					'defaults' => array(

@@ -6,8 +6,9 @@ $viewRecord		= $this->record($this->driver);
 $thumbnail		= $viewRecord->getThumbnail('small');
 $thumbnailSrc	= $thumbnail ? $thumbnail : $this->url('cover-unavailable');
 $detailLink		= $this->recordLink()->getUrl($resultItem);
-//$title		= $resultItem->getShortTitle();
 $title			= $this->mainTitle($resultItem->getShortTitle());
+$titleStatement	= $resultItem->getTitleStatement(true);
+$secondaryAuthors		= $resultItem->getSecondaryAuthors(true);
 $edition		= $resultItem->getEdition();
 $publicationDate= $this->publicationDateMarc($resultItem->getPublicationDates());
 $groupID		= $resultItem->getGroup(true);
@@ -33,16 +34,36 @@ $favoriteLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
 	</td>
     <!-- Column 4: Title and author details => links to full-view -->
 	<td>
-		<h3><a href="<?=$detailLink?>" title="<?=$this->escapeHtml($title)?>" class="color singleLink"><?=$this->escapeHtml($title)?></a></h3>
-		<p>
-			<?php /*var_dump($solrRecord->getSummary())*/?>
-		</p>
-        <!-- meta -->
-		<div class="meta">
-            <span><?=$resultItem->getSubtitle()?></span><br />
-            <h6><?=$this->transEsc('Author')?>:</h6>
-            <span><?=$resultItem->getTitleStatement()?></span><br/>
+		<h3>
+            <a href="<?=$detailLink?>" title="<?=$this->escapeHtml($title)?>" class="color singleLink"><?=$this->escapeHtml($title)?></a>
+        </h3>
+
+        <!-- Untertitel und Verfasserangabe -->
+        <div class="meta">
+            <?php if ($titleStatement['title_remainder'] or $titleStatement['statement_responsibility']): ?>
+            <?php if ($titleStatement['title_remainder']); ?>
+                <span>
+                    <?=$this->escapeHtml($titleStatement['title_remainder'])?>
+                </span><br />
+            <?php endif; ?>
+            <?php if ($titleStatement['statement_responsibility']): ?>
+                <h6>
+                    <?=$this->transEsc('Author')?>:
+                </h6>
+                <span>
+                    <?=$this->escapeHtml($titleStatement['statement_responsibility'])?>
+                </span><br />
+            <?php else: ?>
+                <h6>
+                    <?=$this->transEsc('Author')?>:
+                </h6>
+                <span>
+                    <?=$this->escapeHtml(implode(', ', $secondaryAuthors)) ?>
+                </span>
+            <?php endif; ?>
         </div>
+
+        <!-- Jahr -->
         <div class="meta">
 			<h6><?=$this->transEsc('Year')?>:</h6>
             <span><?=$this->escapeHtml($publicationDate)?></span>
@@ -51,9 +72,11 @@ $favoriteLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
                 <span><?=$this->escapeHtml($edition)?></span>
             <?php endif; ?>
 		</div>
+
         <!-- format -->
 		<div class="format">
 			<?=$viewRecord->getFormatList()?>
+
         <!-- <h6 class="icon_format_book">Buch</h6> -->
             <?php if(!empty($groupID) && !strcmp($results->getParams()->getSearchHandler(),'FRBR') == 0   ) : ?>
                 <a href="<?= $this->url($results->getOptions()->getSearchAction()) .  "?lookfor=" . $groupID . "&type=FRBR&limit=" . $results->getParams()->getLimit()  ?>" class="linkbutton icon_show" title="<?=$this->transEsc('FRBR_Button')?>">
