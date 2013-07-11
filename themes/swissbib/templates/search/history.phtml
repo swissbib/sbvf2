@@ -24,7 +24,9 @@
 				<? if( !empty($this->unsaved) ): ?>
 					<h1><?=$this->transEsc('history_recent_searches')?></h1>
 					<?= $this->context()->renderInContext('search/history-table.phtml', array('showSaved' => false)); ?>
-					<a href="?purge=true" class="delete"><?=$this->transEsc('history_purge')?></a>
+                    <div class="tools floatbox">
+                        <a href="?purge=true" class="linkbutton icon_delete"><span><?=$this->transEsc('history_purge')?></span></a>
+                    </div>
 				<? endif; ?>
 
 			<? else: ?>
