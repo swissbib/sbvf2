@@ -19,6 +19,8 @@
 
 			<h1><?=$this->transEsc('Your Fines')?></h1>
 
+			<?=$this->flashmessages()?>
+
 			<?php if( empty($this->fines) ): ?>
 				<?=$this->transEsc('You do not have any fines')?>
 			<?php else: ?>
