@@ -279,7 +279,6 @@ return array(
 			'subjectHeadingFormatter' => 'Swissbib\View\Helper\SubjectHeadings',
 			'shorttitleSummon'		  => 'Swissbib\View\Helper\ShortTitleFormatterSummon',
 			'SortAndPrepareFacetList' => 'Swissbib\View\Helper\SortAndPrepareFacetList',
-			'subjectVocabularies'	  => 'Swissbib\View\Helper\SubjectVocabularies',
 			'tabTemplate'			  => 'Swissbib\View\Helper\TabTemplate',
 			'zendTranslate'           => 'Zend\I18n\View\Helper\Translate',
 			'getVersion'              => 'Swissbib\View\Helper\GetVersion',

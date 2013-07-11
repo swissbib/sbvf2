@@ -610,10 +610,10 @@ class SolrMarc extends VuFindSolrMarc
 							$subField2 = $indexField->getSubfield('2');
 							if ($subField2 && $subField2->getData() === $vocabConfig['field']) { // Check field
 									// sub field 2 matches the config
-								$fieldData = $this->getMappedFieldData($indexField, $fieldMapping);
+								$fieldData = $this->getMappedFieldData($indexField, $fieldMapping, false);
 							}
 						} else { // only indicator required, add data
-							$fieldData = $this->getMappedFieldData($indexField, $fieldMapping);
+							$fieldData = $this->getMappedFieldData($indexField, $fieldMapping, false);
 						}
 					}
 
@@ -930,16 +930,19 @@ class SolrMarc extends VuFindSolrMarc
 	/**
 	 * Convert sub fields to array map
 	 *
-	 * @param    \File_MARC_Data_Field    $field
-	 * @param    Array                    $fieldMap
-	 * @return    Array
+	 * @param	\File_MARC_Data_Field    $field
+	 * @param	Array                    $fieldMap
+	 * @param	Boolean					$includeIndicators		Add the two indicators to the field list
+	 * @return	Array
 	 */
-	protected function getMappedFieldData($field, array $fieldMap)
+	protected function getMappedFieldData($field, array $fieldMap, $includeIndicators = true)
 	{
-		$subFieldValues = array(
-			'@ind1' => $field->getIndicator(1),
-			'@ind2' => $field->getIndicator(2)
-		);
+		$subFieldValues = array();
+
+		if ($includeIndicators) {
+			$subFieldValues['@ind1'] = $field->getIndicator(1);
+			$subFieldValues['@ind2'] = $field->getIndicator(2);
+		}
 
 		foreach ($fieldMap as $code => $name) {
 			if (substr($code, 0, 1) === '_') { // Underscore means repeatable
