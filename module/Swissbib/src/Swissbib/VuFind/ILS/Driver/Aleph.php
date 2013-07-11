@@ -62,6 +62,25 @@ class Aleph extends VuFindDriver
 	}
 
 
+    /**
+     * Perform an HTTP request.
+     *
+     * @param string $url    URL of request
+     * @param string $method HTTP method
+     * @param string $body   HTTP body (null for none)
+     *
+     * @return SimpleXMLElement
+     */
+    protected function doHTTPRequest($url, $method='GET', $body = null)
+    {
+        if ($body == null) {
+            $body = "";
+        }
+
+        return parent::doHTTPRequest($url,$method,$body);
+
+    }
+
 
 	/**
 	 *
