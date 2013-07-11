@@ -52,8 +52,8 @@ class Aleph extends VuFindDriver
 			$photoCopyData = $this->extractResponseData($photoCopyRequest, $dataMap);
 
 			// Process data
-			$photoCopyData['dateOpen']   = DateTime::createFromFormat('Ymd', $photoCopyData['dateOpen'])->getTimestamp();
-			$photoCopyData['dateUpdate'] = DateTime::createFromFormat('Ymd', $photoCopyData['dateUpdate'])->getTimestamp();
+			$photoCopyData['dateOpen']   = DateTime::createFromFormat('Ymd', $photoCopyData['dateOpen'])->format('d.m.Y');
+			$photoCopyData['dateUpdate'] = DateTime::createFromFormat('Ymd', $photoCopyData['dateUpdate'])->format('d.m.Y');
 
 			$photoCopiesData[] = $photoCopyData;
 		}
