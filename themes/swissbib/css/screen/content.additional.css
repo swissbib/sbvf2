@@ -5,13 +5,13 @@
  * Time: 14:11:54
  */
 
-/* TESTHALBER EINGESETZT: Langes Suchfeld  - deaktiviert für Produktions-Load, TVi 20100903
+/* TESTHALBER EINGESETZT: Langes Suchfeld  - deaktiviert für Produktions-Load, TVi 20100903  */
 #search input.text {
 border:1px solid #494E59;
 font-weight:bold;
 padding:5px 4px 3px;
 width:370px;
-}  */
+}
 
 button.submit:focus, input.reset:focus {
 border:1px solid #494E59;
