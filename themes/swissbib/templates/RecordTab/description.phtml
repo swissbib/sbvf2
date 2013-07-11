@@ -17,7 +17,7 @@ $resultItem	= $this->driver;
 $viewRecord	= $this->record($resultItem);
 
 
-$subjectVocabularies = $resultItem->getAllSubjectVocabularies();
+$subjectVocabularies = $resultItem->getAllSubjectVocabularies(true);
 $subjects = $this->driver->getAllSubjectHeadings();
 
 /* Display Standard-IDs */
