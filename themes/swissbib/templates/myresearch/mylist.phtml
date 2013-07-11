@@ -114,7 +114,11 @@ $this->render('myresearch/sidebar/wrap.phtml', array(
 								<col width="13%"/>
 							</colgroup>
 							<caption class="hidden">
-								Merkliste &quot;Amerikanische Autoren&quot;
+                                <?php if (isset($list)): ?>
+                                    <?= $this->transEsc("mymemorizelists") ?> &quot;<?= $this->escapeHtml($list->title) ?>&quot;
+                                <?php else: ?>
+                                    <?= $this->transEsc("mymemorizelists") ?>
+                                <?php endif?>
 							</caption>
 							<thead class="hidden">
 							<tr>
@@ -133,7 +137,7 @@ $this->render('myresearch/sidebar/wrap.phtml', array(
 							</tbody>
 						</table>
 
-						<div class="tools floatbox bulkBox bulkboxBottom">
+						<div class="floatbox">
 							<?= $this->context($this)->renderInContext('myresearch/bulk-action-buttons.phtml', array('idPrefix' => 'bottom_', 'list' => isset($list) ? $list : null)) ?>
 						</div>
 
