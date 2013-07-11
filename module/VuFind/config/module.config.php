@@ -90,6 +90,7 @@ $config = array(
             'author' => 'VuFind\Controller\AuthorController',
             'authority' => 'VuFind\Controller\AuthorityController',
             'cart' => 'VuFind\Controller\CartController',
+            'combined' => 'VuFind\Controller\CombinedController',
             'confirm' => 'VuFind\Controller\ConfirmController',
             'cover' => 'VuFind\Controller\CoverController',
             'error' => 'VuFind\Controller\ErrorController',
@@ -457,7 +458,7 @@ $config = array(
             'hierarchy_treedatasource' => array(
                 'factories' => array(
                     'solr' => function ($sm) {
-                        $cacheDir = $sm->getServiceLocator()->get('VuFind\CacheManager')->getCacheDir();
+                        $cacheDir = $sm->getServiceLocator()->get('VuFind\CacheManager')->getCacheDir(false);
                         return new \VuFind\Hierarchy\TreeDataSource\Solr(
                             $sm->getServiceLocator()->get('VuFind\Search'),
                             rtrim($cacheDir, '/') . '/hierarchy'
@@ -973,7 +974,7 @@ $staticRoutes = array(
     'Browse/LCC', 'Browse/Region', 'Browse/Tag', 'Browse/Topic',
     'Cart/doExport', 'Cart/Email', 'Cart/Export', 'Cart/Home', 'Cart/MyResearchBulk',
     'Cart/Save', 'Collections/ByTitle', 'Collections/Home',
-    'Confirm/Confirm',
+    'Combined/Home', 'Combined/Results', 'Combined/SearchBox', 'Confirm/Confirm',
     'Cover/Show', 'Cover/Unavailable', 'Error/Unavailable',
     'Feedback/Email', 'Feedback/Home', 'Help/Home',
     'Install/Done', 'Install/FixBasicConfig', 'Install/FixCache',
