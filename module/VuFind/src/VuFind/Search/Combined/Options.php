@@ -1,6 +1,6 @@
 <?php
 /**
- * Row Definition for session
+ * Combined search model.
  *
  * PHP version 5
  *
@@ -20,31 +20,31 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @category VuFind2
- * @package  Db_Row
+ * @package  Search_Base
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org   Main Site
+ * @link     http://www.vufind.org  Main Page
  */
-namespace VuFind\Db\Row;
+namespace VuFind\Search\Combined;
 
 /**
- * Row Definition for session
+ * Combined search model.
  *
  * @category VuFind2
- * @package  Db_Row
+ * @package  Search_Base
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org   Main Site
+ * @link     http://www.vufind.org  Main Page
  */
-class Session extends RowGateway
+class Options extends \VuFind\Search\Base\Options
 {
     /**
-     * Constructor
+     * Return the route name for the search results action.
      *
-     * @param \Zend\Db\Adapter\Adapter $adapter Database adapter
+     * @return string
      */
-    public function __construct($adapter)
+    public function getSearchAction()
     {
-        parent::__construct('id', 'session', $adapter);
+        return 'combined-results';
     }
 }

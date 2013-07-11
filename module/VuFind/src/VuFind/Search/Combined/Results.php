@@ -1,7 +1,6 @@
 <?php
-
 /**
- * SOLR QueryBuilder interface definition.
+ * Combined results search model.
  *
  * PHP version 5
  *
@@ -21,49 +20,49 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @category VuFind2
- * @package  Search
- * @author   Andrew S. Nagy <vufind-tech@lists.sourceforge.net>
- * @author   David Maus <maus@hab.de>
+ * @package  Search_Base
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org
+ * @link     http://www.vufind.org  Main Page
  */
-
-namespace VuFindSearch\Backend\Solr;
-
-use VuFindSearch\Query\AbstractQuery;
-use VuFindSearch\ParamBag;
+namespace VuFind\Search\Combined;
 
 /**
- * SOLR QueryBuilder interface definition.
+ * Combined results search model.
  *
  * @category VuFind2
- * @package  Search
- * @author   Andrew S. Nagy <vufind-tech@lists.sourceforge.net>
- * @author   David Maus <maus@hab.de>
+ * @package  Search_Base
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org
+ * @link     http://www.vufind.org  Main Page
  */
-interface QueryBuilderInterface
+class Results extends \VuFind\Search\Base\Results
 {
     /**
-     * Build SOLR query based on VuFind query object.
+     * Returns the stored list of facets for the last search
      *
-     * @param AbstractQuery $query Query object
+     * @param array $filter Array of field => on-screen description listing
+     * all of the desired facet fields; set to null to get all configured values.
      *
-     * @return ParamBag
+     * @return array        Facets data arrays
      */
-    public function build(AbstractQuery $query);
+    public function getFacetList($filter = null)
+    {
+        // Not relevant:
+        return array();
+    }
 
     /**
-     * Control whether or not the QueryBuilder should create an hl.q parameter
-     * when the main query includes clauses that should not be factored into
-     * highlighting. (Turned off by default).
-     *
-     * @param bool $enable Should highlighting query generation be enabled?
+     * Abstract support method for performAndProcessSearch -- perform a search based
+     * on the parameters passed to the object.  This method is responsible for
+     * filling in all of the key class properties: results, resultTotal, etc.
      *
      * @return void
      */
-    public function setCreateHighlightingQuery($enable);
+    protected function performSearch()
+    {
+        throw new \Exception(
+            'This is a placeholder class and is not meant to be called!'
+        );
+    }
 }
