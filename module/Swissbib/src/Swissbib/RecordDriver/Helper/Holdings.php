@@ -1145,7 +1145,7 @@ class Holdings
 	protected function buildItemId(array $holdingItem)
 	{
 		if (isset($holdingItem['adm_code']) && isset($holdingItem['bibsysnumber']) && isset($holdingItem['sequencenumber'])) {
-			return $holdingItem['adm_code'] . $holdingItem['bibsysnumber'] . $holdingItem['sequencenumber'];
+			return $holdingItem['adm_code'] . $holdingItem['localid'] . $holdingItem['sequencenumber'];
 		}
 
 		return 'incompleteItemData';
