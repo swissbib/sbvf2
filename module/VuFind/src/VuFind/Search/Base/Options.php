@@ -159,17 +159,25 @@ abstract class Options implements TranslatorAwareInterface
 
     /**
      * Given a label from the configuration file, return the name of the matching
-     * basic handler; return the default handler if no match is found.
+     * handler (basic checked first, then advanced); return the default handler
+     * if no match is found.
      *
      * @param string $label Label to search for
      *
      * @return string
      */
-    public function getBasicHandlerForLabel($label)
+    public function getHandlerForLabel($label)
     {
+        $label = empty($label) ? false : $this->translate($label);
+
         $targetHandler = false;
         foreach ($this->getBasicHandlers() as $id => $currentLabel) {
-            if ($currentLabel == $label) {
+            if ($this->translate($currentLabel) == $label) {
+                return $id;
+            }
+        }
+        foreach ($this->getAdvancedHandlers() as $id => $currentLabel) {
+            if ($this->translate($currentLabel) == $label) {
                 return $id;
             }
         }
@@ -179,6 +187,10 @@ abstract class Options implements TranslatorAwareInterface
     /**
      * Given a basic handler name, return the corresponding label (or false
      * if none found):
+     *
+     * @param string $handler Handler name to look up.
+     *
+     * @return string
      */
     public function getLabelForBasicHandler($handler)
     {
@@ -193,7 +205,10 @@ abstract class Options implements TranslatorAwareInterface
      */
     public function getDefaultHandler()
     {
-        return $this->defaultHandler;
+        if (!empty($this->defaultHandler)) {
+            return $this->defaultHandler;
+        }
+        return current(array_keys($this->getBasicHandlers()));
     }
 
     /**

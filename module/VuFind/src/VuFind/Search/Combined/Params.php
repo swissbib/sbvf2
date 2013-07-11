@@ -1,10 +1,10 @@
 <?php
 /**
- * Row Definition for session
+ * Combined aspect of the Search Multi-class (Params)
  *
  * PHP version 5
  *
- * Copyright (C) Villanova University 2010.
+ * Copyright (C) Villanova University 2011.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2,
@@ -20,31 +20,22 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @category VuFind2
- * @package  Db_Row
+ * @package  Search_SolrAuth
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org   Main Site
+ * @link     http://www.vufind.org  Main Page
  */
-namespace VuFind\Db\Row;
+namespace VuFind\Search\Combined;
 
 /**
- * Row Definition for session
+ * Combined Search Parameters
  *
  * @category VuFind2
- * @package  Db_Row
+ * @package  Search_SolrAuth
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org   Main Site
+ * @link     http://www.vufind.org  Main Page
  */
-class Session extends RowGateway
+class Params extends \VuFind\Search\Solr\Params
 {
-    /**
-     * Constructor
-     *
-     * @param \Zend\Db\Adapter\Adapter $adapter Database adapter
-     */
-    public function __construct($adapter)
-    {
-        parent::__construct('id', 'session', $adapter);
-    }
 }
