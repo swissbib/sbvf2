@@ -539,9 +539,10 @@ class SolrMarc extends VuFindSolrMarc
 	 * - detect: The vocabulary key is defined in sub field 2. Don't use the key in the config (only used for local)
 	 *
 	 * @see	getAllSubjectHeadings
+	 * @param	Boolean		$ignoreControlFields		Ignore control fields 0 and 2
 	 * @return	Array[]
 	 */
-	public function getAllSubjectVocabularies()
+	public function getAllSubjectVocabularies($ignoreControlFields = false)
 	{
 		$subjectVocabularies = array();
 		$fieldIndexes        = array(600, 610, 611, 630, 648, 650, 651, 655, 656, 690, 691);
@@ -582,10 +583,16 @@ class SolrMarc extends VuFindSolrMarc
 			'v' => 'v',
 			'x' => 'x',
             'y' => 'y',
-            'z' => 'z',
-			'0' => '0',
-			'2' => '2'
+            'z' => 'z'
 		);
+
+			// Add control fields to mapping list
+		if (!$ignoreControlFields) {
+			$fieldMapping += array(
+				'0' => '0',
+				'2' => '2'
+			);
+		}
 
 			// Iterate over all indexes to check the available fields
 		foreach ($fieldIndexes as $fieldIndex) {
