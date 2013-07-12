@@ -27,6 +27,7 @@ use Swissbib\View\Helper\IsFavoriteInstitution;
 use Swissbib\VuFind\Search\Helper\ExtendedSolrFactoryHelper;
 use Swissbib\View\Helper\QrCode as QrCodeViewHelper;
 use Swissbib\Highlight\SolrConfigurator as HighlightSolrConfigurator;
+use Swissbib\VuFind\Hierarchy\TreeDataSource\Solr as TreeDataSourceSolr;
 
 return array(
 	'router'          => array(
@@ -406,6 +407,17 @@ return array(
 			'hierarchy_treerenderer' => array(
 				'invokables' => array(
 					'jstree' => 'Swissbib\VuFind\Hierarchy\TreeRenderer\JSTree'
+				)
+			),
+			'hierarchy_treedatasource' => array(
+				'factories' => array(
+					'solr' => function ($sm) {
+						$cacheDir = $sm->getServiceLocator()->get('VuFind\CacheManager')->getCacheDir(false);
+						return new TreeDataSourceSolr(
+							$sm->getServiceLocator()->get('VuFind\Search'),
+							rtrim($cacheDir, '/') . '/hierarchy'
+						);
+					}
 				)
 			)
 		)
