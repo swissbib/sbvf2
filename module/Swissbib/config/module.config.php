@@ -142,20 +142,30 @@ return array(
 							'action'     => 'import'
 						)
 					)
+				),
+				'hierarchy' => array(
+					'options' => array(
+						'route'    => 'hierarchy <limit> [--verbose|-v]',
+						'defaults' => array(
+							'controller' => 'hierarchycache',
+							'action'     => 'buildCache'
+						)
+					)
 				)
 			)
 		)
 	),
 	'controllers'     => array(
 		'invokables' => array(
-			'helppage'     => 'Swissbib\Controller\HelpPageController',
-			'libadminsync' => 'Swissbib\Controller\LibadminSyncController',
-			'my-research'  => 'Swissbib\Controller\MyResearchController',
-			'search'       => 'Swissbib\Controller\SearchController',
-			'summon'       => 'Swissbib\Controller\SummonController',
-			'holdings'     => 'Swissbib\Controller\HoldingsController',
-			'tab40import'  => 'Swissbib\Controller\Tab40ImportController',
-			'institutionFavorites'  => 'Swissbib\Controller\FavoritesController'
+			'helppage'     		=> 'Swissbib\Controller\HelpPageController',
+			'libadminsync' 		=> 'Swissbib\Controller\LibadminSyncController',
+			'my-research'  		=> 'Swissbib\Controller\MyResearchController',
+			'search'       		=> 'Swissbib\Controller\SearchController',
+			'summon'       		=> 'Swissbib\Controller\SummonController',
+			'holdings'     		=> 'Swissbib\Controller\HoldingsController',
+			'tab40import'  		=> 'Swissbib\Controller\Tab40ImportController',
+			'institutionFavorites'=> 'Swissbib\Controller\FavoritesController',
+			'hierarchycache' 	 => 'Swissbib\Controller\HierarchyCacheController'
 		)
 	),
 	'service_manager' => array(
