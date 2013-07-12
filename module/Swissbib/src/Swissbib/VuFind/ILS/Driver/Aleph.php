@@ -61,62 +61,6 @@ class Aleph extends VuFindDriver
 		return $photoCopiesData;
 	}
 
-    /**
-     * Perform an HTTP request.
-     *
-     * @param string $url    URL of request
-     * @param string $method HTTP method
-     * @param string $body   HTTP body (null for none)
-     *
-     * @return SimpleXMLElement
-     */
-    protected function doHTTPRequest($url, $method='GET', $body = null)
-    {
-        if ($this->debug_enabled) {
-            $this->debug("URL: '$url'");
-        }
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        if ($body != null) {
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
-        }
-        else {
-            curl_setopt($ch, CURLOPT_POSTFIELDS, "");
-        }
-        //todo: make this configurable
-        curl_setopt($ch,CURLOPT_PROXY,"proxy.unibas.ch:3128");
-
-        $answer = curl_exec($ch);
-        if (!$answer) {
-            $error = curl_error($ch);
-            $message = "HTTP request failed with message: $error, URL: '$url'.";
-            if ($this->debug_enabled) {
-                $this->debug($message);
-            }
-            throw new ILSException($message);
-        }
-        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        if ($http_code != 200) {
-            $message = "Request failed with http code: $http_code, "
-                . "URL: '$url' method: $method";
-            throw new ILSException($message);
-        }
-        curl_close($ch);
-        $answer = str_replace('xmlns=', 'ns=', $answer);
-        $result = simplexml_load_string($answer);
-        if (!$result) {
-            if ($this->debug_enabled) {
-                $this->debug("XML is not valid, URL: $url");
-            }
-            throw new ILSException(
-                "XML is not valid, URL: $url method: $method answer: $answer."
-            );
-        }
-        return $result;
-    }
-
-
 
 	/**
 	 *
