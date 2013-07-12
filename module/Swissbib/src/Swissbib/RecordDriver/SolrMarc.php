@@ -710,9 +710,16 @@ class SolrMarc extends VuFindSolrMarc
 			$strings = array();
 
 			foreach ($data as $publication) {
-				$strings[] = trim(
-					(array_key_exists('place', $publication) ? $publication['place'] . '; ' : '')
-							. $publication['name']);
+				$string = '';
+
+				if (isset($publication['place'])) {
+					$string = $publication['place'] . '; ';
+				}
+				if (isset($publication['name'])) {
+					$string .= $publication['name'];
+				}
+
+				$strings[] = trim($string);
 			}
 
 			$data = $strings;
