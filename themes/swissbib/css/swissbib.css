@@ -539,3 +539,23 @@ pre {
 span.highlight {
 	font-weight: bold;
 }
+
+#sidebar .subnavigation ul li a {
+	word-wrap: break-word;
+}
+
+
+tr.infoMessagesRow td {
+	padding-bottom: 20px;
+}
+
+
+/** Subject vocabularies in record description */
+.subjectVocabularies .vocabularyList {
+	margin-bottom: 10px;
+	margin-left: 5px;
+}
+.subjectVocabularies .vocabularyList li {
+	font-size: 1.2em;
+	line-height: 1.3em;
+}

@@ -27,23 +27,32 @@ $this->headTitle($this->translate('Export Favorites'));
 			<?= $this->flashmessages() ?>
 
 			<? if (!empty($this->exportOptions)): ?>
-				<form method="post" action="<?= $this->url('cart-export') ?>" name="exportForm"
+				<form class="search data" method="post" action="<?= $this->url('cart-export') ?>" name="exportForm"
 					  title="<?= $this->transEsc('Export Items') ?>">
-					<? foreach ($this->records as $current): ?>
-						<strong><?= $this->transEsc('Title') ?>
-							:</strong> <?= $this->escapeHtml($current->getBreadcrumb()) ?><br/>
-						<input type="hidden" name="ids[]"
-							   value="<?= $this->escapeHtml($current->getResourceSource() . '|' . $current->getUniqueId()) ?>"/>
-					<? endforeach; ?>
-					<br/>
-					<label for="format"><?= $this->transEsc('Format') ?>:</label>
-					<select name="format" id="format">
-						<? foreach ($this->exportOptions as $exportOption): ?>
-							<option value="<?= $this->escapeHtml($exportOption) ?>"><?= $this->transEsc($exportOption) ?></option>
-						<? endforeach; ?>
-					</select>
-					<br/>
-					<input class="button" type="submit" name="submit" value="<?= $this->transEsc('Export') ?>"/>
+
+                    <fieldset>
+                        <div class="fieldbox">
+                            <ul class="list">
+                                <? foreach ($this->records as $current): ?>
+                                    <li><strong><?= $this->transEsc('Title') ?>
+                                            :</strong> <?= $this->escapeHtml($current->getBreadcrumb()) ?>
+                                        <input type="hidden" name="ids[]"
+                                               value="<?= $this->escapeHtml($current->getResourceSource() . '|' . $current->getUniqueId()) ?>"/></li>
+                                <? endforeach; ?>
+                            </ul>
+                        </div>
+                        <div class="fieldbox">
+                            <label class="label" for="format"><?= $this->transEsc('Format') ?>:</label>
+                            <select name="format" id="format" class="select">
+                                <? foreach ($this->exportOptions as $exportOption): ?>
+                                    <option value="<?= $this->escapeHtml($exportOption) ?>"><?= $this->transEsc($exportOption) ?></option>
+                                <? endforeach; ?>
+                            </select>
+                        </div>
+                    </fieldset>
+                    <fieldset class="actions">
+                        <input class="submit primary" type="submit" name="submit" value="<?= $this->transEsc('Export') ?>"/>
+                    </fieldset>
 				</form>
 			<? endif; ?>
 
