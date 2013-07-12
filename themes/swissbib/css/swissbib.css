@@ -540,6 +540,15 @@ span.highlight {
 	font-weight: bold;
 }
 
+#sidebar .subnavigation ul li a {
+	word-wrap: break-word;
+}
+
+
+tr.infoMessagesRow td {
+	padding-bottom: 20px;
+}
+
 
 /** Subject vocabularies in record description */
 .subjectVocabularies .vocabularyList {
