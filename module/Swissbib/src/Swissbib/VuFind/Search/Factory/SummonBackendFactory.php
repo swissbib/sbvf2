@@ -60,7 +60,7 @@ class SummonBackendFactory extends SummonBackendFactoryBase
 		$overrideCredentials = $this->getOverrideApiCredentialsFromProxy();
 		if ($overrideCredentials !== false) {
 			if (isset($overrideCredentials['apiId']) && !empty($overrideCredentials['apiId'])) {
-				$id = $overrideCredentials['apiKey'];
+				$id = $overrideCredentials['apiId'];
 			}
 			if (isset($overrideCredentials['apiKey']) && !empty($overrideCredentials['apiKey'])) {
 				$key = $overrideCredentials['apiKey'];
@@ -74,7 +74,6 @@ class SummonBackendFactory extends SummonBackendFactoryBase
 
 		$connector = new Connector($id, $key, array(), $client);
 		$connector->setLogger($this->logger);
-
 		return $connector;
 	}
 
@@ -83,34 +82,19 @@ class SummonBackendFactory extends SummonBackendFactoryBase
 	/**
 	 * Detect client to possibly switch API key from proxy configuration
 	 *
-	 * @todo	Use exception handling instead of custom error handling!
 	 * @return    Boolean|String        false or the API key to switch to
 	 */
 	protected function getOverrideApiCredentialsFromProxy()
 	{
-		try {
-			/** @var TargetsProxy $targetsProxy */
-			$targetsProxy = $this->serviceLocator->get('Swissbib\TargetsProxy\TargetsProxy');
-			$targetsProxy->setSearchClass('Summon');
-
-			$proxyDetected = $targetsProxy->detectTarget();
-//			$proxyDetected = $targetsProxy->detectTarget('99.0.0.0', 'snowflake.ch');
-
-			if ($proxyDetected !== false) {
-				return array(
-					'apiId'  => $targetsProxy->getTargetApiId(),
-					'apiKey' => $targetsProxy->getTargetApiKey()
-				);
-			}
-		} catch (\Exception $e) {
-			// handle exceptions
-			echo "- Fatal error\n";
-			echo "- Stopped with exception: " . get_class($e) . "\n";
-			echo "====================================================================\n";
-			echo $e->getMessage() . "\n";
-			echo $e->getPrevious()->getMessage() . "\n";
-		}
-
+        $targetsProxy = $this->serviceLocator->get('Swissbib\TargetsProxy\TargetsProxy');
+        $targetsProxy->setSearchClass('Summon');
+        $proxyDetected = $targetsProxy->detectTarget();
+        if ($proxyDetected !== false) {
+            return array(
+                'apiId'  => $targetsProxy->getTargetApiId(),
+                'apiKey' => $targetsProxy->getTargetApiKey()
+            );
+        }
 		return false;
 	}
 }

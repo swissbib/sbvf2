@@ -1,0 +1,64 @@
+<?
+    // Set page title.
+    $this->headTitle($this->translate('email_selected_favorites'));
+
+    // Set up breadcrumbs:
+    $this->layout()->breadcrumbs = $this->getLastSearchLink($this->transEsc('Search'), '', '<span>&gt;</span>') .
+        '<em>' . $this->transEsc('email_selected_favorites') . '</em>';
+?>
+<!-- begin: col1 (sidebar)  -->
+<div id="col1" class="sidebar">
+    <div id="col1_content" class="clearfix">
+        <!-- begin: sidebar -->
+        <div id="sidebar">
+
+        </div>
+        <!-- end: sidebar -->
+    </div>
+</div>
+<!-- end: col1 (sidebar) -->
+<div id="col3" class="content">
+    <div id="col3_content" class="clearfix">
+        <!-- begin: content -->
+        <div id="content">
+
+            <h1 class="hideinlightbox"><?= $this->transEsc('Export Favorites') ?></h1>
+
+            <?=$this->flashmessages()?>
+            <form class="search data" action="<?=$this->url('cart-email')?>" method="post"  name="bulkEmail">
+                <fieldset>
+                    <div class="fieldbox">
+                        <ul class="list">
+                            <? foreach ($this->records as $current): ?>
+                                <li><strong><?= $this->transEsc('Title') ?>
+                                        :</strong> <?= $this->escapeHtml($current->getBreadcrumb()) ?>
+                                    <input type="hidden" name="ids[]"
+                                           value="<?= $this->escapeHtml($current->getResourceSource() . '|' . $current->getUniqueId()) ?>"/></li>
+                            <? endforeach; ?>
+                        </ul>
+                    </div>
+                    <div class="fieldbox">
+                        <label class="label" for="email_to"><?=$this->transEsc('To')?>:</label>
+                        <input class="text large <?=$this->jqueryValidation(array('required'=>'This field is required', 'email'=>'Email address is invalid'))?>" id="email_to" type="text" name="to" value="<?=isset($this->to) ? $this->to : ''?>" />
+                    </div>
+                    <div class="fieldbox">
+                        <label class="label" for="email_from"><?=$this->transEsc('From')?>:</label>
+                        <input class="text large <?=$this->jqueryValidation(array('required'=>'This field is required', 'email'=>'Email address is invalid'))?>" id="email_from" type="text" name="from" value="<?=isset($this->from) ? $this->from : ''?>" />
+                    </div>
+                    <div class="fieldbox">
+                        <label class="label" for="email_message"><?=$this->transEsc('Message')?>:</label>
+                        <textarea id="email_message" name="message" class="textarea large"><?=isset($this->message) ? $this->message : ''?></textarea>
+                    </div>
+                </fieldset>
+                <fieldset class="actions">
+                    <input class="submit primary" type="submit" name="submit" value="<?= $this->transEsc('Send') ?>"/>
+                </fieldset>
+            </form>
+        </div>
+        <!-- end: content -->
+    </div>
+    <div id="ie_clearing">
+        &nbsp;
+    </div>
+</div>
+<!-- end: col3 (content) -->

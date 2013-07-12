@@ -49,6 +49,8 @@ var swissbib = {
 		this.initHints(contextMain);
 
 		this.initBulkExport();
+
+		swissbib.Account.init();
     },
 
 
@@ -409,7 +411,14 @@ var swissbib = {
 
 
 	initBulkExport: function() {
-		$('#pagefunction_save.bulkExport .menu a').click($.proxy(this.onBulkExportFormatClick, this));
+		var	hasResults	= $('#content').find('a.singleLink').length > 0,
+			iconElement	= $('#pagefunction_save.bulkExport');
+
+		if( hasResults ) {
+			iconElement.find('.menu a').click($.proxy(this.onBulkExportFormatClick, this));
+		} else {
+			iconElement.hide();
+		}
 	},
 
 
@@ -424,7 +433,7 @@ var swissbib = {
 		var baseUrl = event.target.href,
 			idArgs	= [],
 			fullUrl,
-			ids		= $('#content .tabbed_selected a.singleLink').map(function(){
+			ids		= $('#content a.singleLink').map(function(){
 				return 'VuFind|' + this.href.split('/').pop()
 			}).get();
 
@@ -439,7 +448,6 @@ var swissbib = {
 //		console.log(fullUrl);
 
 		window.open(fullUrl);
-
 //		location.href = fullUrl;
 	}
 };

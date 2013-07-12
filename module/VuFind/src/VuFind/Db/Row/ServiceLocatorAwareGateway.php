@@ -26,8 +26,7 @@
  * @link     http://vufind.org   Main Site
  */
 namespace VuFind\Db\Row;
-use Zend\Db\RowGateway\RowGateway,
-    Zend\ServiceManager\ServiceLocatorAwareInterface,
+use Zend\ServiceManager\ServiceLocatorAwareInterface,
     Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
