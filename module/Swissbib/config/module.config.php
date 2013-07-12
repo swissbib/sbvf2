@@ -145,7 +145,7 @@ return array(
 				),
 				'hierarchy' => array(
 					'options' => array(
-						'route'    => 'hierarchy <limit> [--verbose|-v]',
+						'route'    => 'hierarchy [limit] [--verbose|-v]',
 						'defaults' => array(
 							'controller' => 'hierarchycache',
 							'action'     => 'buildCache'
