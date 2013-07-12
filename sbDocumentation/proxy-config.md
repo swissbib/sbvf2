@@ -1,42 +1,86 @@
-# Proxy Targets Configuration
-The API ID and key of the search index can be configured to change
-according to detected IP-range and/or URL patterns of the client's request.
-
+# TargetProxy Configuration
+Some configuration options can be configured to change according to the detected
+IP-range of the caller or to the hostname in the URL of the client's request.
+For the moment, this is implemented for the Summon API.
 
 ## Configuration File
-Proxy targets are configured in local/config/vufind/TargetsProxy.ini
-Upon detecting a target, it's API ID and API key are taken from the section with the same target key in config.ini
 
+### local/config/vufind/config.ini
+For the Summon API, you must supply the default values in a section
+called [Summon]. After that, you can define additional sections with
+special values. The sections may be named arbitrarily. We suggest
+using the prefix *Summon_*. Example:
 
-## Configuration Parameters
-The proxy definition is defined in the section [TargetsProxy], with the following parameters:
+    [Summon]
+    apiId   = default
+    apiKey  = XYZ123456789ABC
+
+    [Summon_Basel]
+    apiId   = unibas
+    apiKey  = 123456789ABCdEf
+
+    [Summon_Bern]
+    apiId   = unibe
+    apiKey  = 098765XYZaBcDeF
+
+### local/config/vufind/TargetsProxy.ini
+Here you define the IP ranges or hostname/URL patterns, for which a special
+section of config.ini should be used.
+
+To be active, the section names must be listed in a comma separated list in
+the appropriate key under the [TargetsProxy] section.
+
+    ; "Targets Proxy" configuration
+    ; depending on the detected IP range or URL hostname of the request
+    ; defined here, the corresponding section in config.ini will be used.
 
     [TargetsProxy]
-	tabkey					The key of the tab where target-switching is applied
-	targetKeys<TabKey>		Comma-separated list of keys of configured targets or the given <TabKey>
-							<TabKey> is e.g. 'Summon'
-							So far proxy handling is only implemented for Summons,
-							to implement target switching for e.g. Solr
-							1. add SolrBackendFactory into Swissbib module
-                            2. add dependency injection of the factory in module.config.php (analogous to summon)
+    targetKeysSummon = Summon_Basel,Summon_Bern
 
-For each of the keys listed in targetKeys<TabKey> there must be a section of that name,
-defining match-patterns for detecting that target from IP range and/or URL.
+    [Summon_Basel]
+    patterns_ip  = 131.152.*.*,145.250.210.*
+    petterns_url = basel.swissbib.ch
 
-### Match Conditions Logic
-There are two conditions, 'pattern_ip' and 'pattern_url' which both optional, one being required for the detection.
-If both are given (not empty) than both must be validated true for the target to be detected (logical AND)
+    [Summon_Bern]
+    patterns_ip  = 130.92.*.*
+    patterns_url = bern.swissbib.ch,testbern.swissbib.ch
 
-### Target Configuration Example
-	[Example_Target]
-	patterns_ip		Comma-separated IP address patterns, see section "IP pattern types" for examples
-	patterns_url	Comma-separated strings of which one must equal to- / be contained in- the hostname
-	apiKey
-
-### IP pattern types
-The following types of IP match patterns are supported:
+### IP patterns
+A comma separated list of IP match patterns. The following types patterns are supported:
 
 *   Single,		ex: 127.0.0.1
 *   Wildcard,	ex: 172.0.0.*	or	173.0.*.*	etc.
 *   Mask,		ex: 126.1.0.0/255.255.0.0
 *   Section,	ex: 125.0.0.1-125.0.0.9
+
+### URL patterns
+A comma separated list of virtual hostnames in the caller's URL.
+
+### Match condition logic
+There are two conditions, patterns_ip and patterns_url. Both are optional, one is
+required for the detection. If both are given, then the patterns_url takes precedence
+over pattern_ip.
+
+In the above example: calling http://testbern.swissbib.ch will activate the [Summon_Bern]
+configuration, even if the caller's IP is within the [Summon_Basel] range. This feature
+is meant primarily for testing purposes.
+
+## Implementation
+### Swissbib\TargetsProxy
+
+* **TargetsProxy.php**: extracts the appropriate values from the configuration files, according to the user's IP and/or URL
+* **IpMatcher.php**: matches current IP against proxy target IP ranges
+* **UrlMatcher.php**: matches current request hostname against proxy target hostnames
+
+### Swissbib\VuFind\Search\Factory
+
+* **SummonBackendFactory.php**: overrides default credentials with values from target proxy
+
+## How to expand functionality?
+
+So far proxy handling is only implemented for Summons.
+To implement target switching for e.g. Solr
+
+0. define a new key targetKeysSolr in the [TargetsProxy] section of TargetsProxy.ini
+1. add SolrBackendFactory into Swissbib module
+2. add dependency injection of the factory in module.config.php (analogous to summon)

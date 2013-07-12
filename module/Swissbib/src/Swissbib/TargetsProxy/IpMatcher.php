@@ -2,11 +2,11 @@
 
 namespace Swissbib\TargetsProxy;
 
-use Swissbib\Libadmin\Exception\Exception;
+use Swissbib\TargetsProxy\Exception;
 
 /**
  * IpMatcher - detect whether IP address matches to patterns and ranges of IP addresses
- * Using IPv6 notation
+ * Using IPv4 notation
  *
  * 		Type: single	- regular IP address				  -	ex: '127.0.0.1'
  *      Type: wildcard	- one or more digits use placeholders - ex: '172.0.0.*'
@@ -187,24 +187,10 @@ class IpMatcher
 		$begin	= ip2long($begin);
 		$end	= ip2long($end);
 		$ip		= ip2long($ip);
-//		$begin	= self::ip2toUnsignedLong($begin);
-//		$end	= self::ip2toUnsignedLong($end);
-//		$ip		= self::ip2toUnsignedLong($ip);
 
 		return ($ip >= $begin && $ip <= $end);
 	}
 
-
-
-	private static function ip2toUnsignedLong($ipAddress) {
-		$ipLong	=ip2long($ipAddress);
-		if ($ipLong < 0)
-		{
-			$ipLong += 4294967296 ;
-		}
-
-		return $ipLong;
-	}
 }
 
 ?>
