@@ -580,7 +580,8 @@ class Aleph extends VuFindDriver
 			'sequence'		=> 'z37-sequence',
 			'balance'		=> 'z37-balancer-date',
 			'institution'	=> 'z30-sub-library-code',
-			'signature'		=> 'z30-call-no'
+			'signature'		=> 'z30-call-no',
+			'description'	=> 'z30-description'
 		);
 
 //		$holdResponseItems	= array_slice($holdResponseItems, 0, 5);
