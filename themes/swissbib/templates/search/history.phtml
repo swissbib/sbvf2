@@ -3,7 +3,7 @@
     $this->headTitle($this->translate('Search History'));
 
     	// Set up breadcrumbs
-    $this->layout()->breadcrumbs = '<em>' . $this->transEsc('History') . '</em>';
+//    $this->layout()->breadcrumbs = '<em>' . $this->transEsc('History') . '</em>';
 
 ?>
 
@@ -14,25 +14,27 @@
 		<!-- begin: content -->
 		<div id="content">
 
-			<? if( !empty($this->saved) || !empty($this->unsaved) ): ?>
+			<?php if( !empty($this->saved) || !empty($this->unsaved) ): ?>
+					
+				<?= $this->flashmessages() ?>
 
-				<? if( !empty($this->saved) ): ?>
+				<?php if( !empty($this->saved) ): ?>
 					<h1><?=$this->transEsc('history_saved_searches')?></h1>
 					<?= $this->context()->renderInContext('search/history-table.phtml', array('showSaved' => true)); ?>
-				<? endif; ?>
+				<?php endif; ?>
 
-				<? if( !empty($this->unsaved) ): ?>
+				<?php if( !empty($this->unsaved) ): ?>
 					<h1><?=$this->transEsc('history_recent_searches')?></h1>
 					<?= $this->context()->renderInContext('search/history-table.phtml', array('showSaved' => false)); ?>
                     <div class="tools floatbox">
                         <a href="?purge=true" class="linkbutton icon_delete"><span><?=$this->transEsc('history_purge')?></span></a>
                     </div>
-				<? endif; ?>
+				<?php endif; ?>
 
-			<? else: ?>
+			<?php else: ?>
 				<h1><?=$this->transEsc('history_recent_searches')?></h1>
 				<p><?= $this->transEsc('history_no_searches') ?></p>
-			<? endif; ?>
+			<?php endif; ?>
 
 		</div>
 		<!-- end: content -->

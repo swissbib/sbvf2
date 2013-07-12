@@ -236,6 +236,12 @@ $awards = $resultItem->getAwards();
 			<ul class="vocabularyList vocabulary<?=ucfirst($vocabulary)?>">
 				<?php foreach($fieldsData as $fieldIndex => $fieldData): ?>
 					<?php foreach($fieldData as $fieldValues): ?>
+						<?php
+//								// Optional: Filter out numeric fields directly here in template
+//							$fieldValues = array_filter($fieldValues, function($value) {
+//																			return !is_numeric($value);
+//																		});
+						?>
 						<li class="type<?=$fieldIndex?>"><?=$this->escapeHtml(implode(' > ', $fieldValues))?></li>
 					<?php endforeach; ?>
 				<?php endforeach; ?>
