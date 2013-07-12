@@ -1,4 +1,26 @@
 <? $user = $this->auth()->isLoggedIn(); ?>
+<div class="floatbox">
+
+    <input type="checkbox" class="selectAllCheckboxes floatleft" name="selectAll" id="<?=$this->idPrefix?>addFormCheckboxSelectAll"/> <label class="floatleft" for="addFormCheckboxSelectAll"><?=$this->transEsc('select_page')?></label>
+    <span class="floatleft"><label class="floatleft">|&nbsp;<strong><?=$this->transEsc('with_selected')?>: </strong></label>
+        <input type="submit" class="linkbutton submit" name="email" value="<?=$this->transEsc('Email')?>" title="<?=$this->transEsc('email_selected')?>"/>
+    <? if ((!is_null($this->list) && $this->list->editAllowed($user)) || is_null($this->list) && $user): ?>
+        <input id="<?=$this->idPrefix?>delete_list_items_<?=!is_null($this->list) ? $this->escapeHtml($this->list->id) : ''?>" type="submit" class="linkbutton submit" name="delete" value="<?=$this->transEsc('Delete')?>" title="<?=$this->transEsc('delete_selected')?>"/>
+    <? endif; ?>
+    <? $exportOptions = $this->export()->getBulkOptions(); if (count($exportOptions) > 0): ?>
+        <input type="submit" class="linkbutton submit" name="export" value="<?=$this->transEsc('Export')?>" title="<?=$this->transEsc('export_selected')?>"/>
+    <? endif; ?>
+    <input type="submit" class="linkbutton submit" name="print" value="<?=$this->transEsc('Print')?>" title="<?=$this->transEsc('print_selected')?>"/>
+    <? if ($this->cart()->isActive()): ?>
+        <input id="<?=$this->idPrefix?>updateCart" type="submit" class="linkbutton submit" name="add" value="<?=$this->transEsc('Add to Book Bag')?>"/>
+    <? endif; ?>
+    </span>
+    <div class="clear"></div>
+</div>
+
+
+
+<!--
 <div class="bulkActionButtons">
     <input type="checkbox" class="selectAllCheckboxes floatleft" name="selectAll" id="<?=$this->idPrefix?>addFormCheckboxSelectAll"/> <label class="floatleft" for="addFormCheckboxSelectAll"><?=$this->transEsc('select_page')?></label>
     <span class="floatleft">|</span><p>hallihallo</p>
@@ -16,3 +38,4 @@
     <? endif; ?>
     <div class="clear"></div>
 </div>
+-->

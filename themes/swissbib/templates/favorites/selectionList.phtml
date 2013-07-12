@@ -20,8 +20,7 @@
 			<tr>
 				<td style="padding-left: 2em" class="nodivider">
 					<?=$this->escapeHtml($this->zendTranslate($institutionCode, 'institution'))?>
-
-					<a href="http://aleph.unibas.ch/F/?func=library&sub_library=A100" class="externallink" title="Bibliotheksinformation"></a>
+                    <a href="<?=$this->escapeHtml($this->zendTranslate($institutionCode, 'bibinfo'))?>" class="externallink" title="<?=$this->transEsc('Library_Information')?>" target="_blank"></a>
 				</td>
 				<td class="right">
 					<a href="#" class="linkbutton icon_delete deleteFavoriteInstitution" title="Favorit löschen" data-institution="<?=$institutionCode?>"><span>löschen</span></a>

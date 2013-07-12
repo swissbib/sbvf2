@@ -27,6 +27,7 @@ use Swissbib\View\Helper\IsFavoriteInstitution;
 use Swissbib\VuFind\Search\Helper\ExtendedSolrFactoryHelper;
 use Swissbib\View\Helper\QrCode as QrCodeViewHelper;
 use Swissbib\Highlight\SolrConfigurator as HighlightSolrConfigurator;
+use Swissbib\VuFind\Hierarchy\TreeDataSource\Solr as TreeDataSourceSolr;
 
 return array(
 	'router'          => array(
@@ -141,20 +142,30 @@ return array(
 							'action'     => 'import'
 						)
 					)
+				),
+				'hierarchy' => array(
+					'options' => array(
+						'route'    => 'hierarchy [<limit>] [--verbose|-v]',
+						'defaults' => array(
+							'controller' => 'hierarchycache',
+							'action'     => 'buildCache'
+						)
+					)
 				)
 			)
 		)
 	),
 	'controllers'     => array(
 		'invokables' => array(
-			'helppage'     => 'Swissbib\Controller\HelpPageController',
-			'libadminsync' => 'Swissbib\Controller\LibadminSyncController',
-			'my-research'  => 'Swissbib\Controller\MyResearchController',
-			'search'       => 'Swissbib\Controller\SearchController',
-			'summon'       => 'Swissbib\Controller\SummonController',
-			'holdings'     => 'Swissbib\Controller\HoldingsController',
-			'tab40import'  => 'Swissbib\Controller\Tab40ImportController',
-			'institutionFavorites'  => 'Swissbib\Controller\FavoritesController'
+			'helppage'     		=> 'Swissbib\Controller\HelpPageController',
+			'libadminsync' 		=> 'Swissbib\Controller\LibadminSyncController',
+			'my-research'  		=> 'Swissbib\Controller\MyResearchController',
+			'search'       		=> 'Swissbib\Controller\SearchController',
+			'summon'       		=> 'Swissbib\Controller\SummonController',
+			'holdings'     		=> 'Swissbib\Controller\HoldingsController',
+			'tab40import'  		=> 'Swissbib\Controller\Tab40ImportController',
+			'institutionFavorites'=> 'Swissbib\Controller\FavoritesController',
+			'hierarchycache' 	 => 'Swissbib\Controller\HierarchyCacheController'
 		)
 	),
 	'service_manager' => array(
@@ -279,7 +290,6 @@ return array(
 			'subjectHeadingFormatter' => 'Swissbib\View\Helper\SubjectHeadings',
 			'shorttitleSummon'		  => 'Swissbib\View\Helper\ShortTitleFormatterSummon',
 			'SortAndPrepareFacetList' => 'Swissbib\View\Helper\SortAndPrepareFacetList',
-			'subjectVocabularies'	  => 'Swissbib\View\Helper\SubjectVocabularies',
 			'tabTemplate'			  => 'Swissbib\View\Helper\TabTemplate',
 			'zendTranslate'           => 'Zend\I18n\View\Helper\Translate',
 			'getVersion'              => 'Swissbib\View\Helper\GetVersion',
@@ -407,6 +417,17 @@ return array(
 			'hierarchy_treerenderer' => array(
 				'invokables' => array(
 					'jstree' => 'Swissbib\VuFind\Hierarchy\TreeRenderer\JSTree'
+				)
+			),
+			'hierarchy_treedatasource' => array(
+				'factories' => array(
+					'solr' => function ($sm) {
+						$cacheDir = $sm->getServiceLocator()->get('VuFind\CacheManager')->getCacheDir(false);
+						return new TreeDataSourceSolr(
+							$sm->getServiceLocator()->get('VuFind\Search'),
+							rtrim($cacheDir, '/') . '/hierarchy'
+						);
+					}
 				)
 			)
 		)

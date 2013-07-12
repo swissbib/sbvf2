@@ -17,7 +17,7 @@ $resultItem	= $this->driver;
 $viewRecord	= $this->record($resultItem);
 
 
-$subjectVocabularies = $resultItem->getAllSubjectVocabularies();
+$subjectVocabularies = $resultItem->getAllSubjectVocabularies(true);
 $subjects = $this->driver->getAllSubjectHeadings();
 
 /* Display Standard-IDs */
@@ -229,25 +229,25 @@ $awards = $resultItem->getAwards();
 <?php endif; ?>
 
 <?php if (sizeof($subjectVocabularies)): ?>
-	<?= $this->subjectVocabularies($subjectVocabularies) ?>
-<?php endif; ?>
-
-<?php /* subject display based on VuFind standard mechanism */ ?>
-<?php $subjects = $this->driver->getAllSubjectHeadings();
-if (!empty($subjects)): ?>
-	<h4><?= $this->transEsc('Subjects') ?>: </h4>
-	<?php foreach ($subjects as $field): ?>
-		<?php $subject = ''; ?>
-		<p>
-			<?php $i = 0;
-			foreach ($field as $subfield): ?>
-				<?= ($i++ == 0) ? '' : ' &gt; ' ?>
-				<?php $subject = trim($subject . ' ' . $subfield); ?>
-				<?= $this->escapeHtml($subfield) ?>
-			<?php endforeach; ?>
-		</p>
-	<?php endforeach; ?>
-
+	<div class="subjectVocabularies">
+		<h4><?= $this->transEsc('Subjects') ?>: </h4>
+		<?php foreach($subjectVocabularies as $vocabulary => $fieldsData): ?>
+			<h5 class="vocabularyTitle"><?=$this->transEsc('vocabulary.' . $vocabulary, array(), $vocabulary)?></h5>
+			<ul class="vocabularyList vocabulary<?=ucfirst($vocabulary)?>">
+				<?php foreach($fieldsData as $fieldIndex => $fieldData): ?>
+					<?php foreach($fieldData as $fieldValues): ?>
+						<?php
+//								// Optional: Filter out numeric fields directly here in template
+//							$fieldValues = array_filter($fieldValues, function($value) {
+//																			return !is_numeric($value);
+//																		});
+						?>
+						<li class="type<?=$fieldIndex?>"><?=$this->escapeHtml(implode(' > ', $fieldValues))?></li>
+					<?php endforeach; ?>
+				<?php endforeach; ?>
+			</ul>
+		<?php endforeach; ?>
+	</div>
 <?php endif; ?>
 
 
