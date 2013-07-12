@@ -14,7 +14,7 @@ use Swissbib\TargetsProxy\IpMatcher;
 
 /**
  * Targets proxy
- * Analyze connection parameters (IP address + requested sub domain) and switch target config respectively
+ * Analyze connection parameters (IP address + requested hostname) and switch target config respectively
  */
 class TargetsProxy implements ServiceLocatorAwareInterface
 {
@@ -74,10 +74,8 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 		$RemoteAddress	= new RemoteAddress();
 		$ipAddress		= $RemoteAddress->getIpAddress();
 		$this->clientIp	= array(
-			'IPv4'	=> $ipAddress,			// i.e.: x:x:x:x:x:x:x:x - up to 8 colon separated segments
-			'IPv6'	=> long2ip($ipAddress),	// i.e.: aaa.bbb.ccc.ddd - standard dotted format
+			'IPv4'	=> $ipAddress,			// i.e.: aaa.bbb.ccc.ddd - standard dotted format
 		);
-
 		$Request	= new Request();
 		$this->clientUri= $Request->getUri();
 	}
@@ -118,19 +116,11 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 	}
 
 	/**
-	 * @return	String	Client IP address in IPv4 notation (up to 8 colon separated segments), i.e.: x:x:x:x:x:x:x:x
+	 * @return	String	Client IP address in IPv4 notation (standard dotted format), i.e.: aaa.bbb.ccc.ddd
 	 */
 	public function getClientIpV4()
 	{
 		return $this->clientIp['IPv4'];
-	}
-
-	/**
-	 * @return	String	Client IP address in IPv6 notation (standard dotted format), i.e.: aaa.bbb.ccc.ddd
-	 */
-	public function getClientIpV6()
-	{
-		return $this->clientIp['IPv6'];
 	}
 
 	/**
@@ -197,9 +187,8 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 		$this->targetApiKey	= false;
 
 		$targetKeys	= explode(',', $this->config->get('TargetsProxy')->get('targetKeys' . $this->searchClass));
-
 			// Check whether the current IP address matches against any of the configured targets' IP / sub domain patterns
-		$ipAddress	= !empty($overrideIP) ? $overrideIP : $this->getClientIpV6();
+		$ipAddress	= !empty($overrideIP) ? $overrideIP : $this->getClientIpV4();
 		if( empty($overrideHost) ) {
 			$url		= $this->getClientUrl();
 		} else {
@@ -219,46 +208,51 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 			$patternsIP		= '';
 			$patternsURL	= '';
 
-				// Check match of IP address if any pattern configured
+				// Check match of IP address if any pattern configured.
+                // If match is found, set corresponding keys and continue matching
 			if ($targetConfig->offsetExists('patterns_ip')) {
 				$patternsIP	= $targetConfig->get('patterns_ip');
 				if( !empty($patternsIP) ) {
 					$targetPatternsIp	= explode(',', $patternsIP);
 					$isMatchingIP	= $IpMatcher->isMatching($ipAddress, $targetPatternsIp);
+                    if ( $isMatchingIP === true ) {
+                        $this->setConfigKeys($targetKey);
+                    }
 				}
 			}
-				// Check match of URL hostname if any pattern configured
+				// Check match of URL hostname if any pattern configured.
+                // If match is found, set corresponding keys and exit immediately
 			if ($targetConfig->offsetExists('patterns_url')) {
 				$patternsURL	= $targetConfig->get('patterns_url');
 				if( !empty($patternsURL) ) {
 					$targetPatternsUrl	= explode(',', $patternsURL);
 					$isMatchingUrl		= $UrlMatcher->isMatching($url->getHost(), $targetPatternsUrl);
+                    if ( $isMatchingUrl === true ) {
+                        $this->setConfigKeys($targetKey);
+                        return true;
+                    }
 				}
 			}
-
-				// Do all given conditions match?
-			if(     (empty($patternsIP) || $isMatchingIP === true)
-				 && (empty($patternsURL) || $isMatchingUrl === true) ) {
-					// Target detected
-				$this->targetKey = $targetKey;
-
-					// Get API ID and key from config.ini (only local)
-				/** @var \Zend\Config\Config $vfConfig */
-				$vfConfig = $this->serviceLocator->get('VuFind\Config')->get('config')->toArray();
-
-				$this->targetApiId	= $vfConfig[$this->targetKey]['apiID'];
-				$this->targetApiKey	= $vfConfig[$this->targetKey]['apiKey'];
-
-				return true;
-			}
 		}
-
-		return false;
+        return ( $this->targetKey != ""  ? true : false );
 	}
 
+    /**
+     * Set relevant keys from the target key section in config.ini
+     *
+     * @param $targetKey
+     * @return void
+     */
+    private function setConfigKeys($targetKey)
+    {
+        $this->targetKey = $targetKey;
+        $vfConfig = $this->serviceLocator->get('VuFind\Config')->get('config')->toArray();
+        $this->targetApiId	= $vfConfig[$this->targetKey]['apiId'];
+        $this->targetApiKey	= $vfConfig[$this->targetKey]['apiKey'];
+    }
 
 
-	/**
+    /**
 	 * Get key of detected target to be rerouted to
 	 *
 	 * @return bool|String
