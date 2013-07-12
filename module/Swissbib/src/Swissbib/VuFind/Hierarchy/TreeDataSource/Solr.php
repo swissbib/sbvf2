@@ -11,7 +11,20 @@ use VuFindSearch\Query\Query;
 class Solr extends VuFindTreeDataSourceSolr
 {
 	/** New child record limit to prevent timeout */
-	const TREE_LIMIT = 500;
+	protected $CHILD_LIMIT = 500;
+
+
+
+	/**
+	 * Set limit for child nodes to prevent memory problems
+	 *
+	 * @param	Integer		$limit
+	 */
+	public function setTreeChildLimit($limit)
+	{
+		$this->CHILD_LIMIT = intval($limit);
+	}
+
 
 
 	/**
@@ -23,7 +36,7 @@ class Solr extends VuFindTreeDataSourceSolr
 		$query   = new Query(
 			'hierarchy_parent_id:"' . addcslashes($parentID, '"') . '"'
 		);
-		$results = $this->searchService->search('Solr', $query, 0, self::TREE_LIMIT);
+		$results = $this->searchService->search('Solr', $query, 0, $this->CHILD_LIMIT);
 		if ($results->getTotal() < 1) {
 			return '';
 		}
