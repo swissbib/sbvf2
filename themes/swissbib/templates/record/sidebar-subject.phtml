@@ -1,0 +1,39 @@
+<?php
+
+$subjectHeadings	= $this->driver->getAllSubjectVocabularies(true);
+$gndHeadings		= isset($subjectHeadings['gnd']) ? $subjectHeadings['gnd'] : array();
+
+if (!$gndHeadings) {
+	return '';
+}
+
+?>
+<!-- begin: subnavigation todo -->
+<h3><?=$this->transEsc('Related Subjects')?></h3>
+<div class="subnavigation">
+	<ul>
+		<?php foreach ($gndHeadings as $fieldIndex => $fieldData): ?>
+			<?php foreach ($fieldData as $fieldValues): ?>
+				<li>
+					<?php
+						$urlValues		= array();
+
+							// Add quotes if required
+						foreach ($fieldValues as $fieldValue) {
+							if (strpos($fieldValue, ' ') !== false) {
+								$urlValues[] = '"' . addslashes($fieldValue) . '"';
+							} else {
+								$urlValues[] = $fieldValue;
+							}
+						}
+
+						$lookFor	= implode(' ', $urlValues);
+						$searchUrl	= $this->url('search-results') . '?lookfor=' . urlencode($lookFor) . '&amp;type=Subject';
+
+						echo '<a href="' . $searchUrl . '">' . $this->escapeHtml(implode(' > ', $fieldValues)) . '</a>';
+					?>
+				</li>
+			<?php endforeach; ?>
+		<?php endforeach; ?>
+	</ul>
+</div>

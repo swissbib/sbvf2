@@ -60,6 +60,11 @@ return array(
 
 	'helpers' => array(
         'factories' => array(
+			'record' => function ($sm) {
+			   return new \Swissbib\View\Helper\Record(
+				   $sm->getServiceLocator()->get('VuFind\Config')->get('config')
+			   );
+		   },
 			'recordlink' => function ($sm) {
 				return new \Swissbib\View\Helper\RecordLink(
 					$sm->getServiceLocator()->get('VuFind\RecordRouter')
