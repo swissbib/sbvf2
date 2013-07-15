@@ -165,7 +165,8 @@ return array(
 			'holdings'     		=> 'Swissbib\Controller\HoldingsController',
 			'tab40import'  		=> 'Swissbib\Controller\Tab40ImportController',
 			'institutionFavorites'=> 'Swissbib\Controller\FavoritesController',
-			'hierarchycache' 	 => 'Swissbib\Controller\HierarchyCacheController'
+			'hierarchycache' 	 => 'Swissbib\Controller\HierarchyCacheController',
+			'cart' 				=> 'Swissbib\Controller\CartController'
 		)
 	),
 	'service_manager' => array(
