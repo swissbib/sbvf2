@@ -356,7 +356,7 @@ class SolrDefault extends AbstractBase
     public function getDeduplicatedAuthors()
     {
         $authors = array(
-            'main' => $this->getPrimaryAuthor(),
+            'main' 		=> $this->getPrimaryAuthor(),
             'corporate' => $this->getCorporateAuthor(),
             'secondary' => $this->getSecondaryAuthors()
         );
