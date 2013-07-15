@@ -19,7 +19,7 @@ $lastSearchUrl = VuFind\Search\Memory::retrieve();
 <div id="col1" class="sidebar">
 	<div id="col1_content" class="clearfix">
 		<!-- begin: sidebar -->
-		<?=$this->render('record/sidebar.phtml')?>
+		<?=$this->render('record/sidebar')?>
 		<!-- end: sidebar -->
 	</div>
 </div>
@@ -32,7 +32,7 @@ $lastSearchUrl = VuFind\Search\Memory::retrieve();
 		<div id="content">
 
 			<div id="inlay">
-				<?=$this->render('global/notepad.phtml')?>
+				<?=$this->render('global/notepad')?>
 			</div>
 
 			<?=$this->flashmessages()?>
@@ -49,7 +49,7 @@ $lastSearchUrl = VuFind\Search\Memory::retrieve();
                     </a>
 				<?php endif; ?>
 
-				<?=$this->render('record/paging.phtml')?>
+				<?=$this->render('record/paging')?>
 			</div>
 
 			<!-- begin: box -->
@@ -58,7 +58,7 @@ $lastSearchUrl = VuFind\Search\Memory::retrieve();
 			</div>
 			<!-- end: box -->
 
-			<?=$this->render('record/tabs.phtml')?>
+			<?=$this->render('record/tabs')?>
 
 			<span class="Z3988" title="<?=$this->escapeHtml($this->driver->getOpenURL())?>"></span>
 
