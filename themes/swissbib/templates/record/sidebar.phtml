@@ -5,33 +5,8 @@
 	    <?=$this->related($current)?>
 	  <? endforeach; */?>
 
+	<?=$this->render('record/sidebar-subject')?>
 
-	<!-- begin: subnavigation todo -->
-	<h3><?=$this->transEsc('Related Subjects')?></h3>
-	<div class="subnavigation">
-		<ul>
-			<li>
-				<a href="#" title="Thema 1">Thema 1</a>
-			</li>
-			<li>
-				<a href="#" title="Thema 2">Thema 2</a>
-			</li>
-			<li>
-				<a href="#" title="Im Gesamtbestand suchen">Thema3</a>
-			</li>
-		</ul>
-	</div>
-    <h3><?=$this->transEsc('Similar Items')?></h3>
-    <div class="subnavigation">
-        <ul>
-            <li>
-                <a href="#" title="Titel 1">Titel 1</a>
-            </li>
-            <li>
-                <a href="#" title="Titel 2">Titel 2</a>
-            </li>
-        </ul>
-    </div>
-    <!-- end: subnavigation -->
+	<?=$this->render('record/sidebar-author')?>
 
 </div>

@@ -5,7 +5,8 @@ use Vufind\Search\Base\Results;
 /** @var String $basicSearch */
 /** @var Results $results */
 
-$facetDefaultLimit	= $this->facetConfig ? $this->facetConfig->get('facet_limit_default') : 20; // initially shown
+$facetConfigArray	= $this->facetConfig ? $this->facetConfig->toArray() : array();
+$facetDefaultLimit	= isset($facetConfigArray['facet_limit_default']) ? $facetConfigArray['facet_limit_default'] : 20; // initially shown
 $toggleLabel		= $this->transEsc('more_info_toggle');
 
 ?>
@@ -37,10 +38,7 @@ $toggleLabel		= $this->transEsc('more_info_toggle');
 
 		// Get limit of initially shown items per facet
 		$amountItems = sizeof($facetGroupItems);
-		$amountItemsShown = intval($this->facetConfig->get('facet_limit_' . $facetGroup));
-		if ($amountItemsShown === 0) {
-			$amountItemsShown = $facetDefaultLimit;
-		}
+		$amountItemsShown = isset($facetConfigArray['facet_limit_' . $facetGroup]) ? $facetConfigArray['facet_limit_' . $facetGroup] : $facetDefaultLimit;
 		$itemsCount = 0;
 
 	?>
