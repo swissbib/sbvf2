@@ -1,10 +1,12 @@
 <?php
 namespace Swissbib\Controller;
 
-use VuFind\Controller\MyResearchController as VuFindMyResearchController;
-use Swissbib\VuFind\ILS\Driver\Aleph;
 use Zend\View\Model\ViewModel;
-use Zend\Http\PhpEnvironment\Response as HttpResponse;
+use Zend\Http\Response as HttpResponse;
+
+use VuFind\Controller\MyResearchController as VuFindMyResearchController;
+
+use Swissbib\VuFind\ILS\Driver\Aleph;
 
 class MyResearchController extends VuFindMyResearchController
 {
@@ -318,6 +320,27 @@ class MyResearchController extends VuFindMyResearchController
 		$viewModel = parent::deleteAction();
 
 		return $this->wrapWithContentLayout($viewModel, 'myresearch/delete');
+	}
+
+
+
+	/**
+	 * Catch error for not allowed list view
+	 * Redirect list own lists with message
+	 *
+	 * @return	HttpResponse
+	 */
+	public function mylistAction()
+	{
+		try {
+			return parent::mylistAction();
+		} catch (\Exception $e) {
+			$this->flashMessenger()->setNamespace('error')->addMessage($e->getMessage());
+
+			$target = $this->url()->fromRoute('userList');
+
+			return $this->redirect()->toUrl($target);
+		}
 	}
 
 
