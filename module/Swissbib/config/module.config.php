@@ -283,7 +283,6 @@ return array(
 			'myResearchSideBar'       => 'Swissbib\View\Helper\MyResearchSideBar',
 			'noHolding'               => 'Swissbib\View\Helper\NoHolding',
 			'number'                  => 'Swissbib\View\Helper\Number',
-			'pageFunctions'           => 'Swissbib\View\Helper\PageFunctions',
 			'physicalDescription'     => 'Swissbib\View\Helper\PhysicalDescriptions',
 			'publicationDateMarc'     => 'Swissbib\View\Helper\YearFormatterMarc',
 			'publicationDateSummon'	  => 'Swissbib\View\Helper\YearFormatterSummon',

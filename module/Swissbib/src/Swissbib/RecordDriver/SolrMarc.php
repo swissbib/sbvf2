@@ -1224,6 +1224,18 @@ class SolrMarc extends VuFindSolrMarc
 
 
 	/**
+	 * Get last indexed date string for sorting
+	 *
+	 * @return	String
+	 */
+	public function getLastIndexed()
+	{
+		return isset($this->fields['time_indexed']) ? $this->fields['time_indexed'] : '';
+	}
+
+
+
+	/**
 	 *
 	 *
 	 * @param	\File_MARC_Data_Field	$field
