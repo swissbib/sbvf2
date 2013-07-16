@@ -947,17 +947,18 @@ class SolrMarc extends VuFindSolrMarc
 	 * Get items of a field (which exists multiple times) as named map (array)
 	 * Use this method if the field is (R)epeatable
 	 *
-	 * @param    Integer $index
-	 * @param    Array   $fieldMap
-	 * @return    Array[]
+	 * @param	Integer		$index
+	 * @param	Array		$fieldMap
+	 * @param	Boolean		$includeIndicators
+	 * @return	Array[]
 	 */
-	protected function getMarcSubFieldMaps($index, array $fieldMap)
+	protected function getMarcSubFieldMaps($index, array $fieldMap, $includeIndicators = true)
 	{
 		$subFieldsValues = array();
 		$fields          = $this->marcRecord->getFields($index);
 
 		foreach ($fields as $field) {
-			$subFieldsValues[] = $this->getMappedFieldData($field, $fieldMap);
+			$subFieldsValues[] = $this->getMappedFieldData($field, $fieldMap, $includeIndicators);
 		}
 
 		return $subFieldsValues;
@@ -1148,6 +1149,76 @@ class SolrMarc extends VuFindSolrMarc
 		}
 
 		return (isset($this->highlightDetails['fulltext'][0])) ? trim($this->highlightDetails['fulltext'][0]) : '';
+	}
+
+
+
+	/**
+	 * Get table of content
+	 * This method is also used to check whether data for tab is available and the tab should be displayed
+	 *
+	 * @return	String[]
+	 */
+	public function getTOC()
+	{
+		return $this->getTableOfContent() + $this->getContentSummary();
+	}
+
+
+
+	/**
+	 * Get table of content
+	 * From fields 505.g.r.t
+	 *
+	 * @return	String[]
+	 */
+	public function getTableOfContent()
+	{
+		$lines = array();
+		$tableOfContent = $this->getMarcSubFieldMaps(505, array(
+													'_g'	=> 'misc',
+													'_r'	=> 'responsability',
+													'_t'	=> 'title'
+													), false);
+
+			// Merge all items to a flat list
+		foreach ($tableOfContent as $item) {
+			if (isset($item['misc'])) {
+				$lines += $item['misc'];
+			}
+			if (isset($item['responsability'])) {
+				$lines += $item['responsability'];
+			}
+			if (isset($item['title'])) {
+				$lines += $item['title'];
+			}
+		}
+
+		return $lines;
+	}
+
+
+
+	/**
+	 * Get content summary
+	 * From fields 520.a
+	 *
+	 * @return	String[]
+	 */
+	public function getContentSummary()
+	{
+		$lines = array();
+		$summary = $this->getMarcSubFieldMaps(520, array(
+											'a'	=> 'summary',
+//											'b'	=> 'expansion'
+											), false);
+
+			// Copy into simple list
+		foreach ($summary as $item) {
+			$lines[] = $item['summary'];
+		}
+
+		return $lines;
 	}
 
 
