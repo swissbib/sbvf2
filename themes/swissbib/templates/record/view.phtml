@@ -14,6 +14,8 @@ if ($this->export()->recordSupportsFormat($this->driver, 'RDF')) {
 
 $lastSearchUrl = VuFind\Search\Memory::retrieve();
 
+$this->headTitle($this->driver->getShortTitle());
+
 ?>
 <!-- begin: col1 (sidebar)  -->
 <div id="col1" class="sidebar">
