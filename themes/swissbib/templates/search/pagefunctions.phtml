@@ -8,7 +8,7 @@ $bulkExportFormats = array('EndNote', 'MARC', 'RefWorks', 'MARCXML');
 	<ul>
 
 		<li id="pagefunction_rss">
-			<a href="#" title="<?=$this->transEsc('Get RSS Feed')?>"><?=$this->transEsc('Get RSS Feed')?></a>
+			<a href="<?=$this->results->getUrlQuery()->setViewParam('rss')?>" title="<?=$this->transEsc('Get RSS Feed')?>"><?=$this->transEsc('Get RSS Feed')?></a>
 		</li>
 
 		<li id="pagefunction_print">
