@@ -1,8 +1,8 @@
 <?php
 
-/** @var	Swissbib\RecordDriver\SolrMarc	$recordDriver  */
-$recordDriver	= $this->driver;
-$holdings		= $recordDriver->getHoldingsStructure();
+/** @var	Swissbib\RecordDriver\SolrMarc	$record  */
+$record		= $this->driver;
+$holdings	= $record->getHoldingsStructure();
 	// Copy favorites to own container
 $holdings		= $this->extractFavoriteInstitutionsForHoldings($holdings);
 
@@ -84,7 +84,7 @@ $holdings		= $this->extractFavoriteInstitutionsForHoldings($holdings);
 </div>
 
 <script type="text/javascript">
-	swissbib.Holdings.initRecord('<?=$recordDriver->getUniqueID()?>');
-	swissbib.HoldingFavorites.initRecord('<?=$recordDriver->getUniqueID()?>');
+	swissbib.Holdings.initRecord('<?=$record->getUniqueID()?>');
+	swissbib.HoldingFavorites.initRecord('<?=$record->getUniqueID()?>');
 	vufindString.favoriteReload = '<?=$this->transEsc('mylibraries.reload')?>';
 </script>

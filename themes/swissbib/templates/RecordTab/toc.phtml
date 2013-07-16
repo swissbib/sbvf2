@@ -1,16 +1,36 @@
 <?
-// Set page title.
-$this->headTitle($this->translate('Table of Contents') . ': ' . $this->driver->getBreadcrumb());
+/** @var	Swissbib\RecordDriver\SolrMarc	$record  */
+$record		= $this->driver;
 
-$toc = $this->driver->getTOC();
+// Set page title.
+$this->headTitle($this->translate('Table of Contents') . ': ' . $record->getShortTitle());
+
+$tableOfContent = $record->getTableOfContent();
+$contentSummary	= $record->getContentSummary();
+
 ?>
-<? if (!empty($toc)): ?>
-    <h4><?=$this->transEsc('Table of Contents')?>: </h4>
-    <ul>
-        <? foreach ($toc as $line): ?>
-            <li><?=$this->escapeHtml($line)?></li>
-        <? endforeach; ?>
-    </ul>
-<? else: ?>
-    <?=$this->transEsc('Table of Contents unavailable')?>.
-<? endif; ?>
+<?php if (empty($tableOfContent) && empty($contentSummary)): ?>
+
+	<p><?=$this->transEsc('Table of Contents unavailable')?></p>
+
+<?php else: ?>
+
+	<?php if (!empty($tableOfContent)): ?>
+		<h4><?= $this->transEsc('toc.content') ?>: </h4>
+		<ul id="table-of-content" class="keywordList">
+			<?php foreach ($tableOfContent as $line): ?>
+				<li><?= $this->escapeHtml($line) ?></li>
+			<?php endforeach; ?>
+		</ul>
+	<?php endif; ?>
+
+	<?php if (!empty($contentSummary)): ?>
+		<h4><?= $this->transEsc('toc.summary') ?>: </h4>
+		<div id="content-summary">
+			<?php foreach ($contentSummary as $line): ?>
+				<p><?= $this->escapeHtml($line) ?></p>
+			<?php endforeach; ?>
+		</div>
+	<?php endif; ?>
+
+<?php endif; ?>
