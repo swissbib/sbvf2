@@ -71,7 +71,7 @@ $lastSearchUrl = VuFind\Search\Memory::retrieve();
 			</div>
 
 			<!-- begin: pagefunctions -->
-			<?=$this->pageFunctions($this->driver)?>
+			<?=$this->render('record/pagefunctions')?>
 			<!-- end: pagefunctions -->
 		</div>
 		<!-- end: content -->
