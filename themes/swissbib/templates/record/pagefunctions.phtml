@@ -1,33 +1,24 @@
-<div id="pagefunctions" class="<?=$this->boxClass?>">
+<?php
+
+$exportFormats = $this->export()->getFormatsForRecord($this->driver);
+
+?>
+<div id="pagefunctions" class="offset">
 	<h3 class="hidden"><?=$this->transEsc('Search Tools')?></h3>
 	<ul>
+
 		<li id="pagefunction_rss">
 			<a href="#" title="<?=$this->transEsc('Get RSS Feed')?>"><?=$this->transEsc('Get RSS Feed')?></a>
 		</li>
+
 		<li id="pagefunction_print">
 			<a href="#" title="<?=$this->transEsc('Print')?>"><?=$this->transEsc('Print')?></a>
 		</li>
+
 		<li id="pagefunction_send">
-			<a href="#" title="<?=$this->transEsc('Email this')?>"><?=$this->transEsc('Email this')?></a>
+			<a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Email')?>" title="<?=$this->transEsc('Email this')?>"><?=$this->transEsc('Email this')?></a>
 		</li>
-		<?php if ($bulk): ?>
-			<?php
-				$bulkExportFormats = array('EndNote', 'MARC', 'RefWorks', 'MARCXML');
-			?>
-			<li id="pagefunction_save" class="bulkExport">
-				<a href="#" title="<?=$this->transEsc('Save')?>"><?=$this->transEsc('Save')?></a>
-				<ul class="menu" id="exportMenu">
-					<?php foreach ($bulkExportFormats as $format): ?>
-						<li>
-							<a href="<?=$this->url('cart-doexport')?>?f=<?=$format?>"><?= $this->transEsc('Export to') ?> <?= $this->escapeHtml($format) ?></a>
-						</li>
-					<?php endforeach; ?>
-				</ul>
-			</li>
-		<?php endif; ?>
-		<?php
-			$exportFormats = $this->export()->getFormatsForRecord($this->driver);
-		?>
+
 		<?php if (count($exportFormats) > 0): ?>
 			<li id="pagefunction_save">
 				<a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Export')?>" title="<?=$this->transEsc('Save')?>"><?=$this->transEsc('Save')?></a>
@@ -45,5 +36,6 @@
 				</ul>
 			</li>
 		<?php endif; ?>
+
 	</ul>
 </div>
