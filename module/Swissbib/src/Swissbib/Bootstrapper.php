@@ -3,6 +3,7 @@ namespace Swissbib;
 
 use Zend\Config\Config;
 use Zend\Console\Console;
+use Zend\EventManager\Event;
 use Zend\Mvc\MvcEvent;
 use Zend\Console\Request as ConsoleRequest;
 use Zend\I18n\Translator\Translator;
@@ -11,6 +12,7 @@ use Zend\ServiceManager\ServiceManager;
 use VuFind\Config\Reader as ConfigReader;
 
 use Swissbib\Filter\TemplateFilenameFilter;
+use Swissbib\Log\Logger;
 
 class Bootstrapper
 {
@@ -185,6 +187,37 @@ class Bootstrapper
 		$this->events->attach('dispatch', $callback, 8997);
 	}
 
+
+
+	/**
+	 * Add log listener for missing institution translations
+	 *
+	 */
+	protected function initMissingTranslationObserver()
+	{
+		if (APPLICATION_ENV != 'development') {
+			return;
+		}
+
+		/** @var ServiceManager $serviceLocator */
+		$serviceLocator	= $this->event->getApplication()->getServiceManager();
+		/** @var \Swissbib\Log\Logger $logger */
+		$logger	= $serviceLocator->get('Swissbib\Logger');
+		/** @var Translator $translator */
+		$translator = $serviceLocator->get('VuFind\Translator');
+
+		/**
+		 * @param	Event $event
+		 */
+		$callback = function ($event) use ($logger) {
+			if ($event->getParam('text_domain') === 'institution') {
+				$logger->logUntranslatedInstitution($event->getParam('message'));
+			}
+		};
+
+		$translator->enableEventManager();
+		$translator->getEventManager()->attach('missingTranslation', $callback);
+	}
 
 
 	/**
