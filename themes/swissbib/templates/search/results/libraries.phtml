@@ -2,6 +2,7 @@
 
 /** @var    \Swissbib\RecordDriver\SolrMarc    $driver */
 $institutions = $driver->getInstitutions();
+$institutions = $this->filterUntranslatedInstitutions($institutions);
 
 if (sizeof($institutions) > 1) {
 	$institutions = $this->institutionSorter()->sortInstitutions($institutions);
