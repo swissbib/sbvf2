@@ -1011,6 +1011,39 @@ class SolrMarc extends VuFindSolrMarc
 
 
 	/**
+	 * Get fields data without mapping. Keep original order of subfields
+	 *
+	 * @param	Integer		$index
+	 * @return	Array[]
+	 */
+	protected function getMarcSubfieldsRaw($index)
+	{
+		/** @var \File_MARC_Data_Field[] $fields */
+		$fields		= $this->marcRecord->getFields($index);
+		$fieldsData = array();
+
+		foreach ($fields as $field) {
+			$tempFieldData = array();
+
+			/** @var \File_MARC_Subfield[] $subfields */
+			$subfields = $field->getSubfields();
+
+			foreach ($subfields as $subfield) {
+				$tempFieldData[] = array(
+					'tag'	=> $subfield->getCode(),
+					'data'	=> $subfield->getData()
+				);
+			}
+
+			$fieldsData[] = $tempFieldData;
+		}
+
+		return $fieldsData;
+	}
+
+
+
+	/**
 	 * Get value of a sub field
 	 *
 	 * @param    Integer $index
@@ -1169,28 +1202,79 @@ class SolrMarc extends VuFindSolrMarc
 	/**
 	 * Get table of content
 	 * From fields 505.g.r.t
+	 * The combination of the lines of defined by the order of the fields
+	 * Possible combinations:
+	 * - $g. $t / $r
+	 * - $g. $t
+	 * - $g. $r
+	 * - $t. $r
+	 * - $t
+	 * - $r
+	 *
+	 * Use the content of the $debugLog if something seems wrong
 	 *
 	 * @return	String[]
 	 */
 	public function getTableOfContent()
 	{
-		$lines = array();
-		$tableOfContent = $this->getMarcSubFieldMaps(505, array(
-													'_g'	=> 'misc',
-													'_r'	=> 'responsability',
-													'_t'	=> 'title'
-													), false);
+		$lines		= array();
+		$fieldsData = $this->getMarcSubfieldsRaw(505);
+		$debugLog	= array();
 
-			// Merge all items to a flat list
-		foreach ($tableOfContent as $item) {
-			if (isset($item['misc'])) {
-				$lines += $item['misc'];
-			}
-			if (isset($item['responsability'])) {
-				$lines += $item['responsability'];
-			}
-			if (isset($item['title'])) {
-				$lines += $item['title'];
+		foreach ($fieldsData as $fieldIndex => $field) {
+			$maxIndex = sizeof($field) - 1;
+			$index = 0;
+
+			while ($index <= $maxIndex) {
+				if ($field[$index]['tag'] === 'g') {
+					if (isset($field[$index+1])) {
+						if ($field[$index+1]['tag'] === 't') {
+							if (isset($field[$index+2])) {
+								if ($field[$index+2]['tag'] === 'r') { // $g. $t / $r
+									$lines[] = $field[$index]['data'] . '. ' . $field[$index+1]['data'] . ' / ' . $field[$index+2]['data'];
+									$debugLog[$fieldIndex][] = $index . ' | $g. $t / $r';
+									$index += 3;
+								} else { // $g. $t
+									$lines[] = $field[$index]['data'] . '. ' . $field[$index+1]['data'];
+									$debugLog[$fieldIndex][] = $index . ' | $g. $t';
+									$index += 2;
+								}
+							}
+						} elseif ($field[$index+1]['tag'] === 'r') {  // $g. $r
+							$lines[] = $field[$index]['data'] . '. ' . $field[$index+1]['data'];
+							$debugLog[$fieldIndex][] = $index . ' | $g. $r';
+							$index += 2;
+						} else {
+								// unknown order
+							$debugLog[$fieldIndex][] = $index . ' | unknown order';
+							$index += 1;
+						}
+					}
+				} elseif ($field[$index]['tag'] ===  't') {
+					if (isset($field[$index+1])) {
+						if ($field[$index+1]['tag'] === 'r') { // $t / $r
+							$lines[] = $field[$index]['data'] . ' / ' . $field[$index+1]['data'];
+							$debugLog[$fieldIndex][] = $index . ' | $t / $r';
+							$index += 2;
+						} else { // $t
+							$lines[] = $field[$index]['data'];
+							$debugLog[$fieldIndex][] = $index . ' | $t';
+							$index += 1;
+						}
+					} else { // $t
+						$lines[] = $field[$index]['data'];
+						$debugLog[$fieldIndex][] = $index . ' | $t';
+						$index += 1;
+					}
+				} elseif ($field[$index]['tag'] ===  'r') { // $r
+					$lines[] = $field[$index]['data'];
+					$debugLog[$fieldIndex][] = $index . ' | $r';
+					$index += 1;
+				} else {
+					// unknown order
+					$debugLog[$fieldIndex][] = $index . ' | unknown order';
+					$index += 1;
+				}
 			}
 		}
 

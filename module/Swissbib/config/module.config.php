@@ -28,6 +28,7 @@ use Swissbib\VuFind\Search\Helper\ExtendedSolrFactoryHelper;
 use Swissbib\View\Helper\QrCode as QrCodeViewHelper;
 use Swissbib\Highlight\SolrConfigurator as HighlightSolrConfigurator;
 use Swissbib\VuFind\Hierarchy\TreeDataSource\Solr as TreeDataSourceSolr;
+use Swissbib\Log\Logger as SwissbibLogger;
 
 return array(
 	'router'          => array(
@@ -186,6 +187,7 @@ return array(
 				$eBooksOnDemand	= $sm->get('Swissbib\EbooksOnDemand');
 				$availability	= $sm->get('Swissbib\Availability');
 				$bibCodeHelper	= $sm->get('Swissbib\BibCodeHelper');
+				$logger			= $sm->get('Swissbib\Logger');
 
 				return new HoldingsHelper(	$ilsConnection,
 											$hmac,
@@ -195,7 +197,8 @@ return array(
 											$locationMap,
 											$eBooksOnDemand,
 											$availability,
-											$bibCodeHelper
+											$bibCodeHelper,
+											$logger
 											);
 			},
 			'Swissbib\TargetsProxy\TargetsProxy' => function ($sm) {
@@ -269,6 +272,15 @@ return array(
 				$eventsManager	= $sm->get('SharedEventManager');
 
 				return new HighlightSolrConfigurator($eventsManager, $config);
+			},
+			'Swissbib\Logger' => function ($sm) {
+				$logger = new SwissbibLogger();
+
+				$logger->addWriter('stream', 1, array(
+													 'stream'	=> 'log/swissbib.log'
+												));
+
+				return $logger;
 			}
 		)
 	),
@@ -297,7 +309,8 @@ return array(
 			'availabilityInfo'        => 'Swissbib\View\Helper\AvailabilityInfo',
 			'transLocation'        => 'Swissbib\View\Helper\TranslateLocation',
 			'qrCodeHolding'			  => 'Swissbib\View\Helper\QrCodeHolding',
-			'holdingItemsPaging'	  => 'Swissbib\View\Helper\HoldingItemsPaging'
+			'holdingItemsPaging'	  => 'Swissbib\View\Helper\HoldingItemsPaging',
+			'filterUntranslatedInstitutions' => 'Swissbib\View\Helper\FilterUntranslatedInstitutions'
 		),
 		'factories' => array(
 			'institutionSorter' => function ($sm) {
