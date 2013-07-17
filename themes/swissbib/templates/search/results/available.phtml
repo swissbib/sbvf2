@@ -1,13 +1,17 @@
 <?php
-	/** @var	\Swissbib\RecordDriver\SolrMarc	$driver */
-	$amountHoldings	= count($driver->getInstitutions());
-?>
 
+/** @var	\Swissbib\RecordDriver\SolrMarc	$driver */
+$institutions	= $driver->getInstitutions();
+$institutions	= $this->filterUntranslatedInstitutions($institutions);
+$amountHoldings	= sizeof($institutions);
+
+?>
 <p>
-	<? if ($amountHoldings > 0): ?>
-		<? if ($amountHoldings != 1): ?><?= $amountHoldings ?> <?= $this->transEsc('result.libraries') ?>
-		<? else: ?>1 <?= $this->transEsc('result.library') ?><? endif; ?>
-	<? else: ?>
+	<?php if ($amountHoldings === 0): ?>
 		<?= $this->noHolding() ?>
-	<? endif; ?>
+	<?php elseif ($amountHoldings === 1): ?>
+		1 <?= $this->transEsc('result.library') ?>
+	<?php else: ?>
+		<?= $amountHoldings ?> <?= $this->transEsc('result.libraries') ?>
+	<?php endif; ?>
 </p>

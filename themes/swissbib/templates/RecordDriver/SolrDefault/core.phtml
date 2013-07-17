@@ -76,7 +76,8 @@ $highlightedFulltext	= $record->getHighlightedFulltext();
 		    <p><?=$this->escapeHtml($edition)?></p>
 		<?php endif; ?>
 
-		<?php if(!empty($summary)): ?>
+		<?php /** DISABLED - Is now in own tab */ ?>
+		<?php if(!empty($summary) && false): ?>
 		<h4>Inhalt:</h4>
 		<p><?=$this->escapeHtml($summary)?></p>
 		<?php endif; ?>
