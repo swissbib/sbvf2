@@ -1252,9 +1252,9 @@ class SolrMarc extends VuFindSolrMarc
 					}
 				} elseif ($field[$index]['tag'] ===  't') {
 					if (isset($field[$index+1])) {
-						if ($field[$index+1]['tag'] === 'r') { // $t. $r
-							$lines[] = $field[$index]['data'] . '. ' . $field[$index+1]['data'];
-							$debugLog[$fieldIndex][] = $index . ' | $t. $r';
+						if ($field[$index+1]['tag'] === 'r') { // $t / $r
+							$lines[] = $field[$index]['data'] . ' / ' . $field[$index+1]['data'];
+							$debugLog[$fieldIndex][] = $index . ' | $t / $r';
 							$index += 2;
 						} else { // $t
 							$lines[] = $field[$index]['data'];
