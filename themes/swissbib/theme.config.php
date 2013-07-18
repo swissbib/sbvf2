@@ -48,7 +48,7 @@ return array(
   		'swissbib/HoldingFavorites.js',
 		'swissbib/FavoriteInstitutions.js',
 		'swissbib/Account.js',
-		'swissbib/searchsettings.js',
+		'swissbib/Settings.js',
 
 		'blueprint/commonFromBluePrint.js',
 
