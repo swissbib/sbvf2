@@ -29,8 +29,29 @@ $this->headTitle($this->translate('Email this Search'));
 
 			<?= $this->flashmessages() ?>
 
-			<form action="" method="post" name="emailSearch">
-				<input type="hidden" name="url" value="<?= $this->escapeHtml($this->url) ?>"/>
+			<form class="form" method="post" name="emailSearch">
+                <input type="hidden" name="url" value="<?= $this->escapeHtml($this->url) ?>"/>
+                <fieldset>
+                    <div class="fieldgroup">
+                        <div class="fieldbox">
+                            <label class="label" for="email_to"><?=$this->transEsc('To')?>:</label>
+                            <input class="text large <?=$this->jqueryValidation(array('required'=>'This field is required', 'email'=>'Email address is invalid'))?>" id="email_to" type="text" name="to" value="<?=isset($this->to) ? $this->to : ''?>" />
+                        </div>
+                        <div class="fieldbox">
+                            <label class="label" for="email_from"><?=$this->transEsc('From')?>:</label>
+                            <input class="text large <?=$this->jqueryValidation(array('required'=>'This field is required', 'email'=>'Email address is invalid'))?>" id="email_from" type="text" name="from" value="<?=isset($this->from) ? $this->from : ''?>" />
+                        </div>
+                        <div class="fieldbox">
+                            <label class="label" for="email_message"><?=$this->transEsc('Message')?>:</label>
+                            <textarea id="email_message" name="message" class="textarea large"><?=isset($this->message) ? $this->message : ''?></textarea>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="actions">
+                    <input class="submit primary" type="submit" name="submit" value="<?= $this->transEsc('Send') ?>"/>
+                </fieldset>
+
+                <!-- <input type="hidden" name="url" value="<?= $this->escapeHtml($this->url) ?>"/>
 
 				<label class="displayBlock" for="email_to"><?= $this->transEsc('To') ?>:</label>
 				<input id="email_to" type="text" name="to" value="<?= isset($this->to) ? $this->to : '' ?>" size="40"
@@ -45,7 +66,7 @@ $this->headTitle($this->translate('Email this Search'));
 				<textarea id="email_message" name="message" rows="3" class="displayBlock"
 						  cols="40"><?= isset($this->message) ? $this->message : '' ?></textarea>
 				<br/>
-				<input class="button" type="submit" name="submit" value="<?= $this->transEsc('Send') ?>"/>
+				<input class="button" type="submit" name="submit" value="<?= $this->transEsc('Send') ?>"/> -->
 			</form>
 
 		</div>
