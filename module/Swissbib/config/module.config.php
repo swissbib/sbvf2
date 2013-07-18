@@ -61,13 +61,13 @@ return array(
 				)
 			),
 			// (local) Search User Settings
-			'search-settings'     => array(
+			'myresearch-settings'     => array(
 				'type'    => 'literal',
 				'options' => array(
-					'route'    => '/MyResearch/Profile/Searchsettings',
+					'route'    => '/MyResearch/Settings',
 					'defaults' => array(
 						'controller' => 'my-research',
-						'action'     => 'Searchsettings',
+						'action'     => 'settings'
 					)
 				)
 			),
