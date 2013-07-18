@@ -168,6 +168,13 @@ return array(
 			'institutionFavorites'=> 'Swissbib\Controller\FavoritesController',
 			'hierarchycache' 	 => 'Swissbib\Controller\HierarchyCacheController',
 			'cart' 				=> 'Swissbib\Controller\CartController'
+		),
+		'factories' => array(
+			'record' => function ($sm) {
+				return new \Swissbib\Controller\RecordController(
+					$sm->getServiceLocator()->get('VuFind\Config')->get('config')
+				);
+			}
 		)
 	),
 	'service_manager' => array(
