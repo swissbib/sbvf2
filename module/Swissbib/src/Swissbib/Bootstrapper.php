@@ -87,10 +87,38 @@ class Bootstrapper
 	}
 
 
+
+	/**
+	 * Initialize translation from user settings
+	 */
+	protected function initTranslation()
+	{
+		$callback = function ($event) {
+			/** @var ServiceManager $serviceLocator */
+			$serviceLocator	= $event->getApplication()->getServiceManager();
+			/** @var Manager $authManager */
+			$authManager	= $serviceLocator->get('VuFind\AuthManager');
+			/** @var Translator $translator */
+			$translator = $event->getApplication()->getServiceManager()->get('VuFind\Translator');
+
+			if ($authManager->isLoggedIn()) {
+				$locale = $authManager->isLoggedIn()->language;
+
+				if ($locale) {
+					$translator->setLocale($locale);
+				}
+			}
+		};
+
+		$this->events->attach('dispatch', $callback);
+	}
+
+
+
 	/*
 	 * Set fallback locale to english
 	 */
-	public function initTranslationFallback()
+	protected function initTranslationFallback()
 	{
 		// Language not supported in CLI mode:
 		if (Console::isConsole()) {
@@ -119,7 +147,7 @@ class Bootstrapper
 	/**
 	 * Initialize translator for custom label files
 	 */
-	public function initSpecialTranslations()
+	protected function initSpecialTranslations()
 	{
 		// Language not supported in CLI mode:
 		if (Console::isConsole()) {
@@ -162,7 +190,7 @@ class Bootstrapper
 	/**
 	 * Add files for location translation based on tab40 data to the translator
 	 */
-	public function initTab40LocationTranslation()
+	protected function initTab40LocationTranslation()
 	{
 		$callback = function ($event) {
 			/** @var ServiceManager $serviceLocator */

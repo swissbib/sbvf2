@@ -111,7 +111,7 @@ class MyResearchController extends VuFindMyResearchController
 
 			$this->flashMessenger()->setNamespace('info')->addMessage('save_settings_success');
 
-			setcookie('language', $language, time()*3600*24*100);
+			setcookie('language', $language, time()*3600*24*100, '/');
 
 			return $this->redirect()->toRoute('myresearch-settings');
 		}
