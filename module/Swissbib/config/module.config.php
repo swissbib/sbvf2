@@ -62,11 +62,11 @@ return array(
 			),
 			// (local) Search User Settings
 			'search-settings'     => array(
-				'type'    => 'Zend\Mvc\Router\Http\Literal',
+				'type'    => 'literal',
 				'options' => array(
 					'route'    => '/MyResearch/Profile/Searchsettings',
 					'defaults' => array(
-						'controller' => 'MyResearch',
+						'controller' => 'my-research',
 						'action'     => 'Searchsettings',
 					)
 				)
@@ -116,7 +116,7 @@ return array(
 				'options' => array(
 					'route'    => '/MyResearch/Lists',
 					'defaults' => array(
-						'controller' => 'myresearch',
+						'controller' => 'my-research',
 						'action'     => 'favorites'
 					)
 				)
