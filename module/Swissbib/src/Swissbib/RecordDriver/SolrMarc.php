@@ -1223,25 +1223,32 @@ class SolrMarc extends VuFindSolrMarc
 
 		foreach ($fieldsData as $fieldIndex => $field) {
 			$maxIndex = sizeof($field) - 1;
-			$index = 0;
+			$index    = 0;
 
 			while ($index <= $maxIndex) {
-				if ($field[$index]['tag'] === 'g') {
-					if (isset($field[$index+1])) {
-						if ($field[$index+1]['tag'] === 't') {
-							if (isset($field[$index+2])) {
-								if ($field[$index+2]['tag'] === 'r') { // $g. $t / $r
-									$lines[] = $field[$index]['data'] . '. ' . $field[$index+1]['data'] . ' / ' . $field[$index+2]['data'];
-									$debugLog[$fieldIndex][] = $index . ' | $g. $t / $r';
-									$index += 3;
-								} else { // $g. $t
-									$lines[] = $field[$index]['data'] . '. ' . $field[$index+1]['data'];
-									$debugLog[$fieldIndex][] = $index . ' | $g. $t';
-									$index += 2;
-								}
+				$hasNext	= isset($field[$index+1]);
+				$hasTwoNext	= isset($field[$index+2]);
+				$currentTag = $field[$index]['tag'];
+				$currentData= $field[$index]['data'];
+				$nextTag	= $hasNext ? $field[$index+1]['tag'] : null;
+				$nextData	= $hasNext ? $field[$index+1]['data'] : null;
+				$twoNextTag	= $hasTwoNext ? $field[$index+2]['tag'] : null;
+				$twoNextData= $hasTwoNext ? $field[$index+2]['data'] : null;
+
+				if ($currentTag === 'g') {
+					if ($hasNext) {
+						if ($nextTag === 't') {
+							if ($hasTwoNext && $twoNextTag === 'r') { // $g. $t / $r
+								$lines[] = $currentData . '. ' . $nextData . ' / ' . $twoNextData;
+								$debugLog[$fieldIndex][] = $index . ' | $g. $t / $r';
+								$index += 3;
+							} else { // $g. $t
+								$lines[] = $currentData . '. ' . $nextData;
+								$debugLog[$fieldIndex][] = $index . ' | $g. $t';
+								$index += 2;
 							}
-						} elseif ($field[$index+1]['tag'] === 'r') {  // $g. $r
-							$lines[] = $field[$index]['data'] . '. ' . $field[$index+1]['data'];
+						} elseif ($nextTag === 'r') {  // $g. $r
+							$lines[] = $currentData . '. ' . $nextData;
 							$debugLog[$fieldIndex][] = $index . ' | $g. $r';
 							$index += 2;
 						} else {
@@ -1250,24 +1257,24 @@ class SolrMarc extends VuFindSolrMarc
 							$index += 1;
 						}
 					}
-				} elseif ($field[$index]['tag'] ===  't') {
-					if (isset($field[$index+1])) {
-						if ($field[$index+1]['tag'] === 'r') { // $t / $r
-							$lines[] = $field[$index]['data'] . ' / ' . $field[$index+1]['data'];
+				} elseif ($currentTag ===  't') {
+					if ($hasNext) {
+						if ($nextTag === 'r') { // $t / $r
+							$lines[] = $currentData . ' / ' . $nextData;
 							$debugLog[$fieldIndex][] = $index . ' | $t / $r';
 							$index += 2;
 						} else { // $t
-							$lines[] = $field[$index]['data'];
+							$lines[] = $currentData;
 							$debugLog[$fieldIndex][] = $index . ' | $t';
 							$index += 1;
 						}
 					} else { // $t
-						$lines[] = $field[$index]['data'];
+						$lines[] = $currentData;
 						$debugLog[$fieldIndex][] = $index . ' | $t';
 						$index += 1;
 					}
-				} elseif ($field[$index]['tag'] ===  'r') { // $r
-					$lines[] = $field[$index]['data'];
+				} elseif ($currentTag ===  'r') { // $r
+					$lines[] = $currentData;
 					$debugLog[$fieldIndex][] = $index . ' | $r';
 					$index += 1;
 				} else {
