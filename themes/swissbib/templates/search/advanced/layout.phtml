@@ -40,7 +40,7 @@ if (isset($this->saved) && is_object($this->saved)) {
 
 // Step 2: Call the javascript to make use of the above
 $this->headScript()->appendFile('advanced_search.js');
-$this->headScript()->appendFile('swissbib.AdvancedSearch.js');
+$this->headScript()->appendFile('swissbib/AdvancedSearch.js');
 $this->headScript()->appendFile('lib/handlebars.js');
 // Step 3: Build the page
 //    $this->headScript()->appendScript($this->partial('search/advanced/build_page.phtml', array('searchDetails' => $searchDetails)));
@@ -128,17 +128,14 @@ $lastSort = $this->options->getLastSort();
 				<?php endif; ?>
 
 				<fieldset class="actions">
-					<label for="advancedsearch_submit" class="hidden">Suchanfrage senden</label>
+					<label for="advancedsearch_submit" class="hidden"><?=$this->transEsc("Find")?></label>
 					<input id="advancedsearch_submit" type="submit" class="submit primary" value="<?=$this->transEsc("Find")?>"/>
-					<label for="advancedsearch_reset" class="hidden">Formular zurücksetzen</label>
+					<label for="advancedsearch_reset" class="hidden"><?=$this->transEsc("Reset")?></label>
 					<input id="advancedsearch_reset" name="advancedsearch_reset" type="reset" class="reset" value="<?=$this->transEsc("Reset")?>"/>
 				</fieldset>
 
 			</form>
 
-			<!-- begin: pagefunctions -->
-			<?=$this->pageFunctions()?>
-			<!-- end: pagefunctions -->
 		</div>
 		<!-- end: content -->
 	</div>

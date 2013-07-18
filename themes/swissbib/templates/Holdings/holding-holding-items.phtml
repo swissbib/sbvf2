@@ -1,0 +1,65 @@
+<?php
+/** @var Array[] $items */
+/** @var Array[] $filters */
+/** @var Integer $page */
+/** @var Integer $total */
+/** @var Integer $year */
+/** @var Integer $volume */
+/** @var Array $baseUrlParams */
+/** @var String $institution */
+
+$baseUrl	= $this->url('holdings-holding-items', $baseUrlParams) . '?';
+$fullUrl	= $baseUrl . '?';
+
+if($year) {
+	$fullUrl .= '&year=' . urlencode($year);
+}
+if($volume) {
+	$fullUrl .= '&volume=' . urlencode($volume);
+}
+
+$institutionLabel	= $this->zendTranslate(strtolower($institution), 'institution');
+
+?>
+<form id="holdings-items-filter-form" action="<?=$this->escapeHtml($baseUrl)?>">
+	<input type="hidden" name="page" value="<?=$this->escapeHtml($page)?>">
+
+	<table id="holdings-items-header">
+		<tr>
+			<td>
+				<?php if (sizeof($filters['years'])): ?>
+					<label for="holding-items-filter-year">Zeige Jahr</label>
+					<select id="holding-items-filter-year" name="year">
+						<option value="">Alle Jahre</option>
+						<?php foreach ($filters['years'] as $yearValue): ?>
+							<option <?=($yearValue==$year?'selected="selected"':'')?>><?=$yearValue?></option>
+						<?php endforeach; ?>
+					</select>
+				<?php endif; ?>
+			</td>
+			<td>
+				<?php if (sizeof($filters['volumes'])): ?>
+					<label for="holding-items-filter-volume">Zeige Band</label>
+					<select id="holding-items-filter-volume" name="volume">
+						<option value="">Alle Bände</option>
+						<?php foreach ($filters['volumes'] as $volumeValue): ?>
+							<option <?=($volumeValue==$volume?'selected="selected"':'')?>><?=$volumeValue?></option>
+						<?php endforeach; ?>
+					</select>
+				<?php endif; ?>
+			</td>
+			<td>
+				<?=$this->holdingItemsPaging($fullUrl, $total, $page)?>
+			</td>
+		</tr>
+	</table>
+
+</form>
+
+<h4><?=$this->escapeHtml($institutionLabel)?></h4>
+
+<?php if (sizeof($items)): ?>
+	<?=$this->render('Holdings/items')?>
+<?php else: ?>
+	<p>Für die aktuell Filterauswahl sind keine Daten vorhanden</p>
+<?php endif; ?>

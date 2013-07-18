@@ -365,10 +365,12 @@ label[for="search_favorites"] {
 }
 
 .holdingsAjaxSpinner {
+	display: none;
+}
+.holdingsAjaxSpinner .spinner {
 	width: 26px;
 	height: 26px;
-	/*display: inline-block;*/
-	display: none;
+	display: inline-block;
 	background: url(../images/ajax_spinner.png) no-repeat 0 0;
 	vertical-align: middle;
 }
@@ -404,4 +406,167 @@ label[for="search_favorites"] {
 
 .holdingActions li.eod span {
 	display: none;
+}
+
+
+#tab-collectionlist form[name=bulkActionForm] table.data {
+	width: 740px;
+}
+
+a#tagRecord {
+	padding-left: 12px;
+	background: url(../images/icon_add.gif) no-repeat 0 2px;
+}
+
+
+/** Holding Table */
+.holdingTable th.actions {
+	width: 100px;
+}
+.holdingTable th.availability {
+	width: 150px;
+}
+.holdingTable th.location {
+	width: 120px;
+}
+.holdingTable th.signature {
+	width: 120px;
+}
+.holdingTable th.signature {
+	width: 30px;
+}
+
+.tabs .ui-widget-header {
+	border: none
+}
+.tabs.ui-widget-content {
+	border: none;
+}
+
+.tabs .ui-state-default,
+.tabs .ui-state-active {
+	border: none;
+	background: none;
+}
+
+.ui-tabs .ui-tabs-nav li {
+	margin: 0;
+}
+
+
+.qrCodeIcon {
+	cursor: pointer;
+}
+
+.qrCodePopup img {
+	margin-top: 70px;
+}
+
+.qrCodePopup .infotext {
+	position: absolute;
+	top: 0;
+	color: #AAAAAA;
+	padding: 5px;
+}
+
+.qrCodePopup .datatext {
+	position: absolute;
+	bottom: 0;
+	padding: 5px;
+}
+
+
+#holdings-items-filter-form {
+
+	margin-bottom: 10px;
+}
+
+#holdings-items-filter-form td {
+	width: 32%;
+}
+
+#holdings-items-header label {
+	font-size: 0.9em;
+}
+#holding-items-popup-paging {
+	font-size: 0.75em;
+}
+
+#holdings-items-header td {
+	border-right: none;
+}
+
+#holdings-items-popup {
+	padding-bottom: 20px;
+}
+
+/** Hide availability column temporary */
+#holdings-items-popup .holdings-items.holdingTable th:nth-child(2),
+#holdings-items-popup .holdings-items.holdingTable td:nth-child(2) {
+  display: none;
+}
+
+
+
+/** Loading mask */
+
+.loadmask-msg {
+	border-color:#ccc !important;
+	background-color: #F89205 !important;
+}
+.loadmask-msg div {
+	border-color: #fc9405 !important;
+}
+
+
+
+#library-toggler-favorite span {
+	background: url(../images/icon_favorit_library.gif) no-repeat right 1px;
+	padding-right: 20px;
+}
+
+pre {
+	background-color: #EEEEEE;
+	font-family: Courier New, Arial;
+	overflow: visible;
+	padding: 5px;
+	text-align: left;
+	white-space: normal;
+	margin-bottom: 3px;
+}
+
+
+span.highlight {
+	font-weight: bold;
+}
+
+#sidebar .subnavigation ul li a {
+	word-wrap: break-word;
+}
+
+
+tr.infoMessagesRow td {
+	padding-bottom: 20px;
+}
+
+
+/** Subject vocabularies in record description */
+.subjectVocabularies .vocabularyList {
+	margin-bottom: 10px;
+	margin-left: 5px;
+}
+.subjectVocabularies .vocabularyList li {
+	font-size: 1.2em;
+	line-height: 1.3em;
+}
+
+
+/** TOC **/
+.keywordList {
+	margin-bottom: 15px;
+}
+.keywordList li {
+	font-size: 1.2em;
+	list-style: square inside;
+	line-height: 1.2em;
 }

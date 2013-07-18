@@ -6,13 +6,36 @@
 
     // Load search actions and settings (if any):
     $options = $this->searchOptions($this->searchClassId);
-    $basicSearch = $options->getSearchAction();
+    $handlers = $this->searchbox()->getHandlers(
+        $this->searchClassId,
+        isset($this->searchIndex) ? $this->searchIndex : null
+    );
+    $handlerCount = count($handlers);
+    $basicSearch = $this->searchbox()->combinedHandlersActive() ? 'combined-searchbox' : $options->getSearchAction();
     $searchHome = $options->getSearchHomeAction();
     $advSearch = $options->getAdvancedSearchAction();
     $lastSort = $options->getLastSort();
     $lastLimit = $options->getLastLimit();
 ?>
 <div class="searchform">
+  <? $searchTabs = $this->searchtabs($this->searchClassId, $this->lookfor, $this->searchIndex, $this->searchType); ?>
+  <? if (count($searchTabs) > 0): ?>
+    <ul class="searchTabNav">
+    <? foreach ($searchTabs as $tab): ?>
+      <li<?=$tab['selected'] ? ' class="active"' : ''?>>
+        <?
+          if (!$tab['selected']) {
+            echo '<a href="' . $this->escapeHtml($tab['url']) . '">';
+          }
+          echo $this->transEsc($tab['label']);
+          if (!$tab['selected']) {
+            echo '</a>';
+          }
+        ?>
+      </li>
+    <? endforeach; ?>
+    </ul>
+  <? endif; ?>
   <? if ($this->searchType == 'advanced'): ?>
     <a href="<?=$this->url($advSearch)?>?edit=<?=$this->escapeHtml($this->searchId)?>" class="small"><?=$this->transEsc("Edit this Advanced Search")?></a> |
     <a href="<?=$this->url($advSearch)?>" class="small"><?=$this->transEsc("Start a new Advanced Search")?></a> |
@@ -23,30 +46,19 @@
       <label for="searchForm_lookfor" class="offscreen"><?=$this->transEsc("Your search terms")?></label>
       <input id="searchForm_lookfor" type="text" name="lookfor" size="40" value="<?=$this->escapeHtml($this->lookfor)?>"<?=$options->autocompleteEnabled() ? ' class="autocomplete searcher:' . $this->escapeHtml($this->searchClassId) . ' typeSelector:searchForm_type"' : ''?>/>
       <label for="searchForm_type" class="offscreen"><?=$this->transEsc("Search Type")?></label>
-      <? if (count($options->getBasicHandlers()) > 0): ?>
-      <select id="searchForm_type" name="type">
-      <? foreach ($options->getBasicHandlers() as $searchVal => $searchDesc): ?>
-        <option value="<?=$this->escapeHtml($searchVal)?>"<?=$this->searchIndex == $searchVal ? ' selected="selected"' : ''?>><?=$this->transEsc($searchDesc)?></option>
-      <? endforeach; ?>
-      </select>
+      <? if ($handlerCount > 1): ?>
+        <select id="searchForm_type" name="type" data-native-menu="false">
+          <? foreach ($handlers as $handler): ?>
+            <option value="<?=$this->escapeHtml($handler['value'])?>"<?=$handler['selected'] ? ' selected="selected"' : ''?>><?=$handler['indent'] ? '-- ' : ''?><?=$this->transEsc($handler['label'])?></option>
+          <? endforeach; ?>
+        </select>
+      <? elseif ($handlerCount == 1): ?>
+        <input type="hidden" name="type" value="<?=$this->escapeHtml($handlers[0]['value'])?>" />
       <? endif; ?>
       <input type="submit" name="submit" value="<?=$this->transEsc("Find")?>"/>
       <? if ($advSearch): ?>
         <a href="<?=$this->url($advSearch)?>" class="small"><?=$this->transEsc("Advanced")?></a>
       <? endif; ?>
-
-      <?
-      /* Do we have any checkbox filters? */
-      $hasCheckboxFilters = false;
-      if (isset($this->checkboxFilters) && count($this->checkboxFilters) > 0) {
-        foreach ($this->checkboxFilters as $current) {
-          if ($current['selected']) {
-            $hasCheckboxFilters = true;
-            break;
-          }
-        }
-      }
-      ?>
 
       <? $shards = $options->getShards(); if ($options->showShardCheckboxes() && !empty($shards)): ?>
         <?
@@ -59,31 +71,29 @@
           <input type="checkbox" <?=$isSelected ? 'checked="checked" ' : ''?>name="shard[]" value='<?=$this->escapeHtml($shard)?>' /> <?=$this->transEsc($shard)?>
         <? endforeach; ?>
       <? endif; ?>
-      <? if ((isset($this->filterList) && is_array($this->filterList) && count($this->filterList) > 0) || $hasCheckboxFilters): ?>
+      <?
+        $filterDetails = $this->searchbox()->getFilterDetails(
+            isset($this->filterList) && is_array($this->filterList) ? $this->filterList : array(),
+            isset($this->checkboxFilters) && is_array($this->checkboxFilters) ? $this->checkboxFilters : array()
+        );
+      ?>
+      <? if (!empty($filterDetails)): ?>
         <? $defaultFilterState = $options->getRetainFilterSetting() ? ' checked="checked"' : ''; ?>
         <div class="keepFilters">
           <input type="checkbox"<?=$defaultFilterState?> id="searchFormKeepFilters"/> <label for="searchFormKeepFilters"><?=$this->transEsc("basic_search_keep_filters")?></label>
           <div class="offscreen">
-            <? if (isset($this->filterList) && is_array($this->filterList)): ?>
-              <? $i = 0; foreach ($this->filterList as $field => $data): ?>
-                <? foreach ($data as $value): ?>
-                  <input id="applied_filter_<?=++$i?>" type="checkbox"<?=$defaultFilterState?> name="filter[]" value="<?=$this->escapeHtml($field)?>:&quot;<?=$this->escapeHtml($value)?>&quot;" />
-                  <label for="applied_filter_<?=$i?>"><?=$this->escapeHtml($field)?>:&quot;<?=$this->escapeHtml($value)?>&quot;</label>
-                <? endforeach; ?>
-              <? endforeach; ?>
-            <? endif; ?>
-            <? if ($hasCheckboxFilters): ?>
-              <? $i = 0; foreach ($checkboxFilters as $current): ?>
-                <? if ($current['selected']): ?>
-                  <input id="applied_checkbox_filter_<?=++$i?>" type="checkbox"<?=$defaultFilterState?> name="filter[]" value="<?=$this->escapeHtml($current['filter'])?>" />
-                  <label for="applied_checkbox_filter_<?=$i?>"><?=$this->escapeHtml($current['filter'])?></label>
-                <? endif; ?>
-              <? endforeach; ?>
-            <? endif; ?>
+            <? foreach ($filterDetails as $current): ?>
+              <input id="<?=$this->escapeHtml($current['id'])?>" type="checkbox"<?=$defaultFilterState?> name="filter[]" value="<?=$this->escapeHtml($current['value'])?>" />
+              <label for="<?=$this->escapeHtml($current['id'])?>"><?=$this->escapeHtml($current['value'])?></label>
+            <? endforeach; ?>
           </div>
         </div>
       <? endif; ?>
       <?
+      /* Show hidden field for active search class when in combined handler mode. */
+      if ($this->searchbox()->combinedHandlersActive()) {
+        echo '<input type="hidden" name="activeSearchClassId" value="' . $this->escapeHtml($this->searchClassId) . '" />';
+      }
       /* Load hidden limit preference from Session */
       if (!empty($lastLimit)) {
         echo '<input type="hidden" name="limit" value="' . $this->escapeHtml($lastLimit) . '" />';

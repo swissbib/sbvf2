@@ -313,13 +313,7 @@ AllFields:
     - author^300
     - author_fuller^150
     - contents^10
-    - topic_unstemmed^550
     - topic^500
-    - geographic^300
-    - genre^300
-    - allfields_unstemmed^10
-    - fulltext_unstemmed^10
-    - allfields
     - fulltext
   QueryFields:
     0:
@@ -361,16 +355,6 @@ AllFields:
       - [and, 500]
     topic:
       - [onephrase, 500]
-    geographic:
-      - [onephrase, 300]
-    genre:
-      - [onephrase, 300]
-    allfields_unstemmed:
-      - [or, 10]
-    fulltext_unstemmed:
-      - [or, 10]
-    allfields:
-      - [or, ~]
     fulltext:
       - [or, ~]
 

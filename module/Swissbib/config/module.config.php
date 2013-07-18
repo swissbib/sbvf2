@@ -12,12 +12,23 @@ use Swissbib\Libadmin\Importer as LibadminImporter;
 use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
 use Swissbib\View\Helper\InstitutionSorter;
 use Swissbib\Tab40Import\Importer as Tab40Importer;
-use Swissbib\View\Helper\TranslateLocation;
 use Swissbib\RecordDriver\Helper\LocationMap;
 use Swissbib\RecordDriver\Missing as RecordDriverMissing;
 use Swissbib\RecordDriver\Summon;
 use Swissbib\RecordDriver\WorldCat;
 use Swissbib\RecordDriver\Helper\EbooksOnDemand;
+use Swissbib\RecordDriver\Helper\Availability;
+use Swissbib\Helper\BibCode;
+use Swissbib\Favorites\DataSource as FavoritesDataSource;
+use Swissbib\Favorites\Manager as FavoritesManager;
+use Swissbib\Favorites\Manager;
+use Swissbib\View\Helper\ExtractFavoriteInstitutionsForHoldings;
+use Swissbib\View\Helper\IsFavoriteInstitution;
+use Swissbib\VuFind\Search\Helper\ExtendedSolrFactoryHelper;
+use Swissbib\View\Helper\QrCode as QrCodeViewHelper;
+use Swissbib\Highlight\SolrConfigurator as HighlightSolrConfigurator;
+use Swissbib\VuFind\Hierarchy\TreeDataSource\Solr as TreeDataSourceSolr;
+use Swissbib\Log\Logger as SwissbibLogger;
 
 return array(
 	'router'          => array(
@@ -79,6 +90,36 @@ return array(
 						'action'     => 'list'
 					)
 				)
+			),
+			'holdings-holding-items' => array( // load holding holdings details for record with ajax
+				'type'    => 'segment',
+				'options' => array(
+					'route'    => '/Holdings/:record/:institution/items/:resource',
+					'defaults' => array(
+						'controller' => 'holdings',
+						'action'     => 'holdingItems'
+					)
+				)
+			),
+			'myresearch-favorite-institutions' => array( // display defined favorite institutions
+				'type'    => 'segment',
+				'options' => array(
+					'route'    => '/MyResearch/Favorites[/:action]',
+					'defaults' => array(
+						'controller' => 'institutionFavorites',
+						'action'     => 'display'
+					)
+				)
+			),
+			'myresearch-favorites' => array( // Override vufind favorites route. Rename to Lists
+				'type' => 'literal',
+				'options' => array(
+					'route'    => '/MyResearch/Lists',
+					'defaults' => array(
+						'controller' => 'myresearch',
+						'action'     => 'favorites'
+					)
+				)
 			)
 		)
 	),
@@ -102,25 +143,38 @@ return array(
 							'action'     => 'import'
 						)
 					)
+				),
+				'hierarchy' => array(
+					'options' => array(
+						'route'    => 'hierarchy [<limit>] [--verbose|-v]',
+						'defaults' => array(
+							'controller' => 'hierarchycache',
+							'action'     => 'buildCache'
+						)
+					)
 				)
 			)
 		)
 	),
 	'controllers'     => array(
 		'invokables' => array(
-			'helppage'     => 'Swissbib\Controller\HelpPageController',
-			'libadminsync' => 'Swissbib\Controller\LibadminSyncController',
-			'my-research'  => 'Swissbib\Controller\MyResearchController',
-			'search'       => 'Swissbib\Controller\SearchController',
-			'summon'       => 'Swissbib\Controller\SummonController',
-			'holdings'     => 'Swissbib\Controller\HoldingsController',
-			'tab40import'  => 'Swissbib\Controller\Tab40ImportController'
+			'helppage'     		=> 'Swissbib\Controller\HelpPageController',
+			'libadminsync' 		=> 'Swissbib\Controller\LibadminSyncController',
+			'my-research'  		=> 'Swissbib\Controller\MyResearchController',
+			'search'       		=> 'Swissbib\Controller\SearchController',
+			'summon'       		=> 'Swissbib\Controller\SummonController',
+			'holdings'     		=> 'Swissbib\Controller\HoldingsController',
+			'tab40import'  		=> 'Swissbib\Controller\Tab40ImportController',
+			'institutionFavorites'=> 'Swissbib\Controller\FavoritesController',
+			'hierarchycache' 	 => 'Swissbib\Controller\HierarchyCacheController',
+			'cart' 				=> 'Swissbib\Controller\CartController'
 		)
 	),
 	'service_manager' => array(
 		'invokables' => array(
 			'VuFindTheme\ResourceContainer'       => 'Swissbib\VuFind\ResourceContainer',
-			'Swissbib\RecordDriverHoldingsHelper' => 'Swissbib\RecordDriver\Helper\Holdings'
+			'Swissbib\RecordDriverHoldingsHelper' => 'Swissbib\RecordDriver\Helper\Holdings',
+			'Swissbib\QRCode'					  => 'Swissbib\CRCode\QrCodeService'
 		),
 		'factories'  => array(
 			'Swissbib\HoldingsHelper'    => function ($sm) {
@@ -131,8 +185,21 @@ return array(
 				$translator		= $sm->get('VuFind\Translator');
 				$locationMap	= $sm->get('Swissbib\LocationMap');
 				$eBooksOnDemand	= $sm->get('Swissbib\EbooksOnDemand');
+				$availability	= $sm->get('Swissbib\Availability');
+				$bibCodeHelper	= $sm->get('Swissbib\BibCodeHelper');
+				$logger			= $sm->get('Swissbib\Logger');
 
-				return new HoldingsHelper($ilsConnection, $hmac, $authManager, $config, $translator, $locationMap, $eBooksOnDemand);
+				return new HoldingsHelper(	$ilsConnection,
+											$hmac,
+											$authManager,
+											$config,
+											$translator,
+											$locationMap,
+											$eBooksOnDemand,
+											$availability,
+											$bibCodeHelper,
+											$logger
+											);
 			},
 			'Swissbib\TargetsProxy\TargetsProxy' => function ($sm) {
 				$config        = $sm->get('VuFind\Config')->get('TargetsProxy');
@@ -169,6 +236,51 @@ return array(
 				$translator			  = $sm->get('VuFind\Translator');
 
 				return new EbooksOnDemand($eBooksOnDemandConfig, $translator);
+			},
+			'Swissbib\Availability' => function ($sm) {
+				$bibCodeHelper	= $sm->get('Swissbib\BibCodeHelper');
+				$availabilityConfig = $sm->get('VuFind\Config')->get('config')->Availability;
+
+				return new Availability($bibCodeHelper, $availabilityConfig);
+			},
+			'Swissbib\BibCodeHelper' => function ($sm) {
+				$alephNetworkConfig	= $sm->get('VuFind\Config')->get('Holdings')->AlephNetworks;
+
+				return new BibCode($alephNetworkConfig);
+			},
+			'Swissbib\FavoriteInstitutions\DataSource' => function ($sm) {
+				$objectCache   = $sm->get('VuFind\CacheManager')->getCache('object');
+				$configManager = $sm->get('VuFind\Config');
+
+				return new FavoritesDataSource($objectCache, $configManager);
+			},
+			'Swissbib\FavoriteInstitutions\Manager'    => function ($sm) {
+				$sessionStorage = $sm->get('VuFind\SessionManager')->getStorage();
+				$groupMapping   = $sm->get('VuFind\Config')->get('libadmin-groups')->institutions;
+				$authManager    = $sm->get('VuFind\AuthManager');
+
+				return new FavoritesManager($sessionStorage, $groupMapping, $authManager);
+			},
+			'Swissbib\ExtendedSolrFactoryHelper'       => function ($sm) {
+				$config          = $sm->get('Vufind\Config')->get('config')->SwissbibSearchExtensions;
+				$extendedTargets = explode(',', $config->extendedTargets);
+
+				return new ExtendedSolrFactoryHelper($extendedTargets);
+			},
+			'Swissbib\Highlight\SolrConfigurator' => function ($sm) {
+				$config			= $sm->get('Vufind\Config')->get('config')->Highlight;
+				$eventsManager	= $sm->get('SharedEventManager');
+
+				return new HighlightSolrConfigurator($eventsManager, $config);
+			},
+			'Swissbib\Logger' => function ($sm) {
+				$logger = new SwissbibLogger();
+
+				$logger->addWriter('stream', 1, array(
+													 'stream'	=> 'log/swissbib.log'
+												));
+
+				return $logger;
 			}
 		)
 	),
@@ -183,7 +295,6 @@ return array(
 			'myResearchSideBar'       => 'Swissbib\View\Helper\MyResearchSideBar',
 			'noHolding'               => 'Swissbib\View\Helper\NoHolding',
 			'number'                  => 'Swissbib\View\Helper\Number',
-			'pageFunctions'           => 'Swissbib\View\Helper\PageFunctions',
 			'physicalDescription'     => 'Swissbib\View\Helper\PhysicalDescriptions',
 			'publicationDateMarc'     => 'Swissbib\View\Helper\YearFormatterMarc',
 			'publicationDateSummon'	  => 'Swissbib\View\Helper\YearFormatterSummon',
@@ -191,11 +302,15 @@ return array(
 			'subjectHeadingFormatter' => 'Swissbib\View\Helper\SubjectHeadings',
 			'shorttitleSummon'		  => 'Swissbib\View\Helper\ShortTitleFormatterSummon',
 			'SortAndPrepareFacetList' => 'Swissbib\View\Helper\SortAndPrepareFacetList',
-			'subjectVocabularies'	  => 'Swissbib\View\Helper\SubjectVocabularies',
 			'tabTemplate'			  => 'Swissbib\View\Helper\TabTemplate',
 			'zendTranslate'           => 'Zend\I18n\View\Helper\Translate',
 			'getVersion'              => 'Swissbib\View\Helper\GetVersion',
-			'holdingActions'          => 'Swissbib\View\Helper\HoldingActions'
+			'holdingActions'          => 'Swissbib\View\Helper\HoldingActions',
+			'availabilityInfo'        => 'Swissbib\View\Helper\AvailabilityInfo',
+			'transLocation'        => 'Swissbib\View\Helper\TranslateLocation',
+			'qrCodeHolding'			  => 'Swissbib\View\Helper\QrCodeHolding',
+			'holdingItemsPaging'	  => 'Swissbib\View\Helper\HoldingItemsPaging',
+			'filterUntranslatedInstitutions' => 'Swissbib\View\Helper\FilterUntranslatedInstitutions'
 		),
 		'factories' => array(
 			'institutionSorter' => function ($sm) {
@@ -209,11 +324,24 @@ return array(
 
 				return new InstitutionSorter($institutionList);
 			},
-			'transLocation'	=> function ($sm) { // Translate holding locations
-				/** @var Translator $translator */
-				$translator	= $sm->getServiceLocator()->get('VuFind\Translator');
+			'extractFavoriteInstitutionsForHoldings' => function ($sm) {
+				/** @var Manager $favoriteManager */
+				$favoriteManager		= $sm->getServiceLocator()->get('Swissbib\FavoriteInstitutions\Manager');
+				$userInstitutionCodes	= $favoriteManager->getUserInstitutions();
 
-				return new TranslateLocation($translator);
+				return new ExtractFavoriteInstitutionsForHoldings($userInstitutionCodes);
+			},
+			'qrCode' => function ($sm) {
+				$qrCodeService = $sm->getServiceLocator()->get('Swissbib\QRCode');
+
+				return new QrCodeViewHelper($qrCodeService);
+			},
+			'isFavoriteInstitution' => function ($sm) {
+				/** @var Manager $favoriteManager */
+				$favoriteManager		= $sm->getServiceLocator()->get('Swissbib\FavoriteInstitutions\Manager');
+				$userInstitutionCodes	= $favoriteManager->getUserInstitutions();
+
+				return new IsFavoriteInstitution($userInstitutionCodes);
 			}
 		)
 	),
@@ -221,8 +349,7 @@ return array(
 		'recorddriver_tabs'	=> array(
 			'VuFind\RecordDriver\SolrMarc' => array(
 				'tabs' => array(
-					'UserComments'	=> null, // Disable user comments tab
-                    'HierarchyTree' => null,
+					'UserComments'	=> null
 				)
 			),
 			'VuFind\RecordDriver\Summon' => array(
@@ -238,8 +365,8 @@ return array(
 		'plugin_managers' => array(
 			'search_backend'	=> array(
 				'factories'	=> array(
-//					'Solr' => 'VuFind\Search\Factory\SolrDefaultBackendFactory',
-					'Summon'	=> 'Swissbib\Search\Factory\SummonBackendFactory',
+					'Solr' 		=> 'Swissbib\VuFind\Search\Factory\SolrDefaultBackendFactory',
+					'Summon'	=> 'Swissbib\VuFind\Search\Factory\SummonBackendFactory',
 //					'WorldCat' => 'VuFind\Search\Factory\WorldCatBackendFactory',
 				)
 			),
@@ -293,9 +420,27 @@ return array(
 					}
 				)
 			),
+			'hierarchy_driver' => array(
+				'factories' => array(
+					'series' => function ($sm) {
+						return \VuFind\Hierarchy\Driver\Factory::get($sm->getServiceLocator(), 'HierarchySeries');
+					},
+				)
+			),
 			'hierarchy_treerenderer' => array(
 				'invokables' => array(
-					'jstree' => 'Swissbib\VuFind\Hierarchy\TreeRenderer\JSTree',
+					'jstree' => 'Swissbib\VuFind\Hierarchy\TreeRenderer\JSTree'
+				)
+			),
+			'hierarchy_treedatasource' => array(
+				'factories' => array(
+					'solr' => function ($sm) {
+						$cacheDir = $sm->getServiceLocator()->get('VuFind\CacheManager')->getCacheDir(false);
+						return new TreeDataSourceSolr(
+							$sm->getServiceLocator()->get('VuFind\Search'),
+							rtrim($cacheDir, '/') . '/hierarchy'
+						);
+					}
 				)
 			)
 		)
@@ -309,11 +454,11 @@ return array(
     'swissbib' => array(
         'ignore_css_assets' => array(
             'blueprint/screen.css',
-            'jquery-ui.css'
+            'css/smoothness/jquery-ui.css'
         ),
 
         'ignore_js_assets' => array(
-            'jquery.min.js',
+            'jquery.min.js', // jquery 1.6
             'jquery.form.js',
             'jquery.metadata.js',
             'jquery.validate.min.js',
@@ -339,15 +484,15 @@ return array(
 				),
 			),
 
-            'search_options' => array(
-                'abstract_factories' => array('Swissbib\Search\Options\PluginFactory'),
+            'vufind_search_options' => array(
+                'abstract_factories' => array('Swissbib\VuFind\Search\Options\PluginFactory'),
             ),
-            'search_params' => array(
-                'abstract_factories' => array('Swissbib\Search\Params\PluginFactory'),
+            'vufind_search_params' => array(
+                'abstract_factories' => array('Swissbib\VuFind\Search\Params\PluginFactory'),
             ),
 
-            'search_results' => array(
-                'abstract_factories' => array('Swissbib\Search\Results\PluginFactory'),
+            'vufind_search_results' => array(
+                'abstract_factories' => array('Swissbib\VuFind\Search\Results\PluginFactory'),
             ),
 
 		),

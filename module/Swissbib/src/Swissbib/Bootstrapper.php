@@ -3,6 +3,7 @@ namespace Swissbib;
 
 use Zend\Config\Config;
 use Zend\Console\Console;
+use Zend\EventManager\Event;
 use Zend\Mvc\MvcEvent;
 use Zend\Console\Request as ConsoleRequest;
 use Zend\I18n\Translator\Translator;
@@ -11,6 +12,7 @@ use Zend\ServiceManager\ServiceManager;
 use VuFind\Config\Reader as ConfigReader;
 
 use Swissbib\Filter\TemplateFilenameFilter;
+use Swissbib\Log\Logger;
 
 class Bootstrapper
 {
@@ -88,6 +90,11 @@ class Bootstrapper
 	 */
 	public function initTranslationFallback()
 	{
+		// Language not supported in CLI mode:
+		if (Console::isConsole()) {
+			return;
+		}
+
 		$baseDir = LOCAL_OVERRIDE_DIR . '/languages';
 
 		$callback = function ($event) use ($baseDir) {
@@ -183,6 +190,37 @@ class Bootstrapper
 
 
 	/**
+	 * Add log listener for missing institution translations
+	 *
+	 */
+	protected function initMissingTranslationObserver()
+	{
+		if (APPLICATION_ENV != 'development') {
+			return;
+		}
+
+		/** @var ServiceManager $serviceLocator */
+		$serviceLocator	= $this->event->getApplication()->getServiceManager();
+		/** @var \Swissbib\Log\Logger $logger */
+		$logger	= $serviceLocator->get('Swissbib\Logger');
+		/** @var Translator $translator */
+		$translator = $serviceLocator->get('VuFind\Translator');
+
+		/**
+		 * @param	Event $event
+		 */
+		$callback = function ($event) use ($logger) {
+			if ($event->getParam('text_domain') === 'institution') {
+				$logger->logUntranslatedInstitution($event->getParam('message'));
+			}
+		};
+
+		$translator->enableEventManager();
+		$translator->getEventManager()->attach('missingTranslation', $callback);
+	}
+
+
+	/**
 	 * Set up plugin managers.
 	 */
 	protected function initPluginManagers()
@@ -193,22 +231,24 @@ class Bootstrapper
 
 		// Use naming conventions to set up a bunch of services based on namespace:
 		$namespaces = array(
-			'Db\Table','Search\Results','Search\Options', 'Search\Params'
+			'Db\Table','VuFind\Search\Results','VuFind\Search\Options', 'VuFind\Search\Params'
 		);
-		foreach ($namespaces as $ns) {
-			$serviceName = 'Swissbib\\' . str_replace('\\', '', $ns) . 'PluginManager';
-			$factory     = function ($sm) use ($config, $ns) {
-				$className = 'Swissbib\\' . $ns . '\PluginManager';
-				$configKey = strtolower(str_replace('\\', '_', $ns));
+
+		foreach ($namespaces as $namespace) {
+			$plainNamespace	= str_replace('\\', '', $namespace);
+			$shortNamespace	= str_replace('VuFind', '', $plainNamespace);
+			$configKey		= strtolower(str_replace('\\', '_', $namespace));
+			$serviceName	= 'Swissbib\\' . $shortNamespace . 'PluginManager';
+			$serviceConfig	= $config['swissbib']['plugin_managers'][$configKey];
+			$className		= 'Swissbib\\' . $namespace . '\PluginManager';
+
+			$pluginManagerFactoryService = function ($sm) use ($className, $serviceConfig) {
 				return new $className(
-					new \Zend\ServiceManager\Config(
-						$config['swissbib']['plugin_managers'][$configKey]
-					)
+					new \Zend\ServiceManager\Config($serviceConfig)
 				);
 			};
 
-			$serviceManager->setFactory($serviceName, $factory);
+			$serviceManager->setFactory($serviceName, $pluginManagerFactoryService);
 		}
 	}
-
 }

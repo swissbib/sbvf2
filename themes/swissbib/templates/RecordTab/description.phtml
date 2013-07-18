@@ -1,6 +1,6 @@
 <?php
 // Set page title.
-$this->headTitle($this->translate('Description') . ': ' . $this->driver->getBreadcrumb());
+//$this->headTitle($this->translate('Description') . ': ' . $this->driver->getBreadcrumb());
 
 // Grab clean ISBN for convenience:
 //$isbn = $this->driver->getCleanISBN();
@@ -10,20 +10,25 @@ $this->headTitle($this->translate('Description') . ': ' . $this->driver->getBrea
 //    $this->headScript()->appendFile($this->syndeticsPlus()->getScript());
 //}
 
-$resultItem = $this->driver;
-$subjectVocabularies = $resultItem->getAllSubjectVocabularies();
+
+/** @var	VuFind\View\Helper\Root\Record		$viewRecord  */
+/** @var	Swissbib\RecordDriver\SolrMarc		$resultItem  */
+$resultItem	= $this->driver;
+$viewRecord	= $this->record($resultItem);
+
+
+$subjectVocabularies = $resultItem->getAllSubjectVocabularies(true);
 $subjects = $this->driver->getAllSubjectHeadings();
+
+/* Display Standard-IDs */
+$isbns = $this->driver->getISBNs();
+$issns = $this->driver->getISSNs();
+$ismns = $this->driver->getISMNs();
+$dois = $this->driver->getDOIs();
+$urns = $this->driver->getURNs();
+
 ?>
-
-
-	<!-- Tab-Inhalte gemaess TP detailstab -->
-
-<?php /* Display Standard-IDs */ ?>
-<?php $isbns = $this->driver->getISBNs(); ?>
-<?php $issns = $this->driver->getISSNs(); ?>
-<?php $ismns = $this->driver->getISMNs(); ?>
-<?php $dois = $this->driver->getDOIs(); ?>
-<?php $urns = $this->driver->getURNs(); ?>
+<!-- Tab-Inhalte gemaess TP detailstab -->
 <?php if (!empty($isbns) or !empty($issns) or !empty($ismns) or !empty($dois) or !empty($urns)): ?>
 	<?php $contentDisplayed = true; ?>
 	<div class="details">
@@ -153,12 +158,14 @@ $prevTitles = $this->driver->getPreviousTitles(); ?>
 
 <?php /* div-box for all notes */ ?>
 
-<?php $notes = $this->driver->getGeneralNotes() ?>
-<?php $diss = $this->driver->getDissertationNotes() ?>
-<?php $bib = $this->driver->getBibliographyNotes() ?>
-<?php $access = $this->driver->getAccessRestrictions() ?>
-<?php $credits = $this->driver->getProductionCredits() ?>
-<?php $awards = $this->driver->getAwards() ?>
+<?php
+$notes = $resultItem->getGeneralNotes();
+$diss = $resultItem->getDissertationNotes();
+$bib = $resultItem->getBibliographyNotes();
+$access = $resultItem->getAccessRestrictions();
+$credits = $resultItem->getProductionCredits();
+$awards = $resultItem->getAwards();
+?>
 <?php if (!empty($notes) or !empty($diss) or !empty($bib) or !empty($access) or !empty($credits) or !empty($awards)): ?>
 	<?php $contentDisplayed = true; ?>
 	<div class="details">
@@ -222,23 +229,48 @@ $prevTitles = $this->driver->getPreviousTitles(); ?>
 <?php endif; ?>
 
 <?php if (sizeof($subjectVocabularies)): ?>
-	<?= $this->subjectVocabularies($subjectVocabularies) ?>
+	<div class="subjectVocabularies">
+		<h4><?= $this->transEsc('Subjects') ?>: </h4>
+		<?php foreach($subjectVocabularies as $vocabulary => $fieldsData): ?>
+			<h5 class="vocabularyTitle"><?=$this->transEsc('vocabulary.' . $vocabulary, array(), $vocabulary)?></h5>
+			<ul class="vocabularyList vocabulary<?=ucfirst($vocabulary)?>">
+				<?php foreach($fieldsData as $fieldIndex => $fieldData): ?>
+					<?php foreach($fieldData as $fieldValues): ?>
+						<?php
+//								// Optional: Filter out numeric fields directly here in template
+//							$fieldValues = array_filter($fieldValues, function($value) {
+//																			return !is_numeric($value);
+//																		});
+						?>
+						<li class="type<?=$fieldIndex?>"><?=$this->escapeHtml(implode(' > ', $fieldValues))?></li>
+					<?php endforeach; ?>
+				<?php endforeach; ?>
+			</ul>
+		<?php endforeach; ?>
+	</div>
 <?php endif; ?>
 
-<?php /* subject display based on VuFind standard mechanism */ ?>
-<?php $subjects = $this->driver->getAllSubjectHeadings();
-if (!empty($subjects)): ?>
-	<h4><?= $this->transEsc('Subjects') ?>: </h4>
-	<?php foreach ($subjects as $field): ?>
-		<?php $subject = ''; ?>
-		<p>
-			<?php $i = 0;
-			foreach ($field as $subfield): ?>
-				<?= ($i++ == 0) ? '' : ' &gt; ' ?>
-				<?php $subject = trim($subject . ' ' . $subfield); ?>
-				<?= $this->escapeHtml($subfield) ?>
-			<?php endforeach; ?>
-		</p>
-	<?php endforeach; ?>
 
-<?php endif; ?>
+<?php
+/** ================= Tags ====================== */
+/** @var \VuFind\Db\Row\Tags[]  $tagList */
+$tagList = $resultItem->getTags();
+?>
+<h4><?=$this->transEsc('Tags')?>:</h4>
+<p id="tagList">
+	<?php if (sizeof($tagList) > 0): ?>
+		<?php
+			$tagElements = array();
+			foreach ($tagList as $tag) {
+				$tagElements[] = '<a href="' . $this->url('tag-home') . '?lookfor=' . urlencode($tag->tag) . '">'
+									. $this->escapeHtml($tag->tag)
+									. '</a>'
+									. ' (' . $this->escapeHtml($tag->cnt) . ')';
+			}
+			echo implode(', ', $tagElements);
+		?>
+	<?php else: ?>
+		<?= $this->transEsc('No Tags') ?>, <?= $this->transEsc('Be the first to tag this record') ?>!
+	<?php endif; ?>
+</p>
+<p><a href="<?=$this->recordLink()->getActionUrl($resultItem, 'AddTag')?>" class="tool add tagRecord controller<?=$viewRecord->getController()?>" title="<?=$this->transEsc('Add Tag')?>" id="tagRecord"><?=$this->transEsc('Add Tag')?></a></p>
