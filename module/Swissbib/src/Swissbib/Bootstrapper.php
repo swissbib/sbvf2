@@ -10,9 +10,11 @@ use Zend\I18n\Translator\Translator;
 use Zend\ServiceManager\ServiceManager;
 
 use VuFind\Config\Reader as ConfigReader;
+use VuFind\Auth\Manager;
 
 use Swissbib\Filter\TemplateFilenameFilter;
 use Swissbib\Log\Logger;
+use Swissbib\VuFind\Search\Solr\Options;
 
 class Bootstrapper
 {
@@ -85,10 +87,47 @@ class Bootstrapper
 	}
 
 
+
+	/**
+	 * Initialize translation from user settings
+	 */
+	protected function initTranslation()
+	{
+		$callback = function ($event) {
+			/** @var ServiceManager $serviceLocator */
+			$serviceLocator	= $event->getApplication()->getServiceManager();
+			/** @var Manager $authManager */
+			$authManager	= $serviceLocator->get('VuFind\AuthManager');
+			/** @var Translator $translator */
+			$translator = $event->getApplication()->getServiceManager()->get('VuFind\Translator');
+
+			if ($authManager->isLoggedIn()) {
+				$request = $event->getRequest();
+				$user = $authManager->isLoggedIn();
+
+				if (($locale = $request->getPost()->get('mylang', false)) ||
+					($locale = $request->getQuery()->get('lng', false))) {
+					$user->language = $locale;
+					$user->save();
+				} else {
+					$locale = $user->language;
+				}
+
+				if ($locale) {
+					$translator->setLocale($locale);
+				}
+			}
+		};
+
+		$this->events->attach('dispatch', $callback);
+	}
+
+
+
 	/*
 	 * Set fallback locale to english
 	 */
-	public function initTranslationFallback()
+	protected function initTranslationFallback()
 	{
 		// Language not supported in CLI mode:
 		if (Console::isConsole()) {
@@ -117,7 +156,7 @@ class Bootstrapper
 	/**
 	 * Initialize translator for custom label files
 	 */
-	public function initSpecialTranslations()
+	protected function initSpecialTranslations()
 	{
 		// Language not supported in CLI mode:
 		if (Console::isConsole()) {
@@ -160,7 +199,7 @@ class Bootstrapper
 	/**
 	 * Add files for location translation based on tab40 data to the translator
 	 */
-	public function initTab40LocationTranslation()
+	protected function initTab40LocationTranslation()
 	{
 		$callback = function ($event) {
 			/** @var ServiceManager $serviceLocator */
@@ -220,6 +259,7 @@ class Bootstrapper
 	}
 
 
+
 	/**
 	 * Set up plugin managers.
 	 */
@@ -231,7 +271,7 @@ class Bootstrapper
 
 		// Use naming conventions to set up a bunch of services based on namespace:
 		$namespaces = array(
-			'Db\Table','VuFind\Search\Results','VuFind\Search\Options', 'VuFind\Search\Params'
+			'VuFind\Search\Results','VuFind\Search\Options', 'VuFind\Search\Params'
 		);
 
 		foreach ($namespaces as $namespace) {
@@ -249,6 +289,30 @@ class Bootstrapper
 			};
 
 			$serviceManager->setFactory($serviceName, $pluginManagerFactoryService);
+		}
+	}
+
+
+
+	/**
+	 * Add user defined default limit for search
+	 */
+	protected function initDefaultSearchLimit()
+	{
+		/** @var ServiceManager $serviceLocator */
+		$serviceLocator	= $this->event->getApplication()->getServiceManager();
+		/** @var Manager $authManager */
+		$authManager	= $serviceLocator->get('VuFind\AuthManager');
+
+		if ($authManager->isLoggedIn()) {
+			$userLimit = $authManager->isLoggedIn()->max_hits;
+
+			if ($userLimit) {
+				/** @var Options $searchOptions */
+				$searchOptions =  $serviceLocator->get('Swissbib\SearchResultsPluginManager')->get('Solr')->getOptions();
+
+				$searchOptions->setDefaultLimit($userLimit);
+			}
 		}
 	}
 }

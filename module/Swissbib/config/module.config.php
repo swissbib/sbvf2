@@ -61,13 +61,13 @@ return array(
 				)
 			),
 			// (local) Search User Settings
-			'search-settings'     => array(
-				'type'    => 'Zend\Mvc\Router\Http\Literal',
+			'myresearch-settings'     => array(
+				'type'    => 'literal',
 				'options' => array(
-					'route'    => '/MyResearch/Profile/Searchsettings',
+					'route'    => '/MyResearch/Settings',
 					'defaults' => array(
-						'controller' => 'MyResearch',
-						'action'     => 'Searchsettings',
+						'controller' => 'my-research',
+						'action'     => 'settings'
 					)
 				)
 			),
@@ -116,7 +116,7 @@ return array(
 				'options' => array(
 					'route'    => '/MyResearch/Lists',
 					'defaults' => array(
-						'controller' => 'myresearch',
+						'controller' => 'my-research',
 						'action'     => 'favorites'
 					)
 				)
@@ -168,6 +168,13 @@ return array(
 			'institutionFavorites'=> 'Swissbib\Controller\FavoritesController',
 			'hierarchycache' 	 => 'Swissbib\Controller\HierarchyCacheController',
 			'cart' 				=> 'Swissbib\Controller\CartController'
+		),
+		'factories' => array(
+			'record' => function ($sm) {
+				return new \Swissbib\Controller\RecordController(
+					$sm->getServiceLocator()->get('VuFind\Config')->get('config')
+				);
+			}
 		)
 	),
 	'service_manager' => array(
