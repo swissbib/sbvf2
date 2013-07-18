@@ -10,9 +10,11 @@ use Zend\I18n\Translator\Translator;
 use Zend\ServiceManager\ServiceManager;
 
 use VuFind\Config\Reader as ConfigReader;
+use VuFind\Auth\Manager;
 
 use Swissbib\Filter\TemplateFilenameFilter;
 use Swissbib\Log\Logger;
+use Swissbib\VuFind\Search\Solr\Options;
 
 class Bootstrapper
 {
@@ -220,6 +222,7 @@ class Bootstrapper
 	}
 
 
+
 	/**
 	 * Set up plugin managers.
 	 */
@@ -249,6 +252,30 @@ class Bootstrapper
 			};
 
 			$serviceManager->setFactory($serviceName, $pluginManagerFactoryService);
+		}
+	}
+
+
+
+	/**
+	 * Add user defined default limit for search
+	 */
+	protected function initDefaultSearchLimit()
+	{
+		/** @var ServiceManager $serviceLocator */
+		$serviceLocator	= $this->event->getApplication()->getServiceManager();
+		/** @var Manager $authManager */
+		$authManager	= $serviceLocator->get('VuFind\AuthManager');
+
+		if ($authManager->isLoggedIn()) {
+			$userLimit = $authManager->isLoggedIn()->max_hits;
+
+			if ($userLimit) {
+				/** @var Options $searchOptions */
+				$searchOptions =  $serviceLocator->get('Swissbib\SearchResultsPluginManager')->get('Solr')->getOptions();
+
+				$searchOptions->setDefaultLimit($userLimit);
+			}
 		}
 	}
 }
