@@ -1,28 +1,39 @@
+<?php
+/** @var 	Array[]		$fines */
+?>
+<!-- display fines -->
 <table class="datagrid fines" summary="<?=$this->transEsc('Your Fines')?>">
 	<tr>
+        <th>&nbsp;</th>
+        <th><?=$this->transEsc('Fine')?></th>
 		<th><?=$this->transEsc('Title')?></th>
-		<th><?=$this->transEsc('Checked Out')?></th>
-		<th><?=$this->transEsc('Due Date')?></th>
-		<th><?=$this->transEsc('Fine')?></th>
-		<th><?=$this->transEsc('Fee')?></th>
-		<th><?=$this->transEsc('Balance')?></th>
+		<th><?=$this->transEsc('Library')?></th>
+		<th><?=$this->transEsc('Call Number')?></th>
+        <th><?=$this->transEsc('Fee')?></th>
+        <th><?=$this->transEsc('Checked Out')?></th>
 	</tr>
-	<?php foreach($this->fines as $record): ?>
+	<?php foreach($this->fines as $index => $fine): ?>
+		<?php
+			$title	= empty($fine['title']) ? $this->translate('not_applicable') : $fine['title'];
+		?>
 		<tr>
+            <td>
+				<span><?=$index+1?></span>
+            </td>
+            <td>
+				<?=$this->escapeHtml($fine['description'])?>
+            </td>
 			<td>
-				<?php if( empty($record['title']) ): ?>
-					<?= $this->transEsc('not_applicable') ?>
-				<?php elseif( !isset($record['id']) ): ?>
-					<?= $this->escapeHtml(trim($record['title'], '/:')) ?>
-				<? else: ?>
-					<a href="<?=$this->url('record', array('id' => (string)$record['id']))?>"><?=$this->escapeHtml(trim($record['title'], '/:'))?></a>
+				<?php if ($fine['id']): ?>
+					<a href="<?=$this->url('record', array('id' => $fine['id'])) ?>"><?=$this->escapeHtml($title)?></a>
+				<?php else: ?>
+					<?=$this->escapeHtml($title)?>
 				<?php endif; ?>
 			</td>
-			<td><?=isset($record['checkout']) ? $this->escapeHtml($record['checkout']) : ''?></td>
-			<td><?=isset($record['duedate']) ? $this->escapeHtml($record['duedate']) : ''?></td>
-			<td><?=isset($record['fine']) ? $this->escapeHtml($record['fine']) : ''?></td>
-			<td><?=isset($record['amount']) ? $this->safeMoneyFormat($record['amount'] / 100.00) : ''?></td>
-			<td><?=isset($record['balance']) ? $this->safeMoneyFormat($record['balance'] / 100.00) : ''?></td>
+			<td><?=$this->escapeHtml($this->zendTranslate($fine['institution'], 'institution'))?></td>
+			<td><?=$this->escapeHtml($fine['signature'])?></td>
+			<td>CHF <?=number_format($fine['amount'], 2, '.', '\'')?></td>
+			<td><?=$this->escapeHtml($fine['checkout'])?></td>
 		</tr>
 	<?php endforeach; ?>
 </table>

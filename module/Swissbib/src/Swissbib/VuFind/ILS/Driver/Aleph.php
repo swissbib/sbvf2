@@ -1,13 +1,15 @@
 <?php
 namespace Swissbib\VuFind\ILS\Driver;
 
-use VuFind\ILS\Driver\Aleph as AlephDriver;
+use VuFind\ILS\Driver\Aleph as VuFindDriver;
 use \SimpleXMLElement;
 use VuFind\Exception\ILS as ILSException;
 use DateTime;
 
-class Aleph extends AlephDriver
+class Aleph extends VuFindDriver
 {
+
+	protected $itemLinks;
 
 	/**
 	 * Get data for photo copies
@@ -50,15 +52,14 @@ class Aleph extends AlephDriver
 			$photoCopyData = $this->extractResponseData($photoCopyRequest, $dataMap);
 
 			// Process data
-			$photoCopyData['dateOpen']   = DateTime::createFromFormat('Ymd', $photoCopyData['dateOpen'])->getTimestamp();
-			$photoCopyData['dateUpdate'] = DateTime::createFromFormat('Ymd', $photoCopyData['dateUpdate'])->getTimestamp();
+			$photoCopyData['dateOpen']   = DateTime::createFromFormat('Ymd', $photoCopyData['dateOpen'])->format('d.m.Y');
+			$photoCopyData['dateUpdate'] = DateTime::createFromFormat('Ymd', $photoCopyData['dateUpdate'])->format('d.m.Y');
 
 			$photoCopiesData[] = $photoCopyData;
 		}
 
 		return $photoCopiesData;
 	}
-
 
 
 	/**
@@ -172,6 +173,142 @@ class Aleph extends AlephDriver
 	}
 
 
+	protected function getHoldingHoldingsLinkList(
+					$resourceId,
+					$institutionCode = '',
+					$offset = 0,
+					$year = 0,
+					$volume = 0,
+					array $extraRestParams = array()
+	) {
+		if (!is_array($this->itemLinks) || true) {
+			$pathElements	= array('record', $resourceId, 'items');
+			$parameters		= $extraRestParams;
+
+			if ($institutionCode) {
+				$parameters['sublibrary'] = $institutionCode;
+			}
+			if ($offset) {
+				$parameters['startPos'] = intval($offset) + 1;
+			}
+			if ($year) {
+				$parameters['year'] = intval($year);
+			}
+			if ($volume) {
+				$parameters['volume'] = intval($volume);
+			}
+
+			$xmlResponse = $this->doRestDLFRequest($pathElements, $parameters);
+
+			/** @var SimpleXMLElement[] $items */
+			$items = $xmlResponse->xpath('//item');
+			$links = array();
+
+			foreach ($items as $item) {
+				$links[] = (string)$item->attributes()->href;
+			}
+
+			$this->itemLinks = $links;
+		}
+
+
+		return $this->itemLinks;
+	}
+
+
+
+
+	public function getHoldingHoldingItems(
+					$resourceId,
+					$institutionCode = '',
+					$offset = 0,
+					$year = 0,
+					$volume = 0,
+					$numItems = 10,
+					array $extraRestParams = array()
+	) {
+		$links	= $this->getHoldingHoldingsLinkList($resourceId, $institutionCode, $offset, $year, $volume, $extraRestParams);
+		$items	= array();
+		$dataMap         = array(
+			'title'             	=> 'z13-title',
+			'author'            	=> 'z13-author',
+			'itemStatus'        	=> 'z30-item-status',
+			'signature'         	=> 'z30-call-no',
+			'library'           	=> 'z30-sub-library',
+			'barcode'           	=> 'z30-barcode',
+			'location_expanded' 	=> 'z30-collection',
+			'location_code'			=> 'z30-collection',
+			'description'       	=> 'z30-description',
+			'raw-sequence-number'	=> 'z30-item-sequence'
+		);
+
+		$linksToExtend = array_slice($links, 0, $numItems);
+
+		foreach ($linksToExtend as $link) {
+			$itemResponseData = $this->doHTTPRequest($link);
+
+			$item = $this->extractResponseData($itemResponseData->item, $dataMap);
+
+			if (isset($item['raw-sequence-number'])) {
+				$item['sequencenumber'] = sprintf('%06d', trim(str_replace('.', '', $item['raw-sequence-number'])));
+			}
+
+			$items[] = $item;
+		}
+
+		return $items;
+	}
+
+
+
+	/**
+	 *
+	 *
+	 * @param $resourceId
+	 * @return	Array[]
+	 */
+	public function getResourceFilters($resourceId)
+	{
+		$pathElements	= array('record', $resourceId, 'filters');
+		$xmlResponse	= $this->doRestDLFRequest($pathElements);
+
+		$yearNodes		= $xmlResponse->{'record-filters'}->xpath('//year');
+		$years 			= array_map('trim', $yearNodes);
+		sort($years);
+
+		$volumeNodes	= $xmlResponse->{'record-filters'}->xpath('//volume');
+		$volumes	= array_map('trim', $volumeNodes);
+		sort($volumes);
+
+		return array(
+			'years'		=> $years,
+			'volumes'	=> $volumes
+		);
+	}
+
+
+
+	/**
+	 *
+	 *
+	 * @param        $resourceId
+	 * @param string $institutionCode
+	 * @param int    $year
+	 * @param int    $volume
+	 * @return	Integer
+	 */
+	public function getHoldingItemCount($resourceId, $institutionCode = '', $year = 0, $volume = 0)
+	{
+		$links	= $this->getHoldingHoldingsLinkList(	$resourceId,
+														$institutionCode,
+														0,
+														$year,
+														$volume);
+
+		return sizeof($links);
+	}
+
+
 
 	/**
 	 * Get booking requests
@@ -221,7 +358,7 @@ class Aleph extends AlephDriver
 		$data = array();
 
 		foreach ($map as $resultField => $path) {
-			list($group, $field) = explode('-', $path);
+			list($group, $field) = explode('-', $path, 2);
 
 			$data[$resultField] = (string)$xmlResponse->$group->$path;
 		}
@@ -266,5 +403,285 @@ class Aleph extends AlephDriver
 			// Normal handling
 			return parent::doXRequest($op, $params, $auth);
 		}
+	}
+
+
+
+	/**
+	 * Perform a RESTful DLF request.
+	 *
+	 * @param array  $path_elements URL path elements
+	 * @param array  $params        GET parameters (null for none)
+	 * @param string $method        HTTP method
+	 * @param string $body          HTTP body
+	 *
+	 * @return \SimpleXMLElement
+	 */
+	protected function doRestDLFRequestIgnoreFailures($path_elements, $params = null, $method = 'GET', $body = null)
+	{
+		$path = implode('/', $path_elements) . '/';
+		$url  = "http://$this->host:$this->dlfport/rest-dlf/" . $path;
+		$url  = $this->appendQueryString($url, $params);
+
+		return $this->doHTTPRequest($url, $method, $body);
+	}
+
+
+
+	/**
+	 * Send renew request do REST server
+	 * Use non breaking DLF request method to support failure messages (which are still a valid response)
+	 *
+	 * @param	Array	$details
+	 * @return	Array[]
+	 */
+	public function renewMyItems($details)
+	{
+		$patron = $details['patron'];
+		$blocks	= array();
+
+		foreach ($details['details'] as $id) {
+			$result = $this->doRestDLFRequestIgnoreFailures(
+				array('patron', $patron['id'], 'circulationActions', 'loans', $id),
+				null, 'POST', null
+			);
+
+			if ($result->renewals && $result->renewals->institution && $result->renewals->institution->loan) {
+				$status   = (string)$result->{'reply-text'};
+				$code     = (int)$result->{'reply-code'};
+				$reason   = (string)$result->renewals->institution->loan->status;
+				$blocks[] = $status . ': ' . $reason . ($code?' [' . $code . ']':'') . ' (' . $id . ')';
+			}
+		}
+
+		return array('blocks' => $blocks, 'details' => array());
+	}
+
+
+
+	/**
+	 * Get my transactions response items
+	 *
+	 * @param	Array		$user
+	 * @param	Boolean		$history
+	 * @return	\SimpleXMLElement[]
+	 */
+	protected function getMyTransactionsResponse(array $user, $history = false)
+	{
+		$userId    = $user['id'];
+		$transList = array();
+		$params    = array("view" => "full");
+		if ($history) {
+			$params["type"] = "history";
+		}
+		$xml = $this->doRestDLFRequest(
+			array('patron', $userId, 'circulationActions', 'loans'), $params
+		);
+
+		return $xml->xpath('//loan');
+	}
+
+
+
+	/**
+	 * Get Patron Transactions
+	 *
+	 * This is responsible for retrieving all transactions (i.e. checked out items)
+	 * by a specific patron.
+	 *
+	 * @param array $user    The patron array from patronLogin
+	 * @param bool  $history Include history of transactions (true) or just get
+	 *                       current ones (false).
+	 *
+	 * @throws \VuFind\Exception\Date
+	 * @throws ILSException
+	 * @return array        Array of the patron's transactions on success.
+	 */
+	public function getMyTransactions($user, $history = false)
+	{
+		$transactionsResponseItems	= $this->getMyTransactionsResponse($user, $history);
+		$dataMap         = array(
+			'barcode'		=> 'z30-barcode',
+			'title'			=> 'z13-title',
+			'doc-number'	=> 'z36-doc-number',
+			'item-sequence'	=> 'z36-item-sequence',
+			'sequence'		=> 'z36-sequence',
+			'loaned'		=> 'z36-loan-date',
+			'due'			=> 'z36-due-date',
+			'status'		=> 'z36-status',
+			'return'		=> 'z36-returned-date',
+			'renewals'		=> 'z36-no-renewal',
+			'library'		=> 'z30-sub-library',
+			'callnum'		=> 'z30-call-no'
+		);
+		$transactionsData	= array();
+
+		foreach ($transactionsResponseItems as $transactionsResponseItem) {
+			$itemData	= $this->extractResponseData($transactionsResponseItem, $dataMap);
+			$group   	= $transactionsResponseItem->xpath('@href');
+			$renewable	= (string)$transactionsResponseItem->attributes()->renew === 'Y';
+
+				// Add special data
+			$itemData['id']			= ($history) ? null : $this->barcodeToID($itemData['barcode']);
+			$itemData['item_id']	= substr(strrchr($group[0], "/"), 1);
+			$itemData['reqnum']		= $itemData['doc-number'] . $itemData['item-sequence'] . $itemData['sequence'];
+			$itemData['loandate']	= $this->parseDate($itemData['loaned']);
+			$itemData['duedate']	= $this->parseDate($itemData['due']);
+			$itemData['returned']	= $this->parseDate($itemData['return']);
+			$itemData['renewable']	= $renewable;
+
+			$transactionsData[] = $itemData;
+		}
+
+		return $transactionsData;
+	}
+
+
+
+	/**
+	 * Get my holds xml data
+	 *
+	 * @param	String		$userId
+	 * @return	\SimpleXMLElement[]
+	 */
+	protected function getMyHoldsResponse($userId)
+	{
+		$xml = $this->doRestDLFRequest(
+			array('patron', $userId, 'circulationActions', 'requests', 'holds'),
+			array('view' => 'full')
+		);
+
+		return $xml->xpath('//hold-request');
+	}
+
+
+
+	/**
+	 * Get my holds
+	 *
+	 * @param	Array		$user
+	 * @return	Array[]
+	 */
+	public function getMyHolds($user)
+	{
+		$holdResponseItems	= $this->getMyHoldsResponse($user['id']);
+		$holds				= array();
+		$dataMap         = array(
+			'location'		=> 'z37-pickup-location',
+			'title'			=> 'z13-title',
+			'author'		=> 'z13-author',
+			'isbn-raw'		=> 'z13-isbn-issn',
+			'reqnum'		=> 'z37-doc-number',
+			'barcode'		=> 'z30-barcode',
+			'expire'		=> 'z37-end-request-date',
+			'holddate'		=> 'z37-hold-date',
+			'create'		=> 'z37-open-date',
+			'status'		=> 'z37-status',
+			'sequence'		=> 'z37-sequence',
+			'balance'		=> 'z37-balancer-date',
+			'institution'	=> 'z30-sub-library-code',
+			'signature'		=> 'z30-call-no',
+			'description'	=> 'z30-description'
+		);
+
+//		$holdResponseItems	= array_slice($holdResponseItems, 0, 5);
+
+		foreach ($holdResponseItems as $holdResponseItem) {
+			$itemData	= $this->extractResponseData($holdResponseItem, $dataMap);
+			$href 		= $holdResponseItem->xpath('@href');
+			$delete		= $holdResponseItem->xpath('@delete');
+
+				// Special fields which require calculation
+			$itemData['type']		= 'hold';
+			$itemData['item_id']	= substr($href[0], strrpos($href[0], '/') + 1);
+			$itemData['isbn']		= array($itemData['isbn-raw']);
+			$itemData['id']			= $this->barcodeToID($itemData['barcode']);
+			$itemData['expire']		= $this->parseDate($itemData['expire']);
+			$itemData['create']		= $this->parseDate($itemData['create']);
+			$itemData['balance']	= $itemData['balance'] === '00000000' ? false : $this->parseDate($itemData['balance']);
+			$itemData['delete']		= (string)($delete[0]) === 'Y';
+			$itemData['position']	= ltrim($itemData['sequence'], '0');
+
+			$holds[] = $itemData;
+		}
+
+		return $holds;
+	}
+
+
+
+	/**
+	 * Get fine data as xml nodes from server
+	 *
+	 * @param	String		$userId
+	 * @return	\SimpleXMLElement[]
+	 */
+	protected function getMyFinesResponse($userId)
+	{
+		$xml = $this->doRestDLFRequest(
+			array('patron', $userId, 'circulationActions', 'cash'),
+			array("view" => "full")
+		);
+
+		return $xml->xpath('//cash');
+	}
+
+
+
+	/**
+	 * Get fines list
+	 *
+	 * @todo	Fetch solr ID to create a link?
+	 * @param	Array	$user
+	 * @return	Array[]
+	 */
+	public function getMyFines($user)
+	{
+		$fineResponseItems	= $this->getMyFinesResponse($user['id']);
+		$fines				= array();
+		$dataMap         = array(
+			'title'			=> 'z13-title',
+			'barcode'		=> 'z30-barcode',
+			'sum'			=> 'z31-sum',
+			'date'			=> 'z31-date',
+			'type'			=> 'z31-type',
+			'description'	=> 'z31-description',
+			'credittype'	=> 'z31-credit-debit',
+			'checkout'		=> 'z31-date',
+			'sequence'		=> 'z31-sequence',
+			'status'		=> 'z31-status',
+			'signature'		=> 'z30-call-no'
+		);
+
+		foreach ($fineResponseItems as $fineResponseItem) {
+			$itemData	= $this->extractResponseData($fineResponseItem, $dataMap);
+
+			$sum	= (float)preg_replace('/[\(\)]/', '', $itemData['sum']);
+			$factor	= $itemData['credittype'] === 'Debit' ? -1 : 1;
+
+			$itemData['amount'] 	= $factor * $sum;
+			$itemData['checkout'] 	= $this->parseDate($itemData['checkout']);
+			$itemData['id'] 		= false; // (string)$this->barcodeToID($itemData['barcode']);
+			$itemData['institution']= strtolower($fineResponseItem->{'z30-sub-library-code'});
+
+			$sortKey	= $itemData['sequence'];
+
+			$fines[$sortKey] = $itemData;
+		}
+
+			// Sort fines by sequence
+		ksort($fines);
+
+			// Sum up balance
+		$balance	= 0;
+
+		foreach ($fines as $index => $fine) {
+			$balance += $fine['amount'];
+
+			$fines[$index]['balance'] = $balance;
+		}
+
+			// Return list without sort keys
+		return array_values($fines);
 	}
 }

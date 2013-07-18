@@ -90,6 +90,7 @@ $config = array(
             'author' => 'VuFind\Controller\AuthorController',
             'authority' => 'VuFind\Controller\AuthorityController',
             'cart' => 'VuFind\Controller\CartController',
+            'combined' => 'VuFind\Controller\CombinedController',
             'confirm' => 'VuFind\Controller\ConfirmController',
             'cover' => 'VuFind\Controller\CoverController',
             'error' => 'VuFind\Controller\ErrorController',
@@ -108,6 +109,7 @@ $config = array(
             'tag' => 'VuFind\Controller\TagController',
             'upgrade' => 'VuFind\Controller\UpgradeController',
             'vudl' => 'VuFind\Controller\VudlController',
+            'web' => 'VuFind\Controller\WebController',
             'worldcat' => 'VuFind\Controller\WorldcatController',
             'worldcatrecord' => 'VuFind\Controller\WorldcatrecordController',
         ),
@@ -456,7 +458,7 @@ $config = array(
             'hierarchy_treedatasource' => array(
                 'factories' => array(
                     'solr' => function ($sm) {
-                        $cacheDir = $sm->getServiceLocator()->get('VuFind\CacheManager')->getCacheDir();
+                        $cacheDir = $sm->getServiceLocator()->get('VuFind\CacheManager')->getCacheDir(false);
                         return new \VuFind\Hierarchy\TreeDataSource\Solr(
                             $sm->getServiceLocator()->get('VuFind\Search'),
                             rtrim($cacheDir, '/') . '/hierarchy'
@@ -592,6 +594,11 @@ $config = array(
                             $sm->getServiceLocator()->get('VuFind\Config')
                         );
                     },
+                    'summonbestbets' => function ($sm) {
+                        return new \VuFind\Recommend\SummonBestBets(
+                            $sm->getServiceLocator()->get('VuFind\SearchResultsPluginManager')
+                        );
+                    },
                     'summondatabases' => function ($sm) {
                         return new \VuFind\Recommend\SummonDatabases(
                             $sm->getServiceLocator()->get('VuFind\SearchResultsPluginManager')
@@ -605,6 +612,11 @@ $config = array(
                     'topfacets' => function ($sm) {
                         return new \VuFind\Recommend\TopFacets(
                             $sm->getServiceLocator()->get('VuFind\Config')
+                        );
+                    },
+                    'webresults' => function ($sm) {
+                        return new \VuFind\Recommend\WebResults(
+                            $sm->getServiceLocator()->get('VuFind\SearchResultsPluginManager')
                         );
                     },
                     'worldcatidentities' => function ($sm) {
@@ -625,6 +637,7 @@ $config = array(
                     'openlibrarysubjectsdeferred' => 'VuFind\Recommend\OpenLibrarySubjectsDeferred',
                     'pubdatevisajax' => 'VuFind\Recommend\PubDateVisAjax',
                     'resultgooglemapajax' => 'VuFind\Recommend\ResultGoogleMapAjax',
+                    'summonresultsdeferred' => 'VuFind\Recommend\SummonResultsDeferred',
                     'switchtype' => 'VuFind\Recommend\SwitchType',
                 ),
             ),
@@ -675,6 +688,14 @@ $config = array(
                             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
                             null,
                             $sm->getServiceLocator()->get('VuFind\Config')->get('searches')
+                        );
+                    },
+                    'solrweb' => function ($sm) {
+                        return new \VuFind\RecordDriver\SolrWeb(
+                            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+                            null,
+                            $sm->getServiceLocator()->get('VuFind\Config')->get('website'),
+                            $sm->getServiceLocator()->get('VuFind\Config')->get('website')
                         );
                     },
                     'summon' => function ($sm) {
@@ -816,6 +837,7 @@ $config = array(
                     'SolrAuth' => 'VuFind\Search\Factory\SolrAuthBackendFactory',
                     'SolrReserves' => 'VuFind\Search\Factory\SolrReservesBackendFactory',
                     'SolrStats' => 'VuFind\Search\Factory\SolrStatsBackendFactory',
+                    'SolrWeb' => 'VuFind\Search\Factory\SolrWebBackendFactory',
                     'Summon' => 'VuFind\Search\Factory\SummonBackendFactory',
                     'WorldCat' => 'VuFind\Search\Factory\WorldCatBackendFactory',
                 ),
@@ -952,7 +974,7 @@ $staticRoutes = array(
     'Browse/LCC', 'Browse/Region', 'Browse/Tag', 'Browse/Topic',
     'Cart/doExport', 'Cart/Email', 'Cart/Export', 'Cart/Home', 'Cart/MyResearchBulk',
     'Cart/Save', 'Collections/ByTitle', 'Collections/Home',
-    'Confirm/Confirm',
+    'Combined/Home', 'Combined/Results', 'Combined/SearchBox', 'Confirm/Confirm',
     'Cover/Show', 'Cover/Unavailable', 'Error/Unavailable',
     'Feedback/Email', 'Feedback/Home', 'Help/Home',
     'Install/Done', 'Install/FixBasicConfig', 'Install/FixCache',
@@ -975,6 +997,7 @@ $staticRoutes = array(
     'Upgrade/GetDBCredentials', 'Upgrade/GetDbEncodingPreference',
     'Upgrade/GetSourceDir', 'Upgrade/Reset', 'Upgrade/ShowSQL',
     'VuDL/Browse', 'VuDL/DSRecord', 'VuDL/Record',
+    'Web/Home', 'Web/Results',
     'Worldcat/Advanced', 'Worldcat/Home', 'Worldcat/Search'
 );
 

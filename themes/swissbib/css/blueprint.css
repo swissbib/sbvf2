@@ -164,3 +164,31 @@
 #treeSelector a {
     margin-right: 1em;
 }
+
+
+#content .tools .limitSelect {
+	display: inline-block;
+}
+
+#content .tools .sortSelector {
+	display: inline-block;
+	margin-right: 20px;
+}
+
+
+#contextHelp {
+	display: none;
+}
+
+.noLink {
+	cursor: default;
+}
+.floatleft {
+	float: left;
+}
+.floatright {
+	float: right;
+}
+.displayBlock {
+	display:block;
+}

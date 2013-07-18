@@ -1,0 +1,52 @@
+<?
+    // Set up page title:
+    $lookfor = $this->params->getDisplayQuery();
+    if (isset($this->overrideTitle)) {
+        $this->headTitle($this->overrideTitle);
+    } else {
+        $this->headTitle($this->translate('Search Results') . (empty($lookfor) ? '' : " - {$lookfor}"));
+    }
+
+    // Set up search box:
+    $this->layout()->searchbox = $this->context($this)->renderInContext(
+        'search/searchbox.phtml',
+        array(
+            'lookfor' => $lookfor,
+            'searchIndex' => $this->params->getSearchHandler(),
+            'searchType' => $this->params->getSearchType(),
+            'searchId' => $this->results->getSearchId(),
+            'searchClassId' => $this->params->getsearchClassId(),
+            'checkboxFilters' => $this->params->getCheckboxFacets(),
+            'filterList' => $this->params->getFilters(),
+            'selectedShards' => $this->params->getSelectedShards()
+        )
+    );
+
+    // Set up breadcrumbs:
+    if (isset($this->overrideTitle)) {
+        $this->layout()->breadcrumbs = '<em>' . $this->escapeHtml($this->overrideTitle) . '</em>';
+    } else {
+        $this->layout()->breadcrumbs = '<em>' . $this->transEsc('Search') . ': ' .
+            $this->escapeHtml($lookfor) . '</em>';
+    }
+
+    // Load Javascript dependencies into header:
+    $this->headScript()->appendFile("check_item_statuses.js");
+    $this->headScript()->appendFile("check_save_statuses.js");
+?>
+<div>
+  <?=$this->flashmessages()?>
+  <? foreach ($this->combinedResults as $searchClassId => $currentSearch): ?>
+    <div class="combinedResult" id="combined_<?=$this->escapeHtml($searchClassId)?>">
+      <? if (isset($currentSearch['ajax']) && $currentSearch['ajax']): ?>
+        <?=$this->render('combined/results-ajax.phtml', array('searchClassId' => $searchClassId, 'currentSearch' => $currentSearch))?>
+      <? else: ?>
+        <?=$this->render('combined/results-list.phtml', array('searchClassId' => $searchClassId, 'currentSearch' => $currentSearch))?>
+      <? endif; ?>
+    </div>
+  <? endforeach; ?>
+</div>
+<? /* End Main Listing */ ?>
+
+<div class="clear"></div>
+

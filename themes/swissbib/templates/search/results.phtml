@@ -1,4 +1,4 @@
-<?
+<?php
         // Set page title
     $lookFor = $this->params->getDisplayQuery();
     if (isset($this->overrideTitle)) {
@@ -51,7 +51,7 @@
 			<!-- end: tabbed view -->
 
 			<!-- begin: pagefunctions -->
-			<?=$this->pageFunctions(null, true, true)?>
+			<?=$this->render('search/pagefunctions')?>
 			<!-- end: pagefunctions -->
 
 		</div>

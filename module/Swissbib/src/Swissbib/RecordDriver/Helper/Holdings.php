@@ -11,6 +11,8 @@ use VuFind\Config\PluginManager as ConfigManager;
 
 use Swissbib\VuFind\ILS\Driver\Aleph;
 use Swissbib\RecordDriver\SolrMarc;
+use Swissbib\Helper\BibCode;
+use Swissbib\Log\Logger;
 
 /**
  * probably Holdings should be a subtype of ZF2 AbstractHelper
@@ -108,6 +110,13 @@ class Holdings
 	/** @var  EbooksOnDemand */
 	protected $ebooksOnDemand;
 
+	/** @var  Availability */
+	protected $availability;
+	/** @var BibCode  */
+	protected $bibCodeHelper;
+	/** @var  Logger */
+	protected $swissbibLogger;
+
 
 
 	/**
@@ -119,6 +128,8 @@ class Holdings
 	 * @param    ConfigManager         $configManager
 	 * @param    Translator            $translator
 	 * @param	 LocationMap		   $locationMap
+	 * @param	 BibCode			   $bibCodeHelper
+	 * @param	 Logger				   $swissbibLogger
 	 * @throws    \Exception
 	 */
 	public function __construct(
@@ -128,7 +139,10 @@ class Holdings
 					ConfigManager $configManager,
 					Translator $translator,
 					LocationMap $locationMap,
-					EbooksOnDemand $ebooksOnDemand
+					EbooksOnDemand $ebooksOnDemand,
+					Availability $availability,
+					BibCode $bibCodeHelper,
+					Logger $swissbibLogger
 	) {
 		$this->ils            = $ilsConnection;
 		$this->configManager  = $configManager;
@@ -138,6 +152,9 @@ class Holdings
 		$this->translator     = $translator;
 		$this->locationMap	  = $locationMap;
 		$this->ebooksOnDemand = $ebooksOnDemand;
+		$this->availability	  = $availability;
+		$this->bibCodeHelper  = $bibCodeHelper;
+		$this->swissbibLogger = $swissbibLogger;
 
 		/** @var Config $relationConfig */
 		$relationConfig			= $configManager->get('libadmin-groups');
@@ -174,21 +191,33 @@ class Holdings
 
 
 	/**
+	 * Get ils driver (aleph)
+	 *
+	 * @return	Aleph
+	 */
+	protected function getIlsDriver()
+	{
+		return $this->ils->getDriver();
+	}
+
+
+
+	/**
 	 * Get holdings data
 	 *
 	 * @param		String		$institutionCode
 	 * @param		SolrMarc	$recordDriver
 	 * @return    Array[]|Boolean            Contains lists for items and holdings {items=>[],holdings=>[]}
 	 */
-	public function getHoldings(SolrMarc $recordDriver, $institutionCode)
+	public function getHoldings(SolrMarc $recordDriver, $institutionCode, $extend = true)
 	{
 		if ($this->holdingData === false) {
 			$this->holdingData = array();
 
 			if ($this->hasItems()) {
-				$this->holdingData['items'] = $this->getItemsData($recordDriver, $institutionCode);
+				$this->holdingData['items'] = $this->getItemsData($recordDriver, $institutionCode, $extend);
 			} elseif ($this->hasHoldings()) {
-				$this->holdingData['holdings'] = $this->getHoldingData($recordDriver, $institutionCode);
+				$this->holdingData['holdings'] = $this->getHoldingData($recordDriver, $institutionCode, $extend);
 			}
 		}
 
@@ -353,17 +382,20 @@ class Holdings
 	 * Get holding items for an institution
 	 *
 	 * @param	SolrMarc	$recordDriver
-	 * @param    String $institutionCode
-	 * @return    Array   Institution Items
+	 * @param	String		$institutionCode
+	 * @param	Boolean		$extend
+	 * @return	Array		Institution Items
 	 */
-	protected function getItemsData(SolrMarc $recordDriver, $institutionCode)
+	protected function getItemsData(SolrMarc $recordDriver, $institutionCode, $extend = true)
 	{
 		$fieldName          = 949; // Field code for item information in holdings xml
 		$institutionItems = $this->geHoldingsData($fieldName, $this->fieldMapping, $institutionCode);
 
-		foreach ($institutionItems as $index => $item) {
-				// Add extra information for item
-			$institutionItems[$index] = $this->extendItem($item, $recordDriver);
+		if ($extend) {
+			foreach ($institutionItems as $index => $item) {
+					// Add extra information for item
+				$institutionItems[$index] = $this->extendItem($item, $recordDriver);
+			}
 		}
 
 		return $institutionItems;
@@ -391,12 +423,13 @@ class Holdings
 	 *
 	 * @param	Array		$item
 	 * @param	SolrMarc	$recordDriver
+	 * @param	Array		$extendingOptions
 	 * @return	Array
 	 */
-	protected function extendItem(array $item, SolrMarc $recordDriver = null)
+	public function extendItem(array $item, SolrMarc $recordDriver, array $extendingOptions = array())
 	{
-		$item	= $this->extendItemBasic($item, $recordDriver);
-		$item	= $this->extendItemIlsActions($item, $recordDriver);
+		$item	= $this->extendItemBasic($item, $recordDriver, $extendingOptions);
+		$item	= $this->extendItemIlsActions($item, $recordDriver, $extendingOptions);
 
 		return $item;
 	}
@@ -410,19 +443,32 @@ class Holdings
 	 *
 	 * @param	Array		$item
 	 * @param	SolrMarc	$recordDriver
+	 * @param	Array		$extendingOptions
 	 * @return	Array
 	 */
-	protected function extendItemBasic(array $item, SolrMarc $recordDriver)
+	protected function extendItemBasic(array $item, SolrMarc $recordDriver = null, array $extendingOptions = array())
 	{
 			// EOD LINK
-		$item['eodlink']	= $this->getEODLink($item, $recordDriver);
-			// Location Map Link
-		$item['locationMap']= $this->getLocationMapLink($item);
-			// Location label
-		$item['locationLabel'] = $this->getLocationLabel($item);
+		if (!isset($extendingOptions['eod']) || $extendingOptions['eod']) {
+			$item['eodlink']	= $this->getEODLink($item, $recordDriver);
+		}
 
-		if (!$this->isRestfulNetwork($item['network'])) {
-			$item['backlink'] = $this->getBackLink($item['network'], strtoupper($item['institution']), $item);
+			// Location Map Link
+		if (!isset($extendingOptions['map']) || $extendingOptions['map']) {
+			$item['locationMap']= $this->getLocationMapLink($item);
+		}
+
+			// Location label
+		if (!isset($extendingOptions['location']) || $extendingOptions['location']) {
+			$item['locationLabel'] = $this->getLocationLabel($item);
+		}
+			// Defaults to false, maybe ils will add more info
+		$item['availability'] = false;
+
+		if (!isset($extendingOptions['backlink']) || $extendingOptions['backlink']) {
+			if (isset($item['network']) && !$this->isRestfulNetwork($item['network'])) {
+				$item['backlink'] = $this->getBackLink($item['network'], strtoupper($item['institution']), $item);
+			}
 		}
 
 		return $item;
@@ -434,26 +480,33 @@ class Holdings
 	 *
 	 * @param	Array    	$item
 	 * @param	SolrMarc	$recordDriver
+	 * @param	Array		$extendingOptions
 	 * @return  Array
 	 */
-	protected function extendItemIlsActions(array $item, SolrMarc $recordDriver = null)
+	protected function extendItemIlsActions(array $item, SolrMarc $recordDriver = null, array $extendingOptions = array())
 	{
 		$networkCode	= isset($item['network']) ? strtolower($item['network']) : '';
 
 			// Only add links for supported networks
-		if ($this->isAlephNetwork($networkCode) && $this->isRestfulNetwork($networkCode)) {
-			// Add hold link for item
-			$item['holdLink'] = $this->getHoldLink($item);
+		if ($this->isAlephNetwork($networkCode)) {
+			if ($this->isRestfulNetwork($networkCode)) {
+					// Add hold link for item
+				if (!isset($extendingOptions['hold']) || $extendingOptions['hold']) {
+					$item['holdLink'] = $this->getHoldLink($item);
+				}
 
-			// Add availability if supported by network
-			$item['availability'] = $this->getAvailabilityInfos($item['bibsysnumber'], $item['barcode']);
-			$item['isAvailable']  = $this->isAvailable($item['bibsysnumber'], $item['barcode']);
+				if (!isset($extendingOptions['actions']) || $extendingOptions['actions']) {
+					if ($this->isLoggedIn()) {
+						$item['userActions'] = $this->getAllowedUserActions($item);
+					}
+				}
+			}
 
-			if ($this->isLoggedIn()) {
-				$item['userActions'] = $this->getAllowedUserActions($item);
+				// Add availability
+			if (!isset($extendingOptions['availability']) || $extendingOptions['availability']) {
+				$item['availability'] = $this->getAvailabilityInfos($item['bibsysnumber'], $item['barcode'], $networkCode);
 			}
 		}
-
 
 		return $item;
 	}
@@ -470,7 +523,7 @@ class Holdings
 	protected function extendHolding(array $holding, SolrMarc $recordDriver = null)
 	{
 		$holding	= $this->extendHoldingBasic($holding, $recordDriver);
-//		$holding	= $this->extendHoldingIlsActions($holding, $recordDriver); // NOT USED AT THE MOMENT
+		$holding	= $this->extendHoldingIlsActions($holding, $recordDriver);
 
 		return $holding;
 	}
@@ -513,6 +566,26 @@ class Holdings
 	 */
 	protected function extendHoldingIlsActions(array $holding, SolrMarc $recordDriver = null)
 	{
+		$networkCode = $holding['network'];
+
+		if ($this->isAlephNetwork($networkCode)) {
+			if ($this->isRestfulNetwork($networkCode)) {
+				$idls		= $this->bibCodeHelper->getBibCode($holding['network']);
+				$resourceId	= $idls . $holding['bibsysnumber'];
+				$itemsCount	= $this->getIlsDriver()->getHoldingItemCount($resourceId, $holding['institution']);
+
+				$holding['itemsLink'] = array(
+					'count'			=> $itemsCount,
+					'resource'		=> $resourceId,
+					'institution'	=> $holding['institution'],
+					'url'			=> array(
+						'record'		=> $this->idItem,
+						'institution'	=> $holding['institution'],
+						'resource'		=> $resourceId
+					)
+				);
+			}
+		}
 
 		return $holding;
 	}
@@ -527,82 +600,9 @@ class Holdings
 	 * @param	SolrMarc	$recordDriver
 	 * @return	String|Boolean
 	 */
-	protected function getEODLink(array $item, SolrMarc $recordDriver)
+	protected function getEODLink(array $item, SolrMarc $recordDriver = null)
 	{
 		return $this->ebooksOnDemand ? $this->ebooksOnDemand->getEbooksOnDemandLink($item, $recordDriver, $this) : false;
-
-		$eodLink = false;
-
-		if ($recordDriver instanceof SolrMarc) {
-			list(,$publishYear,) = $recordDriver->getPublicationDates();
-			$formats			 = $recordDriver->getFormatsRaw();
-
-			if ($this->isValidForEodLink($publishYear, $item['institution'], $formats)) {
-				$eodLink = $this->buildEODLink($item['localid'], $item['institution'], $item['signature']);
-			}
-		}
-
-		return $eodLink;
-	}
-
-
-
-	/**
-	 * Build EOD link string
-	 *
-	 * @param	String		$sysId
-	 * @param	String		$institution
-	 * @param	String		$signature
-	 * @return	String
-	 */
-	protected function buildEODLink($sysId, $institution, $signature)
-	{
-		$bibId			= strtolower($this->configManager->get('Aleph')->Catalog->bib);
-		$instId			= urlencode($institution . $signature);
-		$userLanguage	= $this->translator->getLocale();
-		/** @var Config $eodConfig */
-		$eodConfig		= $this->configManager->get('config')->get('eBooksOnDemand');
-		$linkPattern	= $eodConfig->link;
-		$language		= $eodConfig->offsetExists('lang_' . $userLanguage) ? $eodConfig->get('lang_' . $userLanguage) : 'GER';
-
-		$data	= array(
-			'{SID}'			=> $bibId,
-			'{SYSID}'		=> $sysId,
-			'{INSTITUTION}'	=> $instId,
-			'{LANGUAGE}'	=> $language
-		);
-
-		return str_replace(array_keys($data), array_values($data), $linkPattern);
-	}
-
-
-
-	/**
-	 * Check whether conditions for EOD link match for item properties
-	 *
-	 * @param	Integer		$publishYear
-	 * @param	String		$institution
-	 * @param	String[]	$formats
-	 * @return	Boolean
-	 */
-	protected function isValidForEodLink($publishYear, $institution, array $formats)
-	{
-		$eodConfig				= $this->configManager->get('config')->get('eBooksOnDemand');
-		$maxYear				= $eodConfig->maxYear;
-		$supportedInstitutions	= array_map('strtolower', array_map('trim', explode(',', $eodConfig->institutions)));
-		$supportedFormats		= array_map('strtolower', array_map('trim', explode(',', $eodConfig->formats)));
-		$itemInstitution		= strtolower($institution);
-		$itemFormats			= array_map('strtolower', $formats);
-
-		if ($publishYear <= $maxYear) { // Before year?
-			if (in_array($itemInstitution, $supportedInstitutions)) { // Supported institution?
-				if (sizeof(array_intersect($itemFormats, $supportedFormats)) > 0) { // Supported format?
-					return true;
-				}
-			}
-		}
-
-		return false;
 	}
 
 
@@ -668,7 +668,7 @@ class Holdings
 		$ilsDriver = $this->ils->getDriver();
 		$patron    = $this->getPatron();
 
-		$itemId  = $item['localid'] . $item['sequencenumber'];
+		$itemId  = $item['bibsysnumber'] . $item['sequencenumber'];
 		$groupId = $this->buildItemId($item);
 
 		$allowedActions = $ilsDriver->getAllowedActionsForItem($patron['id'], $itemId, $groupId);
@@ -696,7 +696,7 @@ class Holdings
 		$queryParams = array(
 			'func'           => 'item-photo-request',
 			'doc_library'    => $item['adm_code'],
-			'adm_doc_number' => $item['localid'],
+			'adm_doc_number' => $item['bibsysnumber'],
 			'item_sequence'  => $item['sequencenumber'],
 			'bib_doc_num'    => $item['bibsysnumber'],
 			'bib_library'    => 'DSV01'
@@ -963,43 +963,16 @@ class Holdings
 	/**
 	 * Get availability infos for item element
 	 *
-	 * @param    String        $sysNumber
-	 * @param    String        $barcode
+	 * @param    String  $sysNumber
+	 * @param    String  $barcode
+	 * @param     String $network
 	 * @return    Array|Boolean
 	 */
-	protected function getAvailabilityInfos($sysNumber, $barcode)
+	protected function getAvailabilityInfos($sysNumber, $barcode, $network)
 	{
-		if (!isset($this->availabilities[$sysNumber])) {
-			$this->availabilities[$sysNumber] = $this->getItemCirculationStatuses($sysNumber);
-		}
+		$userLocale	= $this->translator->getLocale();
 
-		if (!isset($this->availabilities[$sysNumber][$barcode])) {
-			$this->availabilities[$sysNumber][$barcode] = false;
-		}
-
-		return $this->availabilities[$sysNumber][$barcode];
-	}
-
-
-
-	/**
-	 * Check whether item is avilable
-	 *
-	 * @todo       Improve checks!
-	 * @see        getAvailabilityInfos
-	 * @param    String        $sysNumber
-	 * @param    String        $barcode
-	 * @return    Boolean        bool
-	 */
-	protected function isAvailable($sysNumber, $barcode)
-	{
-		$infos = $this->getAvailabilityInfos($sysNumber, $barcode);
-
-		if ($infos) {
-			return $infos['loan-status'] === 'Loan';
-		}
-
-		return false;
+		return $this->availability->getAvailability($sysNumber, $barcode, $network, $userLocale);
 	}
 
 
@@ -1035,15 +1008,18 @@ class Holdings
 	 *
 	 * @param	SolrMarc	$recordDriver
 	 * @param	String		$institutionCode
+	 * @param	Boolean		$extend
 	 * @return    Array[]
 	 */
-	protected function getHoldingData(SolrMarc $recordDriver, $institutionCode)
+	protected function getHoldingData(SolrMarc $recordDriver, $institutionCode, $extend = true)
 	{
 		$fieldName          = 852; // Field code for item information in holdings xml
 		$institutionHoldings = $this->geHoldingsData($fieldName, $this->fieldMapping, $institutionCode);
 
-		foreach ($institutionHoldings as $index => $holding) {
-			$institutionHoldings[$index] = $this->extendHolding($holding, $recordDriver);
+		if ($extend) {
+			foreach ($institutionHoldings as $index => $holding) {
+				$institutionHoldings[$index] = $this->extendHolding($holding, $recordDriver);
+			}
 		}
 
 		return $institutionHoldings;
@@ -1127,6 +1103,15 @@ class Holdings
 				$institution = strtolower($item['institution']);
 				$groupCode   = $this->getGroup($institution);
 
+					// Prevent display of untranslated and ungrouped institutions
+				$institutionLabel	= $this->translator->translate($institution, 'institution');
+				if ($groupCode == 'unknown' || $institutionLabel === $institution) {
+					if ($groupCode === 'unknown') {
+						$this->swissbibLogger->logUngroupedInstitution($institution);
+					}
+					continue;
+				}
+
 				// Make sure group is present
 				if (!isset($data[$groupCode])) {
 					$data[$groupCode] = array(
@@ -1191,8 +1176,12 @@ class Holdings
 	 */
 	protected function getHoldLink(array $holdingItem)
 	{
+		if (!isset($holdingItem['bibsysnumber'])) {
+			return null;
+		}
+
 		$linkValues = array(
-			'id'      => $holdingItem['localid'], // $this->idItem,
+			'id'      => $holdingItem['bibsysnumber'], // $this->idItem,
 			'item_id' => $this->buildItemId($holdingItem)
 		);
 

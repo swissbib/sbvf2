@@ -11,7 +11,7 @@ $staticItems = array(
     ),
     'favorites'	=> array(
 		'route'	=> 'myresearch-favorites',
-		'label'	=> 'Favorites',
+		'label'	=> 'memorizelists',
 		'class'	=> ''
 	),
 	'history'	=> array(
@@ -38,8 +38,8 @@ $locationSubItems = array(
 	'checkedout'    => array('label'	=> 'Checked Out Items'),
 	'holds'	        => array('label'	=> 'Holds and Recalls'),
 	'fines'         => array('label'	=> 'Fines'),
-	'photocopies'   => array('label'    => 'Kopieraufträge'),
-	'bookings'      => array('label'	=> 'Buchungen')
+	'photocopies'   => array('label'    => 'Photocopies'),
+	'bookings'      => array('label'	=> 'Bookings')
 );
 	// Build location based sub navigations
 foreach($locations as $locationKey => $locationLabel) {
@@ -76,7 +76,7 @@ foreach($locations as $locationKey => $locationLabel) {
 $menuItems = $staticItems + $locationItems;
 ?>
 <h3><?=$this->transEsc('Your Account')?></h3>
-<div class="subnavigation">
+<div class="subnavigation accountSidebar">
 	<ul>
 		<?php foreach($menuItems as $key => $menuItem): ?>
 			<li class="<?=$menuItem['class']?>">

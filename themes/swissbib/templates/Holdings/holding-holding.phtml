@@ -1,15 +1,30 @@
 <?php
 /** @var Array $holding */
+/** @var \Swissbib\RecordDriver\SolrMarc $record */
+/** @var String $recordTitle */
 
-$mapLink	= isset($holding['locationMap']) && $holding['locationMap'] ?
-				'<a href="' . $holding['locationMap'] . '" class="holdingMapLink">' . $this->transEsc('Show_Location_Map') . '</a>' :
-				'';
+if (isset($holding['locationMap']) && $holding['locationMap']) {
+	$mapLink = '<a href="' . $holding['locationMap'] . '" class="holdingMapLink">' . $this->transEsc('Show_Location_Map') . '</a>';
+} else {
+	$mapLink = '';
+}
+
+if (isset($holding['itemsLink']) && $holding['itemsLink']['count']) {
+	$popupDataUrl	= $this->url('holdings-holding-items', $holding['itemsLink']['url']);
+	$popupHref		= 'javascript:swissbib.Holdings.openHoldingItemsPopup(\'' . $popupDataUrl . '\', \'' . $this->escapeHtml($recordTitle) . '\')';
+//	$popupLinkLabel	= 'Enthält ' . $holding['itemsLink']['count'] . ' Items';
+	$popupLinkLabel	= $this->transEsc('holdings_items_found');
+	$moreDetailsLink= '<a href="' . $popupHref . '" title="Show Holdings">' . $popupLinkLabel . '</a>';
+} else {
+	$moreDetailsLink= $this->transEsc('holdings_noitems');
+}
+
 ?>
 <tr>
 	<td><?=$this->holdingActions($holding, 'holdingActionsHolding')?> </td>
-    <td>not implemented</td>
+    <td><?=$moreDetailsLink?></td>
     <td><?=$this->escapeHtml($holding['locationLabel'])?><?=$mapLink?></td>
 	<td><?=$this->escapeHtml($holding['signature'])?></td>
-	<td>QR</td>
+	<td><?=$this->qrCodeHolding($holding, $recordTitle)?></td>
 	<td><?=$this->escapeHtml($holding['holding_information'])?></td>
 </tr>

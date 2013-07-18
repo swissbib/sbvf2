@@ -42,7 +42,7 @@ $isAdvancedSearch	= $searchBoxParams && $searchBoxParams['searchType'] == 'advan
                 <label for="lookfor"><?=$this->transEsc('Search For')?></label>
             </h3>
 			<input type="text" class="text" name="lookfor" id="lookfor" autocomplete="off" value="<?=$this->escapeHtml($lookFor)?>" />
-			<label for="search_submit" class="hidden">Suchanfrage senden</label>
+			<label for="search_submit" class="hidden"><?=$this->transEsc('Find')?></label>
 			<input type="submit" class="submit primary" id="search_submit" value="<?=$this->transEsc('Find')?>"/>
 			<label for="search_favorites" class="checker">Nur in Favoriten</label>
 			<input type="checkbox" class="hidden" id="search_favorites" name="search_favorites" />

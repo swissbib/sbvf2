@@ -18,19 +18,16 @@
 	<div id="col3_content" class="clearfix">
 		<!-- begin: content -->
 		<div id="content">
-			<h1 class="hidden">Informationen zu swissbib</h1>
+			<h1 class="hidden"><?=$this->transEsc('start.teaser.description.bb')?></h1>
 			<!-- begin: teaser -->
 			<div class="teaser">
 				<!-- col -->
 				<div class="c50l">
 					<div class="box h150 bmright">
-						<h2>Über swissbib Basel Bern</h2>
-						<p>
-                            swissbib Basel Bern ist der neue Katalog des IDS Basel Bern. Sie können darin in den gedruckten und elektronischen Beständen aller Bibliotheken in Basel und Bern (inkl. Nationalbibliothek) recherchieren.
-						</p>
+                        <?=$this->translate('start.teaser.left.bb')?>
 						<ul class="actions">
 							<li class="right">
-								<a href="inhaltsseite.html" class="linkbutton primary icon_goto_primary" title="Mehr Infos"><span>Mehr Infos</span></a>
+								<a href="<?=$this->url('help-page',array('topic'=>'About'));?>" class="linkbutton primary icon_goto_primary" title="<?=$this->transEsc('more')?>"><span><?=$this->transEsc('start.teaser.more')?></span></a>
 							</li>
 						</ul>
 					</div>
@@ -38,19 +35,19 @@
 				<!-- col -->
 				<div class="c50l">
 					<div class="box h150 bmleft">
-						<h2>Aktueller Stand</h2>
-						<p>
-                            Der neue Katalog der Bibliotheken in Basel und Bern ist in Entwicklung. Goin' VuFind ...
-						</p>
+                        <?=$this->translate('start.teaser.right.bb')?>
 						<ul class="actions">
 							<li class="right">
-								<a href="inhaltsseite.html" class="linkbutton primary icon_goto_primary" title="Mehr Infos"><span>Mehr Infos</span></a>
+								<a href="<?=$this->url('help-page',array('topic'=>'About'));?>" class="linkbutton primary icon_goto_primary" title="<?=$this->transEsc('more')?>"><span><?=$this->transEsc('start.teaser.more')?></span></a>
 							</li>
 						</ul>
 					</div>
 				</div>
 			</div><!-- end: teaser -->
-		</div>
+            <div style="position: absolute; bottom: 0px; right: 0px;" class="teaser">
+                <a target="_blank" href="http://www.urz.unibas.ch/"><img src="<?= $this->basePath('themes/swissbib/images/poweredby_unibasel.gif') ?>"></a>
+            </div>
+        </div>
 		<!-- end: content -->
 	</div>
 	<div id="ie_clearing">

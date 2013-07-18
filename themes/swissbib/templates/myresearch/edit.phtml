@@ -1,0 +1,65 @@
+<?
+    // Set up page title:
+    $this->headTitle($this->translate('Edit') . ' : ' . $this->driver->getBreadcrumb());
+
+    // Set up breadcrumbs:
+    $this->layout()->breadcrumbs = '<a href="' . $this->url('myresearch-home') . '">'
+        . $this->transEsc('Your Account') . '</a>' . '<span>&gt;</span><em>'
+        . $this->transEsc('Edit') . '</em>';
+
+    // Load Javascript dependencies into header:
+    $this->headScript()->appendFile("bulk_actions.js");
+?>
+<div class="record">
+  <h1><?=$this->escapeHtml($this->driver->getBreadcrumb())?></h1>
+
+  <form class="search data" method="post" name="editForm" action="">
+   <fieldset>
+    <div class="fieldgroup">
+        <? if (empty($this->savedData)): ?>
+            <div class="status error">
+                <p>
+                    <? if (isset($listFilter)): ?>
+                        <?=$this->transEsc('The record you selected is not part of the selected list.') ?>
+                    <? else: ?>
+                        <?=$this->transEsc('The record you selected is not part of any of your lists.') ?>
+                    <? endif; ?>
+                </p>
+            </div>
+        <? else: ?>
+            <? foreach ($this->savedData as $i=>$current): ?>
+                <h3><?=$this->transEsc('List') ?>: <?=$this->escapeHtml($current['listTitle'])?></h3>
+                <div class="fieldbox">
+                    <a href="<?=$this->url('userList', array('id' => $current['listId'])) ?>?delete=<?=urlencode($this->driver->getUniqueId())?>&amp;source=<?=urlencode($this->driver->getResourceSource())?>" id="<?=$this->escapeHtml($this->driver->getUniqueId())?>delete<?=$current['listId'] ?>" title="<?=$this->transEsc('confirm_delete')?>" class="holdCancel delete tool"></a>
+                    <input type="hidden" name="lists[]" value="<?=$current['listId'] ?>"/>
+                </div>
+                <div class="fieldbox">
+                    <label class="label" for="edit_tags<?=$current['listId'] ?>"><?=$this->transEsc('Tags') ?>:</label>
+                    <input class="text large" id="edit_tags<?=$current['listId'] ?>" type="text" name="tags<?=$current['listId'] ?>" value="<?=$this->escapeHtml($current['tags'])?>" />
+                </div>
+                <div class="fieldbox">
+                    <label class="label" for="edit_notes<?=$current['listId'] ?>"><?=$this->transEsc('Notes') ?>:</label>
+                    <textarea class="textarea large" id="edit_notes<?=$current['listId'] ?>" class="displayBlock" name="notes<?=$current['listId'] ?>" ><?=$this->escapeHtml($current['notes'])?></textarea>
+                </div>
+            <? endforeach; ?>
+        <? endif; ?>
+        <? if (count($this->lists) > 0): ?>
+            <div class="fieldbox">
+                <label class="label"></label>
+                <select class="select" name="addToList">
+                    <option value="-1">- <?=$this->transEsc('Add to another list')?> -</option>
+                    <? foreach ($this->lists as $listID=>$listTitle): ?>
+                        <option value="<?=$listID ?>"><?=$this->escapeHtml($listTitle) ?></option>
+                    <? endforeach; ?>
+                </select>
+            </div>
+        <? endif; ?>
+        <? if (!empty($this->savedData) || count($this->lists) > 0): ?>
+            <fieldset class="actions">
+                <input class="submit primary" type="submit" name="submit" value="<?= $this->transEsc('Save') ?>"/>
+            </fieldset>
+        <? endif; ?>
+    </div>
+   </fieldset>
+  </form>
+</div>

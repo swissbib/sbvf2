@@ -2,14 +2,30 @@
 #
 # Update current project on the branch master from github repository.
 # Clear cache
+# Set access rights for httpd service
+# Pass corresponding application directory on the command line (the directory you are usually in at the moment)
 
-if [ "$UID"  -eq 0 ]; then
+getopts ":d:" opt;
+APP_DIR=$OPTARG
+echo $APP_DIR
 
-        echo "Good morning!"
-        echo  "git repository update as root user not allowed!"
-        echo "feel free to try it again"
+if [ "$APP_DIR" = "" ]; then
+
+    echo "you have to pass an application directory on the command line"
+    echo "example: > cli/update.development.sh -dhttpd"
+    exit 1
+fi
+
+BASE_DIR=/usr/local/vufind/$APP_DIR
+echo "$BASE_DIR"
+
+if [ "$UID"  -ne 0 ]; then
+
+        echo "you have to be root to use the git update script because cache will be cleared"
         exit 1
 fi
+
+cd $BASE_DIR
 
 
 TIME=`date +%Y-%m-%d_%H.%M.%S`
@@ -23,29 +39,41 @@ function log {
 	echo "Log: ${MESSAGE}"
 }
 
-# Update branch master from git
+# Update from git
 
 log "start update VuFind master branch"
 
-git stash
-git checkout master
-git pull origin master
-git stash pop
+su -c "git stash" vfsb >> $LOG 2>&1
+su -c "git checkout master" vfsb >> $LOG 2>&1
+su -c "git pull origin master" vfsb >> $LOG 2>&1
+su -c "git stash pop" vfsb >> $LOG 2>&1
 
-log "finish update VuFind master branch"
+log "finish update VuFind development branch"
 
 # set access rights of local cache to full
 
 log "set full access rights to cache"
 
-chmod 777 ../local/cache
-
-log "full access rights to cache set"
 
 # Clear cache
 
-#log "Clear local cache"
+log "Clear local cache"
 
-#rm -rf local/cache/*
+rm -rf $BASE_DIR/local/cache/*
 
-log "Local cache not cleared - please use root account and script removeLocalCache.sh"
+
+chmod 777 $BASE_DIR/local/cache/
+chmod 777 $BASE_DIR/log/
+
+log "full access rights to cache set"
+log "full access rights to log directory set
+log "restarting the httpd service..."
+
+service httpd restart
+
+log "httpd service restarted"
+
+chown vfsb:vf $LOG
+
+log "git update process for master branch has finished"
+

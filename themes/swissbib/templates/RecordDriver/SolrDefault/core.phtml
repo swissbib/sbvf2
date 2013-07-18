@@ -1,10 +1,10 @@
 <?php
 
 /** @var	VuFind\View\Helper\Root\Record		$viewRecord  */
-/** @var	Swissbib\RecordDriver\SolrMarc		$resultItem  */
+/** @var	Swissbib\RecordDriver\SolrMarc		$record  */
 
-$resultItem	= $this->driver;
-$viewRecord	= $this->record($resultItem);
+$record	= $this->driver;
+$viewRecord	= $this->record($record);
 
 //$authors	= $this->Authors($resultItem->getDeduplicatedAuthors());
 
@@ -12,43 +12,47 @@ $viewRecord	= $this->record($resultItem);
 $thumbnail		= $viewRecord->getThumbnail('large');
 $thumbnailSrc	= $thumbnail ? $thumbnail : $this->url('cover-unavailable');
 
-$subTitle				= $resultItem->getSubtitle(true);
-$titleStatement			= $resultItem->getTitleStatement(true);
-$secondaryAuthors		= $resultItem->getSecondaryAuthors(false);
-$publishers				= $resultItem->getPublishers(true);
-$physicalDescriptions	= $resultItem->getPhysicalDescriptions(false);
-$edition				= $resultItem->getEdition();
-$summary				= trim(implode($resultItem->getSummary()));
-$groupID				= $resultItem->getGroup(true);
+$titleStatement			= $record->getTitleStatement(true);
+$secondaryAuthors		= $record->getSecondaryAuthors(true);
+$publishers				= $record->getPublishers(true);
+$physicalDescriptions	= $record->getPhysicalDescriptions(false);
+$edition				= $record->getEdition();
+$summary				= trim(implode($record->getSummary()));
+$groupID				= $record->getGroup(true);
 
-$publicationDate		= $this->publicationDateMarc($resultItem->getPublicationDates());
-$openUrl				= $this->driver->openURLActive('record') ? $this->driver->getOpenURL() : false;
-$favoriteLink			= $this->recordLink()->getActionUrl($this->driver, 'Save');
+$publicationDate		= $this->publicationDateMarc($record->getPublicationDates());
+$openUrl				= $record->openURLActive('record') ? $record->getOpenURL() : false;
+$favoriteLink			= $this->recordLink()->getActionUrl($record, 'Save');
+$highlightedFulltext	= $record->getHighlightedFulltext();
 
 ?>
 <?/* Common parts of recordDriver's core.phtml templates*/?>
 <!-- col -->
 <div class="c25l">
-	<a title="<?=$this->transEsc('Add to favorites')?>" class="icon_notepad_add_link" href="<?=$favoriteLink?>">
+	<a title="<?=$this->transEsc('memorizelistadd')?>" class="icon_notepad_add_link" href="<?=$favoriteLink?>">
 		<img src="<?=$thumbnailSrc?>" class="dropshadow"/>
 	</a>
 </div>
 
 <!-- col -->
 <div class="c75l">
-	<h2><?=$this->escapeHtml($resultItem->getShortTitle())?></h2>
-	<?php if($subTitle): ?>
-        <p><?=$this->escapeHtml($subTitle)?></p>
+	<h2><?=$this->escapeHtml($record->getShortTitle())?></h2>
+	<?php if(isset($titleStatement['title_remainder'])): ?>
+        <p><?=$this->escapeHtml($titleStatement['title_remainder'])?></p>
     <?php endif ?>
 	<!-- details -->
 	<div class="details">
 
-		<?php if($titleStatement): ?>
+		<?php if(isset($titleStatement['statement_responsibility']) || $secondaryAuthors): ?>
 			<h4><?=$this->transEsc('Author')?>:</h4>
 			<?php if( isset($titleStatement['statement_responsibility']) ): ?>
 				<p><?=$this->escapeHtml($titleStatement['statement_responsibility'])?></p>
+            <?php else: ?>
+                <p>
+                    <?=$this->escapeHtml(implode(', ', $secondaryAuthors)) ?>
+                </p>
 			<?php endif; ?>
-		<?php endif; ?>
+        <?php endif; ?>
 
 		<?php if($publishers): ?>
 			<h4><?=$this->transEsc('Publication')?>:</h4>
@@ -62,7 +66,7 @@ $favoriteLink			= $this->recordLink()->getActionUrl($this->driver, 'Save');
 
 		<h4><?=$this->transEsc('Format')?>:</h4>
 		<p>
-		<?php foreach($resultItem->getFormats() as $format): ?>
+		<?php foreach($record->getFormats() as $format): ?>
 			<span class="icon_format_book"><?=$this->escapeHtml($format)?></span>
 		<?php endforeach; ?>
 		</p>
@@ -72,7 +76,8 @@ $favoriteLink			= $this->recordLink()->getActionUrl($this->driver, 'Save');
 		    <p><?=$this->escapeHtml($edition)?></p>
 		<?php endif; ?>
 
-		<?php if(!empty($summary)): ?>
+		<?php /** DISABLED - Is now in own tab */ ?>
+		<?php if(!empty($summary) && false): ?>
 		<h4>Inhalt:</h4>
 		<p><?=$this->escapeHtml($summary)?></p>
 		<?php endif; ?>
@@ -82,7 +87,11 @@ $favoriteLink			= $this->recordLink()->getActionUrl($this->driver, 'Save');
 			<p><?=$this->openUrl($openUrl)?></p>
 		<?php endif; ?>
 
-	</div>
+		<?php if ($highlightedFulltext): ?>
+			<h4><?=$this->transEsc('fulltexthighlight')?>: </h4>
+			<p><?=$this->highlight($highlightedFulltext)?></p>
+		<?php endif; ?>
 
+	</div>
 
 </div>

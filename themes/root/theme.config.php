@@ -103,9 +103,25 @@ return array(
                     $sm->getServiceLocator()->get('VuFind\Config')->get('config')
                 );
             },
+            'searchbox' => function ($sm) {
+                $config = $sm->getServiceLocator()->get('VuFind\Config')->get('searchbox')->toArray();
+                return new \VuFind\View\Helper\Root\SearchBox(
+                    $sm->getServiceLocator()->get('VuFind\SearchOptionsPluginManager'),
+                    $config
+                );
+            },
             'searchoptions' => function ($sm) {
                 return new VuFind\View\Helper\Root\SearchOptions(
                     $sm->getServiceLocator()->get('VuFind\SearchOptionsPluginManager')
+                );
+            },
+            'searchtabs' => function ($sm) {
+                $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
+                $config = isset($config->SearchTabs)
+                    ? $config->SearchTabs->toArray() : array();
+                return new VuFind\View\Helper\Root\SearchTabs(
+                    $sm->getServiceLocator()->get('VuFind\SearchResultsPluginManager'),
+                    $config, $sm->get('url')
                 );
             },
             'syndeticsplus' => function ($sm) {
