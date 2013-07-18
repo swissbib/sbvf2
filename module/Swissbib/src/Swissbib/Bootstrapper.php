@@ -102,7 +102,16 @@ class Bootstrapper
 			$translator = $event->getApplication()->getServiceManager()->get('VuFind\Translator');
 
 			if ($authManager->isLoggedIn()) {
-				$locale = $authManager->isLoggedIn()->language;
+				$request = $event->getRequest();
+				$user = $authManager->isLoggedIn();
+
+				if (($locale = $request->getPost()->get('mylang', false)) ||
+					($locale = $request->getQuery()->get('lng', false))) {
+					$user->language = $locale;
+					$user->save();
+				} else {
+					$locale = $user->language;
+				}
 
 				if ($locale) {
 					$translator->setLocale($locale);
