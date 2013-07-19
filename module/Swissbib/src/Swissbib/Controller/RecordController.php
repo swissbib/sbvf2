@@ -27,6 +27,10 @@ class RecordController extends VuFindRecordController
 			$viewModel	= new ViewModel();
 
 			$viewModel->setTemplate('record/not-found');
+			$viewModel->setVariables(array(
+										  'message'		=> $e->getMessage(),
+										  'exception'	=> $e
+									 ));
 
 			return $viewModel;
 		}
