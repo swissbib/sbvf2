@@ -303,7 +303,7 @@ input.selectAllCheckboxes {
 form[name="editListForm"] > label,
 form[name="saveRecord"] label,
 form[name="newList"] label {
-	float: none;
+	/*float: none;*/
 }
 form[name="editListForm"] fieldset input,
 form[name="newList"] fieldset input {

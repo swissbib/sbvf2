@@ -89,37 +89,60 @@ class Bootstrapper
 
 
 	/**
-	 * Initialize translation from user settings
+	 * Initialize locale change
+	 * Save changed locale in user
+	 *
 	 */
-	protected function initTranslation()
+	protected function initLocaleChange()
 	{
-		$callback = function ($event) {
-			/** @var ServiceManager $serviceLocator */
-			$serviceLocator	= $event->getApplication()->getServiceManager();
-			/** @var Manager $authManager */
-			$authManager	= $serviceLocator->get('VuFind\AuthManager');
-			/** @var Translator $translator */
-			$translator = $event->getApplication()->getServiceManager()->get('VuFind\Translator');
+		/** @var ServiceManager $serviceLocator */
+		$serviceLocator	= $this->serviceManager;
+		/** @var Manager $authManager */
+		$authManager	= $serviceLocator->get('VuFind\AuthManager');
 
-			if ($authManager->isLoggedIn()) {
+		if ($authManager->isLoggedIn()) {
+			$user = $authManager->isLoggedIn();
+
+			$callback = function ($event) use ($user) {
 				$request = $event->getRequest();
-				$user = $authManager->isLoggedIn();
 
 				if (($locale = $request->getPost()->get('mylang', false)) ||
 					($locale = $request->getQuery()->get('lng', false))) {
 					$user->language = $locale;
 					$user->save();
-				} else {
-					$locale = $user->language;
 				}
+			};
 
-				if ($locale) {
+			$this->events->attach('dispatch', $callback, 1000);
+		}
+	}
+
+
+
+	/**
+	 * Initialize translation from user settings
+	 */
+	protected function initUserLocale()
+	{
+		/** @var ServiceManager $serviceLocator */
+		$serviceLocator	= $this->serviceManager;
+		/** @var Manager $authManager */
+		$authManager	= $serviceLocator->get('VuFind\AuthManager');
+
+		if ($authManager->isLoggedIn()) {
+			$locale = $authManager->isLoggedIn()->language;
+
+			if ($locale) {
+				/** @var Translator $translator */
+				$translator = $this->serviceManager->get('VuFind\Translator');
+
+				$callback = function ($event) use ($locale, $translator) {
 					$translator->setLocale($locale);
-				}
-			}
-		};
+				};
 
-		$this->events->attach('dispatch', $callback);
+				$this->events->attach('dispatch', $callback, 900);
+			}
+		}
 	}
 
 
