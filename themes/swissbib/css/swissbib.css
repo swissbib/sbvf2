@@ -482,7 +482,10 @@ a#tagRecord {
 }
 
 #holdings-items-filter-form td {
-	width: 32%;
+	width: 200px;
+}
+#holdings-items-filter-form td.pagingHeader {
+	width: 345px;
 }
 
 #holdings-items-header label {
