@@ -3,16 +3,27 @@
 
 $this->headTitle($this->translate('mylibraries'));
 ?>
-<!-- begin: col1 (sidebar)  -->
-<div id="col1" class="sidebar">
-    <div id="col1_content" class="clearfix">
-        <!-- begin: sidebar -->
-        <div id="sidebar">
+<?php
 
+$isLoggedIn	= !!$this->auth()->isLoggedIn();
+
+?>
+<!-- begin: col1 (sidebar)  -->
+
+<?php if( $isLoggedIn ): ?>
+    <?=$this->myResearchSideBar('libraries', $this->location);?>
+<?php else: ?>
+    <div id="col1" class="sidebar">
+        <div id="col1_content" class="clearfix">
+            <!-- begin: sidebar -->
+            <div id="sidebar">
+                &nbsp;
+            </div>
+            <!-- end: sidebar -->
         </div>
-        <!-- end: sidebar -->
     </div>
-</div>
+<?php endif ?>
+
 <!-- end: col1 (sidebar) -->
 <!-- begin: col3 (content) -->
 <div id="col3" class="content">
@@ -23,7 +34,7 @@ $this->headTitle($this->translate('mylibraries'));
              <div>
                  <p>&nbsp;</p>
              </div>
-			<h2>Zu Favoriten hinzufügen</h2>
+			<h2><?=$this->transEsc('mylibraries.add')?></h2>
 
                 <form class="form">
 					<div class="fieldgroup">
@@ -34,6 +45,15 @@ $this->headTitle($this->translate('mylibraries'));
                             </div>
                         </fieldset>
 					</div>
+                    <div class="status information">
+                        <?=$this->translate('mylibraries.text')?>
+
+                        <?php if( $isLoggedIn ): ?>
+                            <!--   keine Anzeige -->
+                        <?php else: ?>
+                            <p><strong><?=$this->transEsc('mylibraries.login')?></strong></p>
+                        <?php endif ?>
+                    </div>
                 </form>
 
 			<div id="user-favorites">
