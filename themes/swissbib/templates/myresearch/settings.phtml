@@ -13,31 +13,36 @@ $this->headTitle($this->translate('My_Search_Settings'));
 
 			<?=$this->flashmessages()?><br/>
 
-            <form action="" method="post" id="settings-form">
+            <form class="form" action="" method="post" id="settings-form">
 
                 <h3><?= $this->transEsc('preferences.search') ?></h3>
-
-                <label for="language"><?=$this->transEsc('Language')?>: </label>
-                <select id="language" name="language">
-                    <? foreach ($this->optsLanguage as $languageKey => $languageLabel): ?>
-                        <option <? if($languageKey == $this->language): ?>selected="selected"<? endif; ?> value="<?= $languageKey ?>">
-                            <?= $languageLabel ?>
-                        </option>
-                    <? endforeach; ?>
-                </select>
-
-                <br/><br/><br/>
+                <div class="fieldgroup">
+                    <div class="fieldbox">
+                        <label class="label" for="language"><?=$this->transEsc('Language')?>: </label>
+                        <select class="select" id="language" name="language">
+                            <? foreach ($this->optsLanguage as $languageKey => $languageLabel): ?>
+                                <option <? if($languageKey == $this->language): ?>selected="selected"<? endif; ?> value="<?= $languageKey ?>">
+                                    <?= $languageLabel ?>
+                                </option>
+                            <? endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <br/>&nbsp;<br/&nbsp;><br/>
                 <h3><?= $this->transEsc('preferences.result') ?></h3>
-
-                <label for="maxHits"><?=$this->transEsc('Max_Amount_Hits')?>: </label>
-                <select id="maxHits" name="max_hits">
-                    <? foreach ($this->optsMaxHits as $maxHits): ?>
-                        <option <? if($maxHits == $this->max_hits): ?>selected="selected"<? endif; ?> value="<?= $maxHits ?>">
-                            <?= $maxHits ?>
-                        </option>
-                    <? endforeach; ?>
-                </select>
-
+                <div class="fieldgroup">
+                    <div class="fieldbox">
+                        <label class="label" for="maxHits"><?=$this->transEsc('Max_Amount_Hits')?>: </label>
+                        <select class="select small" id="maxHits" name="max_hits">
+                            <? foreach ($this->optsMaxHits as $maxHits): ?>
+                                <option <? if($maxHits == $this->max_hits): ?>selected="selected"<? endif; ?> value="<?= $maxHits ?>">
+                                    <?= $maxHits ?>
+                                </option>
+                            <? endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <br/>&nbsp;
             </form>
 		</div>
 		<!-- end: content -->
