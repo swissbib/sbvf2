@@ -20,14 +20,20 @@ $this->headTitle($this->translate('mylibraries'));
         <!-- begin: content -->
 
         <div id="content">
-
+             <div>
+                 <p>&nbsp;</p>
+             </div>
 			<h2>Zu Favoriten hinzufügen</h2>
 
-                <form>
-					<fieldset>
-						<label for="query" class="label"><strong><?=$this->transEsc('Library')?></strong></label>
-						<input type="text" id="query" class="text large" />
-					</fieldset>
+                <form class="form">
+					<div class="fieldgroup">
+                        <fieldset>
+                            <div class="fieldbox">
+                                <label for="query" class="label"><?=$this->transEsc('Library')?></label>
+                                <input type="text" id="query" class="text large" />
+                            </div>
+                        </fieldset>
+					</div>
                 </form>
 
 			<div id="user-favorites">
