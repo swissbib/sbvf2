@@ -27,7 +27,7 @@ $showLists = (!empty($this->nonContainingLists) || (empty($this->containingLists
 
 			<h1><?= $this->transEsc('memorizelistadd.prefix') ?> "<?= $this->escapeHtml($this->driver->getBreadcrumb()) ?>" <?= $this->transEsc('memorizelistadd.sufix') ?></h1>
 
-			<form method="post" action="" name="saveRecord">
+			<form class="form" method="post" action="" name="saveRecord">
 				<input type="hidden" name="submit" value="1"/>
 				<input type="hidden" name="id" value="<?= $this->escapeHtml($this->driver->getUniqueId()) ?>"/>
 				<input type="hidden" name="source" value="<?= $this->escapeHtml($this->driver->getResourceSource()) ?>"/>
@@ -50,57 +50,64 @@ $showLists = (!empty($this->nonContainingLists) || (empty($this->containingLists
 				?>
 
 				<fieldset>
-					<?php if ($showLists): ?>
-						<div class="fieldbox">
-							<label class="displayBlock" for="save_list"><?= $this->transEsc('Choose a List') ?></label>
-							<select id="save_list" name="list">
-								<?php if ($this->nonContainingLists): ?>
-									<?php foreach ($this->nonContainingLists as $list): ?>
-										<option value="<?= $list['id'] ?>"<?php if ($list['id'] == $this->userList()->lastUsed()): ?> selected="selected"<?php endif; ?>><?= $this->escapeHtml($list['title']) ?></option>
-									<?php endforeach; ?>
-								<?php else: ?>
-									<option value=""><?= $this->transEsc('mymemorizelists') ?></option>
-								<?php endif; ?>
-							</select>
-						</div>
-					<?php endif; ?>
+                    <div class="fieldgroup">
+                        <?php if ($showLists): ?>
+                            <div class="fieldbox">
+                                <label class="label" for="save_list"><?= $this->transEsc('Choose a List') ?></label>
+                                <select id="save_list" class="select" name="list">
+                                    <?php if ($this->nonContainingLists): ?>
+                                        <?php foreach ($this->nonContainingLists as $list): ?>
+                                            <option value="<?= $list['id'] ?>"<?php if ($list['id'] == $this->userList()->lastUsed()): ?> selected="selected"<?php endif; ?>><?= $this->escapeHtml($list['title']) ?></option>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <option value=""><?= $this->transEsc('mymemorizelists') ?></option>
+                                    <?php endif; ?>
+                                </select>
+                            </div>
+                        <?php endif; ?>
 
-					<?php
-						$createUrl = $this->url('editList', array('id' => 'NEW'))
-									. '?recordId=' . urlencode($this->driver->getUniqueId())
-									. '&amp;recordSource=' . urlencode($this->driver->getResourceSource());
-						$createLabel = $showLists ? $this->transEsc('or create a new list') : $this->transEsc('Create a List');
-					?>
-					<div class="fieldbox">
-                        <label>
-						<a 	href="<?=$createUrl?>"
-							class="listEdit controller<?= $this->record($this->driver)->getController() ?>"
-							title="<?= $this->transEsc('Create a List') ?>"><?=$createLabel?></a>
-                        </label>
-					</div>
+                        <?php
+                            $createUrl = $this->url('editList', array('id' => 'NEW'))
+                                        . '?recordId=' . urlencode($this->driver->getUniqueId())
+                                        . '&amp;recordSource=' . urlencode($this->driver->getResourceSource());
+                            $createLabel = $showLists ? $this->transEsc('or create a new list') : $this->transEsc('Create a List');
+                        ?>
+                        <div class="fieldbox">
+                            <label>
+                            <a 	href="<?=$createUrl?>"
+                                class="listEdit controller<?= $this->record($this->driver)->getController() ?>"
+                                title="<?= $this->transEsc('Create a List') ?>"><?=$createLabel?></a>
+                            </label>
+                        </div>
+                    </div>
 				</fieldset>
 
 				<?php if ($showLists): ?>
 					<fieldset>
-						<div class="fieldbox">
-							<label class="displayBlock" for="add_mytags"><?= $this->transEsc('Add Tags') ?></label>
-							<input class="mainFocus" id="add_mytags" type="text" name="mytags" value="" size="50"/>
-							<p><?= $this->transEsc('add_tag_note') ?></p>
+						<div class="fieldgroup">
+                            <div class="fieldbox">
+                                <label class="label" for="add_mytags"><?= $this->transEsc('Add Tags') ?></label>
+                                <input class="text large mainFocus" id="add_mytags" type="text" name="mytags" value=""/>
+                                <!--<p><?= $this->transEsc('add_tag_note') ?></p> -->
 
-							<br/>
-
+                            </div>
+                            <div>
+                                <p><?= $this->transEsc('add_tag_note') ?></p>
+                            </div>
 						</div>
 					</fieldset>
 
 					<fieldset>
-						<div class="fieldbox">
-							<label class="displayBlock" for="add_notes"><?= $this->transEsc('Add a Note') ?></label>
-							<textarea id="add_notes" name="notes" rows="3" cols="50"></textarea>
+						<div class="fieldgroup">
+                            <div class="fieldbox">
+                                <label class="label" for="add_notes"><?= $this->transEsc('Add a Note') ?></label>
+                                <textarea id="add_notes" name="notes" class="textarea large"></textarea>
+                            </div>
 						</div>
 					</fieldset>
 
 					<fieldset class="actions">
-						<input class="button" type="submit" value="<?= $this->transEsc('Save') ?>"/>
+						<input class="submit primary" type="submit" value="<?= $this->transEsc('Save') ?>"/>
 					</fieldset>
 				<?php endif; ?>
 			</form>

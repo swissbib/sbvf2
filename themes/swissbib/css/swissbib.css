@@ -303,7 +303,7 @@ input.selectAllCheckboxes {
 form[name="editListForm"] > label,
 form[name="saveRecord"] label,
 form[name="newList"] label {
-	float: none;
+	/*float: none;*/
 }
 form[name="editListForm"] fieldset input,
 form[name="newList"] fieldset input {
@@ -482,7 +482,10 @@ a#tagRecord {
 }
 
 #holdings-items-filter-form td {
-	width: 32%;
+	width: 200px;
+}
+#holdings-items-filter-form td.pagingHeader {
+	width: 345px;
 }
 
 #holdings-items-header label {
@@ -558,4 +561,15 @@ tr.infoMessagesRow td {
 .subjectVocabularies .vocabularyList li {
 	font-size: 1.2em;
 	line-height: 1.3em;
+}
+
+
+/** TOC **/
+.keywordList {
+	margin-bottom: 15px;
+}
+.keywordList li {
+	font-size: 1.2em;
+	list-style: square inside;
+	line-height: 1.2em;
 }
