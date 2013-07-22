@@ -4,10 +4,10 @@ if (!isset($active)) {
 }
 
 $staticItems = array(
-    'searchSettings' => array(
-        'route'	=> 'search-settings',
+    'settings' => array(
+        'route'	=> 'myresearch-settings',
         'label'	=> 'My_Search_Settings',
-        'class'	=> ($active === 'searchsettings') ? 'selected' : ''
+		'class'	=> ''
     ),
     'favorites'	=> array(
 		'route'	=> 'myresearch-favorites',
@@ -18,7 +18,12 @@ $staticItems = array(
 		'route'	=> 'search-history',
 		'label'	=> 'history_saved_searches',
 		'class'	=> ''
-	)
+	),
+    'libraries'	=> array(
+        'route'	=> 'myresearch-favorite-institutions',
+        'label'	=> 'menu.mylibraries',
+        'class'	=> ''
+    )
 );
 
 if( isset($staticItems[$active]) ) {
@@ -38,8 +43,8 @@ $locationSubItems = array(
 	'checkedout'    => array('label'	=> 'Checked Out Items'),
 	'holds'	        => array('label'	=> 'Holds and Recalls'),
 	'fines'         => array('label'	=> 'Fines'),
-	'photocopies'   => array('label'    => 'Kopieraufträge'),
-	'bookings'      => array('label'	=> 'Buchungen')
+	'photocopies'   => array('label'    => 'Photocopies'),
+	'bookings'      => array('label'	=> 'Bookings')
 );
 	// Build location based sub navigations
 foreach($locations as $locationKey => $locationLabel) {
@@ -75,7 +80,7 @@ foreach($locations as $locationKey => $locationLabel) {
 
 $menuItems = $staticItems + $locationItems;
 ?>
-<h3><?=$this->transEsc('Your Account')?></h3>
+<h3><?=$this->transEsc('menu.swissbib')?></h3>
 <div class="subnavigation accountSidebar">
 	<ul>
 		<?php foreach($menuItems as $key => $menuItem): ?>

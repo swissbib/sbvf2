@@ -1,0 +1,58 @@
+<?
+	// Set page title
+$this->headTitle($this->translate('My_Search_Settings'));
+
+?>
+<?=$this->myResearchSideBar('settings', $this->location);?>
+<!-- begin: col3 (content) -->
+<div id="col3" class="content">
+	<div id="col3_content" class="clearfix">
+		<!-- begin: content -->
+		<div id="content">
+			<h1><?=$this->transEsc('My_Search_Settings')?></h1>
+
+			<?=$this->flashmessages()?><br/>
+
+            <form class="form" action="" method="post" id="settings-form">
+
+                <h3><?= $this->transEsc('preferences.search') ?></h3>
+                <div class="fieldgroup">
+                    <div class="fieldbox">
+                        <label class="label" for="language"><?=$this->transEsc('Language')?>: </label>
+                        <select class="select" id="language" name="language">
+                            <? foreach ($this->optsLanguage as $languageKey => $languageLabel): ?>
+                                <option <? if($languageKey == $this->language): ?>selected="selected"<? endif; ?> value="<?= $languageKey ?>">
+                                    <?= $languageLabel ?>
+                                </option>
+                            <? endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <br/>&nbsp;<br/&nbsp;><br/>
+                <h3><?= $this->transEsc('preferences.result') ?></h3>
+                <div class="fieldgroup">
+                    <div class="fieldbox">
+                        <label class="label" for="maxHits"><?=$this->transEsc('Max_Amount_Hits')?>: </label>
+                        <select class="select small" id="maxHits" name="max_hits">
+                            <? foreach ($this->optsMaxHits as $maxHits): ?>
+                                <option <? if($maxHits == $this->max_hits): ?>selected="selected"<? endif; ?> value="<?= $maxHits ?>">
+                                    <?= $maxHits ?>
+                                </option>
+                            <? endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <br/>&nbsp;
+            </form>
+		</div>
+		<!-- end: content -->
+	</div>
+	<div id="ie_clearing">
+		&nbsp;
+	</div>
+</div>
+<!-- end: col3 (content) -->
+
+<script type="text/javascript">
+	swissbib.Settings.init();
+</script>

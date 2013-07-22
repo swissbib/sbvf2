@@ -86,10 +86,9 @@ $this->render('myresearch/sidebar/wrap.phtml', array(
 								<strong><?= $this->escapeHtml($this->results->getEndRecord()) ?></strong>
 								<?= $this->transEsc('of') ?> <strong><?= $this->escapeHtml($recordTotal) ?></strong></p>
 							</div>
-							<div class="floatright">
-								<?= $this->render('search/controls/sort.phtml') ?>
-							</div>
-							<?= $this->paginationControl($this->results->getPaginator(), 'Sliding', 'search/pagination.phtml', array('results' => $this->results)) ?>
+                            <div class="floatright">
+                                <?= $this->render('search/controls/sort.phtml') ?>
+                            </div>
 							<div class="clear"></div>
 						</div>
 
@@ -101,8 +100,13 @@ $this->render('myresearch/sidebar/wrap.phtml', array(
 							<input type="hidden" name="listName" value="<?= $this->escapeHtml($list->title) ?>"/>
 						<?php endif; ?>
 
-						<div class="tools floatbox bulkBox bulkboxTop">
-							<?= $this->context($this)->renderInContext('myresearch/bulk-action-buttons.phtml', array('idPrefix' => '', 'list' => isset($list) ? $list : null)) ?>
+						<div class="tools floatbox">
+                            <div class="floatleft">
+                                <?= $this->context($this)->renderInContext('myresearch/bulk-action-buttons.phtml', array('idPrefix' => '', 'list' => isset($list) ? $list : null)) ?>
+                            </div>
+                            <div class="floatright">
+                                <?= $this->paginationControl($this->results->getPaginator(), 'Sliding', 'search/pagination.phtml', array('results' => $this->results)) ?>
+                            </div>
 						</div>
 
 						<table class="data">

@@ -1,10 +1,13 @@
 <?php
 namespace Swissbib\Controller;
 
-use VuFind\Controller\MyResearchController as VuFindMyResearchController;
-use Swissbib\VuFind\ILS\Driver\Aleph;
 use Zend\View\Model\ViewModel;
-use Zend\Http\PhpEnvironment\Response as HttpResponse;
+use Zend\Http\Response as HttpResponse;
+
+use VuFind\Controller\MyResearchController as VuFindMyResearchController;
+use VuFind\Db\Row\User;
+
+use Swissbib\VuFind\ILS\Driver\Aleph;
 
 class MyResearchController extends VuFindMyResearchController
 {
@@ -87,106 +90,50 @@ class MyResearchController extends VuFindMyResearchController
 	 *
 	 * @return mixed
 	 */
-	public function searchsettingsAction()
+	public function settingsAction()
 	{
-		$view = parent::profileAction();
+		$account = $this->getAuthManager();
+		if ($account->isLoggedIn() == false) {
+			return $this->forceLogin();
+		}
 
-		/** @var $user  \VuFind\Db\Row\User */
+		/** @var User $user */
 		$user = $this->getUser();
 
-		if (!is_object($user)) {
-			return $this->forwardTo('MyResearch', 'Login');
+		if ($this->getRequest()->isPost()) {
+			$language	= $this->params()->fromPost('language');
+			$maxHits	= $this->params()->fromPost('max_hits');
+
+			$user->language = trim($language);
+			$user->max_hits = intval($maxHits);
+
+			$user->save();
+
+			$this->flashMessenger()->setNamespace('info')->addMessage('save_settings_success');
+
+			setcookie('language', $language, time()*3600*24*100, '/');
+
+			return $this->redirect()->toRoute('myresearch-settings');
 		}
 
-		$userData = $user->toArray();
-		$idUser   = intval($userData['id']);
+		$language	= $user->language;
+		$maxHits	= $user->max_hits;
 
-		$userLanguage   = $this->getUserLanguage($idUser);
-		$view->language = $userLanguage;
-		setcookie('language', $userLanguage, null, '/');
-
-		$view->maxHits = $this->getUserAmountMaxHits($idUser);
-
-		$view->optsLanguage = $this->getOptionsLanguage();
-		$view->optsMaxHits  = $this->getOptionsMaximumHits();
-
-		return $view;
+		return new ViewModel(array(
+								 'max_hits'		=> $maxHits,
+								 'language'		=> $language,
+								 'optsLanguage'	=> array(
+									'de' => 'Deutsch',
+									'en' => 'English',
+									'fr' => 'Francais',
+									'it' => 'Italiano'
+								),
+								 'optsMaxHits'	=> array(
+									 10, 20, 40, 60, 80, 100
+								 )
+							));
 	}
 
-
-
-	/**
-	 * EXPLORATION (prove of concept)
-	 * Store user data sb_nickname to local VF database
-	 *
-	 * @return  mixed
-	 */
-	protected function saveaccountlocalAction()
-	{
-		$view = $this->createViewModel();
-
-		/** @var $user  \VuFind\Db\Row\User */
-		$user = $this->getUser();
-
-		if (!is_object($user)) {
-			return $this->forwardTo('MyResearch', 'Login');
-		}
-
-		$view->setTerminal(true);
-		$userData = $user->toArray();
-		$idUser   = intval($userData['id']);
-
-		// Store received value to database
-		/** @var $userLocalData \Swissbib\Db\Table\UserLocalData */
-		$userLocalData = $this->getServiceLocator()->get('Swissbib\DbTablePluginManager')->get('userlocaldata');
-
-		// Init language from received value/default, save to database
-		if (array_key_exists('language', $_GET)) {
-			$language = $_GET['language'];
-			$userLocalData->createOrUpdateLanguage($language, 1);
-			setcookie('language', $language, null, '/');
-		} else {
-			$language = $this->getUserLanguage($idUser);
-		}
-		// Init max_hits from received value/default, save to database
-		if (array_key_exists('max_hits', $_GET)) {
-			$maxHits = $_GET['max_hits'];
-			$userLocalData->createOrUpdateMaxHits($maxHits, 1);
-		} else {
-			$maxHits = $this->getUserAmountMaxHits($idUser);
-		}
-		// Setup layout / view params
-		$this->layout()->setTemplate('myresearch/searchsettings');
-
-		$this->layout()->language     = $language;
-		$this->layout()->maxHits      = $maxHits;
-		$this->layout()->optsLanguage = $this->getOptionsLanguage();
-		$this->layout()->optsMaxHits  = $this->getOptionsMaximumHits();
-
-		//@todo implement flash messages parts: text, CSS, JS
-//        $this->flashMessenger()->setNamespace('info')
-//                ->addMessage('save_usersettings_success');
-
-		return parent::profileAction();
-	}
-
-
-
-	/**
-	 * Get key-label tupels of languages.
-	 * Labels are each in the resp. language, not to be localized.
-	 *
-	 * @return  Array
-	 */
-	public function getOptionsLanguage()
-	{
-		return array(
-			'de' => 'Deutsch',
-			'en' => 'English',
-			'fr' => 'Francais',
-			'it' => 'Italiano'
-		);
-	}
 
 
 
@@ -318,6 +265,27 @@ class MyResearchController extends VuFindMyResearchController
 		$viewModel = parent::deleteAction();
 
 		return $this->wrapWithContentLayout($viewModel, 'myresearch/delete');
+	}
+
+
+
+	/**
+	 * Catch error for not allowed list view
+	 * Redirect list own lists with message
+	 *
+	 * @return	HttpResponse
+	 */
+	public function mylistAction()
+	{
+		try {
+			return parent::mylistAction();
+		} catch (\Exception $e) {
+			$this->flashMessenger()->setNamespace('error')->addMessage($e->getMessage());
+
+			$target = $this->url()->fromRoute('userList');
+
+			return $this->redirect()->toUrl($target);
+		}
 	}
 
 
