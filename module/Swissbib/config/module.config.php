@@ -120,7 +120,18 @@ return array(
 						'action'     => 'favorites'
 					)
 				)
-			)
+			),
+            'shibboleth-test' => array( // make first shibboleth test
+                'type' => 'literal',
+                'options' => array(
+                    'route'    => '/Shibboleth.sso/SAML2/POST',
+                    'defaults' => array(
+                        'controller' => 'shibtest',
+                        'action'     => 'shib'
+                    )
+                )
+            )
+
 		)
 	),
 	'console'         => array(
@@ -167,7 +178,10 @@ return array(
 			'tab40import'  		=> 'Swissbib\Controller\Tab40ImportController',
 			'institutionFavorites'=> 'Swissbib\Controller\FavoritesController',
 			'hierarchycache' 	 => 'Swissbib\Controller\HierarchyCacheController',
-			'cart' 				=> 'Swissbib\Controller\CartController'
+			'cart' 				=> 'Swissbib\Controller\CartController',
+			'shibtest' 				=> 'Swissbib\Controller\ShibtestController'
+
+
 		),
 		'factories' => array(
 			'record' => function ($sm) {
