@@ -2,7 +2,7 @@ LoadModule ssl_module modules/mod_ssl.so
 
 <VirtualHost 131.152.158.253:443>
     ServerAdmin guenter.hipler@unibas.ch
-    ServerName testvf.swissbib.ch
+    ServerName develop.swissbib.ch
     DocumentRoot /usr/local/vufind/httpd/public/
 
     ErrorLog /var/log/httpd/develop.swissbib.error.log
@@ -30,18 +30,14 @@ LoadModule ssl_module modules/mod_ssl.so
         AllowOverride All
    </Directory>
 
+   AliasMatch ^/shibtest/(.*)$ /usr/local/vufind/httpd/shibtest/$1
 
-<Location /Shibboleth.sso/Login>
-  AuthType shibboleth
-  ShibRequestSetting requireSession 1 
-  require valid-user
-</Location>
-
-#<Location /Search>
-#  AuthType shibboleth
-#  ShibRequestSetting requireSession 1
-#  require valid-user
-#</Location>
+   <Directory ~ "^/usr/local/vufind/httpd/shibtest/">
+        Order allow,deny
+        allow from all
+        AllowOverride All
+        RewriteEngine on
+   </Directory>
 
 
    # Configuration for general VuFind base:
@@ -56,12 +52,11 @@ LoadModule ssl_module modules/mod_ssl.so
         #require shibboleth
 
         RewriteEngine On
-        
+        RewriteBase /
         RewriteCond %{REQUEST_FILENAME} -s [OR]
         RewriteCond %{REQUEST_FILENAME} -l [OR]
         RewriteCond %{REQUEST_FILENAME} -d
         RewriteRule ^.*$ - [NC,L]
-        RewriteCond %{REQUEST_URI} !/Shibboleth.sso/Login
         RewriteRule ^.*$ index.php [NC,L]
 
         php_value short_open_tag On
