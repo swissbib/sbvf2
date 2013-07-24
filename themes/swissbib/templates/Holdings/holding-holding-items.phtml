@@ -28,9 +28,9 @@ $institutionLabel	= $this->zendTranslate(strtolower($institution), 'institution'
 		<tr>
 			<td>
 				<?php if (sizeof($filters['years'])): ?>
-					<label for="holding-items-filter-year">Zeige Jahr</label>
+					<label for="holding-items-filter-year"><?=$this->transEsc('Show year') ?></label>
 					<select id="holding-items-filter-year" name="year">
-						<option value="">Alle Jahre</option>
+						<option value=""><?=$this->transEsc('All years') ?></option>
 						<?php foreach ($filters['years'] as $yearValue): ?>
 							<option <?=($yearValue==$year?'selected="selected"':'')?>><?=$yearValue?></option>
 						<?php endforeach; ?>
@@ -39,9 +39,9 @@ $institutionLabel	= $this->zendTranslate(strtolower($institution), 'institution'
 			</td>
 			<td>
 				<?php if (sizeof($filters['volumes'])): ?>
-					<label for="holding-items-filter-volume">Zeige Band</label>
+					<label for="holding-items-filter-volume"><?=$this->transEsc('Show volumes') ?></label>
 					<select id="holding-items-filter-volume" name="volume">
-						<option value="">Alle Bände</option>
+						<option value=""><?=$this->transEsc('All volumes') ?></option>
 						<?php foreach ($filters['volumes'] as $volumeValue): ?>
 							<option <?=($volumeValue==$volume?'selected="selected"':'')?>><?=$volumeValue?></option>
 						<?php endforeach; ?>
@@ -61,5 +61,5 @@ $institutionLabel	= $this->zendTranslate(strtolower($institution), 'institution'
 <?php if (sizeof($items)): ?>
 	<?=$this->render('Holdings/items')?>
 <?php else: ?>
-	<p>Für die aktuell Filterauswahl sind keine Daten vorhanden</p>
+	<p><?=$this->transEsc('No Holdings for filters') ?></p>
 <?php endif; ?>
