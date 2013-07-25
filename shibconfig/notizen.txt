@@ -31,3 +31,8 @@ Once the session is created, the SP determines where to send the browser by exam
 
  -> die Adresse welche zurückkommt, ist in der Ressource registry hinterlegt
  Assertion Consumer Service 		http://develop.swissbib.ch/Shibboleth.sso/SAML2/POST
+
+
+ 4) tools
+ http://www.switch.ch/de/aai/support/tools/index.html
+
