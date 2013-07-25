@@ -50,7 +50,6 @@ return array(
 		'swissbib/FavoriteInstitutions.js',
 		'swissbib/Account.js',
 		'swissbib/Settings.js',
-		'swissbib/Lightboxes.js',
 
 //		'common.js'
 		'blueprint/commonFromBluePrint.js',

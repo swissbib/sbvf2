@@ -179,20 +179,6 @@ class MyResearchController extends VuFindMyResearchController
 
 
 	/**
-	 * Wrapper for parent
-	 *
-	 * @return mixed|HttpResponse|ViewModel
-	 */
-	public function deleteAction()
-	{
-		$viewModel = parent::deleteAction();
-
-		return $this->wrapWithContentLayout($viewModel, 'myresearch/delete');
-	}
-
-
-
-	/**
 	 * Catch error for not allowed list view
 	 * Redirect list own lists with message
 	 *
