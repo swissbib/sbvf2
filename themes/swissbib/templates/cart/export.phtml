@@ -2,65 +2,38 @@
 // Set page title.
 $this->headTitle($this->translate('Export Favorites'));
 
-// Set up breadcrumbs:
-//    $this->layout()->breadcrumbs = $this->getLastSearchLink($this->transEsc('Search'), '', '<span>&gt;</span>') .
-//        '<em>' . $this->transEsc('Export Favorites') . '</em>';
 ?>
-<!-- begin: col1 (sidebar)  -->
-<div id="col1" class="sidebar">
-	<div id="col1_content" class="clearfix">
-		<!-- begin: sidebar -->
-		<div id="sidebar">
 
-		</div>
-		<!-- end: sidebar -->
-	</div>
-</div>
-<!-- end: col1 (sidebar) -->
-<div id="col3" class="content">
-	<div id="col3_content" class="clearfix">
-		<!-- begin: content -->
-		<div id="content">
+<h1 class="hideinlightbox"><?= $this->transEsc('Export Favorites') ?></h1>
 
-			<h1 class="hideinlightbox"><?= $this->transEsc('Export Favorites') ?></h1>
+<?= $this->flashmessages() ?>
 
-			<?= $this->flashmessages() ?>
+<? if (!empty($this->exportOptions)): ?>
+	<form class="search data" method="post" action="<?= $this->url('cart-export') ?>" name="exportForm"
+		  title="<?= $this->transEsc('Export Items') ?>">
 
-			<? if (!empty($this->exportOptions)): ?>
-				<form class="search data" method="post" action="<?= $this->url('cart-export') ?>" name="exportForm"
-					  title="<?= $this->transEsc('Export Items') ?>">
-
-                    <fieldset>
-                        <div class="fieldbox">
-                            <ul class="list">
-                                <? foreach ($this->records as $current): ?>
-                                    <li><strong><?= $this->transEsc('Title') ?>
-                                            :</strong> <?= $this->escapeHtml($current->getBreadcrumb()) ?>
-                                        <input type="hidden" name="ids[]"
-                                               value="<?= $this->escapeHtml($current->getResourceSource() . '|' . $current->getUniqueId()) ?>"/></li>
-                                <? endforeach; ?>
-                            </ul>
-                        </div>
-                        <div class="fieldbox">
-                            <label class="label" for="format"><?= $this->transEsc('Format') ?>:</label>
-                            <select name="format" id="format" class="select">
-                                <? foreach ($this->exportOptions as $exportOption): ?>
-                                    <option value="<?= $this->escapeHtml($exportOption) ?>"><?= $this->transEsc($exportOption) ?></option>
-                                <? endforeach; ?>
-                            </select>
-                        </div>
-                    </fieldset>
-                    <fieldset class="actions">
-                        <input class="submit primary" type="submit" name="submit" value="<?= $this->transEsc('Export') ?>"/>
-                    </fieldset>
-				</form>
-			<? endif; ?>
-
-		</div>
-		<!-- end: content -->
-	</div>
-	<div id="ie_clearing">
-		&nbsp;
-	</div>
-</div>
-<!-- end: col3 (content) -->
+		<fieldset>
+			<div class="fieldbox">
+				<ul class="list">
+					<? foreach ($this->records as $current): ?>
+						<li><strong><?= $this->transEsc('Title') ?>
+								:</strong> <?= $this->escapeHtml($current->getBreadcrumb()) ?>
+							<input type="hidden" name="ids[]"
+								   value="<?= $this->escapeHtml($current->getResourceSource() . '|' . $current->getUniqueId()) ?>"/></li>
+					<? endforeach; ?>
+				</ul>
+			</div>
+			<div class="fieldbox">
+				<label class="label" for="format"><?= $this->transEsc('Format') ?>:</label>
+				<select name="format" id="format" class="select">
+					<? foreach ($this->exportOptions as $exportOption): ?>
+						<option value="<?= $this->escapeHtml($exportOption) ?>"><?= $this->transEsc($exportOption) ?></option>
+					<? endforeach; ?>
+				</select>
+			</div>
+		</fieldset>
+		<fieldset class="actions">
+			<input class="submit primary" type="submit" name="submit" value="<?= $this->transEsc('Export') ?>"/>
+		</fieldset>
+	</form>
+<? endif; ?>
