@@ -459,19 +459,18 @@ return array(
 	//	),
 
     'swissbib' => array(
+			// The ignore patterns have to be valid regex!
         'ignore_css_assets' => array(
-            'blueprint/screen.css',
-            'css/smoothness/jquery-ui.css'
+            '|blueprint/screen.css|',
+            '|css/smoothness/jquery-ui\.css|'
         ),
-
         'ignore_js_assets' => array(
-            'jquery.min.js', // jquery 1.6
-            'jquery.form.js',
-            'jquery.metadata.js',
-            'jquery.validate.min.js',
-            'jquery-ui/js/jquery-ui.js',
-            'lightbox.js',
-            'common.js',
+            '|jquery\.min.js|', // jquery 1.6
+            '|^jquery\.form\.js|',
+            '|jquery.metadata.js|',
+            '|^jquery.validate.min.js|',
+            '|jquery-ui/js/jquery-ui\.js|',
+            '|common\.js|',
             //has a dependency to jQuery so has to be linked after this general component
             //move it into the swissbib libs
         ),
