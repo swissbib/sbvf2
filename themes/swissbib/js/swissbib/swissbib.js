@@ -51,7 +51,6 @@ var swissbib = {
 		this.initBulkExport();
 
 		this.Account.init();
-		this.Lightboxes.init();
     },
 
 

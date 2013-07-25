@@ -11,8 +11,8 @@ $exportFormats = $this->export()->getFormatsForRecord($this->driver);
 			<a href="#" title="<?=$this->transEsc('Print')?>"><?=$this->transEsc('Print')?></a>
 		</li>
 
-		<li id="pagefunction_send">
-			<a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Email')?>" title="<?=$this->transEsc('Email this')?>"><?=$this->transEsc('Email this')?></a>
+		<li id="pagefunction_send" class="sendRecord">
+			<a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Email')?>" class="mailRecord controllerRecord" title="<?=$this->transEsc('Email this')?>"><?=$this->transEsc('Email this')?></a>
 		</li>
 
 		<?php if (count($exportFormats) > 0): ?>

@@ -573,3 +573,12 @@ tr.infoMessagesRow td {
 	list-style: square inside;
 	line-height: 1.2em;
 }
+
+
+#modalDialog .info {
+	font-size: 1em;
+	text-indent: 0;
+	line-height: 1em;
+	padding-left: 30px;
+	width: auto;
+}
