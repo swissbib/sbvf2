@@ -30,6 +30,7 @@ return array(
 		'jquery/plugin/jquery.validate.min.js',
 		'jquery/plugin/jquery.hoverintent.js',
 		'jquery/plugin/loadmask/jquery.loadmask.js',
+		'jquery/plugin/jquery.form.min.js',
 
 		'swissbib-jq-plugins/hint.js',
 		'swissbib-jq-plugins/menunav.js',
@@ -49,11 +50,11 @@ return array(
 		'swissbib/FavoriteInstitutions.js',
 		'swissbib/Account.js',
 		'swissbib/Settings.js',
+		'swissbib/Lightboxes.js',
 
+//		'common.js'
 		'blueprint/commonFromBluePrint.js',
 
-        //'swissbib/bibtip.js', only used in fullview lazy load for this specific code?
-        //'swissbib/fullview.js', only used in full view lazy load?
 		//'blueprint/record.js',
     ),
 	'favicon' => 'favicon.ico',
