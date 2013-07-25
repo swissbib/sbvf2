@@ -11,7 +11,8 @@ return array(
 		//'patches/patch_ie6.css:all:IE 6', (we don't support IE6 in the future)
 		'blueprint.css',
 		'swissbib.css',
-		'../js/jquery/plugin/loadmask/jquery.loadmask.css'
+		'../js/jquery/plugin/loadmask/jquery.loadmask.css',
+        'colorbox/colorbox.css'
     ),
     'js' => array(
         'jquery/jquery-1.10.1.min.js',
