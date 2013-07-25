@@ -479,29 +479,15 @@ return array(
 		// This section contains service manager configurations for all Swissbib
 		// pluggable components:
 		'plugin_managers' => array(
-			'db_table' => array(
-				'factories'  => array(
-					'userlocaldata' => function ($sm) {
-						return new \Swissbib\Db\Table\UserLocalData();
-					},
-				),
-				'invokables' => array(
-					'holdingsitems' => 'Swissbib\Db\Table\SbHoldingsItems',
-					'userlocaldata' => 'Swissbib\Db\Table\UserLocalData',
-				),
-			),
-
             'vufind_search_options' => array(
                 'abstract_factories' => array('Swissbib\VuFind\Search\Options\PluginFactory'),
             ),
             'vufind_search_params' => array(
                 'abstract_factories' => array('Swissbib\VuFind\Search\Params\PluginFactory'),
             ),
-
             'vufind_search_results' => array(
                 'abstract_factories' => array('Swissbib\VuFind\Search\Results\PluginFactory'),
-            ),
-
+            )
 		),
 		// Search result tabs
 		'resultTabs' => array(
