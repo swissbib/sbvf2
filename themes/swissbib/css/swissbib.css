@@ -143,12 +143,19 @@
 #facet_publicationdate { display:none; }
 
 div.facets fieldset#publishDateSlider {
-	margin:5px 0 0 5px!important;
+    margin:5px 0 0 5px!important;
+;
+}
+
+div.facets .ui-slider {
+    width: 150px!important;
 }
 
 .publishDateForceHeight {
 	clear:both;
 	height:83px;
+    padding-left: 10px;
+    margin-right: 4px;
 }
 
 #facet_pubdate_slider label {
