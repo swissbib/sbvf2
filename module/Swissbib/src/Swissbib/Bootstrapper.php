@@ -121,6 +121,7 @@ class Bootstrapper
 
 	/**
 	 * Initialize translation from user settings
+	 * Executes later than vufind language init (vufind has priority 9000)
 	 */
 	protected function initUserLocale()
 	{
@@ -135,12 +136,15 @@ class Bootstrapper
 			if ($locale) {
 				/** @var Translator $translator */
 				$translator = $this->serviceManager->get('VuFind\Translator');
+				$viewModel = $serviceLocator->get('viewmanager')->getViewModel();
 
-				$callback = function ($event) use ($locale, $translator) {
+				$callback = function ($event) use ($locale, $translator, $viewModel) {
 					$translator->setLocale($locale);
+
+					$viewModel->setVariable('userLang', $locale);
 				};
 
-				$this->events->attach('dispatch', $callback, 900);
+				$this->events->attach('dispatch', $callback, 8000);
 			}
 		}
 	}

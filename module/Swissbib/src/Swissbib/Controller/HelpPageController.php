@@ -47,6 +47,7 @@ class HelpPageController extends BaseController
 
 			// Set Solr search for help pages
 		$this->layout()->setVariable('searchClassId', 'Solr');
+        $this->layout()->setVariable('pageClass', 'template_page');
 
 		return $helpLayout;
 	}

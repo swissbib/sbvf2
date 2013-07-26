@@ -50,7 +50,7 @@ var swissbib = {
 
 		this.initBulkExport();
 
-		swissbib.Account.init();
+		this.Account.init();
     },
 
 
