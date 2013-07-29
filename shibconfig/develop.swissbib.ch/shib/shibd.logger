@@ -2,7 +2,7 @@
 log4j.rootCategory=DEBUG, shibd_log, warn_log
 
 # fairly verbose for DEBUG, so generally leave at DEBUG
-log4j.category.XMLTooling.XMLObject=DEBUG
+log4j.category.XMLTooling.XMLObject=INFO
 log4j.category.XMLTooling.KeyInfoResolver=DEBUG
 log4j.category.Shibboleth.IPRange=DEBUG
 log4j.category.Shibboleth.PropertySet=DEBUG
