@@ -28,6 +28,7 @@ use Swissbib\VuFind\Search\Helper\ExtendedSolrFactoryHelper;
 use Swissbib\View\Helper\QrCode as QrCodeViewHelper;
 use Swissbib\Highlight\SolrConfigurator as HighlightSolrConfigurator;
 use Swissbib\VuFind\Hierarchy\TreeDataSource\Solr as TreeDataSourceSolr;
+use Swissbib\Log\Logger as SwissbibLogger;
 
 return array(
 	'router'          => array(
@@ -60,13 +61,13 @@ return array(
 				)
 			),
 			// (local) Search User Settings
-			'search-settings'     => array(
-				'type'    => 'Zend\Mvc\Router\Http\Literal',
+			'myresearch-settings'     => array(
+				'type'    => 'literal',
 				'options' => array(
-					'route'    => '/MyResearch/Profile/Searchsettings',
+					'route'    => '/MyResearch/Settings',
 					'defaults' => array(
-						'controller' => 'MyResearch',
-						'action'     => 'Searchsettings',
+						'controller' => 'my-research',
+						'action'     => 'settings'
 					)
 				)
 			),
@@ -115,7 +116,7 @@ return array(
 				'options' => array(
 					'route'    => '/MyResearch/Lists',
 					'defaults' => array(
-						'controller' => 'myresearch',
+						'controller' => 'my-research',
 						'action'     => 'favorites'
 					)
 				)
@@ -165,7 +166,15 @@ return array(
 			'holdings'     		=> 'Swissbib\Controller\HoldingsController',
 			'tab40import'  		=> 'Swissbib\Controller\Tab40ImportController',
 			'institutionFavorites'=> 'Swissbib\Controller\FavoritesController',
-			'hierarchycache' 	 => 'Swissbib\Controller\HierarchyCacheController'
+			'hierarchycache' 	 => 'Swissbib\Controller\HierarchyCacheController',
+			'cart' 				=> 'Swissbib\Controller\CartController'
+		),
+		'factories' => array(
+			'record' => function ($sm) {
+				return new \Swissbib\Controller\RecordController(
+					$sm->getServiceLocator()->get('VuFind\Config')->get('config')
+				);
+			}
 		)
 	),
 	'service_manager' => array(
@@ -185,6 +194,7 @@ return array(
 				$eBooksOnDemand	= $sm->get('Swissbib\EbooksOnDemand');
 				$availability	= $sm->get('Swissbib\Availability');
 				$bibCodeHelper	= $sm->get('Swissbib\BibCodeHelper');
+				$logger			= $sm->get('Swissbib\Logger');
 
 				return new HoldingsHelper(	$ilsConnection,
 											$hmac,
@@ -194,7 +204,8 @@ return array(
 											$locationMap,
 											$eBooksOnDemand,
 											$availability,
-											$bibCodeHelper
+											$bibCodeHelper,
+											$logger
 											);
 			},
 			'Swissbib\TargetsProxy\TargetsProxy' => function ($sm) {
@@ -268,6 +279,15 @@ return array(
 				$eventsManager	= $sm->get('SharedEventManager');
 
 				return new HighlightSolrConfigurator($eventsManager, $config);
+			},
+			'Swissbib\Logger' => function ($sm) {
+				$logger = new SwissbibLogger();
+
+				$logger->addWriter('stream', 1, array(
+													 'stream'	=> 'log/swissbib.log'
+												));
+
+				return $logger;
 			}
 		)
 	),
@@ -282,7 +302,6 @@ return array(
 			'myResearchSideBar'       => 'Swissbib\View\Helper\MyResearchSideBar',
 			'noHolding'               => 'Swissbib\View\Helper\NoHolding',
 			'number'                  => 'Swissbib\View\Helper\Number',
-			'pageFunctions'           => 'Swissbib\View\Helper\PageFunctions',
 			'physicalDescription'     => 'Swissbib\View\Helper\PhysicalDescriptions',
 			'publicationDateMarc'     => 'Swissbib\View\Helper\YearFormatterMarc',
 			'publicationDateSummon'	  => 'Swissbib\View\Helper\YearFormatterSummon',
@@ -297,7 +316,8 @@ return array(
 			'availabilityInfo'        => 'Swissbib\View\Helper\AvailabilityInfo',
 			'transLocation'        => 'Swissbib\View\Helper\TranslateLocation',
 			'qrCodeHolding'			  => 'Swissbib\View\Helper\QrCodeHolding',
-			'holdingItemsPaging'	  => 'Swissbib\View\Helper\HoldingItemsPaging'
+			'holdingItemsPaging'	  => 'Swissbib\View\Helper\HoldingItemsPaging',
+			'filterUntranslatedInstitutions' => 'Swissbib\View\Helper\FilterUntranslatedInstitutions'
 		),
 		'factories' => array(
 			'institutionSorter' => function ($sm) {
@@ -439,19 +459,18 @@ return array(
 	//	),
 
     'swissbib' => array(
+			// The ignore patterns have to be valid regex!
         'ignore_css_assets' => array(
-            'blueprint/screen.css',
-            'css/smoothness/jquery-ui.css'
+            '|blueprint/screen.css|',
+            '|css/smoothness/jquery-ui\.css|'
         ),
-
         'ignore_js_assets' => array(
-            'jquery.min.js', // jquery 1.6
-            'jquery.form.js',
-            'jquery.metadata.js',
-            'jquery.validate.min.js',
-            'jquery-ui/js/jquery-ui.js',
-            'lightbox.js',
-            'common.js',
+            '|jquery\.min.js|', // jquery 1.6
+            '|^jquery\.form\.js|',
+            '|jquery.metadata.js|',
+            '|^jquery.validate.min.js|',
+            '|jquery-ui/js/jquery-ui\.js|',
+            '|common\.js|',
             //has a dependency to jQuery so has to be linked after this general component
             //move it into the swissbib libs
         ),
@@ -459,29 +478,15 @@ return array(
 		// This section contains service manager configurations for all Swissbib
 		// pluggable components:
 		'plugin_managers' => array(
-			'db_table' => array(
-				'factories'  => array(
-					'userlocaldata' => function ($sm) {
-						return new \Swissbib\Db\Table\UserLocalData();
-					},
-				),
-				'invokables' => array(
-					'holdingsitems' => 'Swissbib\Db\Table\SbHoldingsItems',
-					'userlocaldata' => 'Swissbib\Db\Table\UserLocalData',
-				),
-			),
-
             'vufind_search_options' => array(
                 'abstract_factories' => array('Swissbib\VuFind\Search\Options\PluginFactory'),
             ),
             'vufind_search_params' => array(
                 'abstract_factories' => array('Swissbib\VuFind\Search\Params\PluginFactory'),
             ),
-
             'vufind_search_results' => array(
                 'abstract_factories' => array('Swissbib\VuFind\Search\Results\PluginFactory'),
-            ),
-
+            )
 		),
 		// Search result tabs
 		'resultTabs' => array(

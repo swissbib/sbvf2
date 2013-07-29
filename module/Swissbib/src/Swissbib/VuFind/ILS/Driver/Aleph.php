@@ -239,7 +239,8 @@ class Aleph extends VuFindDriver
 			'location_expanded' 	=> 'z30-collection',
 			'location_code'			=> 'z30-collection',
 			'description'       	=> 'z30-description',
-			'raw-sequence-number'	=> 'z30-item-sequence'
+			'raw-sequence-number'	=> 'z30-item-sequence',
+			'localid'				=> 'z30-doc-number'
 		);
 
 		$linksToExtend = array_slice($links, 0, $numItems);

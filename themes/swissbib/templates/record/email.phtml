@@ -1,0 +1,55 @@
+<h1><?= $this->transEsc('Email Record') ?></h1>
+
+<?= $this->flashmessages() ?>
+
+<form class="form" method="post" name="emailRecord">
+	<input type="hidden" name="id" value="<?= $this->escapeHtml($this->driver->getUniqueId()) ?>"/>
+	<input type="hidden" name="source" value="<?= $this->escapeHtml($this->driver->getResourceSource()) ?>"/>
+	<fieldset>
+		<div class="fieldgroup">
+			<div class="fieldbox">
+				<label class="label" for="email_to"><?=$this->transEsc('To')?>:</label>
+				<input class="text large <?=$this->jqueryValidation(array('required'=>'This field is required', 'email'=>'Email address is invalid'))?>" id="email_to" type="text" name="to" value="<?=isset($this->to) ? $this->to : ''?>" />
+			</div>
+			<div class="fieldbox">
+				<label class="label" for="email_from"><?=$this->transEsc('From')?>:</label>
+				<input class="text large <?=$this->jqueryValidation(array('required'=>'This field is required', 'email'=>'Email address is invalid'))?>" id="email_from" type="text" name="from" value="<?=isset($this->from) ? $this->from : ''?>" />
+			</div>
+			<div class="fieldbox">
+				<label class="label" for="email_message"><?=$this->transEsc('Message')?>:</label>
+				<textarea id="email_message" name="message" class="textarea large"><?=isset($this->message) ? $this->message : ''?></textarea>
+			</div>
+		</div>
+	</fieldset>
+	<fieldset class="actions">
+		<input class="submit primary" type="submit" name="submit" value="<?= $this->transEsc('Send') ?>"/>
+	</fieldset>
+
+</form>
+
+
+
+
+<?php return; ?>
+
+
+
+
+
+<input type="hidden" name="id" value="<?= $this->escapeHtml($this->driver->getUniqueId()) ?>"/>
+<input type="hidden" name="source" value="<?= $this->escapeHtml($this->driver->getResourceSource()) ?>"/>
+
+<label class="displayBlock" for="email_to"><?= $this->transEsc('To') ?>:</label>
+<input id="email_to" type="text" name="to" value="<?= isset($this->to) ? $this->to : '' ?>" size="40"
+	   class="displayBlock mainFocus <?= $this->jqueryValidation(array('required' => 'This field is required', 'email' => 'Email address is invalid')) ?>"/>
+<br>
+<label class="displayBlock" for="email_from"><?= $this->transEsc('From') ?>:</label>
+<input id="email_from" type="text" name="from" value="<?= isset($this->from) ? $this->from : '' ?>"
+	   size="40"
+	   class="displayBlock  <?= $this->jqueryValidation(array('required' => 'This field is required', 'email' => 'Email address is invalid')) ?>"/>
+<br>
+<label class="displayBlock" for="email_message"><?= $this->transEsc('Message') ?>:</label>
+<textarea id="email_message" name="message" rows="3" class="displayBlock "
+		  cols="40"><?= isset($this->message) ? $this->message : '' ?></textarea>
+<br/>
+<input class="button" type="submit" name="submit" value="<?= $this->transEsc('Send') ?>"/>

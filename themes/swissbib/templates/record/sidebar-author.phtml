@@ -1,0 +1,40 @@
+<?php
+///** @var \Swissbib\RecordDriver\SolrMarc		$record  */
+$record = $this->driver;
+/** @var \VuFind\View\Helper\Root\Record $viewRecord */
+$viewRecord	= $this->record($record);
+
+$authors	= $this->driver->getDeduplicatedAuthors();
+$hasAuthors	= !empty($authors['main']) || !empty($authors['secondary']) || !is_null($authors['corporate']) && !empty($authors['corporate']);
+
+if (!$hasAuthors) {
+	return;
+}
+?>
+<h3><?=$this->transEsc('Author')?></h3>
+<div class="subnavigation">
+    <ul>
+		<?php if (!empty($authors['main'])): ?>
+			<li>
+				<a href="<?=$viewRecord->getLink('author', $authors['main'])?>"><?=$this->escapeHtml($authors['main'])?></a>
+			</li>
+		<?php endif; ?>
+		<?php if (!empty($authors['secondary'])): ?>
+			<?php foreach ($authors['secondary'] as $secondaryAuthor): ?>
+				<li>
+					<a href="<?=$viewRecord->getLink('author', $secondaryAuthor)?>"><?=$this->escapeHtml($secondaryAuthor)?></a>
+				</li>
+			<?php endforeach; ?>
+		<?php endif; ?>
+		<?php if(!is_null($authors['corporate']) && !empty($authors['corporate'])): ?>
+			<?php foreach ($authors['secondary'] as $corporateAuthor): ?>
+				<li>
+					<a href="<?=$viewRecord->getLink('author', $corporateAuthor)?>"><?=$this->escapeHtml($corporateAuthor)?></a>
+				</li>
+			<?php endforeach; ?>
+		<?php endif; ?>
+    </ul>
+</div>
+
+
+

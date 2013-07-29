@@ -104,7 +104,7 @@ class ResourceContainer extends VfResourceContainer implements ServiceLocatorAwa
 
 		foreach ($resourcesToIgnore as $ignorePattern) {
 			foreach ($resourcesToInspect as $index => $file) {
-				if (stristr($file, $ignorePattern) !== false) {
+				if (preg_match($ignorePattern, $file) /*stristr($file, $ignorePattern) !== false*/) {
 					// File matches ignore pattern
 					unset($resourcesToInspect[$index]);
 				}

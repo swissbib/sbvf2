@@ -262,8 +262,8 @@ class SolrMarc extends VuFindSolrMarc
 		$data = $this->getMarcSubFieldMap(100, $this->personFieldMap);
 
 		if ($asString) {
-			$name = isset($data['name']) ? $data['name'] : '';
-			$name .= isset($data['forname']) ? $data['forname'] : '';
+			$name = isset($data['forname']) ? $data['forname'] : '';
+			$name .= isset($data['name']) ? ' ' . $data['name'] : '';
 
 			return trim($name);
 		}
@@ -947,17 +947,18 @@ class SolrMarc extends VuFindSolrMarc
 	 * Get items of a field (which exists multiple times) as named map (array)
 	 * Use this method if the field is (R)epeatable
 	 *
-	 * @param    Integer $index
-	 * @param    Array   $fieldMap
-	 * @return    Array[]
+	 * @param	Integer		$index
+	 * @param	Array		$fieldMap
+	 * @param	Boolean		$includeIndicators
+	 * @return	Array[]
 	 */
-	protected function getMarcSubFieldMaps($index, array $fieldMap)
+	protected function getMarcSubFieldMaps($index, array $fieldMap, $includeIndicators = true)
 	{
 		$subFieldsValues = array();
 		$fields          = $this->marcRecord->getFields($index);
 
 		foreach ($fields as $field) {
-			$subFieldsValues[] = $this->getMappedFieldData($field, $fieldMap);
+			$subFieldsValues[] = $this->getMappedFieldData($field, $fieldMap, $includeIndicators);
 		}
 
 		return $subFieldsValues;
@@ -1005,6 +1006,39 @@ class SolrMarc extends VuFindSolrMarc
 		}
 
 		return $subFieldValues;
+	}
+
+
+
+	/**
+	 * Get fields data without mapping. Keep original order of subfields
+	 *
+	 * @param	Integer		$index
+	 * @return	Array[]
+	 */
+	protected function getMarcSubfieldsRaw($index)
+	{
+		/** @var \File_MARC_Data_Field[] $fields */
+		$fields		= $this->marcRecord->getFields($index);
+		$fieldsData = array();
+
+		foreach ($fields as $field) {
+			$tempFieldData = array();
+
+			/** @var \File_MARC_Subfield[] $subfields */
+			$subfields = $field->getSubfields();
+
+			foreach ($subfields as $subfield) {
+				$tempFieldData[] = array(
+					'tag'	=> $subfield->getCode(),
+					'data'	=> $subfield->getData()
+				);
+			}
+
+			$fieldsData[] = $tempFieldData;
+		}
+
+		return $fieldsData;
 	}
 
 
@@ -1148,6 +1182,146 @@ class SolrMarc extends VuFindSolrMarc
 		}
 
 		return (isset($this->highlightDetails['fulltext'][0])) ? trim($this->highlightDetails['fulltext'][0]) : '';
+	}
+
+
+
+	/**
+	 * Get table of content
+	 * This method is also used to check whether data for tab is available and the tab should be displayed
+	 *
+	 * @return	String[]
+	 */
+	public function getTOC()
+	{
+		return $this->getTableOfContent() + $this->getContentSummary();
+	}
+
+
+
+	/**
+	 * Get table of content
+	 * From fields 505.g.r.t
+	 * The combination of the lines of defined by the order of the fields
+	 * Possible combinations:
+	 * - $g. $t / $r
+	 * - $g. $t
+	 * - $g. $r
+	 * - $t. $r
+	 * - $t
+	 * - $r
+	 *
+	 * Use the content of the $debugLog if something seems wrong
+	 *
+	 * @return	String[]
+	 */
+	public function getTableOfContent()
+	{
+		$lines		= array();
+		$fieldsData = $this->getMarcSubfieldsRaw(505);
+		$debugLog	= array();
+
+		foreach ($fieldsData as $fieldIndex => $field) {
+			$maxIndex = sizeof($field) - 1;
+			$index    = 0;
+
+			while ($index <= $maxIndex) {
+				$hasNext	= isset($field[$index+1]);
+				$hasTwoNext	= isset($field[$index+2]);
+				$currentTag = $field[$index]['tag'];
+				$currentData= $field[$index]['data'];
+				$nextTag	= $hasNext ? $field[$index+1]['tag'] : null;
+				$nextData	= $hasNext ? $field[$index+1]['data'] : null;
+				$twoNextTag	= $hasTwoNext ? $field[$index+2]['tag'] : null;
+				$twoNextData= $hasTwoNext ? $field[$index+2]['data'] : null;
+
+				if ($currentTag === 'g') {
+					if ($hasNext) {
+						if ($nextTag === 't') {
+							if ($hasTwoNext && $twoNextTag === 'r') { // $g. $t / $r
+								$lines[] = $currentData . '. ' . $nextData . ' / ' . $twoNextData;
+								$debugLog[$fieldIndex][] = $index . ' | $g. $t / $r';
+								$index += 3;
+							} else { // $g. $t
+								$lines[] = $currentData . '. ' . $nextData;
+								$debugLog[$fieldIndex][] = $index . ' | $g. $t';
+								$index += 2;
+							}
+						} elseif ($nextTag === 'r') {  // $g. $r
+							$lines[] = $currentData . '. ' . $nextData;
+							$debugLog[$fieldIndex][] = $index . ' | $g. $r';
+							$index += 2;
+						} else {
+								// unknown order
+							$debugLog[$fieldIndex][] = $index . ' | unknown order';
+							$index += 1;
+						}
+					}
+				} elseif ($currentTag ===  't') {
+					if ($hasNext) {
+						if ($nextTag === 'r') { // $t / $r
+							$lines[] = $currentData . ' / ' . $nextData;
+							$debugLog[$fieldIndex][] = $index . ' | $t / $r';
+							$index += 2;
+						} else { // $t
+							$lines[] = $currentData;
+							$debugLog[$fieldIndex][] = $index . ' | $t';
+							$index += 1;
+						}
+					} else { // $t
+						$lines[] = $currentData;
+						$debugLog[$fieldIndex][] = $index . ' | $t';
+						$index += 1;
+					}
+				} elseif ($currentTag ===  'r') { // $r
+					$lines[] = $currentData;
+					$debugLog[$fieldIndex][] = $index . ' | $r';
+					$index += 1;
+				} else {
+					// unknown order
+					$debugLog[$fieldIndex][] = $index . ' | unknown order';
+					$index += 1;
+				}
+			}
+		}
+
+		return $lines;
+	}
+
+
+
+	/**
+	 * Get content summary
+	 * From fields 520.a
+	 *
+	 * @return	String[]
+	 */
+	public function getContentSummary()
+	{
+		$lines = array();
+		$summary = $this->getMarcSubFieldMaps(520, array(
+											'a'	=> 'summary',
+//											'b'	=> 'expansion'
+											), false);
+
+			// Copy into simple list
+		foreach ($summary as $item) {
+			$lines[] = $item['summary'];
+		}
+
+		return $lines;
+	}
+
+
+
+	/**
+	 * Get last indexed date string for sorting
+	 *
+	 * @return	String
+	 */
+	public function getLastIndexed()
+	{
+		return isset($this->fields['time_indexed']) ? $this->fields['time_indexed'] : '';
 	}
 
 

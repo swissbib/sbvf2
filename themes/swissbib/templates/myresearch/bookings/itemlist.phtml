@@ -14,7 +14,7 @@
 	</thead>
 	<tbody>
 		<?php foreach($this->bookings as $index => $booking): ?>
-			<tr id="photocopy-<?=$index?>" class="link">
+			<tr id="photocopy-<?=$index?>">
 				<td><?=$index+1?></td>
 				<td><?=$this->escapeHtml($booking['title'])?></td>
 				<td><?=date('d/m/y H:i', $booking['dateStart'])?></td>

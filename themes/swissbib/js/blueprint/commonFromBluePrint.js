@@ -7,17 +7,17 @@
 $.ajaxSetup({cache: false});
 
 // set global options for the jQuery validation plugin
-//$.validator.setDefaults({
-//    errorClass: 'invalid'
-//});
+$.validator.setDefaults({
+    errorClass: 'invalid'
+});
 
 // add a modified version of the original phoneUS rule
 // to accept only 10-digit phone numbers
-//$.validator.addMethod("phoneUS", function(phone_number, element) {
-//    phone_number = phone_number.replace(/[\-\s().]+/g, "");
-//    return this.optional(element) || phone_number.length > 9 &&
-//        phone_number.match(/^(\([2-9]\d{2}\)|[2-9]\d{2})[2-9]\d{2}\d{4}$/);
-//}, 'Please specify a valid phone number');
+$.validator.addMethod("phoneUS", function(phone_number, element) {
+    phone_number = phone_number.replace(/[\-\s().]+/g, "");
+    return this.optional(element) || phone_number.length > 9 &&
+        phone_number.match(/^(\([2-9]\d{2}\)|[2-9]\d{2})[2-9]\d{2}\d{4}$/);
+}, 'Please specify a valid phone number');
 
 function toggleMenu(elemId) {
     var elem = $("#"+elemId);
@@ -61,6 +61,7 @@ function extractParams(str) {
 
 function initAutocomplete() {
     $('input.autocomplete').each(function() {
+        var lastXhr = null;
         var params = extractParams($(this).attr('class'));
         var maxItems = params.maxItems > 0 ? params.maxItems : 10;
         var $autocomplete = $(this).autocomplete({
@@ -73,7 +74,11 @@ function initAutocomplete() {
                 if (!searcher) {
                     searcher = 'Solr';
                 }
-                $.ajax({
+                // Abort previous access if one is defined
+                if (lastXhr !== null && typeof lastXhr["abort"] != "undefined") {
+                    lastXhr.abort();
+                }
+                lastXhr = $.ajax({
                     url: path + '/AJAX/JSON',
                     data: {method:'getACSuggestions',type:type,q:request.term,searcher:searcher},
                     dataType:'json',

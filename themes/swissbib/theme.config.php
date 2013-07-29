@@ -11,7 +11,8 @@ return array(
 		//'patches/patch_ie6.css:all:IE 6', (we don't support IE6 in the future)
 		'blueprint.css',
 		'swissbib.css',
-		'../js/jquery/plugin/loadmask/jquery.loadmask.css'
+		'../js/jquery/plugin/loadmask/jquery.loadmask.css',
+        'colorbox/colorbox.css'
     ),
     'js' => array(
         'jquery/jquery-1.10.1.min.js',
@@ -30,6 +31,7 @@ return array(
 		'jquery/plugin/jquery.validate.min.js',
 		'jquery/plugin/jquery.hoverintent.js',
 		'jquery/plugin/loadmask/jquery.loadmask.js',
+		'jquery/plugin/jquery.form.min.js',
 
 		'swissbib-jq-plugins/hint.js',
 		'swissbib-jq-plugins/menunav.js',
@@ -48,18 +50,22 @@ return array(
   		'swissbib/HoldingFavorites.js',
 		'swissbib/FavoriteInstitutions.js',
 		'swissbib/Account.js',
-		'swissbib/searchsettings.js',
+		'swissbib/Settings.js',
 
+//		'common.js'
 		'blueprint/commonFromBluePrint.js',
 
-        //'swissbib/bibtip.js', only used in fullview lazy load for this specific code?
-        //'swissbib/fullview.js', only used in full view lazy load?
 		//'blueprint/record.js',
     ),
 	'favicon' => 'favicon.ico',
 
 	'helpers' => array(
         'factories' => array(
+			'record' => function ($sm) {
+			   return new \Swissbib\View\Helper\Record(
+				   $sm->getServiceLocator()->get('VuFind\Config')->get('config')
+			   );
+		   },
 			'recordlink' => function ($sm) {
 				return new \Swissbib\View\Helper\RecordLink(
 					$sm->getServiceLocator()->get('VuFind\RecordRouter')

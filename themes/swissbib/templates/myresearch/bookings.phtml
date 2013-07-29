@@ -15,10 +15,10 @@
 			<?=$this->flashmessages()?>
 
 			<?php if( sizeof($this->bookings) ): ?>
-				<p>Ihre Buchungen</p>
+				<p><?=$this->transEsc('Your bookings') ?></p>
 				<?=$this->render('myresearch/bookings/itemlist.phtml')?>
 			<?php else: ?>
-				<p>Sie haben aktuell keine Buchungen</p>
+				<p><?=$this->transEsc('No bookings') ?></p>
 			<?php endif; ?>
 		</div>
 		<!-- end: content -->

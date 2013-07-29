@@ -12,6 +12,7 @@ use VuFind\Config\PluginManager as ConfigManager;
 use Swissbib\VuFind\ILS\Driver\Aleph;
 use Swissbib\RecordDriver\SolrMarc;
 use Swissbib\Helper\BibCode;
+use Swissbib\Log\Logger;
 
 /**
  * probably Holdings should be a subtype of ZF2 AbstractHelper
@@ -51,7 +52,8 @@ class Holdings
 		'C' => 'adm_code',
 		'c'	=> 'location_code',
 		'E' => 'bibsysnumber',
-		'j' => 'signature',
+        'F' => 'institution_chb',
+        'j' => 'signature',
 		'o' => 'staff_note',
 		'p' => 'barcode',
 		'q' => 'localid',
@@ -113,6 +115,8 @@ class Holdings
 	protected $availability;
 	/** @var BibCode  */
 	protected $bibCodeHelper;
+	/** @var  Logger */
+	protected $swissbibLogger;
 
 
 
@@ -126,6 +130,7 @@ class Holdings
 	 * @param    Translator            $translator
 	 * @param	 LocationMap		   $locationMap
 	 * @param	 BibCode			   $bibCodeHelper
+	 * @param	 Logger				   $swissbibLogger
 	 * @throws    \Exception
 	 */
 	public function __construct(
@@ -137,7 +142,8 @@ class Holdings
 					LocationMap $locationMap,
 					EbooksOnDemand $ebooksOnDemand,
 					Availability $availability,
-					BibCode $bibCodeHelper
+					BibCode $bibCodeHelper,
+					Logger $swissbibLogger
 	) {
 		$this->ils            = $ilsConnection;
 		$this->configManager  = $configManager;
@@ -149,6 +155,7 @@ class Holdings
 		$this->ebooksOnDemand = $ebooksOnDemand;
 		$this->availability	  = $availability;
 		$this->bibCodeHelper  = $bibCodeHelper;
+		$this->swissbibLogger = $swissbibLogger;
 
 		/** @var Config $relationConfig */
 		$relationConfig			= $configManager->get('libadmin-groups');
@@ -1096,6 +1103,15 @@ class Holdings
 				$networkCode = strtolower($item['network']);
 				$institution = strtolower($item['institution']);
 				$groupCode   = $this->getGroup($institution);
+
+					// Prevent display of untranslated and ungrouped institutions
+				$institutionLabel	= $this->translator->translate($institution, 'institution');
+				if ($groupCode == 'unknown' || $institutionLabel === $institution) {
+					if ($groupCode === 'unknown') {
+						$this->swissbibLogger->logUngroupedInstitution($institution);
+					}
+					continue;
+				}
 
 				// Make sure group is present
 				if (!isset($data[$groupCode])) {

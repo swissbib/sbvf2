@@ -1,0 +1,40 @@
+<?php
+
+	$isLoggedIn	= !!$this->auth()->isLoggedIn();
+
+?>
+
+<div id="navigation">
+	<h3 class="hidden">Hauptnavigation</h3>
+	<ul>
+		<li class="nav_home">
+			<a href="<?=$this->url('search-home');?>">Home</a>
+		</li>
+		<li>
+			<a href="<?=$this->url('myresearch-home');?>"><?= $this->transEsc('menu.swissbib') ?></a>
+			<ul class="subnavigation">
+                <li>
+                    <a href="<?=$this->url('myresearch-favorites');?>"><?=$this->transEsc('memorizelist')?></a>
+                </li>
+                <li>
+                    <a href="<?=$this->url('myresearch-settings');?>"><?=$this->transEsc('My_Search_Settings')?></a>
+                </li>
+                <li>
+                    <a href="<?=$this->url('search-history')?>"><?=$this->transEsc('history_saved_searches')?></a>
+                </li>
+                <li>
+					<a href="<?=$this->url('myresearch-favorite-institutions')?>"><?= $this->transEsc('menu.mylibraries') ?></a>
+				</li>
+			</ul>
+		</li>
+		<li>
+			<a href="<?=$this->url('help-page',array('topic'=>'About'));?>"><?= $this->transEsc('menu.service.information') ?></a>
+		</li>
+		<li>
+            <a title="Feedback" href="javascript:void(0)" data-uv-lightbox="classic_widget" data-uv-mode="full" data-uv-primary-color="#36d40e" data-uv-link-color="#484d59" data-uv-default-mode="support" data-uv-forum-id="29443"><?= $this->transEsc('menu.feedback') ?></a>
+		</li>
+		<li class="nav_help">
+			<a href="<?=$this->url('help-page')?>"><?=$this->transEsc('Help')?></a>
+		</li>
+	</ul>
+</div>
