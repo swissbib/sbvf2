@@ -69,7 +69,7 @@
                 styleSheet="https://www.switch.ch/aai/design/shib-error.css"/>
 
         <!-- Download and verify SWITCHaai metadata -->
-        <MetadataProvider type="XML"
+        <MetadataProvider type="Chaining"
                           validate="true"
                           uri="http://metadata.aai.switch.ch/metadata.switchaai.xml"
                           backingFilePath="metadata.switchaai.xml"
@@ -87,7 +87,21 @@
                       <PolicyOID>2.16.756.1.2.6.7</PolicyOID>
                </TrustEngine>
             </MetadataFilter>
+
+
+            <MetadataProvider type="XML"
+                              uri="https://aai.guest-login.ch/idp/shibboleth"
+                              backingFilePath="metadata.guest-idp.xml"
+                              reloadInterval="3600">
+            </MetadataProvider>
+
+
         </MetadataProvider>
+
+
+
+
+
 
 
         <!-- Map to extract attributes from SAML assertions. -->
