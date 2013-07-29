@@ -1,10 +1,10 @@
 <?php
 
 /** @var	VuFind\View\Helper\Root\Record		$viewRecord  */
-/** @var	Swissbib\RecordDriver\SolrMarc		$resultItem  */
+/** @var	Swissbib\RecordDriver\SolrMarc		$record  */
 
-$resultItem	= $this->driver;
-$viewRecord	= $this->record($resultItem);
+$record	= $this->driver;
+$viewRecord	= $this->record($record);
 
 //$authors	= $this->Authors($resultItem->getDeduplicatedAuthors());
 
@@ -12,18 +12,18 @@ $viewRecord	= $this->record($resultItem);
 $thumbnail		= $viewRecord->getThumbnail('large');
 $thumbnailSrc	= $thumbnail ? $thumbnail : $this->url('cover-unavailable');
 
-$titleStatement			= $resultItem->getTitleStatement(true);
-$secondaryAuthors		= $resultItem->getSecondaryAuthors(true);
-$publishers				= $resultItem->getPublishers(true);
-$physicalDescriptions	= $resultItem->getPhysicalDescriptions(false);
-$edition				= $resultItem->getEdition();
-$summary				= trim(implode($resultItem->getSummary()));
-$groupID				= $resultItem->getGroup(true);
+$titleStatement			= $record->getTitleStatement(true);
+$secondaryAuthors		= $record->getSecondaryAuthors(true);
+$publishers				= $record->getPublishers(true);
+$physicalDescriptions	= $record->getPhysicalDescriptions(false);
+$edition				= $record->getEdition();
+$summary				= trim(implode($record->getSummary()));
+$groupID				= $record->getGroup(true);
 
-$publicationDate		= $this->publicationDateMarc($resultItem->getPublicationDates());
-$openUrl				= $resultItem->openURLActive('record') ? $resultItem->getOpenURL() : false;
-$favoriteLink			= $this->recordLink()->getActionUrl($resultItem, 'Save');
-$highlightedFulltext	= $resultItem->getHighlightedFulltext();
+$publicationDate		= $this->publicationDateMarc($record->getPublicationDates());
+$openUrl				= $record->openURLActive('record') ? $record->getOpenURL() : false;
+$favoriteLink			= $this->recordLink()->getActionUrl($record, 'Save');
+$highlightedFulltext	= $record->getHighlightedFulltext();
 
 ?>
 <?/* Common parts of recordDriver's core.phtml templates*/?>
@@ -36,7 +36,7 @@ $highlightedFulltext	= $resultItem->getHighlightedFulltext();
 
 <!-- col -->
 <div class="c75l">
-	<h2><?=$this->escapeHtml($resultItem->getShortTitle())?></h2>
+	<h2><?=$this->escapeHtml($record->getShortTitle())?></h2>
 	<?php if(isset($titleStatement['title_remainder'])): ?>
         <p><?=$this->escapeHtml($titleStatement['title_remainder'])?></p>
     <?php endif ?>
@@ -66,7 +66,7 @@ $highlightedFulltext	= $resultItem->getHighlightedFulltext();
 
 		<h4><?=$this->transEsc('Format')?>:</h4>
 		<p>
-		<?php foreach($resultItem->getFormats() as $format): ?>
+		<?php foreach($record->getFormats() as $format): ?>
 			<span class="icon_format_book"><?=$this->escapeHtml($format)?></span>
 		<?php endforeach; ?>
 		</p>
@@ -76,7 +76,8 @@ $highlightedFulltext	= $resultItem->getHighlightedFulltext();
 		    <p><?=$this->escapeHtml($edition)?></p>
 		<?php endif; ?>
 
-		<?php if(!empty($summary)): ?>
+		<?php /** DISABLED - Is now in own tab */ ?>
+		<?php if(!empty($summary) && false): ?>
 		<h4>Inhalt:</h4>
 		<p><?=$this->escapeHtml($summary)?></p>
 		<?php endif; ?>
