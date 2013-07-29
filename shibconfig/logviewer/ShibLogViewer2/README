@@ -1,0 +1,89 @@
+Shibboleth Log Viewer Instructions
+----------------------------------
+
+Description:
+The following scripts allow an administrator to access the Shibboleth log of a
+Shibboleth Identity Provider 2.x or an Shibboleth Service Provider 2.x over the
+web using AJAX technology.
+
+Prerequisites:
+You need a webserver that can execute PERL CGIs. The Shibboleth log must be
+readable by the PERL script. You may set the Shibboleth log level to DEBUG in 
+order to see something useful. AJAX Technologie may not work with all web browsers.
+The scripts were tested with Firefox and Safari.
+
+Warning:
+Don't use these scripts in a production environment unless you protect them 
+properly in order to prevent other user's seeing unencrypted assertions and
+attributes from third.
+
+
+Identity Provider
+-----------------
+1. Copy 'IdPLogViewer.html', 'images' and 'Shib2LogFetcher.js' to your web server directory.
+   e.g.   for Tomcat /opt/tomcat/webapps/ROOT/ or for Apache /var/www/
+   You can rename IdPLogViewer.html to whatever name you like as long
+   as the images directory and the Shib2LogFetcher.js file are in the same directory.
+
+2. Edit 'Shib2LogFetcher.js' and set the variable CGI_URL to reflect the URL to
+   the Shib2LogFeeder.cgi
+   
+3. Copy IDLogFeeder.cgi to a directory where it is executable, 
+   e.g.  for Tomcat /opt/tomcat/webapps/ROOT/WEB-INF/cgi/ 
+   or for Apache /usr/lib/cgi-bin
+
+4. Edit the file 'Shib2LogFeeder.cgi' and set the variables $logFile and 
+   $configFile . Also make sure the CGI script can read the Shibboleth log and 
+   create the $configFile.
+   For Tomcat you have to edit the file /opt/tomcat/conf/web.xml and add
+   something like the following just after the web-app element:
+  
+<servlet>
+	<servlet-name>cgi</servlet-name>
+	<servlet-class>org.apache.catalina.servlets.CGIServlet</servlet-class>
+	<init-param>
+		<param-name>debug</param-name>
+		<param-value>6</param-value>
+	</init-param>
+	<init-param>
+		<param-name>cgiPathPrefix</param-name>
+		<param-value>WEB-INF/cgi</param-value>
+	</init-param>
+	<load-on-startup>5</load-on-startup>
+</servlet>
+
+<servlet-mapping>
+	<servlet-name>cgi</servlet-name>
+	<url-pattern>/cgi-bin/*</url-pattern>
+</servlet-mapping>
+    
+   For Apache you have to only have to make sure that the IDLogFeeder.cgi is
+   in a script directory that is allowed to execute CGIs.
+
+5. You may want to protect the CGI script and the HTML page with HTTP Basic Auth
+   to prevent everybody from seeing the sent attributes of a third user.
+
+
+Service Provider
+----------------
+1. Copy 'SPLogViewer.html', 'images' and 'Shib2LogFetcher.js' to your web server 
+   root directory. e.g. for Debian/Apache /var/www/   
+   You can rename SPLogViewer.html to whatever name you like as long
+   as the images directory and the ajax_log.js file are in the same directory.
+
+2. Edit 'Shib2LogFetcher.js' and set the variable CGI_URL to reflect
+   
+3. Copy 'Shib2LogFeeder.cgi' to a directory where it is executable, 
+   e.g. for Debian/Apache /usr/lib/cgi-bin/ 
+
+4. Edit the file 'Shib2LogFeeder.cgi' and set the variables $logFile and 
+  $configFile . Also make sure the CGI script can read the Shibboleth log and 
+  create the $configFile 
+
+5. You may want to protect the CGI script and the HTML page with HTTP Basic Auth
+   to prevent everybody from seeing the received attributes of a third user.
+   
+Credits:
+Thanks to Jochen Lienhard from university of Freiburg for reporting two bugs.
+----------------------------------
+Feedback and bugs to aai@switch.ch
