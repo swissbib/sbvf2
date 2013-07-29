@@ -63,7 +63,7 @@
         also add attributes with values that can be plugged into the templates.
         More information on: https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPErrors
         -->
-        <Errors supportContact="aai@testvf.swissbib.ch"
+        <Errors supportContact="aai@develop.swissbib.ch"
                 helpLocation="https://www.switch.ch/aai/help"
                 logoLocation="https://www.switch.ch/aai/design/images/SWITCHaai.gif"
                 styleSheet="https://www.switch.ch/aai/design/shib-error.css"/>
@@ -87,6 +87,14 @@
                       <PolicyOID>2.16.756.1.2.6.7</PolicyOID>
                </TrustEngine>
             </MetadataFilter>
+
+            <MetadataProvider type="XML"
+                              uri="https://aai.guest-login.ch/idp/shibboleth"
+                              backingFilePath="metadata.guest-idp.xml"
+                              reloadInterval="3600">
+            </MetadataProvider>
+
+
         </MetadataProvider>
 
 
