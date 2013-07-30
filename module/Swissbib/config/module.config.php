@@ -121,6 +121,25 @@ return array(
 					)
 				)
 			),
+
+            //I had a problem on the developemnt branch -> a trailing backslash was genereated
+            //this doesn't happen so far in feature/shibboleth
+            //'/MyResearch/Home/' => array(
+            //    'type'    => 'Zend\Mvc\Router\Http\Literal',
+            //    'options' => array(
+            //        'route'    => '/' . 'MyResearch/Home/',
+            //        'constraints' => array(
+            //            'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            //            'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+            //        ),
+            //        'defaults' => array(
+            //            'controller' => 'MyResearch',
+            //            'action'     => 'Home',
+            //        )
+            //    )
+            //),
+
+
             'shibboleth-test' => array( // make first shibboleth test
                 'type' => 'literal',
                 'options' => array(
