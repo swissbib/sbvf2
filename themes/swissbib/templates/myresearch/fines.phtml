@@ -22,7 +22,7 @@
 			<?=$this->flashmessages()?>
 
 			<?php if( empty($this->fines) ): ?>
-				<?=$this->transEsc('You do not have any fines')?>
+				<p><?=$this->transEsc('You do not have any fines')?></p>
 			<?php else: ?>
 				<?=$this->render('myresearch/fines/itemlist')?>
 			<?php endif; ?>

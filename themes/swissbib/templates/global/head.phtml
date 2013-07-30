@@ -3,6 +3,19 @@ $script = 'var vufindString = {};';
 $this->headScript()->prependScript($script);
 $this->headScript()->prependScript("path = '" . rtrim($this->url('home'), '/') . "';");
 ?>
+
+<?
+// Set up OpenSearch link:
+$this->headLink(
+    array(
+        'href' => $this->url('search-opensearch') . '?method=describe',
+        'type' => 'application/opensearchdescription+xml',
+        'title' => $this->transEsc('Library Catalog Search'),
+        'rel' => 'search'
+    )
+);
+?>
+
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <?=$this->headTitle()?>
 <?=$this->headMeta()?>
