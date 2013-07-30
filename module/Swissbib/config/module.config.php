@@ -459,19 +459,18 @@ return array(
 	//	),
 
     'swissbib' => array(
+			// The ignore patterns have to be valid regex!
         'ignore_css_assets' => array(
-            'blueprint/screen.css',
-            'css/smoothness/jquery-ui.css'
+            '|blueprint/screen.css|',
+            '|css/smoothness/jquery-ui\.css|'
         ),
-
         'ignore_js_assets' => array(
-            'jquery.min.js', // jquery 1.6
-            'jquery.form.js',
-            'jquery.metadata.js',
-            'jquery.validate.min.js',
-            'jquery-ui/js/jquery-ui.js',
-            'lightbox.js',
-            'common.js',
+            '|jquery\.min.js|', // jquery 1.6
+            '|^jquery\.form\.js|',
+            '|jquery.metadata.js|',
+            '|^jquery.validate.min.js|',
+            '|jquery-ui/js/jquery-ui\.js|',
+            '|common\.js|',
             //has a dependency to jQuery so has to be linked after this general component
             //move it into the swissbib libs
         ),
@@ -479,29 +478,15 @@ return array(
 		// This section contains service manager configurations for all Swissbib
 		// pluggable components:
 		'plugin_managers' => array(
-			'db_table' => array(
-				'factories'  => array(
-					'userlocaldata' => function ($sm) {
-						return new \Swissbib\Db\Table\UserLocalData();
-					},
-				),
-				'invokables' => array(
-					'holdingsitems' => 'Swissbib\Db\Table\SbHoldingsItems',
-					'userlocaldata' => 'Swissbib\Db\Table\UserLocalData',
-				),
-			),
-
             'vufind_search_options' => array(
                 'abstract_factories' => array('Swissbib\VuFind\Search\Options\PluginFactory'),
             ),
             'vufind_search_params' => array(
                 'abstract_factories' => array('Swissbib\VuFind\Search\Params\PluginFactory'),
             ),
-
             'vufind_search_results' => array(
                 'abstract_factories' => array('Swissbib\VuFind\Search\Results\PluginFactory'),
-            ),
-
+            )
 		),
 		// Search result tabs
 		'resultTabs' => array(
