@@ -10,7 +10,7 @@ use Zend\View\Resolver\ResolverInterface;
 use VuFind\Controller\SearchController as VuFindSearchController;
 use VuFind\Search\Results\PluginManager as VuFindSearchResultsPluginManager;
 
-use Swissbib\Search\Results\PluginManager as SwissbibSearchResultsPluginManager;
+use Swissbib\VuFind\Search\Results\PluginManager as SwissbibSearchResultsPluginManager;
 
 /**
  * @package       Swissbib
