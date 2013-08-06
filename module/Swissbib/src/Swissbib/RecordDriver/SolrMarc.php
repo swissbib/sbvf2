@@ -553,11 +553,14 @@ class SolrMarc extends VuFindSolrMarc
                 'ind'   => 7,
                 'field' => 'jurivoc'
             ),
+            /* only works for one indicator (test case)
+               implement with new CBS-data (standardised MARC, not IDSMARC)
+            */
 			'local'       => array(
-				//'ind'        => 7,
+				'ind'        => I,
 				'fieldsOnly' => array(690, 691),
 				'detect'     => true // extract vocabulary from sub field 2
-			)
+			),
 		);
 		$fieldMapping        = array(
 			'a' => 'a',
