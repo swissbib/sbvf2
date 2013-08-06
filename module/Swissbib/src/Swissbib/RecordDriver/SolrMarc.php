@@ -573,7 +573,16 @@ class SolrMarc extends VuFindSolrMarc
 		$subjectVocabularies = array();
 		$fieldIndexes        = array(600, 610, 611, 630, 648, 650, 651, 655, 656, 690, 691);
 		$vocabConfigs        = array(
-			'gnd'         => array(
+            'lcsh'        => array(
+                'ind' => 0
+            ),
+            'mesh'        => array(
+                'ind' => 2
+            ),
+            'unspecified' => array(
+                'ind' => 4
+            ),
+            'gnd'         => array(
 				'ind'   => 7,
 				'field' => 'gnd'
 			),
@@ -581,17 +590,32 @@ class SolrMarc extends VuFindSolrMarc
 				'ind'   => 7,
 				'field' => 'rero'
 			),
-			'lcsh'        => array(
-				'ind' => 0
-			),
-			'mesh'        => array(
-				'ind' => 2
-			),
-			'unspecified' => array(
-				'ind' => 4
-			),
+            'idsbb'       => array(
+                'ind'   => 7,
+                'field' => 'ids bs/be'
+            ),
+            'idszbz'      => array(
+                'ind'   => 7,
+                'field' => 'ids zbz'
+            ),
+            'idslu'       => array(
+                'ind'   => 7,
+                'field' => 'ids lu'
+            ),
+            'bgr'         => array(
+                'ind'   => 7,
+                'field' => 'bgr'
+            ),
+            'sbt'         => array(
+                'ind'   => 7,
+                'field' => 'tessin-TS'
+            ),
+            'jurivoc'     => array(
+                'ind'   => 7,
+                'field' => 'jurivoc'
+            ),
 			'local'       => array(
-				'ind'        => 7,
+				//'ind'        => 7,
 				'fieldsOnly' => array(690, 691),
 				'detect'     => true // extract vocabulary from sub field 2
 			)
@@ -634,7 +658,7 @@ class SolrMarc extends VuFindSolrMarc
 					// Are limited fields set in config
 					if (isset($vocabConfig['fieldsOnly']) && is_array($vocabConfig['fieldsOnly'])) {
 						if (!in_array($fieldIndex, $vocabConfig['fieldsOnly'])) {
-							continue; // Skip vocabulary if field in not in list
+							continue; // Skip vocabulary if field is not in list
 						}
 					}
 
