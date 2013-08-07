@@ -66,7 +66,7 @@ chmod 777 $BASE_DIR/local/cache/
 chmod 777 $BASE_DIR/log/
 
 log "full access rights to cache set"
-log "full access rights to log directory set
+log "full access rights to log directory set"
 log "restarting the httpd service..."
 
 service httpd restart
