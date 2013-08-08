@@ -410,6 +410,14 @@ return array(
 //					'WorldCat' => 'VuFind\Search\Factory\WorldCatBackendFactory',
 				)
 			),
+
+            'auth' => array(
+                'invokables' => array(
+                    'shibboleth' => 'Swissbib\VuFind\Auth\Shibboleth',
+                ),
+            ),
+
+
 			'recorddriver' => array(
 				'factories' => array(
 					'solrmarc' => function ($sm) {
