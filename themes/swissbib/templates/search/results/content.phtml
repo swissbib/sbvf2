@@ -7,11 +7,14 @@
 
 	$recordTotal= $results->getResultTotal();
 	$lookFor	= $params->getDisplayQuery();
+    if (strlen($lookFor) > 30 ) {
+        $lookFor = substr($lookFor,0,30) . " ...";
+    }
 	$view		= $results->getParams()->getView();
 
 ?>
 <div>
-    <?php if (!isset($allTabsConfig)): ?>
+    <?php if (!isset($allTabsConfig) || count($allTabsConfig) == 1): ?>
 	<h1>
 		<?=$this->number($recordTotal)?> Treffer für ihre Suchanfrage
 		<cite><?=$this->escapeHtml($lookFor)?></cite>
@@ -25,6 +28,7 @@
 		<div class="tools floatbox">
 			<!-- sort -->
 			<h3 class="hidden">Einstellungen Suchresultat Anzeige</h3>
+
 			<?=$this->render('search/controls/sort.phtml')?>
 			<!-- display -->
 			<?=$this->render('search/controls/limit.phtml')?>
