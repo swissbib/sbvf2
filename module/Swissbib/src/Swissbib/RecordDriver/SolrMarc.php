@@ -430,37 +430,6 @@ class SolrMarc extends VuFindSolrMarc
 	}
 
 
-
-	/**
-	 * get subject headings from GND subject headings
-	 * build an array (multidimensional?) from all GND headings
-	 * GND headings
-	 * fields: 600, 610, 611, 630, 648, 650, 651, 655
-	 *
-	 * @ind2=7
-	 *      subfield $2=gnd
-	 *      subfields vary per field, build array per field with all
-	 *      content to be able to treat it in a view helper
-	 * @return array
-	 */
-	/**
-	 * Get subject headings
-	 *
-	 * @return    Array[]
-	 */
-	public function getGNDSubjectHeadings()
-	{
-		return $this->getMarcSubFieldMaps(600, array(
-													'a' => 'name',
-													'b' => 'numeration',
-													'c' => 'title',
-													'd' => 'lifespan',
-													't' => 'work'
-											   ));
-	}
-
-
-
 	/**
 	 * get group-id from solr-field to display FRBR-Button
 	 *
@@ -470,7 +439,6 @@ class SolrMarc extends VuFindSolrMarc
 	{
 		return isset($this->fields['group_id']) ? $this->fields['group_id'][0] : '';
 	}
-
 
 
 	/*
@@ -507,37 +475,8 @@ class SolrMarc extends VuFindSolrMarc
 	}
 
 
-
 	/**
-	 * Get topical terms
-	 *
-	 * @return Array[]
-	 */
-	public function getTopicalTerms()
-	{
-		return $this->getMarcSubFieldMaps(650, array(
-													'a'  => 'term',
-													'b'  => 'term_geographic',
-													'c'  => 'location',
-													'd'  => 'active_dates',
-													'_e' => 'relator_term',
-													'q'  => 'label', // @todo real name?
-													't'  => 'time', // @todo real name?
-													'_v' => 'form_subdivision',
-													'_x' => 'general_subdivision',
-													'_y' => 'chronological_subdivision',
-													'_z' => 'geographical_subdivision',
-													'_0' => 'authority_record_control_numer',
-													'2'  => 'source_heading',
-													'3'  => 'materials',
-													'_4' => 'relator_code'
-											   ));
-	}
-
-
-
-	/**
-	 * Get structured subject vacabularies from predefined fields
+	 * Get structured subject vocabularies from predefined fields
 	 * Extended version of getAllSubjectHeadings()
 	 *
 	 * $fieldIndexes contains keys of fields to check
@@ -573,7 +512,16 @@ class SolrMarc extends VuFindSolrMarc
 		$subjectVocabularies = array();
 		$fieldIndexes        = array(600, 610, 611, 630, 648, 650, 651, 655, 656, 690, 691);
 		$vocabConfigs        = array(
-			'gnd'         => array(
+            'lcsh'        => array(
+                'ind' => 0
+            ),
+            'mesh'        => array(
+                'ind' => 2
+            ),
+            'unspecified' => array(
+                'ind' => 4
+            ),
+            'gnd'         => array(
 				'ind'   => 7,
 				'field' => 'gnd'
 			),
@@ -581,20 +529,38 @@ class SolrMarc extends VuFindSolrMarc
 				'ind'   => 7,
 				'field' => 'rero'
 			),
-			'lcsh'        => array(
-				'ind' => 0
-			),
-			'mesh'        => array(
-				'ind' => 2
-			),
-			'unspecified' => array(
-				'ind' => 4
-			),
+            'idsbb'       => array(
+                'ind'   => 7,
+                'field' => 'ids bs/be'
+            ),
+            'idszbz'      => array(
+                'ind'   => 7,
+                'field' => 'ids zbz'
+            ),
+            'idslu'       => array(
+                'ind'   => 7,
+                'field' => 'ids lu'
+            ),
+            'bgr'         => array(
+                'ind'   => 7,
+                'field' => 'bgr'
+            ),
+            'sbt'         => array(
+                'ind'   => 7,
+                'field' => 'tessin-TS'
+            ),
+            'jurivoc'     => array(
+                'ind'   => 7,
+                'field' => 'jurivoc'
+            ),
+            /* only works for one indicator (test case)
+               implement with new CBS-data (standardised MARC, not IDSMARC)
+            */
 			'local'       => array(
-				'ind'        => 7,
+				'ind'        => I,
 				'fieldsOnly' => array(690, 691),
 				'detect'     => true // extract vocabulary from sub field 2
-			)
+			),
 		);
 		$fieldMapping        = array(
 			'a' => 'a',
@@ -634,7 +600,7 @@ class SolrMarc extends VuFindSolrMarc
 					// Are limited fields set in config
 					if (isset($vocabConfig['fieldsOnly']) && is_array($vocabConfig['fieldsOnly'])) {
 						if (!in_array($fieldIndex, $vocabConfig['fieldsOnly'])) {
-							continue; // Skip vocabulary if field in not in list
+							continue; // Skip vocabulary if field is not in list
 						}
 					}
 
@@ -669,31 +635,6 @@ class SolrMarc extends VuFindSolrMarc
 
 		return $subjectVocabularies;
 	}
-
-
-
-	/**
-	 * Get geographic names
-	 * Field 651
-	 *
-	 * @return    Array[]
-	 */
-	public function getAddedGeographicNames()
-	{
-		return $this->getMarcSubFieldMaps(651, array(
-													'a'  => 'name',
-													'_e' => 'relator',
-													'_v' => 'form_subdivision',
-													'_x' => 'general_subdivision',
-													'_y' => 'chronilogical_subdivision',
-													'_z' => 'geographical_subdivision',
-													'_0' => 'arcn',
-													'2'  => 'source',
-													'3'  => 'materials',
-													'_4' => 'relator_code'
-											   ));
-	}
-
 
 
 	/**
@@ -797,25 +738,6 @@ class SolrMarc extends VuFindSolrMarc
 	{
 		return isset($this->fields['union']) ? $this->fields['union'] : array();
 	}
-
-
-
-	/**
-	 * Get formatted content notes (505)
-	 *
-	 * @return    Array[]
-	 */
-	public function getFormattedContentNotes()
-	{
-		return $this->getMarcSubFieldMaps(505, array(
-													'a'  => 'notes',
-													'_g' => 'misc',
-													'_r' => 'responsibility',
-													'_t' => 'title',
-													'_u' => 'URI'
-											   ));
-	}
-
 
 
 	/**
