@@ -23,6 +23,10 @@ if( $resultViewParams ) {
 
 $isAdvancedSearch	= $searchBoxParams && $searchBoxParams['searchType'] == 'advanced';
 
+$activateAutosuggest = $this->configAccess()->Site->activateAutosuggest ;
+$activateAutosuggest =  !empty($activateAutosuggest) && ($activateAutosuggest == "true"  ||  $activateAutosuggest == "1") ? "autocomplete" : "";
+
+
 ?>
 <div id="search" class="<?=$isAdvancedSearch?'advSearch':''?>">
 	<?php if( $isAdvancedSearch ): ?>
@@ -41,7 +45,7 @@ $isAdvancedSearch	= $searchBoxParams && $searchBoxParams['searchType'] == 'advan
 			<h3>
                 <label for="lookfor"><?=$this->transEsc('Search For')?></label>
             </h3>
-			<input type="text" class="text" name="lookfor" id="lookfor" autocomplete="off" value="<?=$this->escapeHtml($lookFor)?>" />
+			<input type="text" class="text <?= $activateAutosuggest ?>" name="lookfor" id="lookfor" autocomplete="off" value="<?=$this->escapeHtml($lookFor)?>" />
 			<label for="search_submit" class="hidden"><?=$this->transEsc('Find')?></label>
 			<input type="submit" class="submit primary" id="search_submit" value="<?=$this->transEsc('Find')?>"/>
 			<label for="search_favorites" class="checker">Nur in Favoriten</label>
