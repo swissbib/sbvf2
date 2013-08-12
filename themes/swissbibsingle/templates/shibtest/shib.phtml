@@ -1,0 +1,34 @@
+
+
+<div id="col1" class="sidebar">
+    <div id="col1_content" class="clearfix">
+        <!-- begin: sidebar -->
+        <div id="sidebar">
+
+
+        </div>
+        <!-- end: sidebar -->
+    </div>
+</div>
+<!-- end: col1 (sidebar) -->
+<!-- begin: col3 (content) -->
+<div id="col3" class="content">
+    <div id="col3_content" class="clearfix">
+        <!-- begin: content -->
+        <div id="content">
+
+            <p>Inhalt der Server Variablen</p>
+
+            <? foreach ($this->serverVariables as $key => $value): ?>
+
+                <p><?= $key ?>    // <?= $value ?></p>
+
+            <? endforeach; ?>
+
+        </div>
+        <!-- end: content -->
+    </div>
+    <div id="ie_clearing">
+        &nbsp;
+    </div>
+</div>
