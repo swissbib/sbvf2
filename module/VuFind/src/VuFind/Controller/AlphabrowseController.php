@@ -75,6 +75,12 @@ class AlphabrowseController extends AbstractBase
             foreach ($config->AlphaBrowse_Extras as $key => $value) {
                 $extras[$key] = $value;
             }
+        } else {
+            $extras = array(
+                'title' => 'author:format:publishDate',
+                'lcc' => 'title',
+                'dewey' => 'title'
+            );
         }
 
         // Connect to Solr:
@@ -101,13 +107,15 @@ class AlphabrowseController extends AbstractBase
         // If required parameters are present, load results:
         if ($source && $from !== false) {
             // Load Solr data or die trying:
-            $result = $db->alphabeticBrowse($source, $from, $page, $limit, $extraParams);
+            $result = $db
+                ->alphabeticBrowse($source, $from, $page, $limit, $extraParams);
 
             // No results?    Try the previous page just in case we've gone past
             // the end of the list....
             if ($result['Browse']['totalCount'] == 0) {
                 $page--;
-                $result = $db->alphabeticBrowse($source, $from, $page, $limit, $extraParams);
+                $result = $db
+                    ->alphabeticBrowse($source, $from, $page, $limit, $extraParams);
             }
 
             // Only display next/previous page links when applicable:
@@ -125,9 +133,9 @@ class AlphabrowseController extends AbstractBase
         $view->source = $source;
 
         // Pass information about extra columns on to theme
-        if (isset($extras[$source])) {
-            $view->extras = explode(':', $extras[$source]);
-        }
+        $view->extras = isset($extras[$source])
+            ? explode(':', $extras[$source]) : array();
+
         return $view;
     }
 }
