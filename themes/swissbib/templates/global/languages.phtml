@@ -13,7 +13,7 @@ $languages = array();
 
 $hostInfo = "";
 
-if ($_SERVER["APPLICATION_ENV"] == "development") {
+if ($_SERVER["VUFIND_ENV"] == "development") {
 
     $displayHostName = $this->configAccess()->Site->displayHostName ;
     $displayHostName =  !empty($displayHostName) && ($displayHostName == "true"  ||  $displayHostName == "1") ? "1" : 0;
