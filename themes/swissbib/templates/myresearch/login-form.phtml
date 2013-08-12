@@ -16,25 +16,133 @@ $sessionInitiator = $account->getSessionInitiator($this->serverUrl($this->url('m
 
 <?=$this->flashmessages()?>
 
-<p>Login Screen Nachrichten. Hier kann weiterer informativer Text zum Login stehen</p>
+
 
 <? if( $hideLogin ): ?>
-	<div class="error"><?=$this->transEsc('login_disabled')?></div>
+    <div class="error"><?=$this->transEsc('login_disabled')?></div>
 <? else: ?>
-	<? if( !$sessionInitiator ): // display default login form if no login URL provided ?>
-		<form method="post" action="<?=$this->url('myresearch-home')?>" name="loginForm" id="loginForm">
-			<?=$this->auth()->getLoginFields()?>
-			<input class="push-2 button" type="submit" name="processLogin" value="<?=$this->transEsc('Login')?>"/>
-			<div class="clear"></div>
-		</form>
-		<?=$initScript?>
-		<?php /** temporary disabled by ferni@snowflake.ch
-		<?php if( $account->supportsCreation() ): ?>
-			<a class="new_account"
-			   href="<?=$this->url('myresearch-account')?>"><?=$this->transEsc('Create New Account')?></a>
-		<? endif; ?>
-		 */ ?>
-	<? else: ?>
-		<a href="<?=$this->escapeHtml($sessionInitiator)?>"><?=$this->transEsc("Institutional Login")?></a>
-	<? endif; ?>
+    <? if( !$sessionInitiator ): // display default login form if no login URL provided ?>
+        <form method="post" action="<?=$this->url('myresearch-home')?>" name="loginForm" id="loginForm">
+            <?=$this->auth()->getLoginFields()?>
+            <input class="push-2 button" type="submit" name="processLogin" value="<?=$this->transEsc('Login')?>"/>
+            <div class="clear"></div>
+        </form>
+        <?=$initScript?>
+        <?php /** temporary disabled by ferni@snowflake.ch
+        <?php if( $account->supportsCreation() ): ?>
+        <a class="new_account"
+        href="<?=$this->url('myresearch-account')?>"><?=$this->transEsc('Create New Account')?></a>
+        <? endif; ?>
+         */ ?>
+    <? else: ?>
+
+
+        <p>Login Screen => more information for users how to use Shibboleth is necessary </p>
+        <div style="width: 100%; height: 300px;">
+        <div class="containerGrey" style="width: 48%; float: left; margin-right: 2%;height: 250px;">
+        <div class="title">
+
+            <h3>SWITCHaai Federation</h3>
+        </div>
+        <div class="content">
+        <!-- EMBEDDED-WAYF-START -->
+        <script type="text/javascript"><!--
+        // To use this JavaScript, please access:
+        // https://wayf.switch.ch/SWITCHaai/WAYF/embedded-wayf.js/snippet.html
+        // and copy/paste the resulting HTML snippet to an unprotected web page that
+        // you want the embedded WAYF to be displayed
+
+
+        //////////////////// ESSENTIAL SETTINGS ////////////////////
+
+        // URL of the WAYF to use
+        // Examples: "https://wayf.switch.ch/SWITCHaai/WAYF", "https://wayf-test.switch.ch/aaitest/WAYF";
+        // [Mandatory]
+        var wayf_URL = "https://wayf.switch.ch/SWITCHaai/WAYF";
+
+        // EntityID of the Service Provider that protects this Resource
+        // Examples: "https://econf.switch.ch/shibboleth", "https://dokeos.unige.ch/shibboleth"
+        // [Mandatory]
+        var wayf_sp_entityID =  <?= '"' . $this->serverUrl() . "/shibboleth" . '"'; ?>;
+
+        // Shibboleth Service Provider handler URL
+        // Examples: "https://point.switch.ch/Shibboleth.sso", "https://rr.aai.switch.ch/aaitest/Shibboleth.sso"
+        // [Mandatory, if wayf_use_discovery_service = false]
+        var wayf_sp_handlerURL = <?= '"' . $this->serverUrl() . "/Shibboleth.sso" . '"'; ?>;
+
+        // URL on this resource that the user shall be returned to after authentication
+        // Examples: "https://econf.switch.ch/aai/home", "https://olat.uzh.ch/my/courses"
+        // [Mandatory]
+        var wayf_return_url = <?= '"' . $this->serverUrl() . "/MyResearch/Home" . '"'; ?>;
+
+
+        //more configuration settings see:
+        //shibboleth repository notes/login_form.phtml
+
+
+        //////////////////// RECOMMENDED SETTINGS ////////////////////
+
+        var wayf_hide_categories =  new Array("tertiaryb","uppersecondary");
+
+        var wayf_unhide_idps = new Array();
+
+
+        var wayf_hide_idps = new Array();
+
+
+
+        //////////////////// ADVANCED SETTINGS ////////////////////
+
+        var wayf_sp_samlDSURL = <?= '"' . $this->serverUrl() . "/Shibboleth.sso/Login" . '"'; ?>;
+
+
+
+        //////////////////// ADDITIONAL CSS CUSTOMIZATIONS ////////////////////
+
+
+
+        //-->
+        </script>
+
+        <script type="text/javascript" src="https://wayf.switch.ch/SWITCHaai/WAYF/embedded-wayf.js"></script>
+
+        <noscript>
+            <!--
+            Fallback to Shibboleth DS session initiator for non-JavaScript users
+            You should set the value of the target GET parameter to an URL-encoded
+            absolute URL that points to a Shibboleth protected web page where the user
+            is logged in into your application.
+            -->
+            <p>
+                <strong>Login:</strong> Javascript is not enabled for your web browser. Please
+
+                <a href="<?=$this->escapeHtml($sessionInitiator)?>"><?=$this->transEsc("Institutional Login - non Java Script")?></a>
+
+            </p>
+        </noscript>
+
+        <!-- EMBEDDED-WAYF-END -->
+            <p style="padding-top: 10px;">Guest Login coming soon - hopefully.</p>
+            <p style="padding-top: 10px;">The above drop-down list contains all organisations currently participating in the production SWITCHaai infrastructure.</p>
+            <p style="padding-top: 10px;">
+                <a href="<?=$this->escapeHtml($sessionInitiator)?>"><?=$this->transEsc("Institutional Login - with external WAYF")?></a>
+            </p>
+
+        </div>
+        </div>
+
+        </div>
+
+
+    <? endif; ?>
 <?php endif; ?>
+
+
+
+
+
+
+
+
+
+
