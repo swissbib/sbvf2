@@ -18,7 +18,6 @@ $viewRecord	= $this->record($resultItem);
 
 
 $subjectVocabularies = $resultItem->getAllSubjectVocabularies(true);
-$subjects = $this->driver->getAllSubjectHeadings();
 
 /* Display Standard-IDs */
 $isbns = $this->driver->getISBNs();
@@ -228,6 +227,10 @@ $awards = $resultItem->getAwards();
 	</div>
 <?php endif; ?>
 
+
+<?php
+/** ==Subject Headings== */
+?>
 <?php if (sizeof($subjectVocabularies)): ?>
 	<div class="subjectVocabularies">
 		<h4><?= $this->transEsc('Subjects') ?>: </h4>
