@@ -120,7 +120,37 @@ return array(
 						'action'     => 'favorites'
 					)
 				)
-			)
+			),
+
+            //I had a problem on the developemnt branch -> a trailing backslash was genereated
+            //this doesn't happen so far in feature/shibboleth
+            //'/MyResearch/Home/' => array(
+            //    'type'    => 'Zend\Mvc\Router\Http\Literal',
+            //    'options' => array(
+            //        'route'    => '/' . 'MyResearch/Home/',
+            //        'constraints' => array(
+            //            'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            //            'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+            //        ),
+            //        'defaults' => array(
+            //            'controller' => 'MyResearch',
+            //            'action'     => 'Home',
+            //        )
+            //    )
+            //),
+
+
+            'shibboleth-test' => array( // make first shibboleth test
+                'type' => 'literal',
+                'options' => array(
+                    'route'    => '/Shibboleth.sso/SAML2/POST',
+                    'defaults' => array(
+                        'controller' => 'shibtest',
+                        'action'     => 'shib'
+                    )
+                )
+            )
+
 		)
 	),
 	'console'         => array(
@@ -167,7 +197,10 @@ return array(
 			'tab40import'  		=> 'Swissbib\Controller\Tab40ImportController',
 			'institutionFavorites'=> 'Swissbib\Controller\FavoritesController',
 			'hierarchycache' 	 => 'Swissbib\Controller\HierarchyCacheController',
-			'cart' 				=> 'Swissbib\Controller\CartController'
+			'cart' 				=> 'Swissbib\Controller\CartController',
+			'shibtest' 				=> 'Swissbib\Controller\ShibtestController'
+
+
 		),
 		'factories' => array(
 			'record' => function ($sm) {
@@ -317,7 +350,8 @@ return array(
 			'transLocation'        => 'Swissbib\View\Helper\TranslateLocation',
 			'qrCodeHolding'			  => 'Swissbib\View\Helper\QrCodeHolding',
 			'holdingItemsPaging'	  => 'Swissbib\View\Helper\HoldingItemsPaging',
-			'filterUntranslatedInstitutions' => 'Swissbib\View\Helper\FilterUntranslatedInstitutions'
+			'filterUntranslatedInstitutions' => 'Swissbib\View\Helper\FilterUntranslatedInstitutions',
+            'configAccess'            =>  'Swissbib\View\Helper\Config'
 		),
 		'factories' => array(
 			'institutionSorter' => function ($sm) {
@@ -377,6 +411,14 @@ return array(
 //					'WorldCat' => 'VuFind\Search\Factory\WorldCatBackendFactory',
 				)
 			),
+
+            'auth' => array(
+                'invokables' => array(
+                    'shibboleth' => 'Swissbib\VuFind\Auth\Shibboleth',
+                ),
+            ),
+
+
 			'recorddriver' => array(
 				'factories' => array(
 					'solrmarc' => function ($sm) {

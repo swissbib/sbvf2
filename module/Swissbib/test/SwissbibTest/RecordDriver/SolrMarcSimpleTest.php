@@ -71,16 +71,6 @@ class SolrMarcSimpleTest extends SolrMarcTestCase
 
 
 
-	public function testGetGNDSubjectHeadings()
-	{
-		$headings = $this->driver->getGNDSubjectHeadings();
-
-		$this->assertInternalType('array', $headings);
-		$this->assertEquals(0, sizeof($headings));
-	}
-
-
-
 	public function testGetGroup()
 	{
 		$group = $this->driver->getGroup();
@@ -111,17 +101,6 @@ class SolrMarcSimpleTest extends SolrMarcTestCase
 		$this->assertEquals('Konzerte', $terms[0]['term']);
 		$this->assertArrayHasKey('label', $terms[0]);
 	}
-
-
-
-	public function testGetTopicalTerms()
-	{
-		$terms = $this->driver->getTopicalTerms();
-
-		$this->assertInternalType('array', $terms);
-		$this->assertEquals(0, sizeof($terms));
-	}
-
 
 
 	public function testGetHostItemEntry()
@@ -158,16 +137,6 @@ class SolrMarcSimpleTest extends SolrMarcTestCase
 		$this->assertEquals(1, sizeof($physicalDescriptions));
 		$this->assertArrayHasKey('extent', $physicalDescriptions[0]);
 		$this->assertEquals('1 Partitur', $physicalDescriptions[0]['extent'][0]);
-	}
-
-
-
-	public function testGetFormattedContentNotes()
-	{
-		$notes = $this->driver->getFormattedContentNotes();
-
-		$this->assertInternalType('array', $notes);
-		$this->assertEquals(0, sizeof($notes));
 	}
 
 

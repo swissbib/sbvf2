@@ -50,7 +50,7 @@ class Config extends AbstractHelper implements ServiceLocatorAwareInterface
 	protected function getConfig()
 	{
 		if (!$this->config) {
-			$this->config = new ZendConfig($this->serviceLocator->get('Config'));
+			$this->config = $this->serviceLocator->getServiceLocator()->get('VuFind\Config')->get('config');
 		}
 
 		return $this->config;
