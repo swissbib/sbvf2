@@ -8,6 +8,23 @@ $supportedLanguages = array(
 );
 $languages = array();
 
+
+
+
+$hostInfo = "";
+
+if ($_SERVER["VUFIND_ENV"] == "development") {
+
+    $displayHostName = $this->configAccess()->Site->displayHostName ;
+    $displayHostName =  !empty($displayHostName) && ($displayHostName == "true"  ||  $displayHostName == "1") ? "1" : 0;
+
+    if ($displayHostName) {
+        $hostname = $this->configAccess()->Site->hostnameForTest;
+        $hostInfo =  '<li class="error">' . $hostname . '</li>';
+    }
+}
+
+
 foreach ($supportedLanguages as $langCode => $langName) {
 	$languages[] = array(
 		'code'     => $langCode,
@@ -24,6 +41,9 @@ $glue	= strpos($baseUrl, '?') === false ? '?' : '&';
 <div id="meta">
 	<h3 class="hidden">Metanavigation</h3>
 	<ul>
+
+        <?= $hostInfo ?>
+
 		<?php foreach ($languages as $language): ?>
 			<?php
 			$class = 'nav_' . $language['code'] . ($language['selected'] ? ' selected' : '');
