@@ -1,0 +1,47 @@
+
+
+
+<?
+    //this php rendering stuff without a template engine is really messy....GH
+
+    $spellingSuggestions	= $this->results->getSpellingSuggestions();
+
+    if (empty($spellingSuggestions)) {
+        return '';
+    }
+
+
+    if (sizeof($spellingSuggestions) > 0) {
+
+?>
+        <div class="box">
+            <h4>Falls Sie sich vertippt haben, meinten Sie: </h4>
+            <div class="status information">
+                <ul class="list">
+
+<?
+        foreach ($spellingSuggestions as $term => $details) {
+            foreach ($details['suggestions'] as $word => $data) {
+
+                ?>
+
+                    <li>
+                        <a href="<?=$results->getUrlQuery()->replaceTerm($term, $data['new_term']) ?> "><?= $this->escapeHtml($word) ?></a>
+
+                    </li>
+
+<?
+            }
+        }
+?>
+                </ul>
+
+            </div>
+        </div>
+<?
+
+    }
+
+?>
+
+
