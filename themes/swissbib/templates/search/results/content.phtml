@@ -45,16 +45,24 @@
 	<? endif; ?>
 
 
-	<!-- data -->
-	<?=$this->render('search/list-' . $view . '.phtml')?>
+    <?php if ($recordTotal): ?>
+	    <!-- nio zero hits -->
+	    <?=$this->render('search/list-' . $view . '.phtml')?>
 
-
-	<?php if($recordTotal): ?>
 		<!-- begin: tools -->
 		<div class="tools floatbox">
 			<!-- paging -->
 			<?=$this->partial('search/controls/view.phtml')?>
 		</div><!-- end: tools -->
+
+    <?php else: ?>
+
+        <?=$this->partial('search/list-empty.phtml')?>
+
 	<?php endif; ?>
+
+
+
+
 
 </div>

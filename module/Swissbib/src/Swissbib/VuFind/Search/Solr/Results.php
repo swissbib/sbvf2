@@ -36,6 +36,30 @@ class Results extends VuFindSolrResults
 
 
 
+    protected function createSpellcheckBackendParameters(AbstractQuery $query, Params $params)
+    {
+        $backendParams = parent::createBackendParameters($query, $params);
+
+        //with SOLR 4.3 AND is no longer the default parameter
+        $backendParams->add("q.op", "AND");
+
+        $backendParams->add("spellcheck", "true");
+        $spelling = $query->getAllTerms();
+        if ($spelling) {
+            $backendParams->set('spellcheck.q', $spelling);
+            $this->spellingQuery = $spelling;
+        }
+
+
+
+        //$backendParams = $this->addUserInstitutions($backendParams);
+
+        return $backendParams;
+    }
+
+
+
+
 	/**
 	 * Add user institutions as facet queries to backend params
 	 *
@@ -156,4 +180,40 @@ class Results extends VuFindSolrResults
 
 		return $facetList;
 	}
+
+
+    protected function performSearch()
+    {
+        $query  = $this->getParams()->getQuery();
+        $limit  = $this->getParams()->getLimit();
+        $offset = $this->getStartRecord() - 1;
+        $params = $this->createBackendParameters($query, $this->getParams());
+        $collection = $this->getSearchService()
+            ->search($this->backendId, $query, $offset, $limit, $params);
+
+        $this->responseFacets = $collection->getFacets();
+        $this->resultTotal = $collection->getTotal();
+
+        if ($this->resultTotal == 0) {
+
+            //we use spellchecking only in case of 0 hits
+
+            $params = $this->createSpellcheckBackendParameters($query, $this->getParams());
+            $collectionSpell = $this->getSearchService()
+                ->search($this->backendId, $query, $offset, $limit, $params);
+
+            // Process spelling suggestions
+            $spellcheck = $collectionSpell->getSpellcheck();
+            $this->processSpelling($spellcheck);
+
+
+        }
+
+
+        // Construct record drivers for all the items in the response:
+        $this->results = $collection->getRecords();
+    }
+
+
+
 }
