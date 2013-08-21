@@ -61,6 +61,14 @@ class SearchController extends VuFindSearchController
 			// Set default target
 		$this->searchClassId = $activeTabConfig['searchClassId'];
 
+        //do not remember FRBR searches because we ant to jump back to the original search
+
+        $type = $this->params()->fromQuery('type');
+
+        if (!empty($type) && $type == "FRBR") {
+            $this->rememberSearch = false;
+        }
+
 		$resultViewModel     = parent::resultsAction();
 
 		if ($resultViewModel instanceof Response) {
