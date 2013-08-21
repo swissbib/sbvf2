@@ -8,7 +8,7 @@ $favoriteLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
 
 $hasFullText	= $resultItem->hasFulltext();
 $detailLink		= $this->recordLink()->getUrl($resultItem);
-$thumbnail		= $viewRecord->getThumbnail('small');
+$thumbnail		= $this->escapeHtml($viewRecord->getThumbnail('small'));
 $thumbnailSrc	= $thumbnail ? $thumbnail : $this->url('cover-unavailable');
 
 $title			= $this->escapeHtml($this->shorttitleSummon($this->mainTitle($resultItem->getShortTitle())));
@@ -61,7 +61,8 @@ $linkSFX        = str_replace("<a ", "<a $linkSFX_param ", $linkSFX);
 	</td>
 	<td colspan="2">
 		<span>
-			<a title="<?= $this->transEsc('articles.link360') ?>" class="linkbutton primary icon_link_primary" target="_blank" href="<?= $link ?>">
+			<a title="<?= $this->transEsc('articles.link360') ?>" class="linkbutton primary icon_link_primary"
+				target="_blank" href="<?= $link360 ?>">
 			<span>get it</span></a>
 		</span>
 		<br /><br />
