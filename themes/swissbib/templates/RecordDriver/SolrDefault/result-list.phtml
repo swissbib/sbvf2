@@ -12,6 +12,7 @@ $secondaryAuthors		= $resultItem->getSecondaryAuthors(true);
 $edition		= $resultItem->getEdition();
 $publicationDate= $this->publicationDateMarc($resultItem->getPublicationDates());
 $groupID		= $resultItem->getGroup(true);
+$showFRBR       = $this->configAccess()->Site->displayFrbr;
 $favoriteLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
 
 ?>
@@ -73,8 +74,10 @@ $favoriteLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
 			<?=$viewRecord->getFormatList()?>
 
         <!-- <h6 class="icon_format_book">Buch</h6> -->
-            <?php if (!empty($groupID) && !strcmp($results->getParams()->getSearchHandler(),'FRBR') == 0   ) : ?>
-                <a href="<?= $this->url($results->getOptions()->getSearchAction()) .  "?lookfor=" . $groupID . "&type=FRBR&limit=" . $results->getParams()->getLimit()  ?>" class="linkbutton icon_show" title="<?=$this->transEsc('FRBR_Button')?>">
+            <?php if (!empty($showFRBR) && $showFRBR && !empty($groupID) && !strcmp($results->getParams()->getSearchHandler(),'FRBR') == 0   ) : ?>
+
+
+                <a href="<?= $this->url('search-results') . '?lookfor=' . $groupID . "&type=FRBR&limit=" . $results->getParams()->getLimit()  ?>" class="linkbutton icon_show" title="<?=$this->transEsc('FRBR_Button')?>">
 					<span><?=$this->transEsc('FRBR_Button')?></span>
 				</a>
             <?php endif; ?>
