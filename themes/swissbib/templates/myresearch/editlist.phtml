@@ -33,6 +33,7 @@ $this->layout()->breadcrumbs = '<a href="' . $this->url('myresearch-home') . '">
     </fieldset>
     <fieldset class="actions">
         <input class="submit primary" type="submit" name="submit" value="<?= $this->transEsc('Save') ?>"/>
+        <a class="linkbutton icon_backto"  href="<?= $this->domainURL()->getRefererURL() ?>"    ><span>Zurück</span></a>
     </fieldset>
 </form>
 
