@@ -4,7 +4,29 @@
 $resultItem		= $this->driver;
 $viewRecord		= $this->record($this->driver);
 $thumbnail		= $viewRecord->getThumbnail('small');
-$thumbnailSrc	= $thumbnail ? $thumbnail : $this->url('cover-unavailable');
+
+
+
+if ($this->configAccess()->Content->setSmallIcons) {
+    $thumbnail		= $viewRecord->getThumbnail('small');
+
+    if ( $thumbnail) {
+        $thumbnailSrc = $thumbnail;
+    } else {
+
+        $path = $this->domainURL()->basePath();
+        $notAvailableImage = $this->configAccess()->Content->noCoverAvailableImage;
+        $thumbnailSrc	=  isset($notAvailableImage) ? $path . $notAvailableImage :  $this->url('cover-unavailable');
+
+    }
+}   else {
+
+    $path = $this->domainURL()->basePath();
+    $notAvailableImage = $this->configAccess()->Content->noCoverAvailableImage;
+    $thumbnailSrc	=  isset($notAvailableImage) ? $path . $notAvailableImage :  $this->url('cover-unavailable');
+
+}
+
 $detailLink		= $this->recordLink()->getUrl($resultItem);
 $title			= $this->mainTitle($resultItem->getShortTitle());
 $titleStatement	= $resultItem->getTitleStatement(true);
