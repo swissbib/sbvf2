@@ -1,18 +1,20 @@
+// default start date for publication date slider
+var PublishDateSliderMin = 1450;
+
+// change default start date
+function setPublishDateSliderMin(year) {
+    PublishDateSliderMin = year;
+}
+
 function updatePublishDateSlider(prefix) {
     var from = parseInt($('#' + prefix + 'from').val(), 10);
     var to = parseInt($('#' + prefix + 'to').val(), 10);
 
-    // assuming our oldest item is published in the 15th century
-	// Changed to 1450 for swissbib
-    var min = 1450;
+    var min = PublishDateSliderMin;
     if (!from || from < min) {
         from = min;
     }
-    // move the min 20 years away from the "from" value
-//    if (from > min + 20) {
-//        min = from - 20;
-//    }
-    // and keep the max at 1 years from now
+    // keep the max at 1 years from now
     var max = (new Date()).getFullYear() + 1;
     if (!to || to > max) {
         to = max;
