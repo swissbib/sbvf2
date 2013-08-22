@@ -35,7 +35,7 @@ foreach ($supportedLanguages as $langCode => $langName) {
 	// Replace language parameter
 $baseUrl= preg_replace('/[&\?]?lng\=[a-z]+/', '', $this->serverUrl(true));
 	// How to add the parameter: ? or &
-$glue	= strpos($baseUrl, '?') === false ? '?' : '&';
+$glue	= strpos($baseUrl, '?') === false ? '?' : '&amp;';
 
 ?>
 <div id="meta">

@@ -3,81 +3,69 @@
 $resultItem		= $this->driver;
 	/** @var	VuFind\View\Helper\Root\Record		$viewRecord  */
 $viewRecord		= $this->record($this->driver);
-$thumbnail		= $viewRecord->getThumbnail('small');
-$thumbnailSrc	= $thumbnail ? $thumbnail : $this->url('cover-unavailable');
-$detailLink		= $this->recordLink()->getUrl($resultItem);
 
-$title			= $this->shorttitleSummon( $this->mainTitle($resultItem->getShortTitle()) );
+$favoriteLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
+
+$hasFullText	= $resultItem->hasFulltext();
+$detailLink		= $this->recordLink()->getUrl($resultItem);
+$thumbnail		= $this->escapeHtml($viewRecord->getThumbnail('small'));
+$thumbnailSrc	= $thumbnail ? $thumbnail : $this->url('cover-unavailable');
+
+$title			= $this->escapeHtml($this->shorttitleSummon($this->mainTitle($resultItem->getShortTitle())));
 $edition		= $resultItem->getEdition();
 $publicationDate= $this->publicationDateSummon($resultItem->getPublicationDates());
 
-	// OpenURL: shown always
+$link360        = $resultItem->getLink();
 $openURL		= $resultItem->getOpenURL();
-	// Direct link: shown only if summons record's 'LinkModel' attr. is 'DirectLink'
-$hasDirectLink	= $resultItem->hasDirectLink();
-$directLinkUris	= $hasDirectLink ? $resultItem->getURI() : '';
-$link           = $resultItem->getLink();
+$linkSFX        = $this->openUrl($openURL);
+$linkSFX_param  = 'title = "' .$this->transEsc('articles.linkSFX') .'" target="_blank"';
+$linkSFX        = str_replace("<a ", "<a $linkSFX_param ", $linkSFX);
 
-$hasFullText	= $resultItem->hasFulltext();
-$favoriteLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
-
+//$hasDirectLink	= $resultItem->hasDirectLink();
+//$directLinkUris	= $hasDirectLink ? $resultItem->getURI() : '';
 ?>
-
 <tr>
-    <!-- Column 1: Index -->
+	<!-- Column 1: Index -->
 	<td class="small center nodivider"><?=$this->recordIndex?></td>
-    <!-- Column 2: Memo list -->
+	<!-- Column 2: Memo list -->
 	<td class="nodivider">
-		<a href="<?=$favoriteLink?>" class="icon_notepad_add"><?=$this->transEsc('Add to favorites')?></a>
+		<a href="<?=$favoriteLink?>" class="icon_notepad_add" title="<?=$this->transEsc('memorizelistadd')?>"></a>
 	</td>
-    <!-- Column 3: Teaser-image / Thumbnail -->
+	<!-- Column 3: Teaser-image / Thumbnail -->
 	<td class="right nodivider">
-		<?php if($hasFullText === true ): ?>
-			<a href="<?=$detailLink?>" title="<?=$title?>">
-				<img src="<?=$thumbnailSrc?>" alt="<?=$title?>" class="dropshadow"/>
-			</a>
-		<?php else: ?>
+		<a href="<?=$detailLink?>" title="<?=$title?>">
 			<img src="<?=$thumbnailSrc?>" alt="<?=$title?>" class="dropshadow"/>
-		<?php endif; ?>
+		</a>
 	</td>
-    <!-- Column 4 + 5 + 6: Title and author details => links to full-view -->
-	<td colspan="3">
+	<!-- Column 4/5 : Title and author details -->
+	<td>
 		<h3><a href="<?=$detailLink?>" title="<?=$title?>" class="color singleLink"><?=$title?></a></h3>
-		<p>
-			<?php /*var_dump($solrRecord->getSummary())*/?>
-		</p>
-        <!-- meta -->
+		<!-- meta -->
 		<div class="meta">
-            <span><?=$resultItem->getSubtitle()?></span><br />
-            <h6><?=$this->transEsc('Author')?>:</h6>
-            <span><?= $resultItem->getAuthor() ?></span><br/>
-        </div>
-        <div class="meta">
-			<h6><?=$this->transEsc('Year')?>:</h6>
-            <span><?=$this->escapeHtml($publicationDate)?></span>
-            <?php if($edition): ?>
-                <h6><?=$this->transEsc('Edition')?>:</h6>
-                <span><?=$this->escapeHtml($edition)?></span>
-            <?php endif; ?>
+			<span><?=$resultItem->getSubtitle()?></span><br />
+			<h6><?=$this->transEsc('Author')?>:</h6>
+			<span><?= $resultItem->getAuthor() ?></span><br/>
 		</div>
-        <!-- format -->
+		<div class="meta">
+			<h6><?=$this->transEsc('Year')?>:</h6>
+			<span><?=$this->escapeHtml($publicationDate)?></span>
+			<?php if($edition): ?>
+				<h6><?=$this->transEsc('Edition')?>:</h6>
+				<span><?=$this->escapeHtml($edition)?></span>
+			<?php endif; ?>
+		</div>
+		<!-- format -->
 		<div class="format">
 			<?=$viewRecord->getFormatList()?>
 		</div>
-
-		<table class="nodivider noborder">
-			<tr>
-				<td>sfx-Link: <?= str_replace('<a ', '<a target="_blank" ', $this->openUrl($openURL)) ?></td>
-                <td>360-Link: <a href="<?=$link?>" target="_blank">360-Link</a> </td>
-				<?php if($hasDirectLink && !empty($directLinkUris)): ?>
-					<td><?php foreach($directLinkUris as $directUri): ?>
-							<a class="color singleLink" target="_blank" href="<?= $directUri ?>">Direct Link</a><br />
-						<?php endforeach; ?>
-					</td>
-				<?php endif; ?>
-			</tr>
-		</table>
-
 	</td>
-
+	<td colspan="2">
+		<span>
+			<a title="<?= $this->transEsc('articles.link360') ?>" class="linkbutton primary icon_link_primary"
+				target="_blank" href="<?= $link360 ?>">
+			<span>get it</span></a>
+		</span>
+		<br /><br />
+		<span><?= $linkSFX ?></span>
+	</td>
 </tr>
