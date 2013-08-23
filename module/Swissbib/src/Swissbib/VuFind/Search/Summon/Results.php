@@ -48,7 +48,7 @@ class Results extends VFSummonResults
                         // Special case -- range query (translate [x TO y] syntax):
                         $from = SummonQuery::escapeParam($range['from']);
                         $to = SummonQuery::escapeParam($range['to']);
-                        $params->add('rangeFilters', "{$filt['field']},{$from}:{$to}");
+                        $params->add('rangeFilters', "PublicationDate,{$from}:{$to}");
                     } else if ($filt['field'] == 'includeWithoutFulltext') {
                         $foundIncludeWithoutFulltext = true;
                     } else {
