@@ -32,6 +32,13 @@ class DomainURL extends AbstractHelper
         return $this->request->getBasePath();
     }
 
+
+    public function getRefererURL() {
+
+        return  $this->request->getServer('HTTP_REFERER');
+
+    }
+
 }
 
 
