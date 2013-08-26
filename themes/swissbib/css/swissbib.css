@@ -199,12 +199,21 @@ div.facets .ui-slider {
 #facet_checkbox ul li label {
 	color:#fff;
 	font-size:11px;
-	line-height:13px;
 	padding:1px 2px;
 	width:122px;
+	float:left;
 }
 ul.facet_toggler_checkbox li {
-	line-height:normal !important; /* FF bugfix */
+	float:left;
+	clear:left;
+	width:100%;
+	margin-bottom:2px;
+}
+span.facet_toggler_checkbox_clear {
+	float:none;
+	width:auto;
+	display:block;
+	visibility: hidden;
 }
 
 /** ------------ page function ------------ */

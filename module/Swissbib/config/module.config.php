@@ -29,6 +29,7 @@ use Swissbib\View\Helper\QrCode as QrCodeViewHelper;
 use Swissbib\Highlight\SolrConfigurator as HighlightSolrConfigurator;
 use Swissbib\VuFind\Hierarchy\TreeDataSource\Solr as TreeDataSourceSolr;
 use Swissbib\Log\Logger as SwissbibLogger;
+use Swissbib\View\Helper\DomainURL;
 
 return array(
 	'router'          => array(
@@ -352,6 +353,8 @@ return array(
 			'holdingItemsPaging'	  => 'Swissbib\View\Helper\HoldingItemsPaging',
 			'filterUntranslatedInstitutions' => 'Swissbib\View\Helper\FilterUntranslatedInstitutions',
             'configAccess'            =>  'Swissbib\View\Helper\Config'
+
+
 		),
 		'factories' => array(
 			'institutionSorter' => function ($sm) {
@@ -383,7 +386,15 @@ return array(
 				$userInstitutionCodes	= $favoriteManager->getUserInstitutions();
 
 				return new IsFavoriteInstitution($userInstitutionCodes);
-			}
+			},
+            'domainURL' => function ($sm) {
+
+                $locator = $sm->getServiceLocator();
+
+                return new DomainURL($locator->get('Request'));
+            }
+
+
 		)
 	),
 	'vufind'	=> array(
