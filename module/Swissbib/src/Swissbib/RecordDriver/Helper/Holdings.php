@@ -697,7 +697,7 @@ class Holdings
 		$queryParams = array(
 			'func'           => 'item-photo-request',
 			'doc_library'    => $item['adm_code'],
-			'adm_doc_number' => $item['bibsysnumber'],
+			'adm_doc_number' => $item['localid'],
 			'item_sequence'  => $item['sequencenumber'],
 			'bib_doc_num'    => $item['bibsysnumber'],
 			'bib_library'    => 'DSV01'
