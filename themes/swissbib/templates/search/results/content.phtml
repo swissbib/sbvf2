@@ -11,13 +11,23 @@
         $lookFor = substr($lookFor,0,30) . " ...";
     }
 	$view		= $results->getParams()->getView();
+    $showFRBR =  $this->configAccess()->Site->displayFrbr;
+    $searchHandler = $results->getParams()->getSearchHandler()
 
 ?>
 <div>
     <?php if (!isset($allTabsConfig) || count($allTabsConfig) == 1): ?>
 	<h1>
-		<?=$this->number($recordTotal)?> Treffer für ihre Suchanfrage
-		<cite><?=$this->escapeHtml($lookFor)?></cite>
+
+        <? if (strcmp($searchHandler,"FRBR") != 0): ?>
+            <?=$this->number($recordTotal)?> Treffer für ihre Suchanfrage
+            <cite><?=$this->escapeHtml($lookFor)?></cite>
+        <? else:?>
+
+            <?=$this->number($recordTotal)?> ähnliche Ausgaben und Formate des Werks
+
+        <? endif; ?>
+
 	</h1>
     <?php else: ?>
     <h1>&nbsp;</h1>
@@ -54,7 +64,27 @@
 		<div class="tools floatbox">
 			<!-- paging -->
 			<?=$this->partial('search/controls/view.phtml')?>
+
+            <?=$this->paginationControl($results->getPaginator(), 'Sliding', 'search/pagination.phtml', array('results' => $this->results))?>
+
+
+            <?
+
+                if ( !empty($showFRBR) && $showFRBR  && strcmp($searchHandler,'FRBR') == 0):
+                    $lastSearchUrl = VuFind\Search\Memory::retrieve();
+             ?>
+
+                    <a href="<?=$lastSearchUrl?>" class="linkbutton icon_backto" title="Zurück"><span>Zurück</span></a>
+
+            <?
+                endif;
+            ?>
+
+
 		</div><!-- end: tools -->
 	<?php endif; ?>
 
 </div>
+
+
+
