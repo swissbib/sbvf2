@@ -6,6 +6,12 @@ use Zend\Session\Container as SessionContainer;
 use VuFind\Solr\Utils as SolrUtils;
 use Swissbib\Controller\SearchController;
 
+
+use Swissbib\VuFind\Search\Summon\Results;
+use Swissbib\VuFind\Search\Summon\Params;
+use Swissbib\VuFind\Search\Summon\Options;
+
+
 class SummonController extends SearchController
 {
 
@@ -79,6 +85,12 @@ class SummonController extends SearchController
 		// Check if we have facet results cached, and build them if we don't.
 		$cache = $this->getServiceLocator()->get('VuFind\CacheManager')
 				->getCache('object');
+
+        $tresults = $this->getResultsManager()->get('Summon');
+        $tparams  = $tresults->getParams();
+        $tOptions =  $tparams->getOptions();
+
+
 		if (!($results = $cache->getItem('summonSearchAdvancedFacets'))) {
 			$results = $this->getResultsManager()->get('Summon');
 			$params  = $results->getParams();
