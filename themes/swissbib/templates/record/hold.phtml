@@ -12,7 +12,6 @@
 <div id="col1" class="sidebar">
 	<div id="col1_content" class="clearfix">
 		<!-- begin: sidebar -->
-		Sidebar für Bestellungen
 		<!-- end: sidebar -->
 	</div>
 </div>
@@ -48,9 +47,14 @@
                                     <label class="label" for="gatheredDetails[pickUpLocation]"><?=$this->transEsc('pick_up_location')?>:</label>
                                     <select class="select" name="gatheredDetails[pickUpLocation]">
                                         <?php foreach($this->pickup as $lib): ?>
+                                            <!-- remove POPA (Freihandbestand) from pickup locations -->
+                                            <?php if($lib['locationID'] === 'POPA'): ?>
+                                                <? unset($lib); ?>
+                                            <?php else: ?>
                                             <option value="<?=$this->escapeHtml($lib['locationID'])?>"<?=($selected == $lib['locationID']) ? ' selected="selected"' : ''?>>
                                                 <?=$this->escapeHtml($lib['locationDisplay'])?>
                                             </option>
+                                            <?php endif; ?>
                                         <?php endforeach; ?>
                                     </select>
                                 <?php else: ?>
@@ -67,15 +71,6 @@
                             </div>
                         <?php endif; ?>
 
-                        <?php if (in_array("requiredByDate", $this->extraHoldFields)): ?>
-                            <div class="fieldbox">
-                                <label class="label" for="gatheredDetails[requiredBy]"><?= $this->transEsc("hold_required_by") ?> (<?= $this->dateTime()->getDisplayDateFormat() ?>): </label>
-                                <input class="text small" id="requiredByDate" type="text"
-                                                                  name="gatheredDetails[requiredBy]"
-                                                                  value="<?= (isset($this->gatheredDetails['requiredBy']) && !empty($this->gatheredDetails['requiredBy'])) ? $this->escapeHtml($this->gatheredDetails['requiredBy']) : $this->escapeHtml($this->defaultRequiredDate) ?>"
-                                                                  size="8"/>
-                            </div>
-                        <? endif; ?>
                     </fieldset>
                     <fieldset class="actions">
                         <input class="submit primary" type="submit" name="placeHold" value="<?=$this->transEsc('request_submit_text')?>"/>

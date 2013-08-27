@@ -42,7 +42,6 @@ $linkSFX        = str_replace("<a ", "<a $linkSFX_param ", $linkSFX);
 		<h3><a href="<?=$detailLink?>" title="<?=$title?>" class="color singleLink"><?=$title?></a></h3>
 		<!-- meta -->
 		<div class="meta">
-			<span><?=$resultItem->getSubtitle()?></span><br />
 			<h6><?=$this->transEsc('Author')?>:</h6>
 			<span><?= $resultItem->getAuthor() ?></span><br/>
 		</div>
@@ -63,7 +62,7 @@ $linkSFX        = str_replace("<a ", "<a $linkSFX_param ", $linkSFX);
 		<span>
 			<a title="<?= $this->transEsc('articles.link360') ?>" class="linkbutton primary icon_link_primary"
 				target="_blank" href="<?= $link360 ?>">
-			<span>get it</span></a>
+			<span>get&#160;it</span></a>
 		</span>
 		<br /><br />
 		<span><?= $linkSFX ?></span>
