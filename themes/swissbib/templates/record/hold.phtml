@@ -1,12 +1,14 @@
 <?
     	// Set page title
-    $this->headTitle($this->translate('request_place_text') . ': ' . $this->driver->getBreadcrumb());
+$this->headTitle($this->translate('request_place_text') . ': ' . $this->driver->getBreadcrumb());
+$record	= $this->driver;
 
     	// Set up breadcrumbs
 //  $this->layout()->breadcrumbs = $this->getLastSearchLink($this->transEsc('Search'), '', '<span>&gt;</span>') .
 //  $this->recordLink()->getBreadcrumb($this->driver) . '<span>&gt;</span><em>' . $this->transEsc('request_place_text') . '</em>';
 
 ?>
+
 
 <!-- begin: col1 (sidebar)  -->
 <div id="col1" class="sidebar">
@@ -24,6 +26,7 @@
 		<div id="content">
 
 			<h1><?=$this->transEsc('request_place_text')?></h1>
+            <p><?=$this->escapeHtml($record->getTitle())?></p>
 			
 			<?=$this->flashmessages()?>
 
@@ -70,11 +73,24 @@
                                           name="gatheredDetails[comment]"><?=isset($this->gatheredDetails['comment']) ? $this->escapeHtml($this->gatheredDetails['comment']) : ''?></textarea>
                             </div>
                         <?php endif; ?>
-
                     </fieldset>
                     <fieldset class="actions">
-                        <input class="submit primary" type="submit" name="placeHold" value="<?=$this->transEsc('request_submit_text')?>"/>
-
+                        <div class="fieldbox">
+                            <input class="submit primary" style="margin-left: 170px" type="submit" name="placeHold" value="<?=$this->transEsc('request_submit_text')?>"/>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <div class="fieldbox">
+                            <label class="label"><?=$this->transEsc('information')?>:</label>
+                            <div style="margin-left: 170px">
+                            <ul class="list">
+                                <li>Bei Zeitschriften geben Sie bitte Jahrgang und Bandnummer an.</li>
+                                <li>Falls der gewünschte Abholort nicht aufgeführt ist, können Sie nicht ausgeliehene Medien
+                                    im Freihandbestand der entsprechenden Bibliothek selber holen.</li>
+                                <li>Bitte beachten Sie unsere <a target="_blank" href="http://www.ub.unibas.ch/ids-basel-bern/kosten-lieferfristen/">Tarife und Lieferfristen</a>.</li>
+                            </ul>
+                            </div>
+                        </div>
                     </fieldset>
 				</form>
 			</div>
