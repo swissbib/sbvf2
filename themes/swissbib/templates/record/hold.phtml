@@ -73,6 +73,15 @@ $record	= $this->driver;
                                           name="gatheredDetails[comment]"><?=isset($this->gatheredDetails['comment']) ? $this->escapeHtml($this->gatheredDetails['comment']) : ''?></textarea>
                             </div>
                         <?php endif; ?>
+                        <?php if (in_array("requiredByDate", $this->extraHoldFields)): ?>
+                            <div class="fieldbox hidden">
+                                <label class="label" for="gatheredDetails[requiredBy]"><?= $this->transEsc("hold_required_by") ?> (<?= $this->dateTime()->getDisplayDateFormat() ?>): </label>
+                                <input class="text small" id="requiredByDate" type="text"
+                                       name="gatheredDetails[requiredBy]"
+                                       value="<?= (isset($this->gatheredDetails['requiredBy']) && !empty($this->gatheredDetails['requiredBy'])) ? $this->escapeHtml($this->gatheredDetails['requiredBy']) : $this->escapeHtml($this->defaultRequiredDate) ?>"
+                                       size="8"/>
+                            </div>
+                        <? endif; ?>
                     </fieldset>
                     <fieldset class="actions">
                         <div class="fieldbox">
