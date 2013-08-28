@@ -61,7 +61,11 @@ $record	= $this->driver;
                                         <?php endforeach; ?>
                                     </select>
                                 <?php else: ?>
-                                    <input type="hidden" name="gatheredDetails[pickUpLocation]" value="<?=$this->escapeHtml($this->defaultPickup)?>"/>
+                                    <?php foreach($this->pickup as $lib): ?>
+                                        <label class="label" for="gatheredDetails[pickUpLocation]"><?=$this->transEsc('pick_up_location')?>:</label>
+                                        <input type="hidden" name="gatheredDetails[pickUpLocation]" value="<?=$this->escapeHtml($this->defaultPickup)?>" />
+                                        <p><?=$this->escapeHtml($lib['locationDisplay'])?></p>
+                                    <?php endforeach; ?>
                                 <?php endif; ?>
                             </div>
                         <?php endif; ?>
