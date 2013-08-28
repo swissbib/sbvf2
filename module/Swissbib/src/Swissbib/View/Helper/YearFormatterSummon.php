@@ -19,6 +19,7 @@ class YearFormatterSummon extends AbstractHelper
 	 * @param   Array   $publicationDate
 	 * @return  String
 	 */
+
 	public function __invoke($publicationDate)
 	{
 		if(is_array($publicationDate)) {
