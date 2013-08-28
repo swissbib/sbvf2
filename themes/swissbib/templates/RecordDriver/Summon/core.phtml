@@ -1,78 +1,60 @@
 <?php
-/** @var	Swissbib\RecordDriver\WorldCat	$resultItem  */
-$resultItem	= $this->driver;
-/** @var	VuFind\View\Helper\Root\Record		$record  */
-$viewRecord	= $this->record($resultItem);
+/** @var	Swissbib\RecordDriver\Summon	$resultItem  */
+/** @var	Swissbib\View\Helper\Record		$record  */
 
-//$authors	= $this->Authors($resultItem->getDeduplicatedAuthors());
+$resultItem     = $this->driver;
+$viewRecord     = $this->record($resultItem);
+$favoriteLink   = $this->escapeHtml($this->recordLink()->getActionUrl($this->driver, 'Save'));
 
-$mediumThumb= $viewRecord->getThumbnail('medium');
-//$largeThumb	= $viewRecord->getThumbnail('large');
-$thumbUrl	= $mediumThumb ? $mediumThumb : $this->url('cover-unavailable');
+// do *not* use Summon's thumbnails ...
+$thumbnail      = $this->escapeHtml($viewRecord->getThumbnail('small'));
+$thumbnailSrc   = $thumbnail ? $thumbnail : $this->url('cover-unavailable');
 
-$subTitle           = $resultItem->getSubtitle(true);
-$titleStatement		= $resultItem->getTitleStatement(true);
-$secondaryAuthors	= $resultItem->getSecondaryAuthors();
-
-$publishers			= $resultItem->getPublishers();
-if ((is_array($publishers) && count($publishers)>0)) {
-	$publisher	= str_replace(', , ', ', ', implode(', ', $publishers));
-} elseif(!isset($publisher)) {
-	$publisher = '';
+$TITLE      = $resultItem->getTitle();
+$AUTHOR     = $resultItem->getAuthor();
+$IMPRINT    = $resultItem->getImprint();
+$EDITION    = $resultItem->getEdition();
+$CONTAINER  = $resultItem->getContainerTitle();
+if ($CONTAINER) {
+	$CONTAINER .= '. - ' .$resultItem->getContainerReference();
 }
-
-$edition			= $resultItem->getEdition();
-$summary			= trim(implode($resultItem->getSummary()));
-
-$publicationDate    = $this->publicationDateWorldCat($resultItem->getPublicationDates());
-$favoriteLink			= $this->recordLink()->getActionUrl($this->driver, 'Save');
-
 ?>
 
-<?/* Common parts of recordDriver's core.phtml templates*/?>
-<!-- col -->
-<div class="c25l">
+<!-- col 1 -->
+<div class="c25l center">
 	<a title="<?=$this->transEsc('Add to favorites')?>" class="icon_notepad_add_link" href="<?=$favoriteLink?>">
-		<img src="<?=$thumbUrl?>" class="dropshadow"/>
+		<img src="<?=$thumbnailSrc?>" class="dropshadow"/>
 	</a>
 </div>
 
-<!-- col -->
+<!-- col 2 -->
 <div class="c75l">
-	<h2><?=$this->escapeHtml($resultItem->getShortTitle())?></h2>
-	<?php if($subTitle): ?>
-        <p><?=$this->escapeHtml($subTitle)?></p>
-    <?php endif ?>
-	<!-- details -->
+	<h2><?=$this->escapeHtml($TITLE)?></h2>
 	<div class="details">
-
-		<?php if($titleStatement): ?>
-		<h4><?=$this->transEsc('Author')?>:</h4>
-		<p><?=$this->escapeHtml($titleStatement)?></p>
+		<!-- details -->
+		<?php if($AUTHOR): ?>
+			<h4><?=$this->transEsc('Author')?>:</h4>
+			<p><?=$this->escapeHtml($AUTHOR)?></p>
 		<?php endif; ?>
-
-		<?php if($publisher): ?>
-		<h4><?=$this->transEsc('Publication')?>:</h4>
-		<p><?=$this->escapeHtml($publisher)?>, <?=$publicationDate?></p>
+		<?php if($IMPRINT): ?>
+			<h4><?=$this->transEsc('Publication')?>:</h4>
+			<p><?=$this->escapeHtml($IMPRINT)?></p>
 		<?php endif; ?>
-
+		<?php if($EDITION): ?>
+			<h4><?=$this->transEsc('Edition')?>:</h4>
+			<p><?=$this->escapeHtml($EDITION)?></p>
+		<?php endif; ?>
+		<?php if($CONTAINER): ?>
+			<h4><?=$this->transEsc('note_773')?>:</h4>
+			<p><?=$this->escapeHtml($CONTAINER)?></p>
+		<?php endif; ?>
+		<!-- format -->
 		<h4><?=$this->transEsc('Format')?>:</h4>
 		<p>
-		<?php foreach($resultItem->getFormats() as $format): ?>
-			<span class="icon_format_book"><?=$this->escapeHtml($format)?></span>
-		<?php endforeach; ?>
+			<?php foreach($resultItem->getFormats() as $format): ?>
+				<span class="icon_format_book"><?=$this->escapeHtml($format)?></span>
+			<?php endforeach; ?>
 		</p>
 
-		<?php if($edition): ?>
-		    <h4><?=$this->transEsc('Edition')?>:</h4>
-		    <p><?=$this->escapeHtml($edition)?></p>
-		<?php endif; ?>
-
-		<?php if(!empty($summary)): ?>
-		<h4>Inhalt:</h4>
-		<p><?$this->escapeHtml($summary)?></p>
-		<?php endif; ?>
-
 	</div>
-
 </div>

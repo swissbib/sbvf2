@@ -407,7 +407,7 @@ return array(
 			'VuFind\RecordDriver\Summon' => array(
 				'tabs' => array(
 					'UserComments'	=> null, // Disable user comments tab
-					'Description' => null, // Disable description tab
+					'Description'   => 'articledetails',
                     'TOC' => null, // Disable TOC tab
 				)
 			)
@@ -428,7 +428,6 @@ return array(
                     'shibboleth' => 'Swissbib\VuFind\Auth\Shibboleth',
                 ),
             ),
-
 
 			'recorddriver' => array(
 				'factories' => array(
@@ -502,7 +501,12 @@ return array(
 						);
 					}
 				)
-			)
+			),
+			'recordtab' => array(
+				'invokables' => array(
+					'articledetails' => 'Swissbib\RecordTab\ArticleDetails'
+				)
+			),
 		)
 	),
 	//'swissbib' => array(
