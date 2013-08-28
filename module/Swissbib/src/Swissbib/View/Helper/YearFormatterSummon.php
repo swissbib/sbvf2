@@ -15,21 +15,19 @@ use Zend\View\Helper\AbstractHelper;
 
 class YearFormatterSummon extends AbstractHelper
 {
-
 	/**
 	 * @param   Array   $publicationDate
 	 * @return  String
 	 */
 	public function __invoke($publicationDate)
 	{
-		if( is_array($publicationDate) ) {
-			return implode(', ', $publicationDate);
+		if(is_array($publicationDate)) {
+            if( empty($publicationDate) ) {
+                return '-';
+            } else {
+                return implode(', ', $publicationDate);
+            }
 		}
-
-		if( empty($publicationDate) ) {
-			return '-';
-		}
-
 		return (string) $publicationDate;
 	}
 }
