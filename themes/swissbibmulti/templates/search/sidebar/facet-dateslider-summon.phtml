@@ -1,10 +1,16 @@
 <?php
-	// @todo Don't use $_GET parameters directly
+/** @var	Swissbib\RecordDriver\Summon	$resultItem  */
+/** @var	Swissbib\View\Helper\Record		$viewRecord  */
 
-$startYear = 1500;   // some E-Books in Summon carry the publication date of the printed edition
-$this->headScript()->appendFile('pubdate_slider.js');
+$viewRecord      = $this->record();
+$startYear       = 1980;
+
+// @todo Don't use $_GET parameters directly
 $publishDateFrom = isset($_GET['publishDatefrom']) ? intval($_GET['publishDatefrom']) : $startYear;
-$publishDateTo = isset($_GET['publishDateto']) ? intval($_GET['publishDateto']) : intval(date('Y')) + 1;
+$publishDateTo   = isset($_GET['publishDateto'])   ? intval($_GET['publishDateto'])   : intval(date('Y')) + 1;
+
+$this->headScript()->appendFile('pubdate_slider.js');
+
 ?>
 <script language="javascript">
     setPublishDateSliderMin(<?= $startYear ?>)

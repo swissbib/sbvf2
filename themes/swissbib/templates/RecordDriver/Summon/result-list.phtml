@@ -21,8 +21,11 @@ $linkSFX        = $this->openUrl($openURL);
 $linkSFX_param  = 'title = "' .$this->transEsc('articles.linkSFX') .'" target="_blank"';
 $linkSFX        = str_replace("<a ", "<a $linkSFX_param ", $linkSFX);
 
-//$hasDirectLink	= $resultItem->hasDirectLink();
-//$directLinkUris	= $hasDirectLink ? $resultItem->getURI() : '';
+$CONTAINER      = $resultItem->getContainerTitle();
+if ($CONTAINER) {
+    $CONTAINER .= '. - ' .$resultItem->getContainerReference();
+}
+
 ?>
 <tr>
 	<!-- Column 1: Index -->
@@ -45,6 +48,12 @@ $linkSFX        = str_replace("<a ", "<a $linkSFX_param ", $linkSFX);
 			<h6><?=$this->transEsc('Author')?>:</h6>
 			<span><?= $resultItem->getAuthor() ?></span><br/>
 		</div>
+		<?php if($CONTAINER): ?>
+			<div class="meta">
+				<h6><?=$this->transEsc('note_773')?>:</h6>
+				<span><?=$this->escapeHtml($CONTAINER)?></span>
+			</div>
+		<?php endif; ?>
 		<div class="meta">
 			<h6><?=$this->transEsc('Year')?>:</h6>
 			<span><?=$this->escapeHtml($publicationDate)?></span>
