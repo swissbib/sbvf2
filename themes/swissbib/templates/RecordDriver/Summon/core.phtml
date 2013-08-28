@@ -7,8 +7,8 @@ $viewRecord     = $this->record($resultItem);
 $favoriteLink   = $this->escapeHtml($this->recordLink()->getActionUrl($this->driver, 'Save'));
 
 // do *not* use Summon's thumbnails ...
-$mediumThumb    = $viewRecord->getThumbnail('medium');
-$thumbUrl       = $mediumThumb ? $mediumThumb : $this->url('cover-unavailable');
+$thumbnail      = $this->escapeHtml($viewRecord->getThumbnail('small'));
+$thumbnailSrc   = $thumbnail ? $thumbnail : $this->url('cover-unavailable');
 
 $TITLE      = $resultItem->getTitle();
 $AUTHOR     = $resultItem->getAuthor();
@@ -23,7 +23,7 @@ if ($CONTAINER) {
 <!-- col 1 -->
 <div class="c25l center">
 	<a title="<?=$this->transEsc('Add to favorites')?>" class="icon_notepad_add_link" href="<?=$favoriteLink?>">
-		<img src="<?=$thumbUrl?>" class="dropshadow"/>
+		<img src="<?=$thumbnailSrc?>" class="dropshadow"/>
 	</a>
 </div>
 
