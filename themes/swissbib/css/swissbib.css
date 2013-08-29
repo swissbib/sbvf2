@@ -107,11 +107,13 @@
 }
 
 #advSearchForm .yearSliderBox {
-	width: 480px;
+	padding-left: 6px;
+    width: 480px;
 }
 
 #advSearchForm .dateSlider {
-	margin-top: 5px;
+	margin-top: 10px;
+    margin-bottom: 5px;
 	width: 450px;
 	background-repeat: repeat-x;
 }
