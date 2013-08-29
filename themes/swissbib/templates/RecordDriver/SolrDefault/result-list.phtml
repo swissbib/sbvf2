@@ -35,7 +35,7 @@ $edition		= $resultItem->getEdition();
 $publicationDate= $this->publicationDateMarc($resultItem->getPublicationDates());
 $groupID		= $resultItem->getGroup(true);
 $showFRBR       = $this->configAccess()->Site->displayFrbr;
-$favoriteLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
+$memorizeLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
 
 ?>
 <tr>
@@ -43,7 +43,7 @@ $favoriteLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
 	<td class="small center nodivider"><?=$this->recordIndex?></td>
     <!-- Column 2: Memo list -->
 	<td class="nodivider">
-		<a href="<?=$favoriteLink?>" class="icon_notepad_add" title="<?=$this->transEsc('memorizelistadd')?>"></a>
+		<a href="<?=$memorizeLink?>" class="icon_notepad_add" title="<?=$this->transEsc('memorizelistadd')?>"></a>
 	</td>
     <!-- Column 3: Teaser-image / Thumbnail -->
 	<td class="right nodivider">

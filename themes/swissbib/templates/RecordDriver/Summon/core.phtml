@@ -4,7 +4,7 @@
 
 $resultItem     = $this->driver;
 $viewRecord     = $this->record($resultItem);
-$favoriteLink   = $this->escapeHtml($this->recordLink()->getActionUrl($this->driver, 'Save'));
+$memorizeLink   = $this->escapeHtml($this->recordLink()->getActionUrl($this->driver, 'Save'));
 
 // do *not* use Summon's thumbnails ...
 $thumbnail      = $this->escapeHtml($viewRecord->getThumbnail('small'));
@@ -22,7 +22,7 @@ if ($CONTAINER) {
 
 <!-- col 1 -->
 <div class="c25l center">
-	<a title="<?=$this->transEsc('Add to favorites')?>" class="icon_notepad_add_link" href="<?=$favoriteLink?>">
+	<a title="<?=$this->transEsc('memorizelistadd')?>" class="icon_notepad_add_link" href="<?=$memorizeLink?>">
 		<img src="<?=$thumbnailSrc?>" class="dropshadow"/>
 	</a>
 </div>
