@@ -1,0 +1,47 @@
+<?php
+/** @var	Swissbib\RecordDriver\Summon	$resultItem  */
+/** @var	Swissbib\View\Helper\Record		$viewRecord  */
+
+$resultItem	= $this->driver;
+$viewRecord	= $this->record($this->driver);
+
+$link360    = $resultItem->getLink();
+$openURL	= $resultItem->getOpenURL();
+$linkSFX    = $this->openUrl($openURL);
+$linkSFX_param  = 'title = "' .$this->transEsc('articles.linkSFX') .'" target="_blank"';
+$linkSFX    = str_replace("<a ", "<a $linkSFX_param ", $linkSFX);
+
+$ABSTRACT   = trim(implode( $resultItem->getSummary()));
+$SUBJECTS   = $resultItem->getAllSubjectHeadingsAsString();
+$DATABASE   = $resultItem->getDatabaseTitle();
+
+?>
+<div class="details">
+	<h4><?=$this->transEsc('Get full text')?>: </h4>
+	<p>
+		<a title="<?= $this->transEsc('articles.link360') ?>" class="linkbutton primary icon_link_primary"
+			target="_blank" href="<?= $link360 ?>">
+		<span>get&#160;it</span></a>
+	</p>
+
+	<h4 style="margin-left:2cm">SFX Services:</h4>
+	<p><?= $linkSFX ?></p>
+
+	<br />
+
+	<?php if ($DATABASE): ?>
+		<h4><?=$this->transEsc('articles.Database')?>:</h4>
+		<p><?=$this->escapeHtml($DATABASE)?></p>
+	<?php endif; ?>
+
+	<?php if ($ABSTRACT): ?>
+		<h4><?=$this->transEsc('Summary')?>:</h4>
+		<p><?=$this->escapeHtml($ABSTRACT)?></p>
+	<?php endif; ?>
+
+	<?php if ($SUBJECTS): ?>
+		<h4><?=$this->transEsc('Subjects')?>:</h4>
+		<p><?=$this->escapeHtml($SUBJECTS)?></p>
+	<?php endif; ?>
+
+</div>
