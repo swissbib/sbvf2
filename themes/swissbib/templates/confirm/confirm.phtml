@@ -1,0 +1,35 @@
+<div class="alignleft">
+  <h3><?=$this->transEsc($this->title) ?></h3>
+
+  <?=$this->flashmessages();?>
+
+  <div id="popupDetails" class="confirmDialog">
+    <form class="form" action="<?=$this->escapeHtml($this->confirm)?>" method="post">
+        <fieldset>
+            <div class="fieldgroup">
+              <? if (isset($this->extras)): ?>
+                  <? foreach ($this->extras as $extra=>$value): ?>
+                      <? if (is_array($value)): ?>
+                          <? foreach ($value as $current): ?>
+                              <input type="hidden" name="<?=$this->escapeHtml($extra) ?>[]" value="<?=$this->escapeHtml($current) ?>" />
+                          <? endforeach; ?>
+                      <? else: ?>
+                          <input type="hidden" name="<?=$this->escapeHtml($extra) ?>" value="<?=$this->escapeHtml($value) ?>" />
+                      <? endif; ?>
+                  <? endforeach; ?>
+              <? endif;?>
+            </div>
+        </fieldset>
+        <fieldset class="actions">
+            <input class="submit primary" type="submit" name="confirm" value="<?=$this->transEsc('confirm_dialog_yes') ?>" />
+            <!-- <a class="linkbutton icon_backto"  href="<?= $this->domainURL()->getRefererURL() ?>"    ><span>Zurück</span></a> geht das -->
+        </fieldset>
+    </form>
+
+    <form class="form" action="<?=$this->escapeHtml($this->cancel) ?>" method="post">
+        <fieldset class="actions">
+            <input type="submit" name="cancel" value="<?=$this->transEsc('confirm_dialog_no') ?>" />
+        </fieldset>
+    </form>
+  </div>
+</div>
