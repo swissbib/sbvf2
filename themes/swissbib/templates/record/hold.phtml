@@ -48,7 +48,7 @@ $record	= $this->driver;
                                     }
                                     ?>
                                     <label class="label" for="gatheredDetails[pickUpLocation]"><?=$this->transEsc('pick_up_location')?>:</label>
-                                    <select class="select" name="gatheredDetails[pickUpLocation]">
+                                    <select class="select large" name="gatheredDetails[pickUpLocation]">
                                         <?php foreach($this->pickup as $lib): ?>
                                             <!-- remove POPA (Freihandbestand) from pickup locations -->
                                             <?php if($lib['locationID'] === 'POPA'): ?>
@@ -64,7 +64,7 @@ $record	= $this->driver;
                                     <?php foreach($this->pickup as $lib): ?>
                                         <label class="label" for="gatheredDetails[pickUpLocation]"><?=$this->transEsc('pick_up_location')?>:</label>
                                         <input type="hidden" name="gatheredDetails[pickUpLocation]" value="<?=$this->escapeHtml($this->defaultPickup)?>" />
-                                        <p><?=$this->escapeHtml($lib['locationDisplay'])?></p>
+                                        <input class="select large" type="text" name="gatheredDetails[pickUpLocationLabel]" value="<?=$this->escapeHtml($lib['locationDisplay'])?>" readonly />
                                     <?php endforeach; ?>
                                 <?php endif; ?>
                             </div>
