@@ -107,13 +107,11 @@
 }
 
 #advSearchForm .yearSliderBox {
-	padding-left: 6px;
-    width: 480px;
+	width: 480px;
 }
 
 #advSearchForm .dateSlider {
-	margin-top: 10px;
-    margin-bottom: 5px;
+	margin-top: 5px;
 	width: 450px;
 	background-repeat: repeat-x;
 }
@@ -136,14 +134,6 @@
 }
 
 /** ------------ facets ------------  */
-
-.tabbed_summon #facet_pubdate_slider {
-	display:none; /*hide publication date slider in summons, next user story: fix it */
-}
-
-#facet_publishdate,
-#facet_publicationdate { display:none; }
-
 div.facets fieldset#publishDateSlider {
     margin:5px 0 0 5px!important;
 ;
@@ -203,12 +193,14 @@ div.facets .ui-slider {
 	width:122px;
 	float:left;
 }
+
 ul.facet_toggler_checkbox li {
 	float:left;
 	clear:left;
 	width:100%;
 	margin-bottom:2px;
 }
+
 span.facet_toggler_checkbox_clear {
 	float:none;
 	width:auto;
