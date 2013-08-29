@@ -235,13 +235,17 @@ class Holdings
 	public function getHoldingsStructure()
 	{
 		if ($this->holdingStructure === false) {
+            $structure949 = array();
+            $structure852 = array();
 			$holdingStructure = array();
 
 			if ($this->hasItems()) {
-				$holdingStructure = $this->getStructuredHoldingsStructure(949);
-			} elseif ($this->hasHoldings()) {
-				$holdingStructure = $this->getStructuredHoldingsStructure(852);
+				$structure949 = $this->getStructuredHoldingsStructure(949);
+            }
+            if ($this->hasHoldings()) {
+                $structure852 = $this->getStructuredHoldingsStructure(852);
 			}
+            $holdingStructure = array_merge($structure949, $structure852);
 
 			$this->holdingStructure	= $this->sortHoldings($holdingStructure);
 		}
@@ -1087,6 +1091,7 @@ class Holdings
 	 *
 	 * @param	Integer		$fieldName
 	 * @return	Array[]
+     * @todo change subfield code for institution to 'F' asap for CBS 7.2
 	 */
 	protected function getStructuredHoldingsStructure($fieldName)
 	{
