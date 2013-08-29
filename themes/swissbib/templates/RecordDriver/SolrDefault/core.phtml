@@ -22,14 +22,14 @@ $groupID				= $record->getGroup(true);
 
 $publicationDate		= $this->publicationDateMarc($record->getPublicationDates());
 $openUrl				= $record->openURLActive('record') ? $record->getOpenURL() : false;
-$favoriteLink			= $this->recordLink()->getActionUrl($record, 'Save');
+$memorizeLink			= $this->recordLink()->getActionUrl($record, 'Save');
 $highlightedFulltext	= $record->getHighlightedFulltext();
 
 ?>
 <?/* Common parts of recordDriver's core.phtml templates*/?>
 <!-- col -->
 <div class="c25l">
-	<a title="<?=$this->transEsc('memorizelistadd')?>" class="icon_notepad_add_link" href="<?=$favoriteLink?>">
+	<a title="<?=$this->transEsc('memorizelistadd')?>" class="icon_notepad_add_link" href="<?=$memorizeLink?>">
 		<img src="<?=$thumbnailSrc?>" class="dropshadow"/>
 	</a>
 </div>
