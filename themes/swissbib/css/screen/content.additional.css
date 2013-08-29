@@ -450,3 +450,6 @@ Layout-Elemente für "Alle-Hinzufügen-Button" - TVI: 20110301
     width: 30px;
 }
 
+select.large {
+    width: 340px;
+}
