@@ -1,25 +1,26 @@
 <?php
-	/** @var	Swissbib\RecordDriver\Summon		$resultItem  */
-$resultItem		= $this->driver;
-	/** @var	VuFind\View\Helper\Root\Record		$viewRecord  */
-$viewRecord		= $this->record($this->driver);
 
-$favoriteLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
+/** @var	Swissbib\RecordDriver\Summon    $resultItem  */
+/** @var	Swissbib\View\Helper\Record     $viewRecord  */
 
-$hasFullText	= $resultItem->hasFulltext();
-$detailLink		= $this->recordLink()->getUrl($resultItem);
-$thumbnail		= $this->escapeHtml($viewRecord->getThumbnail('small'));
-$thumbnailSrc	= $thumbnail ? $thumbnail : $this->url('cover-unavailable');
+$resultItem     = $this->driver;
+$viewRecord     = $this->record($this->driver);
 
-$title			= $this->escapeHtml($this->shorttitleSummon($this->mainTitle($resultItem->getShortTitle())));
-$edition		= $resultItem->getEdition();
-$publicationDate= $this->publicationDateSummon($resultItem->getPublicationDates());
+$memorizeLink   = $this->recordLink()->getActionUrl($this->driver, 'Save');
+$detailLink     = $this->recordLink()->getUrl($resultItem);
+$thumbnail      = $this->escapeHtml($viewRecord->getThumbnail('small'));
+$thumbnailSrc   = $thumbnail ? $thumbnail : $this->url('cover-unavailable');
 
 $link360        = $resultItem->getLink();
-$openURL		= $resultItem->getOpenURL();
+$openURL        = $resultItem->getOpenURL();
 $linkSFX        = $this->openUrl($openURL);
 $linkSFX_param  = 'title = "' .$this->transEsc('articles.linkSFX') .'" target="_blank"';
 $linkSFX        = str_replace("<a ", "<a $linkSFX_param ", $linkSFX);
+
+$TITLE          = $this->escapeHtml($this->removeHighlight($resultItem->getShortTitle()));
+$AUTHOR         = $this->highlight($resultItem->getAuthor());
+$edition        = $resultItem->getEdition();
+$publicationDate= $this->publicationDateSummon($resultItem->getPublicationDates());
 
 $CONTAINER      = $resultItem->getContainerTitle();
 if ($CONTAINER) {
@@ -32,21 +33,21 @@ if ($CONTAINER) {
 	<td class="small center nodivider"><?=$this->recordIndex?></td>
 	<!-- Column 2: Memo list -->
 	<td class="nodivider">
-		<a href="<?=$favoriteLink?>" class="icon_notepad_add" title="<?=$this->transEsc('memorizelistadd')?>"></a>
+		<a href="<?=$memorizeLink?>" class="icon_notepad_add" title="<?=$this->transEsc('memorizelistadd')?>"></a>
 	</td>
 	<!-- Column 3: Teaser-image / Thumbnail -->
 	<td class="right nodivider">
-		<a href="<?=$detailLink?>" title="<?=$title?>">
-			<img src="<?=$thumbnailSrc?>" alt="<?=$title?>" class="dropshadow"/>
+		<a href="<?=$detailLink?>" title="<?=$TITLE?>">
+			<img src="<?=$thumbnailSrc?>" alt="<?=$TITLE?>" class="dropshadow"/>
 		</a>
 	</td>
 	<!-- Column 4/5 : Title and author details -->
 	<td>
-		<h3><a href="<?=$detailLink?>" title="<?=$title?>" class="color singleLink"><?=$title?></a></h3>
+		<h3><a href="<?=$detailLink?>" title="<?=$TITLE?>" class="color singleLink"><?=$TITLE?></a></h3>
 		<!-- meta -->
 		<div class="meta">
 			<h6><?=$this->transEsc('Author')?>:</h6>
-			<span><?= $resultItem->getAuthor() ?></span><br/>
+			<span><?=$AUTHOR?></span><br/>
 		</div>
 		<?php if($CONTAINER): ?>
 			<div class="meta">
