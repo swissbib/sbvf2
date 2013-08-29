@@ -90,46 +90,32 @@ was delivered by Nose
 
 }
 
+/*
+  Styles for swissbib availability-elements -- changed TVi20130729
+*/
 .availability_ok {
-    background-image:url(../../images/avail_ok_16.16.png);
-    background-position:left top;
-    background-repeat:no-repeat;
-    border:medium none;
-    display:block;
-    font-size:0;
-    height:16px;
-    line-height:0;
-    text-indent:-10000px;
-    width:16px;
+    background: url(../../images/avail_ok_16.16.png) no-repeat scroll left top transparent;
+    border: medium none;
+    display: block;
+    line-height: 0.8em;
+    text-indent: 20px;
 }
 
 .availability_notok {
-    background-image:url(../../images/avail_stop_16.16.png);
-    background-position:left top;
-    background-repeat:no-repeat;
-    border:medium none;
-    display:block;
-    font-size:0;
-    height:16px;
-    line-height:0;
-    text-indent:-10000px;
-    width:16px;
+    background: url(../../images/avail_stop_16.16.png) no-repeat scroll left top transparent;
+    border: medium none;
+    display: block;
+    line-height: 0.8em;
+    text-indent: 20px;
 }
 
 .availability_moreInfo {
-    background-image:url(../../images/avail_moreInformation_16.16.png);
-    background-position:left top;
-    background-repeat:no-repeat;
-    border:medium none;
-    display:block;
-    font-size:0;
-    height:16px;
-    line-height:0;
-    text-indent:-10000px;
-    width:16px;
+    background: url(../../images/avail_moreInformation_16.16.png) no-repeat scroll left top transparent;
+    border: medium none;
+    display: block;
+    line-height: 0.8em;
+    text-indent: 20px;
 }
-
-
 
 /*
   TVi: added definition for external linking services (AddThis.com)
@@ -464,3 +450,6 @@ Layout-Elemente für "Alle-Hinzufügen-Button" - TVI: 20110301
     width: 30px;
 }
 
+select.large {
+    width: 340px;
+}
