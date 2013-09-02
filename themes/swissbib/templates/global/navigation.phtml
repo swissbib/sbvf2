@@ -12,6 +12,7 @@
 		</li>
 		<li>
 			<a href="<?=$this->url('myresearch-home');?>"><?= $this->transEsc('menu.swissbib') ?></a>
+			
 			<ul class="subnavigation">
                    <li>
                     <a href="<?=$this->url('search-history')?>"><?=$this->transEsc('history_saved_searches')?></a>
@@ -26,13 +27,18 @@
                     <a href="<?=$this->url('myresearch-settings');?>"><?=$this->transEsc('My_Search_Settings')?></a>
                 </li>
         	</ul>
+        	
 		</li>
 		<li>
 			<a href="<?=$this->url('help-page',array('topic'=>'About'));?>"><?= $this->transEsc('menu.service.information') ?></a>
 		</li>
+		
+		<!-- Falls der Feedback-Link wieder rein soll: Spatium vor Fragezeichen löschen.
 		<li>
-			<a title="Feedback" href="javascript:void(0)" style="cursor:not-allowed;"><?= $this->transEsc('menu.feedback') ?></a>
+			<a title="Feedback" href="javascript:void(0)" style="cursor:not-allowed;">< ?= $this->transEsc('menu.feedback') ?></a>
 		</li>
+		-->
+		
 		<li class="nav_help">
 			<a href="<?=$this->url('help-page')?>"><?=$this->transEsc('helppage')?></a>
 		</li>
