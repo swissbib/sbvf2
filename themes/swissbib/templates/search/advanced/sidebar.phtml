@@ -26,12 +26,14 @@ $advSearch = $this->searchOptions($this->searchClassId)->getAdvancedSearchAction
 	<?php endif; ?>
 
 	<!-- begin: subnavigation -->
-	<h3>Suche</h3>
+	<h3><?=$this->transEsc('Advanced Search')?></h3>
 	<div class="subnavigation">
 		<ul>
+		<!-- Ich bin in dem Moment schon auf erweiterte Suche - Link im Submenu verwirrend. Falls wieder aktiviert: Staien vor den Fragezeichen löschen
 			<li class="selected">
-                <a href="<?=$this->url($advSearch)?>" title="<?=$this->transEsc('Advanced Search')?>" id="search_extended"><?=$this->transEsc('Advanced Search')?></a>
+                <a href="< ?=$this->url($advSearch)?>" title="< ?=$this->transEsc('Advanced Search')?>" id="search_extended">< ?=$this->transEsc('Advanced Search')?></a>
 			</li>
+		-->			
 			<li>
                 <a href="<?=$this->url('myresearch-settings');?>"><?=$this->transEsc('My_Search_Settings')?></a>
 			</li>
