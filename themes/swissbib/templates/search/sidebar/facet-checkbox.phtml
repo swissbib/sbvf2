@@ -1,6 +1,6 @@
 <? if (count($checkboxFilters) > 0): ?>
 	<div class="facet" id="facet_checkbox">
-		<h5 class="toggler persist expanded" id="facet_toggler_checkbox">Eingrenzen</h5>
+		<h5 class="toggler persist expanded" id="facet_toggler_checkbox"><?= $this->transEsc('checkbox_facet_caption') ?></h5>
 		<ul class="facet_toggler_checkbox">
 			<? foreach ($checkboxFilters as $current): ?>
 				<li>
@@ -11,9 +11,10 @@
 					<input type="checkbox" name="filter[]"
 						   value="<?= $this->escapeHtml($current['filter']) ?>" <?= $current['selected'] ? 'checked="checked"' : '' ?>
 						   id="<?= $idCurCheckbox ?>" onclick="document.location.href='<?= $hrefCurCheckbox ?>';"/>
-					<label for="<?= $idCurCheckbox ?>"><?= $this->transEsc($current['desc']) ?></label>
+                    <label for="<?= $idCurCheckbox ?>"><?= $this->transEsc($current['desc']) ?></label>
 				</li>
 			<? endforeach; ?>
 		</ul>
+        <span class="facet_toggler_checkbox_clear">dummy</span>
 	</div>
 <? endif; ?>

@@ -500,7 +500,7 @@ class QueryBuilder implements QueryBuilderInterface
         //   Better: Remove all ^ if not followed by digits
         //     -- dmaus, 2012-11-11
         $cnt = preg_match_all('/\^/', $input, $tmp);
-        $matches = preg_match_all('/.+\^[0-9]/', $input, $tmp);
+        $matches = preg_match_all('/[^^]+\^[0-9]/', $input, $tmp);
         if (($cnt) && ($cnt !== $matches)) {
             $input = str_replace('^', '', $input);
         }
@@ -546,6 +546,10 @@ class QueryBuilder implements QueryBuilderInterface
         while (preg_match($parenRegex, $input)) {
             $input = preg_replace($parenRegex, '', $input);
         }
+
+        // Remove surrounding slashes and whitespace -- these serve no purpose
+        // and can cause problems.
+        $input = trim($input, '/ ');
 
         return $input;
     }

@@ -102,6 +102,7 @@ $config = array(
             'missingrecord' => 'VuFind\Controller\MissingrecordController',
             'my-research' => 'VuFind\Controller\MyResearchController',
             'oai' => 'VuFind\Controller\OaiController',
+            'pazpar2' => 'VuFind\Controller\Pazpar2Controller',
             'records' => 'VuFind\Controller\RecordsController',
             'search' => 'VuFind\Controller\SearchController',
             'summon' => 'VuFind\Controller\SummonController',
@@ -187,7 +188,9 @@ $config = array(
                         $options['proxy_port'] = $config->Proxy->port;
                     }
                 }
-                return new \VuFindHttp\HttpService($options);
+                $defaults = isset($config->Http)
+                    ? $config->Http->toArray() : array();
+                return new \VuFindHttp\HttpService($options, $defaults);
             },
             'VuFind\HMAC' => function ($sm) {
                 return new \VuFind\Crypt\HMAC(
@@ -316,6 +319,7 @@ $config = array(
         ),
         'invokables' => array(
             'VuFind\SessionManager' => 'Zend\Session\SessionManager',
+            'VuFind\Search'         => 'VuFindSearch\Service',
         ),
         'initializers' => array(
             array('VuFind\ServiceManager\Initializer', 'initInstance'),
@@ -534,6 +538,7 @@ $config = array(
                     'koha' => 'VuFind\ILS\Driver\Koha',
                     'newgenlib' => 'VuFind\ILS\Driver\NewGenLib',
                     'pica' => 'VuFind\ILS\Driver\PICA',
+                    'polaris' => 'VuFind\ILS\Driver\Polaris',
                     'sample' => 'VuFind\ILS\Driver\Sample',
                     'symphony' => 'VuFind\ILS\Driver\Symphony',
                     'virtua' => 'VuFind\ILS\Driver\Virtua',
@@ -651,6 +656,13 @@ $config = array(
                     },
                     'solrauth' => function ($sm) {
                         return new \VuFind\RecordDriver\SolrAuth(
+                            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+                            null,
+                            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')
+                        );
+                    },
+                    'pazpar2' => function ($sm) {
+                        return new \VuFind\RecordDriver\Pazpar2(
                             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
                             null,
                             $sm->getServiceLocator()->get('VuFind\Config')->get('searches')
@@ -833,6 +845,7 @@ $config = array(
             ),
             'search_backend' => array(
                 'factories' => array(
+                    'Pazpar2' => 'VuFind\Search\Factory\Pazpar2BackendFactory',
                     'Solr' => 'VuFind\Search\Factory\SolrDefaultBackendFactory',
                     'SolrAuth' => 'VuFind\Search\Factory\SolrAuthBackendFactory',
                     'SolrReserves' => 'VuFind\Search\Factory\SolrReservesBackendFactory',
@@ -904,6 +917,11 @@ $config = array(
         // driver is not defined here, it will inherit configuration from a configured
         // parent class.
         'recorddriver_tabs' => array(
+            'VuFind\RecordDriver\Pazpar2' => array(
+                'tabs' => array (
+                    'Details' => 'StaffViewMARC',
+                 ),
+            ),
             'VuFind\RecordDriver\SolrAuth' => array(
                 'tabs' => array (
                     'Details' => 'StaffViewMARC',
@@ -986,7 +1004,7 @@ $staticRoutes = array(
     'MyResearch/Favorites', 'MyResearch/Fines',
     'MyResearch/Holds', 'MyResearch/Home', 'MyResearch/Logout', 'MyResearch/Profile',
     'MyResearch/SaveSearch',
-    'OAI/Server', 'Records/Home',
+    'OAI/Server', 'Pazpar2/Home', 'Pazpar2/Search', 'Records/Home',
     'Search/Advanced', 'Search/Email', 'Search/History', 'Search/Home',
     'Search/NewItem', 'Search/OpenSearch', 'Search/Reserves', 'Search/Results',
     'Search/Suggest',
@@ -995,7 +1013,8 @@ $staticRoutes = array(
     'Upgrade/Home', 'Upgrade/FixAnonymousTags', 'Upgrade/FixDuplicateTags',
     'Upgrade/FixConfig', 'Upgrade/FixDatabase', 'Upgrade/FixMetadata',
     'Upgrade/GetDBCredentials', 'Upgrade/GetDbEncodingPreference',
-    'Upgrade/GetSourceDir', 'Upgrade/Reset', 'Upgrade/ShowSQL',
+    'Upgrade/GetSourceDir', 'Upgrade/GetSourceVersion', 'Upgrade/Reset',
+    'Upgrade/ShowSQL',
     'VuDL/Browse', 'VuDL/DSRecord', 'VuDL/Record',
     'Web/Home', 'Web/Results',
     'Worldcat/Advanced', 'Worldcat/Home', 'Worldcat/Search'

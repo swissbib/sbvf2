@@ -4,7 +4,29 @@
 $resultItem		= $this->driver;
 $viewRecord		= $this->record($this->driver);
 $thumbnail		= $viewRecord->getThumbnail('small');
-$thumbnailSrc	= $thumbnail ? $thumbnail : $this->url('cover-unavailable');
+
+
+
+if ($this->configAccess()->Content->setSmallIcons) {
+    $thumbnail		= $viewRecord->getThumbnail('small');
+
+    if ( $thumbnail) {
+        $thumbnailSrc = $thumbnail;
+    } else {
+
+        $path = $this->domainURL()->basePath();
+        $notAvailableImage = $this->configAccess()->Content->noCoverAvailableImage;
+        $thumbnailSrc	=  isset($notAvailableImage) ? $path . $notAvailableImage :  $this->url('cover-unavailable');
+
+    }
+}   else {
+
+    $path = $this->domainURL()->basePath();
+    $notAvailableImage = $this->configAccess()->Content->noCoverAvailableImage;
+    $thumbnailSrc	=  isset($notAvailableImage) ? $path . $notAvailableImage :  $this->url('cover-unavailable');
+
+}
+
 $detailLink		= $this->recordLink()->getUrl($resultItem);
 $title			= $this->mainTitle($resultItem->getShortTitle());
 $titleStatement	= $resultItem->getTitleStatement(true);
@@ -12,7 +34,8 @@ $secondaryAuthors		= $resultItem->getSecondaryAuthors(true);
 $edition		= $resultItem->getEdition();
 $publicationDate= $this->publicationDateMarc($resultItem->getPublicationDates());
 $groupID		= $resultItem->getGroup(true);
-$favoriteLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
+$showFRBR       = $this->configAccess()->Site->displayFrbr;
+$memorizeLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
 
 ?>
 <tr>
@@ -20,7 +43,7 @@ $favoriteLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
 	<td class="small center nodivider"><?=$this->recordIndex?></td>
     <!-- Column 2: Memo list -->
 	<td class="nodivider">
-		<a href="<?=$favoriteLink?>" class="icon_notepad_add" title="<?=$this->transEsc('memorizelistadd')?>" /a>
+		<a href="<?=$memorizeLink?>" class="icon_notepad_add" title="<?=$this->transEsc('memorizelistadd')?>"></a>
 	</td>
     <!-- Column 3: Teaser-image / Thumbnail -->
 	<td class="right nodivider">
@@ -73,8 +96,10 @@ $favoriteLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
 			<?=$viewRecord->getFormatList()?>
 
         <!-- <h6 class="icon_format_book">Buch</h6> -->
-            <?php if (!empty($groupID) && !strcmp($results->getParams()->getSearchHandler(),'FRBR') == 0   ) : ?>
-                <a href="<?= $this->url($results->getOptions()->getSearchAction()) .  "?lookfor=" . $groupID . "&type=FRBR&limit=" . $results->getParams()->getLimit()  ?>" class="linkbutton icon_show" title="<?=$this->transEsc('FRBR_Button')?>">
+            <?php if (!empty($showFRBR) && $showFRBR && !empty($groupID) && !strcmp($results->getParams()->getSearchHandler(),'FRBR') == 0   ) : ?>
+
+
+                <a href="<?= $this->url('search-results') . '?lookfor=' . $groupID . "&type=FRBR&limit=" . $results->getParams()->getLimit()  ?>" class="linkbutton icon_show" title="<?=$this->transEsc('FRBR_Button')?>">
 					<span><?=$this->transEsc('FRBR_Button')?></span>
 				</a>
             <?php endif; ?>

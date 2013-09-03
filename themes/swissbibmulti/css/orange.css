@@ -64,6 +64,11 @@ a.externallink {
 	background-image:url('img/icon_link-external.gif');
 }
 
+span.highlight {
+	font-weight: normal;
+    background-color:#FED99F;
+}
+
 
 /* -------------------------------------------------------------------------------------
  FORMS
@@ -215,7 +220,7 @@ ul.miniactions li.miniaction_favorite_remove a {
 /* navigation */
 #navigation {
 	border-top:1px solid #884D00;
-	background-color:#D4F2CE;
+	background-color:#FED99F;
 	background-image:url('img/bg_navigation.gif');
 }
 
