@@ -29,6 +29,7 @@ use Swissbib\View\Helper\QrCode as QrCodeViewHelper;
 use Swissbib\Highlight\SolrConfigurator as HighlightSolrConfigurator;
 use Swissbib\VuFind\Hierarchy\TreeDataSource\Solr as TreeDataSourceSolr;
 use Swissbib\Log\Logger as SwissbibLogger;
+use Swissbib\View\Helper\DomainURL;
 
 return array(
 	'router'          => array(
@@ -120,7 +121,37 @@ return array(
 						'action'     => 'favorites'
 					)
 				)
-			)
+			),
+
+            //I had a problem on the developemnt branch -> a trailing backslash was genereated
+            //this doesn't happen so far in feature/shibboleth
+            //'/MyResearch/Home/' => array(
+            //    'type'    => 'Zend\Mvc\Router\Http\Literal',
+            //    'options' => array(
+            //        'route'    => '/' . 'MyResearch/Home/',
+            //        'constraints' => array(
+            //            'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            //            'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+            //        ),
+            //        'defaults' => array(
+            //            'controller' => 'MyResearch',
+            //            'action'     => 'Home',
+            //        )
+            //    )
+            //),
+
+
+            'shibboleth-test' => array( // make first shibboleth test
+                'type' => 'literal',
+                'options' => array(
+                    'route'    => '/Shibboleth.sso/SAML2/POST',
+                    'defaults' => array(
+                        'controller' => 'shibtest',
+                        'action'     => 'shib'
+                    )
+                )
+            )
+
 		)
 	),
 	'console'         => array(
@@ -167,7 +198,10 @@ return array(
 			'tab40import'  		=> 'Swissbib\Controller\Tab40ImportController',
 			'institutionFavorites'=> 'Swissbib\Controller\FavoritesController',
 			'hierarchycache' 	 => 'Swissbib\Controller\HierarchyCacheController',
-			'cart' 				=> 'Swissbib\Controller\CartController'
+			'cart' 				=> 'Swissbib\Controller\CartController',
+			'shibtest' 				=> 'Swissbib\Controller\ShibtestController'
+
+
 		),
 		'factories' => array(
 			'record' => function ($sm) {
@@ -306,18 +340,21 @@ return array(
 			'publicationDateMarc'     => 'Swissbib\View\Helper\YearFormatterMarc',
 			'publicationDateSummon'	  => 'Swissbib\View\Helper\YearFormatterSummon',
 			'publicationDateWorldCat' => 'Swissbib\View\Helper\YearFormatterWorldCat',
+			'removeHighlight'         => 'Swissbib\View\Helper\RemoveHighlight',
 			'subjectHeadingFormatter' => 'Swissbib\View\Helper\SubjectHeadings',
-			'shorttitleSummon'		  => 'Swissbib\View\Helper\ShortTitleFormatterSummon',
 			'SortAndPrepareFacetList' => 'Swissbib\View\Helper\SortAndPrepareFacetList',
 			'tabTemplate'			  => 'Swissbib\View\Helper\TabTemplate',
 			'zendTranslate'           => 'Zend\I18n\View\Helper\Translate',
 			'getVersion'              => 'Swissbib\View\Helper\GetVersion',
 			'holdingActions'          => 'Swissbib\View\Helper\HoldingActions',
 			'availabilityInfo'        => 'Swissbib\View\Helper\AvailabilityInfo',
-			'transLocation'        => 'Swissbib\View\Helper\TranslateLocation',
+			'transLocation'           => 'Swissbib\View\Helper\TranslateLocation',
 			'qrCodeHolding'			  => 'Swissbib\View\Helper\QrCodeHolding',
 			'holdingItemsPaging'	  => 'Swissbib\View\Helper\HoldingItemsPaging',
-			'filterUntranslatedInstitutions' => 'Swissbib\View\Helper\FilterUntranslatedInstitutions'
+			'filterUntranslatedInstitutions' => 'Swissbib\View\Helper\FilterUntranslatedInstitutions',
+            'configAccess'            =>  'Swissbib\View\Helper\Config'
+
+
 		),
 		'factories' => array(
 			'institutionSorter' => function ($sm) {
@@ -349,7 +386,15 @@ return array(
 				$userInstitutionCodes	= $favoriteManager->getUserInstitutions();
 
 				return new IsFavoriteInstitution($userInstitutionCodes);
-			}
+			},
+            'domainURL' => function ($sm) {
+
+                $locator = $sm->getServiceLocator();
+
+                return new DomainURL($locator->get('Request'));
+            }
+
+
 		)
 	),
 	'vufind'	=> array(
@@ -362,7 +407,7 @@ return array(
 			'VuFind\RecordDriver\Summon' => array(
 				'tabs' => array(
 					'UserComments'	=> null, // Disable user comments tab
-					'Description' => null, // Disable description tab
+					'Description'   => 'articledetails',
                     'TOC' => null, // Disable TOC tab
 				)
 			)
@@ -377,6 +422,13 @@ return array(
 //					'WorldCat' => 'VuFind\Search\Factory\WorldCatBackendFactory',
 				)
 			),
+
+            'auth' => array(
+                'invokables' => array(
+                    'shibboleth' => 'Swissbib\VuFind\Auth\Shibboleth',
+                ),
+            ),
+
 			'recorddriver' => array(
 				'factories' => array(
 					'solrmarc' => function ($sm) {
@@ -449,7 +501,12 @@ return array(
 						);
 					}
 				)
-			)
+			),
+			'recordtab' => array(
+				'invokables' => array(
+					'articledetails' => 'Swissbib\RecordTab\ArticleDetails'
+				)
+			),
 		)
 	),
 	//'swissbib' => array(

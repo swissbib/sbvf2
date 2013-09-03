@@ -264,8 +264,15 @@ class Loader implements \Zend\Log\LoggerAwareInterface
                     $provider = explode(':', trim($provider));
                     $func = trim($provider[0]);
                     $key = isset($provider[1]) ? trim($provider[1]) : null;
-                    if ($this->$func($key)) {
-                        return true;
+                    try {
+                        if ($this->$func($key)) {
+                            return true;
+                        }
+                    } catch (\Exception $e) {
+                        $this->debug(
+                            get_class($e) . ' during processing of ' . $func . ': '
+                            . $e->getMessage()
+                        );
                     }
                 }
             }
@@ -479,6 +486,7 @@ class Loader implements \Zend\Log\LoggerAwareInterface
 
             return true;
         } else {
+            $this->debug("Failed to retrieve image from " + $url);
             return false;
         }
     }
@@ -694,8 +702,32 @@ class Loader implements \Zend\Log\LoggerAwareInterface
             $ISBN = new ISBN($isn);
             $isn = $ISBN->get13();
         }
-        $url = 'http://api.summon.serialssolutions.com/image/isbn/' . $id .
+        $url = 'http://api.summon.serialssolutions.com/2.0.0/image/isbn/' . $id .
             '/' . $isn . '/' . $this->size;
         return $this->processImageURL($url);
     }
+
+    /**
+     * Retrieve a Booksite cover.
+     *
+     * @return bool      True if image displayed, false otherwise.
+     */
+    public function booksite()
+    {
+        // convert normalized 10 char isn to 13 digits
+        $isn = $this->isn;
+        if (strlen($isn) != 13) {
+            $ISBN = new ISBN($isn);
+            $isn = $ISBN->get13();
+        }
+        $url = isset($this->config->Booksite->url)
+            ? $this->config->Booksite->url  : 'https://api.booksite.com';
+        if (! isset($this->config->Booksite->key)) {
+            throw new \Exception("Booksite 'key' not set in VuFind config");
+        }
+        $key = $this->config->Booksite->key;
+        $url = $url . '/poca/content_img?apikey=' . $key . '&ean=' . $isn;
+        return $this->processImageURL($url);
+    }
+
 }

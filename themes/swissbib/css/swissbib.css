@@ -134,21 +134,20 @@
 }
 
 /** ------------ facets ------------  */
-
-.tabbed_summon #facet_pubdate_slider {
-	display:none; /*hide publication date slider in summons, next user story: fix it */
+div.facets fieldset#publishDateSlider {
+    margin:5px 0 0 5px!important;
+;
 }
 
-#facet_publishdate,
-#facet_publicationdate { display:none; }
-
-div.facets fieldset#publishDateSlider {
-	margin:5px 0 0 5px!important;
+div.facets .ui-slider {
+    width: 150px!important;
 }
 
 .publishDateForceHeight {
 	clear:both;
 	height:83px;
+    padding-left: 10px;
+    margin-right: 4px;
 }
 
 #facet_pubdate_slider label {
@@ -190,12 +189,23 @@ div.facets fieldset#publishDateSlider {
 #facet_checkbox ul li label {
 	color:#fff;
 	font-size:11px;
-	line-height:13px;
 	padding:1px 2px;
 	width:122px;
+	float:left;
 }
+
 ul.facet_toggler_checkbox li {
-	line-height:normal !important; /* FF bugfix */
+	float:left;
+	clear:left;
+	width:100%;
+	margin-bottom:2px;
+}
+
+span.facet_toggler_checkbox_clear {
+	float:none;
+	width:auto;
+	display:block;
+	visibility: hidden;
 }
 
 /** ------------ page function ------------ */

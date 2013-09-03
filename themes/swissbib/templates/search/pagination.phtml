@@ -24,7 +24,7 @@
 
 		<?php if(isset($this->next)): ?>
 			<a href="<?=$this->currentPath() . $this->results->getUrlQuery()->setPage($this->next)?>" title="<?=$this->transEsc('Next');?>" class="paging_forward"><?=$this->transEsc('Next');?></a>
-			<a href="<?=$this->currentPath() . $this->results->getUrlQuery()->setPage($this->pageCount)?>" title="<?=$this->transEsc('End Page')?>" class="paging_last"><?=$this->transEsc('End Page')?></a>
+			
 		<?php endif; ?>
 
 	<?php endif; ?>
