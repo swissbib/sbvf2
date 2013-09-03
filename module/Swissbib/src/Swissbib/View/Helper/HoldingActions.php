@@ -47,7 +47,8 @@ class HoldingActions extends AbstractTranslatorHelper
 			if ($item['userActions']['photocopyRequest']) {
 				$actions['photocopy'] = array(
 					'label' => $this->translate('hold_copy'),
-					'href'  => $item['userActions']['photocopyRequestLink']
+					'href'  => $item['userActions']['photocopyRequestLink'],
+                    'target' => '_blank',
 				);
 			}
 			if ($item['userActions']['bookingRequest']) {

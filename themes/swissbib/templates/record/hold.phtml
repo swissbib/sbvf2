@@ -1,6 +1,7 @@
 <?
     	// Set page title
-    $this->headTitle($this->translate('request_place_text') . ': ' . $this->driver->getBreadcrumb());
+$this->headTitle($this->translate('request_place_text') . ': ' . $this->driver->getBreadcrumb());
+$record	= $this->driver;
 
     	// Set up breadcrumbs
 //  $this->layout()->breadcrumbs = $this->getLastSearchLink($this->transEsc('Search'), '', '<span>&gt;</span>') .
@@ -8,11 +9,11 @@
 
 ?>
 
+
 <!-- begin: col1 (sidebar)  -->
 <div id="col1" class="sidebar">
 	<div id="col1_content" class="clearfix">
 		<!-- begin: sidebar -->
-		Sidebar für Bestellungen
 		<!-- end: sidebar -->
 	</div>
 </div>
@@ -25,6 +26,7 @@
 		<div id="content">
 
 			<h1><?=$this->transEsc('request_place_text')?></h1>
+            <p><?=$this->escapeHtml($record->getTitle())?></p>
 			
 			<?=$this->flashmessages()?>
 
@@ -46,15 +48,24 @@
                                     }
                                     ?>
                                     <label class="label" for="gatheredDetails[pickUpLocation]"><?=$this->transEsc('pick_up_location')?>:</label>
-                                    <select class="select" name="gatheredDetails[pickUpLocation]">
+                                    <select class="select large" name="gatheredDetails[pickUpLocation]">
                                         <?php foreach($this->pickup as $lib): ?>
+                                            <!-- remove POPA (Freihandbestand) from pickup locations -->
+                                            <?php if($lib['locationID'] === 'POPA'): ?>
+                                                <? unset($lib); ?>
+                                            <?php else: ?>
                                             <option value="<?=$this->escapeHtml($lib['locationID'])?>"<?=($selected == $lib['locationID']) ? ' selected="selected"' : ''?>>
                                                 <?=$this->escapeHtml($lib['locationDisplay'])?>
                                             </option>
+                                            <?php endif; ?>
                                         <?php endforeach; ?>
                                     </select>
                                 <?php else: ?>
-                                    <input type="hidden" name="gatheredDetails[pickUpLocation]" value="<?=$this->escapeHtml($this->defaultPickup)?>"/>
+                                    <?php foreach($this->pickup as $lib): ?>
+                                        <label class="label" for="gatheredDetails[pickUpLocation]"><?=$this->transEsc('pick_up_location')?>:</label>
+                                        <input type="hidden" name="gatheredDetails[pickUpLocation]" value="<?=$this->escapeHtml($this->defaultPickup)?>" />
+                                        <input class="select large" type="text" name="gatheredDetails[pickUpLocationLabel]" value="<?=$this->escapeHtml($lib['locationDisplay'])?>" readonly />
+                                    <?php endforeach; ?>
                                 <?php endif; ?>
                             </div>
                         <?php endif; ?>
@@ -66,20 +77,33 @@
                                           name="gatheredDetails[comment]"><?=isset($this->gatheredDetails['comment']) ? $this->escapeHtml($this->gatheredDetails['comment']) : ''?></textarea>
                             </div>
                         <?php endif; ?>
-
                         <?php if (in_array("requiredByDate", $this->extraHoldFields)): ?>
-                            <div class="fieldbox">
+                            <div class="fieldbox hidden">
                                 <label class="label" for="gatheredDetails[requiredBy]"><?= $this->transEsc("hold_required_by") ?> (<?= $this->dateTime()->getDisplayDateFormat() ?>): </label>
                                 <input class="text small" id="requiredByDate" type="text"
-                                                                  name="gatheredDetails[requiredBy]"
-                                                                  value="<?= (isset($this->gatheredDetails['requiredBy']) && !empty($this->gatheredDetails['requiredBy'])) ? $this->escapeHtml($this->gatheredDetails['requiredBy']) : $this->escapeHtml($this->defaultRequiredDate) ?>"
-                                                                  size="8"/>
+                                       name="gatheredDetails[requiredBy]"
+                                       value="<?= (isset($this->gatheredDetails['requiredBy']) && !empty($this->gatheredDetails['requiredBy'])) ? $this->escapeHtml($this->gatheredDetails['requiredBy']) : $this->escapeHtml($this->defaultRequiredDate) ?>"
+                                       size="8"/>
                             </div>
                         <? endif; ?>
                     </fieldset>
                     <fieldset class="actions">
-                        <input class="submit primary" type="submit" name="placeHold" value="<?=$this->transEsc('request_submit_text')?>"/>
-
+                        <div class="fieldbox">
+                            <input class="submit primary" style="margin-left: 170px" type="submit" name="placeHold" value="<?=$this->transEsc('request_submit_text')?>"/>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <div class="fieldbox">
+                            <label class="label"><?=$this->transEsc('information')?>:</label>
+                            <div style="margin-left: 170px">
+                            <ul class="list">
+                                <li>Bei Zeitschriften geben Sie bitte Jahrgang und Bandnummer an.</li>
+                                <li>Falls der gewünschte Abholort nicht aufgeführt ist, können Sie nicht ausgeliehene Medien
+                                    im Freihandbestand der entsprechenden Bibliothek selber holen.</li>
+                                <li>Bitte beachten Sie unsere <a target="_blank" href="http://www.ub.unibas.ch/ids-basel-bern/kosten-lieferfristen/">Tarife und Lieferfristen</a>.</li>
+                            </ul>
+                            </div>
+                        </div>
                     </fieldset>
 				</form>
 			</div>

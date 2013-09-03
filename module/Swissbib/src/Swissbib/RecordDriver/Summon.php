@@ -65,7 +65,7 @@ class Summon extends VuFindSummon
 	{
 		$author = $this->getField('Author', '-');
 
-		return is_array($author) ? implode(', ', $author) : $author;
+		return is_array($author) ? implode('; ', $author) : $author;
 	}
 
 
@@ -116,6 +116,58 @@ class Summon extends VuFindSummon
 		return 1 === intval($this->getField('hasFullText'));
 	}
 
+	/**
+	 * @return  string
+	 */
+	public function getImprint()
+	{
+		$imprint = '';
+		$pub_place =  $this->getPlacesOfPublication();
+		if (is_array($pub_place) && count($pub_place)>0) {
+			$imprint = implode(', ',$pub_place);
+			$imprint .= ': ';
+		}
+		$publishers = $this->getPublishers();
+		if (is_array($publishers) && count($publishers)>0) {
+			$imprint .= implode(', ', $publishers);
+			$imprint .= ', ';
+		}
+		$pub_date = $this->getPublicationDates();
+		if ( is_array($pub_date)) {
+			$imprint .= implode('-',$pub_date);
+		}
+		return $imprint;
+	}
+
+	/**
+	 * @return  string
+	 */
+	public function getAllSubjectHeadingsAsString()
+	{
+		$ret=array();
+		$subj = $this->getAllSubjectHeadings();
+		if (is_array($subj) and count($subj)>0) {
+			foreach($subj as $sub) {
+				$ret = array_merge($ret, $sub);
+			}
+			$ret=trim(implode('; ', $ret));
+		}
+		return $ret;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDatabaseTitle()
+	{
+		$ret='';
+		$db = $this->getField('DatabaseTitle');
+		if (is_array($db)) {
+			$ret = implode('; ',$db);
+		}
+		return $ret;
+	}
+
 
 
 	/**
@@ -126,8 +178,6 @@ class Summon extends VuFindSummon
 	{
 		return array();
 	}
-
-
 
 	/**
 	 * @todo    implement
