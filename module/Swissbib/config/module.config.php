@@ -340,15 +340,15 @@ return array(
 			'publicationDateMarc'     => 'Swissbib\View\Helper\YearFormatterMarc',
 			'publicationDateSummon'	  => 'Swissbib\View\Helper\YearFormatterSummon',
 			'publicationDateWorldCat' => 'Swissbib\View\Helper\YearFormatterWorldCat',
+			'removeHighlight'         => 'Swissbib\View\Helper\RemoveHighlight',
 			'subjectHeadingFormatter' => 'Swissbib\View\Helper\SubjectHeadings',
-			'shorttitleSummon'		  => 'Swissbib\View\Helper\ShortTitleFormatterSummon',
 			'SortAndPrepareFacetList' => 'Swissbib\View\Helper\SortAndPrepareFacetList',
 			'tabTemplate'			  => 'Swissbib\View\Helper\TabTemplate',
 			'zendTranslate'           => 'Zend\I18n\View\Helper\Translate',
 			'getVersion'              => 'Swissbib\View\Helper\GetVersion',
 			'holdingActions'          => 'Swissbib\View\Helper\HoldingActions',
 			'availabilityInfo'        => 'Swissbib\View\Helper\AvailabilityInfo',
-			'transLocation'        => 'Swissbib\View\Helper\TranslateLocation',
+			'transLocation'           => 'Swissbib\View\Helper\TranslateLocation',
 			'qrCodeHolding'			  => 'Swissbib\View\Helper\QrCodeHolding',
 			'holdingItemsPaging'	  => 'Swissbib\View\Helper\HoldingItemsPaging',
 			'filterUntranslatedInstitutions' => 'Swissbib\View\Helper\FilterUntranslatedInstitutions',
@@ -407,7 +407,7 @@ return array(
 			'VuFind\RecordDriver\Summon' => array(
 				'tabs' => array(
 					'UserComments'	=> null, // Disable user comments tab
-					'Description' => null, // Disable description tab
+					'Description'   => 'articledetails',
                     'TOC' => null, // Disable TOC tab
 				)
 			)
@@ -428,7 +428,6 @@ return array(
                     'shibboleth' => 'Swissbib\VuFind\Auth\Shibboleth',
                 ),
             ),
-
 
 			'recorddriver' => array(
 				'factories' => array(
@@ -502,7 +501,12 @@ return array(
 						);
 					}
 				)
-			)
+			),
+			'recordtab' => array(
+				'invokables' => array(
+					'articledetails' => 'Swissbib\RecordTab\ArticleDetails'
+				)
+			),
 		)
 	),
 	//'swissbib' => array(

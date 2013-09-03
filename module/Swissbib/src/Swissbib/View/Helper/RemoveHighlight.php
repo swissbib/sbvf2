@@ -12,22 +12,18 @@ use Zend\View\Helper\AbstractHelper;
  * @link     http://www.swissbib.org
  */
 
-class ShortTitleFormatterSummon extends AbstractHelper
+class RemoveHighlight extends AbstractHelper
 {
-
 	/**
 	 * @param   String   $shortTitle
 	 * @return  String
 	 */
 	public function __invoke($shortTitle)
 	{
-		$shortTitle	= str_replace(
+		return str_replace(
 			array('{{{{START_HILITE}}}}', '{{{{END_HILITE}}}}'),
 			array('', ''),
 			$shortTitle
 		);
-
-
-		return $shortTitle;
 	}
 }
