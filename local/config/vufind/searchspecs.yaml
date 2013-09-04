@@ -246,8 +246,8 @@ JournalTitle:
 
 FRBR:
   QueryFields:
-    group_id:
-      - [onephrase, 750]
+    grouid_isn_mv:
+    - [onephrase, ~]
 
 
 
