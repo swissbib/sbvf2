@@ -21,6 +21,6 @@ class NoHolding extends AbstractHelper
 	public function __invoke()
 	{
 
-		return 'Keine Bestandsangaben';
+		return 'not found';
 	}
 }

@@ -15,7 +15,7 @@ if( $isLoggedIn ) {
         <?php if( $isLoggedIn ): ?>
             <li class="nav_account">
                 <a href="<?=$this->url('myresearch-home');?>" title="<?=$this->transEsc('Your Account')?>">
-                    <span><?=$this->transEsc('Username')?></span>: <?=$this->escapeHtml($user->firstname . ' ' . $user->lastname)?>
+                    <span><?=$this->transEsc('Your Account')?>:</span> <?=$this->escapeHtml($user->firstname . ' ' . $user->lastname)?>
                 </a>
             </li>
             <li class="nav_logout">
