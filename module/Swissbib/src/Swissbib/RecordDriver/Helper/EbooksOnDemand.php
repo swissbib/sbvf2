@@ -127,7 +127,7 @@ class EbooksOnDemand extends EbooksOnDemandBase
 
 
     /**
-     * Check whether AX5 item is valid for EOD link
+     * Check whether AX005 item is valid for EOD link
      *
      * @param	Array		$item
      * @param	SolrMarc	$recordDriver
@@ -151,7 +151,7 @@ class EbooksOnDemand extends EbooksOnDemandBase
 
 
     /**
-     * Build EOD link for AX5 item
+     * Build EOD link for AX005 item
      *
      * @param	Array		$item
      * @param	SolrMarc	$recordDriver
