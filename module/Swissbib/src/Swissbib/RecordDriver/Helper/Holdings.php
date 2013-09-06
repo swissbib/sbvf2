@@ -1091,7 +1091,6 @@ class Holdings
 	 *
 	 * @param	Integer		$fieldName
 	 * @return	Array[]
-     * @todo change subfield code for institution to 'F' asap for CBS 7.2
 	 */
 	protected function getStructuredHoldingsStructure($fieldName)
 	{
@@ -1099,7 +1098,7 @@ class Holdings
 		$fields  = $this->holdings ? $this->holdings->getFields($fieldName) : false;
 		$mapping = array(
 			'B' => 'network',
-			'b' => 'institution'
+			'F' => 'institution'
 		);
 
 		if (is_array($fields)) {
