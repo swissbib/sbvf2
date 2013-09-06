@@ -13,40 +13,29 @@ $lightBoxMode = $this->layout()->getTemplate() == 'layout/lightbox';
 	<?=$this->render('myresearch/login-form');?>
 
 <?php else: ?>
-
+       
 	<!-- begin: col1 (sidebar)  -->
 	<div id="col1" class="sidebar">
-		<div id="col1_content" class="clearfix">
-			<!-- begin: sidebar Falls wieder eingeblendet: Spatium vor ?=this... löschen
-			<div id="sidebar">
-				< ?=$this->render('myresearch/sidebar/login')?>
-			</div>
-			 end: sidebar -->
+		 <div id="col1_content" class="clearfix">
+     <!-- begin: sidebar --> 
+		    <div id="sidebar">
+	      <?=$this->render('myresearch/sidebar/login')?>
+	      </div>
+      <!-- end: sidebar -->
 		</div>
 	</div>
 	<!-- end: col1 (sidebar) -->
+	
 	<!-- begin: col3 (content) -->
 	<div id="col3" class="content">
 		<div id="col3_content" class="clearfix"> 
 			<!-- begin: content -->
 			<div id="content">
-
-				<?=$this->render('myresearch/login-form');?>
-
+		<?=$this->render('myresearch/login-form');?>
 			</div>
-			
-	   	  <!-- Test 20130829manu, in Arbeit  -->		
-           
                    <div id="content">
-                            <label class="label"><?=$this->transEsc('login_why')?>:</label>
+                            <label class="label"><a href="/HelpPage/Myswissbib"><?=$this->transEsc('login_why')?></a></label>
                       			</div>
-	           <div id="content">
-                            <label class="label"><?=$this->transEsc('login_text')?>:</label>
-                      			</div>
-                   <div id="content">
-                          <?=$this->render('myresearch/sidebar/login');?>
-			</div>
-			
 			<!-- end: content -->
 		</div>
 		<div id="ie_clearing">
