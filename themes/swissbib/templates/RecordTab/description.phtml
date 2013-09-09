@@ -164,8 +164,11 @@ $bib = $resultItem->getBibliographyNotes();
 $access = $resultItem->getAccessRestrictions();
 $credits = $resultItem->getProductionCredits();
 $awards = $resultItem->getAwards();
+$citenotes = $resultItem->getCitationNotes();
+$orignotes = $resultItem->getOriginalVersionNotes();
+$copynotes = $resultItem->getCopyNotes();
 ?>
-<?php if (!empty($notes) or !empty($diss) or !empty($bib) or !empty($access) or !empty($credits) or !empty($awards)): ?>
+<?php if (!empty($notes) or !empty($diss) or !empty($bib) or !empty($access) or !empty($credits) or !empty($awards) or !empty($citenotes) or !empty($orignotes) or !empty($copynotes)): ?>
 	<?php $contentDisplayed = true; ?>
 	<div class="details">
 		<?php /* Display general notes (field 500) */ ?>
@@ -213,14 +216,40 @@ $awards = $resultItem->getAwards();
 				<?php endforeach; ?>
 			</p>
 		<?php endif; ?>
+        <?php /* Display original title (field 509) */ ?>
 		<?php /* Display citation / reference note (field 510) */ ?>
+        <?php if (!empty($citenotes)): ?>
+            <h4><?= $this->transEsc('Citation_Note') ?>: </h4>
+            <p>
+                <?php foreach ($citenotes as $field): ?>
+                    <?= $this->escapeHtml($field) ?><br />
+                <?php endforeach; ?>
+            </p>
+        <?php endif; ?>
+        <?php /* Display original version note (field 534) */ ?>
+        <?php if (!empty($orignotes)): ?>
+            <h4><?= $this->transEsc('Original_Version_Note') ?>: </h4>
+            <p>
+                <?php foreach ($orignotes as $field): ?>
+                    <?= $this->escapeHtml($field) ?><br />
+                <?php endforeach; ?>
+            </p>
+        <?php endif; ?>
 		<?php /* Display copy and version identification note (fields 562 or 590) */ ?>
+        <?php if (!empty($copynotes)): ?>
+            <h4><?= $this->transEsc('Copy_Note') ?>: </h4>
+            <p>
+                <?php foreach ($copynotes as $field): ?>
+                    <?= $this->escapeHtml($field) ?><br />
+                <?php endforeach; ?>
+            </p>
+        <?php endif; ?>
 		<?php /* Display award notes (field 586) */ ?>
 		<?php if (!empty($awards)): ?>
 			<h4><?= $this->transEsc('Awards') ?>: </h4>
 			<p>
 				<?php foreach ($awards as $field): ?>
-					<?= $this->escapeHtml($field) ?><br/>
+					<?= $this->escapeHtml($field) ?><br />
 				<?php endforeach; ?>
 			</p>
 		<?php endif; ?>
