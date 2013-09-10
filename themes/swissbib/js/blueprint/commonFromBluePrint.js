@@ -330,6 +330,15 @@ $(document).ready(function(){
         return false;
     });
 
+
+    // assign click event to "email search" links
+    $('a.backgroundLibraryAccount').click(function() {
+        var id = this.id.substr('backgroundLibraryAccount'.length);
+        var $dialog = getLightbox('Myresearch', 'backgroundaccounts', id, null, this.title, 'MyResearch', 'background-accounts', id);
+        return false;
+    });
+
+
     // Print
     var url = window.location.href;
     if(url.indexOf('?' + 'print' + '=') != -1  || url.indexOf('&' + 'print' + '=') != -1) {
