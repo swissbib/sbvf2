@@ -163,6 +163,21 @@ class MyResearchController extends VuFindMyResearchController
 	}
 
 
+    /**
+     *
+     * creates View snippet to provide users more information about the multi accounts in swissbib
+     *
+     * @return ViewModel
+     */
+    public function backgroundaccountsAction()
+    {
+
+        return $this->createViewModel();
+
+
+    }
+
+
 
 	/**
 	 * Wrapper for parent

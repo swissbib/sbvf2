@@ -1,0 +1,160 @@
+<?
+    // Set up page title:
+    $this->headTitle($this->translate('Login'));
+
+    // Set up breadcrumbs:
+    $this->layout()->breadcrumbs = '<a href="' . $this->url('myresearch-home') . '">'
+        . $this->transEsc('Your Account') . '</a>' . '<span>&gt;</span><em>'
+        . $this->transEsc('Login') . '</em>';
+
+    // Convenience variable:
+    $offlineMode = $this->ils()->getOfflineMode();
+?>
+
+    <div id="col1" class="sidebar">
+        <div id="col1_content" class="clearfix">
+            <!-- begin: sidebar -->
+            <div id="sidebar">
+
+
+                <div class="subnavigation">
+                    <ul>
+                        <li class="">
+                            <a  class="backgroundLibraryAccount"  title="more background information" href="#">more background information</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+            <!-- end: sidebar -->
+        </div>
+    </div>
+
+<div id="col3" class="content">
+
+
+
+    <div id="col3_content" class="clearfix">
+        <!-- begin: content -->
+        <div id="content">
+
+
+            <!--
+            <div class="status error">
+
+            </div>
+
+            -->
+
+
+
+            <? if ($offlineMode == "ils-offline"): ?>
+                <div class="sysInfo">
+                    <h2><?=$this->transEsc('ils_offline_title')?></h2>
+                    <p><strong><?=$this->transEsc('ils_offline_status')?></strong></p>
+                    <p><?=$this->transEsc('ils_offline_login_message')?></p>
+                    <? $supportEmail = $this->escapeHtml($this->systemEmail()); ?>
+                    <p><a href="mailto:<?=$supportEmail?>"><?=$supportEmail?></a></p>
+                </div>
+            <? else: ?>
+
+                <h1><?=$this->transEsc('Library Catalog Profile')?></h1>
+                <form class="form"  method="post" action="">
+
+
+                    <p><?=$this->transEsc('cat_establish_account')?></p>
+
+
+                    <fieldset>
+
+                    <div class="fieldgroup">
+                        <!-- col -->
+                        <div class="c50r">
+
+                            <!-- row -->
+                            <div class="fieldbox">
+
+                                <label for="profile_cat_username" class="label"><?=$this->transEsc('Library Catalog Username')?>:</label>
+                                <input id="profile_cat_username" name="cat_username" value="" type="text" class="text" />
+
+
+                            </div>
+
+                            <!-- row -->
+                            <div class="fieldbox">
+
+                                <label for="profile_cat_password" class="label"><?=$this->transEsc('Library Catalog Password')?>:</label>
+                                <input id="profile_cat_password" name="cat_password" value="" type="text" class="text" />
+
+
+                            </div>
+
+
+
+                        </div>
+
+                        <!-- col -->
+                        <div class="c50l">
+
+
+
+                            <div class="fieldbox">
+                                <label for="profile_selected_catalog" class="label">Bibliothekskatalog:</label>
+                                <select id="profile_selected_catalog" name="selected_catalog" class="select">
+                                    <option value="ids_basel">IDS Basel test</option>
+                                    <option value="value_b">IDS HSG1</option>
+                                    <option value="value_b">IDS HSG2</option>
+                                    <option value="value_b">IDS Luzern</option>
+                                    <option value="value_b">Nebis</option>
+                                    <option value="value_b">Nationalbibliothek</option>
+                                    <option value="value_b">RERO</option>
+                                    <option value="value_c">SBT Ticino</option>
+                                    <option value="value_c">SGBN</option>
+                                    <option value="value_c">ABN</option>
+                                    <option value="value_c">BGR</option>
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                    </div><!-- end: fieldgroup -->
+
+                    </fieldset>
+
+                    <script language="JavaScript" >
+
+                        $( "#profile_selected_catalog" ).change(function() {
+
+
+                            if ($( "#profile_selected_catalog").val() != "ids_basel"  ) {
+                                alert( "This is a beta functionality. At the moment only the Test - Aleph catalog of Basel / Bern is supported" );
+                                $( "#profile_selected_catalog").val("ids_basel");
+
+
+
+                            }
+
+                        });
+
+
+                    </script>
+
+
+
+                    <fieldset class="actions">
+                        <label class="hidden" for="submit">send user input</label>
+                        <input type="submit" class="submit primary"  name="submit" value="<?=$this->transEsc('Save')?>"/>
+                    </fieldset>
+
+
+                </form>
+
+        <? endif; ?>
+
+
+        </div>
+    </div>
+
+</div>
+
