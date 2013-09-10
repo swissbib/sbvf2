@@ -33,10 +33,21 @@ if( isset($staticItems[$active]) ) {
 $locationItems	= array();
 $activeLocation	= !isset($staticItems[$active]) && isset($this->location) ? $this->location : '';
 
-$locations	= array(
-	'baselbern'	=> 'Konto Basel Bern',
+//$strItems = explode("##",$this->configAccess()->Site->library_locations);
+$tlocationItems = explode("##",$this->configAccess()->Site->library_locations);
+
+$locations = array();
+foreach ($tlocationItems as $location) {
+
+    $singleLocation = explode("#",$location);
+    $locations[$singleLocation[0]] =  $singleLocation[1];
+
+};
+
+//$locations	= array(
+//	'baselbern'	=> 'Konto Basel Bern',
 //	'luzern'	=> 'Konto Luzern'
-);
+//);
 
 $locationSubItems = array(
 	'profile'	    => array('label'	=> 'Profile'),
