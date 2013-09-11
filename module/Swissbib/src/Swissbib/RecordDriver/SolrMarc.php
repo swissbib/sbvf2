@@ -262,8 +262,8 @@ class SolrMarc extends VuFindSolrMarc
 		$data = $this->getMarcSubFieldMap(100, $this->personFieldMap);
 
 		if ($asString) {
-			$name = isset($data['forname']) ? $data['forname'] : '';
-			$name .= isset($data['name']) ? ' ' . $data['name'] : '';
+			$name = isset($data['name']) ? $data['name'] : '';
+			$name .= isset($data['forname']) ? ', ' . $data['forname'] : '';
 
 			return trim($name);
 		}
@@ -289,7 +289,7 @@ class SolrMarc extends VuFindSolrMarc
 			foreach ($authors as $author) {
 				$name            = isset($author['name']) ? $author['name'] : '';
 				$forename        = isset($author['forname']) ? $author['forname'] : '';
-				$stringAuthors[] = trim($forename . ' ' . $name);
+				$stringAuthors[] = trim($name . ', ' . $forename);
 			}
 
 			$authors = $stringAuthors;
