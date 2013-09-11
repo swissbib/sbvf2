@@ -21,7 +21,10 @@ $summary				= trim(implode($record->getSummary()));
 $groupID				= $record->getGroup(true);
 
 $publicationDate		= $this->publicationDateMarc($record->getPublicationDates());
-$openUrl				= $record->openURLActive('record') ? $record->getOpenURL() : false;
+// prepared to activate openURL-display in solr-Tab, openURL switched of @todo analyse later
+//$openUrl				= $record->openURLActive('record') ? $record->getOpenURL() : false;
+//$urls                   = ($openUrl && $record->replaceURLsWithOpenURL()) ? array() : $viewRecord->getLinkDetails();
+$urls                   = $viewRecord->getLinkDetails();
 $memorizeLink			= $this->recordLink()->getActionUrl($record, 'Save');
 $highlightedFulltext	= $record->getHighlightedFulltext();
 
@@ -76,16 +79,19 @@ $highlightedFulltext	= $record->getHighlightedFulltext();
 		    <p><?=$this->escapeHtml($edition)?></p>
 		<?php endif; ?>
 
-		<?php /** DISABLED - Is now in own tab */ ?>
-		<?php if(!empty($summary) && false): ?>
-		<h4>Inhalt:</h4>
-		<p><?=$this->escapeHtml($summary)?></p>
-		<?php endif; ?>
-
-		<?php if ($openUrl): ?>
-			<h4>OpenURL:</h4>
-			<p><?=$this->openUrl($openUrl)?></p>
-		<?php endif; ?>
+        <? /*if (!empty($urls) || $openUrl): */?>
+        <? if($urls): ?>
+            <h4><?=$this->transEsc('Online Access')?>: </h4>
+            <? foreach ($urls as $current): ?>
+                <p>
+                    <a href="<?=$this->escapeHtml($this->proxyUrl($current['url']))?>"><?=$this->escapeHtml($current['desc'])?></a><br/>
+                </p>
+            <? endforeach; ?>
+            <? // openURL deactivated, see file head ?>
+            <? //if ($openUrl): ?>
+                <? //=$this->openUrl($openUrl)?><br/>
+            <? //endif; ?>
+        <?php endif; ?>
 
 		<?php if ($highlightedFulltext): ?>
 			<h4><?=$this->transEsc('fulltexthighlight')?>: </h4>

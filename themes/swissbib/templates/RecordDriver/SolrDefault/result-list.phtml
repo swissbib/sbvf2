@@ -27,10 +27,12 @@ if ($this->configAccess()->Content->setSmallIcons) {
 
 }
 
-$detailLink		= $this->recordLink()->getUrl($resultItem);
-$title			= $this->mainTitle($resultItem->getShortTitle());
-$titleStatement	= $resultItem->getTitleStatement(true);
-$secondaryAuthors		= $resultItem->getSecondaryAuthors(true);
+$detailLink		   = $this->recordLink()->getUrl($resultItem);
+$title			   = $this->mainTitle($resultItem->getShortTitle());
+$titleStatement	   = $resultItem->getTitleStatement(true);
+$responsible       = isset($titleStatement['statement_responsibility']) ? $titleStatement['statement_responsibility'] : $resultItem->getPrimaryAuthor(true);
+$responsible       = isset($responsible) ? $responsible : $resultItem->getSecondaryAuthors(true);
+//$secondaryAuthors		= $resultItem->getSecondaryAuthors(true);
 $edition		= $resultItem->getEdition();
 $publicationDate= $this->publicationDateMarc($resultItem->getPublicationDates());
 $groupID		= $resultItem->getGroup(true);
@@ -71,14 +73,12 @@ $memorizeLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
 				<?php endif; ?>
 			<?php endif; ?>
 
-			<h6><?=$this->transEsc('Author')?>:</h6>
-			<span>
-				<?php if (isset($titleStatement['statement_responsibility'])): ?>
-					<?=$this->escapeHtml($titleStatement['statement_responsibility'])?>
-				<?php else: ?>
-					<?=$this->escapeHtml(implode(', ', $secondaryAuthors)) ?>
-				<?php endif; ?>
-			</span><br />
+            <?php if ($responsible): ?>
+			    <h6><?=$this->transEsc('Author')?>:</h6>
+			        <span>
+    					<?=$this->escapeHtml($responsible)?>
+                    </span><br />
+            <?php endif; ?>
         </div>
 
         <!-- Jahr -->

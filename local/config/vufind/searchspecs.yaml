@@ -136,32 +136,20 @@
 # These searches use Dismax when possible:
 Author:
   DismaxFields:
-    - author^100
-    - author_fuller^50
-    - author2
-    - author_additional
+    - authorfull^100
   QueryFields:
-    author:
+    authorfull:
       - [onephrase, 350]
       - [and, 200]
       - [or, 100]
-    author_fuller:
-      - [onephrase, 200]
-      - [and, 100]
-      - [or, 50]
-    author2:
-      - [onephrase, 100]
-      - [and, 50]
-      - [or, ~]
-    author_additional:
-      - [onephrase, 100]
-      - [and, 50]
-      - [or, ~]
 
 ISN:
   DismaxFields:
     - isbn
     - issn
+    - ismn_isn_mv
+    - doi_isn_mv
+    - urn_isn_mv
   QueryFields:
     issn:
       - [and, 100]
@@ -169,192 +157,126 @@ ISN:
     isbn:
       - [and, 100]
       - [or, ~]
+    ismn_isn_mv:
+      - [and, 100]
+      - [or, ~]
+    doi_isn_mv:
+      - [and, 100]
+      - [or, ~]
+    urn_isn_mv:
+      - [and, 100]
+      - [or, ~]
 
 Subject:
   DismaxFields:
-    - topic_unstemmed^150
-    - topic^100
-    - geographic^50
-    - genre^50
-    - era
+    - topic^150
   QueryFields:
-    topic_unstemmed:
-      - [onephrase, 350]
-      - [and, 150]
-      - [or, ~]
     topic:
-      - [onephrase, 300]
-      - [and, 100]
-      - [or, ~]
-    geographic:
-      - [onephrase, 300]
-      - [and, 100]
-      - [or, ~]
-    genre:
-      - [onephrase, 300]
-      - [and, 100]
-      - [or, ~]
-    era:
-      - [and, 100]
-      - [or, ~]
+      - [onephrase, 350]
 
-# This field definition is a compromise that supports both journal-level and
-# article-level data.  The disadvantage is that hits in article titles will
-# be mixed in.  If you are building a purely article-oriented index, you should
-# customize this to remove all of the title_* fields and focus entirely on the
-# container_title field.
 JournalTitle:
   DismaxFields:
-    - title_short^500
-    - title_full_unstemmed^450
-    - title_full^400
-    - title^300
-    - container_title^250
-    - title_alt^200
-    - title_new^100
-    - title_old
-    - series^100
-    - series2
+    - journals
   QueryFields:
-    title_short:
-      - [onephrase, 500]
-    title_full_unstemmed:
-      - [onephrase, 450]
-      - [and, 400]
-    title_full:
-      - [onephrase, 400]
-    title:
-      - [onephrase, 300]
-      - [and, 250]
-    container_title:
-      - [onephrase, 275]
-      - [and, 225]
-    title_alt:
-      - [and, 200]
-    title_new:
-      - [and, 100]
-    title_old:
-      - [and, ~]
-    series:
+    journals:
       - [onephrase, 100]
-      - [and, 50]
-    series2:
-      - [onephrase, 50]
-      - [and , ~]
-  FilterQuery: "format:Journal OR format:Article"
 
 
 FRBR:
   QueryFields:
-    grouid_isn_mv:
-    - [onephrase, ~]
-
-
+    groupid_isn_mv:
+      - [onephrase, 500]
 
 Title:
   DismaxFields:
-    - title_short^500
-    - title_full_unstemmed^450
-    - title_full^400
-    - title^300
+    - title_short^1000            # main title, i.e. 245 $a
     - title_alt^200
-    - title_new^100
-    - title_old
+    - title_sub^200
+    - title_old^200
+    - title_new^200
     - series^100
     - series2
+    - series^200
+    - journals^200
   QueryFields:
     title_short:
       - [onephrase, 500]
-    title_full_unstemmed:
+    title_alt:
       - [onephrase, 450]
       - [and, 400]
-    title_full:
+    title_sub:
       - [onephrase, 400]
-    title:
+    title_old:
       - [onephrase, 300]
       - [and, 250]
     title_alt:
       - [and, 200]
     title_new:
       - [and, 100]
-    title_old:
-      - [and, ~]
     series:
       - [onephrase, 100]
       - [and, 50]
-    series2:
+    journals:
       - [onephrase, 50]
       - [and , ~]
 
 Series:
   DismaxFields:
     - series^100
-    - series2
   QueryFields:
     series:
       - [onephrase, 500]
       - [and, 200]
       - [or, 100]
-    series2:
-      - [onephrase, 50]
-      - [and, 50]
-      - [or, ~]
 
 AllFields:
   DismaxFields:
-    - title_short^750
-    - title_full_unstemmed^600
-    - title_full^400
-    - title^500
+    - title_short^1000            # main title, i.e. 245 $a
     - title_alt^200
-    - title_new^100
-    - series^50
-    - series2^30
-    - author^300
-    - author_fuller^150
-    - contents^10
-    - topic^500
-    - fulltext
+    - title_sub^200
+    - title_old^200
+    - title_new^200
+    - authorfull^750              # all authors (personal and corporate entries)
+    - series^200
+    - journals^200
+    - topic^500                   # all verbal topics, i.e. 6xx
+    - addfields_txt_mv^50         # additional fields
+    - fulltext                    # imported fulltext, i.e. TOC/Abstracts
+    - id^10000
+    - ctrlnum^1000
+    - institution^200             # sublibrary codes for librarians who know it
+    - publishDate
+#  DismaxParams:
+#  boost param as in old solrconfig.xml
   QueryFields:
     0:
       0:
         - OR
         - 50
       title_short:
-        - [onephrase, 750]
-      title_full_unstemmed:
+        - [onephrase, 1000]
+      title_alt:
         - [onephrase, 600]
         - [and, 500]
-      title_full:
+      title_sub:
         - [onephrase, 400]
-      title:
+      title_old:
         - [onephrase, 300]
         - [and, 250]
-      title_alt:
-        - [and, 200]
       title_new:
-        - [and, 100]
+        - [and, 200]
+    authorfull:
+      - [and, 750]
     series:
       - [and, 50]
-    series2:
+    journals:
       - [and, 30]
-    author:
+    topic:
       - [onephrase, 300]
       - [and, 250]
-    author_fuller:
+    addfields_txt_mv:
       - [onephrase, 150]
       - [and, 125]
-    author2:
-      - [and, 50]
-    author_additional:
-      - [and, 50]
-    contents:
-      - [and, 10]
-    topic_unstemmed:
-      - [onephrase, 550]
-      - [and, 500]
-    topic:
-      - [onephrase, 500]
     fulltext:
       - [or, ~]
 
@@ -370,38 +292,13 @@ ids:
     id:
       - [or, ~]
 
-TopicBrowse:
-  QueryFields:
-    topic_browse:
-      - [onephrase, ~]
-
-AuthorBrowse:
-  QueryFields:
-    author_browse:
-      - [onephrase, ~]
-
-TitleBrowse:
-  QueryFields:
-    title_full:
-      - [onephrase, ~]
-
-DeweyBrowse:
-  QueryFields:
-    dewey-raw:
-      - [onephrase, ~]
-
-LccBrowse:
-  QueryFields:
-    callnumber-a:
-      - [onephrase, ~]
-
 CallNumber:
   # We use two similar munges here -- one for exact matches, which will get
   # a very high boost factor, and one for left-anchored wildcard searches,
   # which will return a larger number of hits at a lower boost.
+  # adapted for swissbib usage
   CustomMunge:
     callnumber_exact:
-      - [uppercase]
       # Strip whitespace and quotes:
       - [preg_replace, '/[ "]/', ""]
       # Escape colons (unescape first to avoid double-escapes):
@@ -410,7 +307,6 @@ CallNumber:
       # Strip pre-existing trailing asterisks:
       - [preg_replace, "/\*+$/", ""]
     callnumber_fuzzy:
-      - [uppercase]
       # Strip whitespace and quotes:
       - [preg_replace, '/[ "]/', ""]
       # Escape colons (unescape first to avoid double-escapes):
@@ -423,17 +319,6 @@ CallNumber:
     callnumber:
       - [callnumber_exact, 1000]
       - [callnumber_fuzzy, ~]
-    dewey-full:
-      - [callnumber_exact, 1000]
-      - [callnumber_fuzzy, ~]
-
-publisher:
-  DismaxFields:
-    - publisher^100
-  QueryFields:
-    publisher:
-      - [and, 100]
-      - [or, ~]
 
 year:
   DismaxFields:
@@ -446,40 +331,6 @@ year:
 language:
   QueryFields:
     language:
-      - [and, ~]
-
-toc:
-  DismaxFields:
-    - contents^100
-  QueryFields:
-    contents:
-      - [and, 100]
-      - [or, ~]
-
-topic:
-  QueryFields:
-    topic:
-      - [and, 50]
-    topic_facet:
-      - [and, ~]
-
-geographic:
-  QueryFields:
-    geographic:
-      - [and, 50]
-    geographic_facet:
-      - [and ~]
-
-genre:
-  QueryFields:
-    genre:
-      - [and, 50]
-    genre_facet:
-      - [and, ~]
-
-era:
-  QueryFields:
-    era:
       - [and, ~]
 
 oclc_num:
