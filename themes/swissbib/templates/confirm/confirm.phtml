@@ -1,11 +1,11 @@
 <div class="alignleft">
   <h3><?=$this->transEsc($this->title) ?></h3>
 
-  <?=$this->flashmessages();?>
 
   <div id="popupDetails" class="confirmDialog">
     <form class="form" action="<?=$this->escapeHtml($this->confirm)?>" method="post">
-        <fieldset>
+        <?=$this->flashmessages();?>
+        <fieldset class="hidden">
             <div class="fieldgroup">
               <? if (isset($this->extras)): ?>
                   <? foreach ($this->extras as $extra=>$value): ?>
@@ -26,10 +26,10 @@
         </fieldset>
     </form>
 
-    <form class="form" action="<?=$this->escapeHtml($this->cancel) ?>" method="post">
+    <!--<form class="form" action="<?=$this->escapeHtml($this->cancel) ?>" method="post">
         <fieldset class="actions">
             <input type="submit" name="cancel" value="<?=$this->transEsc('confirm_dialog_no') ?>" />
         </fieldset>
-    </form>
+    </form> -->
   </div>
 </div>

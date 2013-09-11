@@ -262,8 +262,8 @@ class SolrMarc extends VuFindSolrMarc
 		$data = $this->getMarcSubFieldMap(100, $this->personFieldMap);
 
 		if ($asString) {
-			$name = isset($data['forname']) ? $data['forname'] : '';
-			$name .= isset($data['name']) ? ' ' . $data['name'] : '';
+			$name = isset($data['name']) ? $data['name'] : '';
+			$name .= isset($data['forname']) ? ', ' . $data['forname'] : '';
 
 			return trim($name);
 		}
@@ -289,7 +289,7 @@ class SolrMarc extends VuFindSolrMarc
 			foreach ($authors as $author) {
 				$name            = isset($author['name']) ? $author['name'] : '';
 				$forename        = isset($author['forname']) ? $author['forname'] : '';
-				$stringAuthors[] = trim($forename . ' ' . $name);
+				$stringAuthors[] = trim($name . ', ' . $forename);
 			}
 
 			$authors = $stringAuthors;
@@ -429,8 +429,38 @@ class SolrMarc extends VuFindSolrMarc
 		return $this->getFieldArray('502');
 	}
 
+    /**
+     * Get citation / reference note for the record
+     *
+     * @return array
+     */
+    public function getCitationNotes()
+    {
+        return $this->getFieldArray('510');
+    }
 
-	/**
+    /**
+     * Get original version note for the record.
+     *
+     * @return array
+     */
+    public function getOriginalVersionNotes()
+    {
+        return $this->getFieldArray('534', array('p','t','c'));
+    }
+
+    /**
+     * Get item-specific note for the record (field 590)
+     *
+     * @return array
+     */
+    public function getCopyNotes()
+    {
+        return $this->getFieldArray('590');
+    }
+
+
+    /**
 	 * get group-id from solr-field to display FRBR-Button
 	 *
 	 * @return    String|Number
