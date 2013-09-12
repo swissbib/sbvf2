@@ -52,7 +52,7 @@ $highlightedFulltext	= $record->getHighlightedFulltext();
 				<p><?=$this->escapeHtml($titleStatement['statement_responsibility'])?></p>
             <?php else: ?>
                 <p>
-                    <?=$this->escapeHtml(implode(', ', $secondaryAuthors)) ?>
+                    <?=$this->escapeHtml(implode('; ', $secondaryAuthors)) ?>
                 </p>
 			<?php endif; ?>
         <?php endif; ?>
