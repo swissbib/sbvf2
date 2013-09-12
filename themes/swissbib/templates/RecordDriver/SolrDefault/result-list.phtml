@@ -31,13 +31,12 @@ $detailLink		   = $this->recordLink()->getUrl($resultItem);
 $title			   = $this->mainTitle($resultItem->getShortTitle());
 $titleStatement	   = $resultItem->getTitleStatement(true);
 $responsible       = isset($titleStatement['statement_responsibility']) ? $titleStatement['statement_responsibility'] : $resultItem->getPrimaryAuthor(true);
-$responsible       = isset($responsible) ? $responsible : $resultItem->getSecondaryAuthors(true);
-//$secondaryAuthors		= $resultItem->getSecondaryAuthors(true);
-$edition		= $resultItem->getEdition();
-$publicationDate= $this->publicationDateMarc($resultItem->getPublicationDates());
-$groupID		= $resultItem->getGroup(true);
-$showFRBR       = $this->configAccess()->Site->displayFrbr;
-$memorizeLink	= $this->recordLink()->getActionUrl($this->driver, 'Save');
+$responsible       = isset($responsible) && !empty($responsible) ? $responsible : implode('; ', $resultItem->getSecondaryAuthors(true));
+$edition		   = $resultItem->getEdition();
+$publicationDate   = $this->publicationDateMarc($resultItem->getPublicationDates());
+$groupID		   = $resultItem->getGroup(true);
+$showFRBR          = $this->configAccess()->Site->displayFrbr;
+$memorizeLink	   = $this->recordLink()->getActionUrl($this->driver, 'Save');
 
 ?>
 <tr>
