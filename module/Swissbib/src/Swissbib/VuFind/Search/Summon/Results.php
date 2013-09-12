@@ -14,6 +14,13 @@ use VuFind\Search\Summon\Results as VFSummonResults;
 
 class Results extends VFSummonResults
 {
+
+		/**
+		 * @var String
+		 */
+		protected $target = 'summon';
+
+
     /**
      * Set up filters based on VuFind settings.
      *
@@ -73,4 +80,14 @@ class Results extends VFSummonResults
             $params->set('holdings', false);
         }
     }
+
+
+		/**
+		 * @return String $target
+		 */
+		public function getTarget()
+		{
+			return $this->target;
+		}
+
 }
