@@ -69,7 +69,7 @@ return array(
             'flashmessages' => function ($sm) {
                 $messenger = $sm->getServiceLocator()->get('ControllerPluginManager')
                     ->get('FlashMessenger');
-                return new \Swissbib\Vufind\View\Helper\Root\Flashmessages($messenger);
+                return new \Swissbib\VuFind\View\Helper\Root\Flashmessages($messenger);
             },
 
 			'recordlink' => function ($sm) {

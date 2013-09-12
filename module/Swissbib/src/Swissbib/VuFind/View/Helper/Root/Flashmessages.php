@@ -58,7 +58,7 @@ class Flashmessages  extends VFFlashmessages {
                 $this->fm->getMessages(), $this->fm->getCurrentMessages()
             );
             foreach (array_unique($messages) as $msg) {
-                $html .= '<div class="status_' . $ns . '"><h4>';
+                $html .= '<div class="status_' . $this->getClassForNamespace($ns) . '"><h4>';
                 // Advanced form:
                 if (is_array($msg)) {
                     // Use a different translate helper depending on whether

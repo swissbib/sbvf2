@@ -24,14 +24,17 @@ class Results extends VuFindSolrResults
 	 */
 	protected function createBackendParameters(AbstractQuery $query, Params $params)
 	{
-		$backendParams = parent::createBackendParameters($query, $params);
+
+
+        //obsolete function
+		//$backendParams = parent::createBackendParameters($query, $params);
 
 		//with SOLR 4.3 AND is no longer the default parameter
-		$backendParams->add("q.op", "AND");
+		//$backendParams->add("q.op", "AND");
 
-		$backendParams = $this->addUserInstitutions($backendParams);
+		//$backendParams = $this->addUserInstitutions($backendParams);
 
-		return $backendParams;
+		//return $backendParams;
 	}
 
 
@@ -184,27 +187,81 @@ class Results extends VuFindSolrResults
 
     protected function performSearch()
     {
+
+
+
+
         $query  = $this->getParams()->getQuery();
         $limit  = $this->getParams()->getLimit();
         $offset = $this->getStartRecord() - 1;
-        $params = $this->createBackendParameters($query, $this->getParams());
-        $collection = $this->getSearchService()
-            ->search($this->backendId, $query, $offset, $limit, $params);
+        $params = $this->getParams()->getBackendParameters();
+        $searchService = $this->getSearchService();
 
+        try {
+            $collection = $searchService
+                ->search($this->backendId, $query, $offset, $limit, $params);
+        } catch (\VuFindSearch\Backend\Exception\BackendException $e) {
+            // If the query caused a parser error, see if we can clean it up:
+            if ($e->hasTag('VuFind\Search\ParserError')
+                && $newQuery = $this->fixBadQuery($query)
+            ) {
+                // We need to get a fresh set of $params, since the previous one was
+                // manipulated by the previous search() call.
+                $params = $this->getParams()->getBackendParameters();
+                $collection = $searchService
+                    ->search($this->backendId, $newQuery, $offset, $limit, $params);
+            } else {
+                throw $e;
+            }
+        }
+
+
+        //code aus letztem VuFind Core
         $this->responseFacets = $collection->getFacets();
         $this->resultTotal = $collection->getTotal();
+
+        // Process spelling suggestions
+        //$spellcheck = $collection->getSpellcheck();
+        //$this->spellingQuery = $spellcheck->getQuery();
+        //$this->suggestions = $this->getSpellingProcessor()
+        //    ->getSuggestions($spellcheck, $this->getParams()->getQuery());
+
+        // Construct record drivers for all the items in the response:
+        //$this->results = $collection->getRecords();
+
 
         if ($this->resultTotal == 0) {
 
             //we use spellchecking only in case of 0 hits
 
-            $params = $this->createSpellcheckBackendParameters($query, $this->getParams());
-            $collectionSpell = $this->getSearchService()
-                ->search($this->backendId, $query, $offset, $limit, $params);
+            //$params = $this->createSpellcheckBackendParameters($query, $this->getParams());
+            //$collectionSpell = $this->getSearchService()
+            //    ->search($this->backendId, $query, $offset, $limit, $params);
 
             // Process spelling suggestions
-            $spellcheck = $collectionSpell->getSpellcheck();
-            $this->processSpelling($spellcheck);
+            //$spellcheck = $collectionSpell->getSpellcheck();
+            //$this->processSpelling($spellcheck);
+
+            $params = $this->getParams()->getSpellcheckBackendParameters();
+            try {
+                $collectionSpelling = $searchService
+                    ->search($this->backendId, $query, $offset, $limit, $params);
+            } catch (\VuFindSearch\Backend\Exception\BackendException $e) {
+                // If the query caused a parser error, see if we can clean it up:
+
+
+                //we don't throw spelling exceptions but we should
+                //todo: log it!
+
+            }
+
+
+            // Process spelling suggestions
+            $spellcheck = $collectionSpelling->getSpellcheck();
+            $this->spellingQuery = $spellcheck->getQuery();
+            $this->suggestions = $this->getSpellingProcessor()
+                ->getSuggestions($spellcheck, $this->getParams()->getQuery());
+
 
 
         }
@@ -212,6 +269,12 @@ class Results extends VuFindSolrResults
 
         // Construct record drivers for all the items in the response:
         $this->results = $collection->getRecords();
+
+
+
+
+
+
     }
 
 
