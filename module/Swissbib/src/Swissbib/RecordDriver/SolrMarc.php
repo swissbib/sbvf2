@@ -262,8 +262,8 @@ class SolrMarc extends VuFindSolrMarc
 		$data = $this->getMarcSubFieldMap(100, $this->personFieldMap);
 
 		if ($asString) {
-			$name = isset($data['forname']) ? $data['forname'] : '';
-			$name .= isset($data['name']) ? ' ' . $data['name'] : '';
+			$name = isset($data['name']) ? $data['name'] : '';
+			$name .= isset($data['forname']) ? ', ' . $data['forname'] : '';
 
 			return trim($name);
 		}
@@ -289,7 +289,7 @@ class SolrMarc extends VuFindSolrMarc
 			foreach ($authors as $author) {
 				$name            = isset($author['name']) ? $author['name'] : '';
 				$forename        = isset($author['forname']) ? $author['forname'] : '';
-				$stringAuthors[] = trim($forename . ' ' . $name);
+				$stringAuthors[] = trim($name . ', ' . $forename);
 			}
 
 			$authors = $stringAuthors;
@@ -429,8 +429,90 @@ class SolrMarc extends VuFindSolrMarc
 		return $this->getFieldArray('502');
 	}
 
+    /**
+     * Get original title from IDS MARC
+     *
+     * @return array
+     */
 
-	/**
+    public function getOriginalTitle($asStrings = true)
+    {
+        $data = $this->getMarcSubFieldMaps(509, array(
+                                                    'a' => 'title',
+                                                    'n' => 'count',
+                                                    'p' => 'worktitle',
+                                                    'r' => 'author',
+                                                    'i' => 'addtext',
+                                                    ));
+        if ($asStrings) {
+            $strings = array();
+
+            foreach ($data as $origtitle) {
+                $string = '';
+
+                if (isset($origtitle['title'])) {
+                    $string = str_replace('@', '', $origtitle['title']);
+                }
+                if (isset($origtitle['count'])) {
+                    $string .= '(' . $origtitle['count'] . ')';
+                }
+                if (isset($origtitle['author'])) {
+                    $string .= ' / ' . $origtitle['author'];
+                }
+                if (isset($origtitle['addtext'])) {
+                    $string .= '. - ' . $origtitle['addtext'];
+                }
+
+                $strings[] = trim($string);
+            }
+
+            $data = $strings;
+        }
+        return $data;
+    }
+
+    /**
+     * Get citation / reference note for the record
+     *
+     * @return array
+     */
+    public function getCitationNotes()
+    {
+        return $this->getFieldArray('510');
+    }
+
+    /**
+     * Get participant or performer note for the record.
+     *
+     * @return array
+     */
+    public function getPerformerNote()
+    {
+        return $this->getFieldArray('511');
+    }
+
+    /**
+     * Get original version note for the record.
+     *
+     * @return array
+     */
+    public function getOriginalVersionNotes()
+    {
+        return $this->getFieldArray('534', array('p','t','c'));
+    }
+
+    /**
+     * Get item-specific note for the record (field 590)
+     *
+     * @return array
+     */
+    public function getCopyNotes()
+    {
+        return $this->getFieldArray('590');
+    }
+
+
+    /**
 	 * get group-id from solr-field to display FRBR-Button
 	 *
 	 * @return    String|Number
