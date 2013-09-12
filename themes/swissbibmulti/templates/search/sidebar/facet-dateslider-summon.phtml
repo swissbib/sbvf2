@@ -1,53 +1,57 @@
 <?php
-/** @var	Swissbib\RecordDriver\Summon	$resultItem  */
-/** @var	Swissbib\View\Helper\Record		$viewRecord  */
+/** @var	Swissbib\RecordDriver\Summon	        $resultItem  */
+/** @var	Swissbib\View\Helper\Record		        $viewRecord  */
+/** @var    Swissbib\Vufind\Search\Summon\Results   $result */
 
-$viewRecord      = $this->record();
-$startYear       = 1980;
+if ( $results->getResultTotal() > 0  ) {
 
-// @todo Don't use $_GET parameters directly
-$publishDateFrom = isset($_GET['publishDatefrom']) ? intval($_GET['publishDatefrom']) : $startYear;
-$publishDateTo   = isset($_GET['publishDateto'])   ? intval($_GET['publishDateto'])   : intval(date('Y')) + 1;
+    $viewRecord      = $this->record();
+    $startYear       = 1980;
 
-$this->headScript()->appendFile('pubdate_slider.js');
+    // @todo Don't use $_GET parameters directly
+    $publishDateFrom = isset($_GET['publishDatefrom']) ? intval($_GET['publishDatefrom']) : $startYear;
+    $publishDateTo   = isset($_GET['publishDateto'])   ? intval($_GET['publishDateto'])   : intval(date('Y')) + 1;
+    $this->headScript()->appendFile('pubdate_slider.js');
+    ?>
+    <script language="javascript">
+        setPublishDateSliderMin(<?= $startYear ?>)
+    </script>
+    <div id="facet_pubdate_slider" class="facet">
+        <h5 id="facet_toggler_publishdate" onclick="$('#publishDateForceHeight').toggleClass('publishDateForceHeight')"
+            class="toggler persist expanded" title="adv_search_year">Erscheinungsjahr</h5>
 
+        <form action="" name="publishDateFilter" id="publishDateFilter">
+            <?php /* Pass on other filter criteria via hidden fields, remove last publishDate */ ?>
+            <?= $results->getUrlQuery()->asHiddenFields(array('filter' => "/publishDate:.*/")) ?>
+            <input type="hidden" name="daterange[]" value="publishDate"/>
+
+            <div class="publishDateForceHeight" id="publishDateForceHeight">
+                <fieldset class="publishDateLimit facet_toggler_publishdate" id="publishDateSlider">
+                    <div class="values">
+                        <div>
+                            <label for="publishDatefrom"><?= $this->transEsc('date_from') ?>:</label>
+                            <input type="text" size="4" maxlength="4" class="yearbox" name="publishDatefrom"
+                                   id="publishDatefrom" value="<?= $publishDateFrom ?>"/>
+                        </div>
+                        <div>
+                            <label for="publishDateto"><?= $this->transEsc('date_to') ?>:</label>
+                            <input type="text" size="4" maxlength="4" class="yearbox" name="publishDateto"
+                                   id="publishDateto" value="<?= $publishDateTo ?>"/>
+                        </div>
+                    </div>
+                    <div id="publishDateSlider" class="dateSlider"></div>
+                    <input type="submit" value="<?= $this->transEsc('Set') ?>" id="publishDategoButton"/>
+                </fieldset>
+            </div>
+        </form>
+        <script language="javascript">
+            $().ready(function() {
+                if($('#facet_toggler_publishdate').hasClass('collapsed')) {
+                    $('#publishDateForceHeight').hide();
+                }
+            });
+        </script>
+    </div>
+<?php
+}   /* end if */
 ?>
-<script language="javascript">
-    setPublishDateSliderMin(<?= $startYear ?>)
-</script>
-<div id="facet_pubdate_slider" class="facet">
-	<h5 id="facet_toggler_publishdate" onclick="$('#publishDateForceHeight').toggleClass('publishDateForceHeight')"
-		class="toggler persist expanded" title="adv_search_year">Erscheinungsjahr</h5>
-
-	<form action="" name="publishDateFilter" id="publishDateFilter">
-		<?php /* Pass on other filter criteria via hidden fields, remove last publishDate */ ?>
-		<?= $results->getUrlQuery()->asHiddenFields(array('filter' => "/publishDate:.*/")) ?>
-		<input type="hidden" name="daterange[]" value="publishDate"/>
-
-		<div class="publishDateForceHeight" id="publishDateForceHeight">
-			<fieldset class="publishDateLimit facet_toggler_publishdate" id="publishDateSlider">
-				<div class="values">
-					<div>
-						<label for="publishDatefrom"><?= $this->transEsc('date_from') ?>:</label>
-						<input type="text" size="4" maxlength="4" class="yearbox" name="publishDatefrom"
-							   id="publishDatefrom" value="<?= $publishDateFrom ?>"/>
-					</div>
-					<div>
-						<label for="publishDateto"><?= $this->transEsc('date_to') ?>:</label>
-						<input type="text" size="4" maxlength="4" class="yearbox" name="publishDateto"
-							   id="publishDateto" value="<?= $publishDateTo ?>"/>
-					</div>
-				</div>
-				<div id="publishDateSlider" class="dateSlider"></div>
-				<input type="submit" value="<?= $this->transEsc('Set') ?>" id="publishDategoButton"/>
-			</fieldset>
-		</div>
-	</form>
-	<script language="javascript">
-		$().ready(function() {
-			if($('#facet_toggler_publishdate').hasClass('collapsed')) {
-				$('#publishDateForceHeight').hide();
-			}
-		});
-	</script>
-</div>
