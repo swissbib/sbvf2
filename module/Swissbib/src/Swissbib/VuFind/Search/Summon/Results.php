@@ -15,10 +15,10 @@ use VuFind\Search\Summon\Results as VFSummonResults;
 class Results extends VFSummonResults
 {
 
-		/**
-		 * @var String
-		 */
-		protected $target = 'summon';
+    /**
+     * @var String
+     */
+    protected $target = 'summon';
 
 
     /**
@@ -108,12 +108,12 @@ class Results extends VFSummonResults
 
 
 
-		/**
-		 * @return String $target
-		 */
-		public function getTarget()
-		{
-			return $this->target;
-		}
+    /**
+     * @return String $target
+     */
+    public function getTarget()
+    {
+      return $this->target;
+    }
 
 }
