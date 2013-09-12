@@ -158,17 +158,21 @@ $prevTitles = $this->driver->getPreviousTitles(); ?>
 <?php /* div-box for all notes */ ?>
 
 <?php
-$notes = $resultItem->getGeneralNotes();
-$diss = $resultItem->getDissertationNotes();
-$bib = $resultItem->getBibliographyNotes();
-$access = $resultItem->getAccessRestrictions();
-$credits = $resultItem->getProductionCredits();
-$awards = $resultItem->getAwards();
-$citenotes = $resultItem->getCitationNotes();
-$orignotes = $resultItem->getOriginalVersionNotes();
-$copynotes = $resultItem->getCopyNotes();
+$notes        = $resultItem->getGeneralNotes();
+$diss         = $resultItem->getDissertationNotes();
+$bib          = $resultItem->getBibliographyNotes();
+$access       = $resultItem->getAccessRestrictions();
+$credits      = $resultItem->getProductionCredits();
+$origtitle    = $resultItem->getOriginalTitle();
+$awards       = $resultItem->getAwards();
+$citenotes    = $resultItem->getCitationNotes();
+$orignotes    = $resultItem->getOriginalVersionNotes();
+$copynotes    = $resultItem->getCopyNotes();
 ?>
-<?php if (!empty($notes) or !empty($diss) or !empty($bib) or !empty($access) or !empty($credits) or !empty($awards) or !empty($citenotes) or !empty($orignotes) or !empty($copynotes)): ?>
+<?php if (!empty($notes) or !empty($diss) or !empty($bib) or
+          !empty($access) or !empty($credits) or !empty($awards) or
+          !empty($citenotes) or !empty($orignotes) or !empty($copynotes) or
+          !empty($origtitle)): ?>
 	<?php $contentDisplayed = true; ?>
 	<div class="details">
 		<?php /* Display general notes (field 500) */ ?>
@@ -217,6 +221,14 @@ $copynotes = $resultItem->getCopyNotes();
 			</p>
 		<?php endif; ?>
         <?php /* Display original title (field 509) */ ?>
+        <?php if (!empty($origtitle)): ?>
+            <h4><?= $this->transEsc('Original_Title') ?>: </h4>
+            <p>
+                <?php foreach ($origtitle as $field): ?>
+                    <?= $this->escapeHtml($field) ?><br/>
+                <?php endforeach; ?>
+            </p>
+        <?php endif; ?>
 		<?php /* Display citation / reference note (field 510) */ ?>
         <?php if (!empty($citenotes)): ?>
             <h4><?= $this->transEsc('Citation_Note') ?>: </h4>
