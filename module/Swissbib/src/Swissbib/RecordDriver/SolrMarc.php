@@ -430,6 +430,48 @@ class SolrMarc extends VuFindSolrMarc
 	}
 
     /**
+     * Get original title from IDS MARC
+     *
+     * @return
+     */
+
+    public function getOriginalTitle($asStrings = true)
+    {
+        $data = $this->getMarcSubFieldMaps(509, array(
+                                                    'a' => 'title',
+                                                    'n' => 'count',
+                                                    'p' => 'worktitle',
+                                                    'r' => 'author',
+                                                    'i' => 'addtext',
+                                                    ));
+        if ($asStrings) {
+            $strings = array();
+
+            foreach ($data as $origtitle) {
+                $string = '';
+
+                if (isset($origtitle['title'])) {
+                    $string = str_replace('@', '', $origtitle['title']);
+                }
+                if (isset($origtitle['count'])) {
+                    $string .= '(' . $origtitle['count'] . ')';
+                }
+                if (isset($origtitle['author'])) {
+                    $string .= ' / ' . $origtitle['author'];
+                }
+                if (isset($origtitle['addtext'])) {
+                    $string .= '. - ' . $origtitle['addtext'];
+                }
+
+                $strings[] = trim($string);
+            }
+
+            $data = $strings;
+        }
+        return $data;
+    }
+
+    /**
      * Get citation / reference note for the record
      *
      * @return array
