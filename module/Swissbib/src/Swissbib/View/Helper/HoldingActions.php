@@ -32,6 +32,14 @@ class HoldingActions extends AbstractTranslatorHelper
 		}
 
 		if (isset($item['userActions'])) {
+            if ($item['userActions']['login']) {
+                $actions['sign_in'] = array(
+                    'label'  => $this->translate('Login'),
+                    'href'   => $recordLink->getHoldUrl($item['holdLink']),
+                    // @todo sowas in der Art
+                    //'href'   => $this->url('myresearch-home'),
+                );
+            }
 			if ($item['userActions']['hold']) {
 				$actions['hold'] = array(
 					'label' => $this->translate('hold_place'),
