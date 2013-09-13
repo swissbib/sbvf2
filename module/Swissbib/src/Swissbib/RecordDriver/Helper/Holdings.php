@@ -504,6 +504,12 @@ class Holdings
 					if ($this->isLoggedIn()) {
 						$item['userActions'] = $this->getAllowedUserActions($item);
 					}
+                    // @todo falls nicht angemeldet
+                    elseif (!$this->isLoggedIn()) {
+                         $item['userActions'] = array(
+                                    'login'            => 'true',
+                        );
+                    }
 				}
 			}
 
