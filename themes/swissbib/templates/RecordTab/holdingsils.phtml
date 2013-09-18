@@ -56,13 +56,6 @@ $holdings	= $this->extractFavoriteInstitutionsForHoldings($holdings);
 									<?php $favoriteLabel = isset($institution['favorite']) ? 'mylibraries.remove' : 'mylibraries.add'; ?>
 									<a href="javascript:void(0)" title="<?=$this->transEsc($favoriteLabel)?>"><?=$this->transEsc($favoriteLabel)?></a>
 								</li>
-								<?php if (isset($institution['bibinfolink']) && $institution['bibinfolink']): ?>
-									<li class="miniaction_link">
-										<a href="<?=$this->escapeHtml($institution['bibinfolink']['url'])?>" class="externallink" title="<?=$this->transEsc('Library_Information')?>">
-											<?=$this->transEsc('Library_Information')?>
-										</a>
-									</li>
-								<?php endif; ?>
 							</ul>
 
 							<div class="holding-institution-<?=$groupCode?>-<?=$institutionCode?>">
