@@ -476,6 +476,11 @@ class Holdings
 			}
 		}
 
+		if (!isset($extendingOptions['institutionUrl']) || $extendingOptions['institutionUrl']) {
+			$bibInfoLink = $this->getBibInfoLink(strtolower($item['institution']));
+			$item['institutionUrl'] = $bibInfoLink['url'];
+		}
+
 		return $item;
 	}
 
