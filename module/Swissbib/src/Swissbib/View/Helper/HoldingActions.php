@@ -22,6 +22,7 @@ class HoldingActions extends AbstractTranslatorHelper
 		/** @var RecordLink $recordLink */
 		$recordLink = $this->getView()->plugin('recordLink');
 		$actions	= array();
+        $loginURL   = $this->getView()->url('myresearch-home');
 
 		if (isset($item['backlink'])) {
 			$actions['backlink'] = array(
@@ -33,11 +34,10 @@ class HoldingActions extends AbstractTranslatorHelper
 
 		if (isset($item['userActions'])) {
             if ($item['userActions']['login']) {
+                // show different label and sign in
                 $actions['sign_in'] = array(
                     'label'  => $this->translate('Login'),
-                    'href'   => $recordLink->getHoldUrl($item['holdLink']),
-                    // @todo sowas in der Art
-                    //'href'   => $this->url('myresearch-home'),
+                    'href'   => $loginURL,
                 );
             }
 			if ($item['userActions']['hold']) {
