@@ -1,47 +1,36 @@
-
-
-
+<h1><?=$this->transEsc('nohit_heading') ?></h1>
+<div class="box">
 <?
-    //this php rendering stuff without a template engine is really messy....GH
-
-    $spellingSuggestions	= $this->results->getSpellingSuggestions();
-
-    if (empty($spellingSuggestions)) {
-        return '';
-    }
-
-
+    $spellingSuggestions = $this->results->getSpellingSuggestions();
     if (sizeof($spellingSuggestions) > 0) {
-
 ?>
-        <div class="box">
-            <h4>Falls Sie sich vertippt haben, meinten Sie: </h4>
-            <div class="status information">
-                <ul class="list">
-
-<?
-        foreach ($spellingSuggestions as $term => $details) {
-            foreach ($details['suggestions'] as $word => $data) {
-
-                ?>
-
-                    <li>
-                        <a href="<?=$results->getUrlQuery()->replaceTerm($term, $data['new_term']) ?> "><?= $this->escapeHtml($word) ?></a>
-
-                    </li>
-
-<?
+        <h4><?= $this->translate('nohit_spelling') ?>: </h4>
+            <ul class="list">
+            <?
+            foreach ($spellingSuggestions as $oldTerm => $details) {
+                foreach ($details['suggestions'] as $newWord => $data) {
+                    $newUrl = $results->getUrlQuery()->replaceTerm($oldTerm,$data['new_term']);
+            ?>
+                    <li><a href="<?=$newUrl ?>"><?= $this->escapeHtml($newWord) ?></a></li>
+            <?
+                }
             }
-        }
-?>
-                </ul>
-
-            </div>
-        </div>
+            ?>
+            </ul>
 <?
-
     }
-
 ?>
+    <h4><?=$this->transEsc('nohit_suggest') ?></h4>
+    <ul class="list">
+        <li>Stimmt die Rechtschreibung?</li>
+        <li>Wenn Sie mehrere Suchbegriffe eingegeben haben, reduzieren Sie die Menge.</li>
+        <li>Können Sie die Suche mit anderen Suchbegriffen beschreiben?</li>
+    </ul>
+    <h4>Weitere Hilfe</h4>
+    <ul class="list">
+        <li>Siehe <em><a href="<?=$this->url('help-page')?>"><?=$this->transEsc('helppage')?></a> </em> für weitere Suchtipps</li>
+        <li>Siehe <em><a href="<?=$this->url('search-advanced')?>"><?=$this->transEsc('Advanced Search')?></a></em> für zusätzliche Suchoptionen und Links zu weiteren Katalogen.</li>
+    </ul>
+</div>
 
 
