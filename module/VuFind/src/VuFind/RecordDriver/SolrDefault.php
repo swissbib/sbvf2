@@ -659,7 +659,7 @@ class SolrDefault extends AbstractBase
             ? $this->mainConfig->OpenURL->rfr_id
             : $this->mainConfig->COinS->identifier;
         if (empty($coinsID)) {
-            $coinsID = 'github.com/vufind-org/vufind';
+            $coinsID = 'vufind.svn.sourceforge.net';
         }
 
         // Get a representative publication date:
