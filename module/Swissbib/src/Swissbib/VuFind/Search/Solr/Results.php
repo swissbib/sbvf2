@@ -15,6 +15,12 @@ class Results extends VuFindSolrResults
 {
 
 	/**
+	 * @var String
+	 */
+	protected $target = 'swissbib';
+
+
+	/**
 	 * Create backend parameters
 	 * Add facet queries for user institutions
 	 *
@@ -182,6 +188,15 @@ class Results extends VuFindSolrResults
 		$facetList = $userInstitutionFacets + $facetList;
 
 		return $facetList;
+	}
+
+
+	/**
+	 * @return String $target
+	 */
+	public function getTarget()
+	{
+		return $this->target;
 	}
 
 

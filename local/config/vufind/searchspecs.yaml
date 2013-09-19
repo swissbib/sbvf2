@@ -187,6 +187,10 @@ FRBR:
     groupid_isn_mv:
       - [onephrase, 500]
 
+WLC:
+  DismaxFields:
+    - localcode_txt_mv
+
 Title:
   DismaxFields:
     - title_short^1000            # main title, i.e. 245 $a
