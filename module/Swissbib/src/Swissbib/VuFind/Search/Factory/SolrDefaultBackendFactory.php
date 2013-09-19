@@ -35,6 +35,7 @@
 
 namespace Swissbib\VuFind\Search\Factory;
 
+use Swissbib\VuFind\Search\Solr\InjectSwissbibSpellingListener;
 use VuFind\Search\Factory\SolrDefaultBackendFactory as VuFindSolrDefaultBackendFactory;
 use VuFind\Search\Solr\V4\ErrorListener;
 use Swissbib\VuFindSearch\Backend\Solr\Backend;
@@ -42,6 +43,7 @@ use Swissbib\VuFindSearch\Backend\Solr\Backend;
 use Swissbib\Highlight\SolrConfigurator as HighlightSolrConfigurator;
 use VuFindSearch\Backend\Solr\Connector;
 use VuFindSearch\Backend\Solr\Response\Json\RecordCollectionFactory;
+
 
 /**
  * [Description]
@@ -54,7 +56,35 @@ class SolrDefaultBackendFactory extends VuFindSolrDefaultBackendFactory
 	{
 		parent::createListeners($backend);
 
-		$this->attachHighlightSolrConfigurator($backend);
+
+        $events = $this->serviceLocator->get('SharedEventManager');
+
+        // Spellcheck
+        $config  = $this->config->get('config');
+
+        if (isset($config->Spelling->simple) && $config->Spelling->simple) {
+            $dictionaries = array('basicSpell');
+        } else {
+            $dictionaries = array('default', 'basicSpell');
+        }
+        $spellingListener = new InjectSwissbibSpellingListener($backend, $dictionaries);
+        $spellingListener->attach($events);
+
+
+
+        /*
+        $test =  $events->getListeners("VuFind\Search","post");
+        foreach ($test as $tListener) {
+            if (is_array( $tListener->getCallback()) && $tListener->getCallback()[0] instanceof VFSpellingListener) {
+                $h = "";
+                //$events->detach( "VuFind\Search",$tListener);
+            }
+        }
+        */
+
+
+
+        $this->attachHighlightSolrConfigurator($backend);
 	}
 
 
@@ -80,20 +110,25 @@ class SolrDefaultBackendFactory extends VuFindSolrDefaultBackendFactory
     {
 
 
+        //return parent::createBackend($connector);
 
-        $config  = $this->config->get('config');
+        //we can't use zje original funtion because Backend is overwritten by Swissbib
+        //look at it later if really necessary
+
+        //$config  = $this->config->get('config');
         $backend = new Backend($connector);
         $backend->setQueryBuilder($this->createQueryBuilder());
 
         // Spellcheck
-        if (isset($config->Spelling->enabled) && $config->Spelling->enabled) {
-            if (isset($config->Spelling->simple) && $config->Spelling->simple) {
-                $dictionaries = array('basicSpell');
-            } else {
-                $dictionaries = array('default', 'basicSpell');
-            }
-            $backend->setDictionaries($dictionaries);
-        }
+        //if (isset($config->Spelling->enabled) && $config->Spelling->enabled) {
+        //    if (isset($config->Spelling->simple) && $config->Spelling->simple) {
+        //        $dictionaries = array('basicSpell');
+        //    } else {
+        //        $dictionaries = array('default', 'basicSpell');
+        //    }
+        //    $backend->setDictionaries($dictionaries);
+        //}
+
 
         if ($this->logger) {
             $backend->setLogger($this->logger);
