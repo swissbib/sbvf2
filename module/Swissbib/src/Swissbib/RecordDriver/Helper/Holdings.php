@@ -476,6 +476,11 @@ class Holdings
 			}
 		}
 
+		if (!isset($extendingOptions['institutionUrl']) || $extendingOptions['institutionUrl']) {
+			$bibInfoLink = $this->getBibInfoLink(strtolower($item['institution']));
+			$item['institutionUrl'] = $bibInfoLink['url'];
+		}
+
 		return $item;
 	}
 
@@ -504,6 +509,12 @@ class Holdings
 					if ($this->isLoggedIn()) {
 						$item['userActions'] = $this->getAllowedUserActions($item);
 					}
+                    // if a user is not logged in
+                    elseif (!$this->isLoggedIn()) {
+                         $item['userActions'] = array(
+                                    'login'            => 'true',
+                        );
+                    }
 				}
 			}
 
