@@ -591,3 +591,25 @@ tr.infoMessagesRow td {
 	padding-left: 30px;
 	width: auto;
 }
+
+
+/*
+Bibliotheksinfo-Link mit Fragezeichen - TVI: 20130920
+*/
+.bibinfo {
+    position:relative;
+    display:block;
+    float:right;
+    width:16px;
+    height:16px;
+    font-size:0;
+    line-height:0;
+    text-indent:-10000px;
+    margin:0 1px 0 1px;
+    background-image:url(../images/icon_info.gif);
+    background-position:0 0;
+    background-repeat:no-repeat;
+    text-decoration:none;
+    cursor:pointer;
+    overflow:visible;
+}
