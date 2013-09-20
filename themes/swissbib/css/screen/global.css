@@ -1343,15 +1343,15 @@ ul.miniactions li a {
 	zoom:1; /* force ie into hasLayout */
 }
 ul.miniactions li.miniaction_link a {
-	padding:0px 12px 2px 3px;
+	padding:1px 12px 2px 2px;
 	margin-top:-1px;
 	font-size:10px;
 	line-height:10px;
 	color:#FFFFFF;
 	font-weight:bold;
 	text-decoration:none;
-	background-image:url(../../images/icon_info.gif);
-	background-position:right 2px;
+	background-image:url(../../images/icon_miniaction_link.gif);
+	background-position:right 1px;
 }
 ul.miniactions li.miniaction_favorite_add a {
 	display:block;
