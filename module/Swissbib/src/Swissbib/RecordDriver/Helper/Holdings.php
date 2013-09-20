@@ -562,6 +562,9 @@ class Holdings
 			$holding['backlink'] = $this->getBackLink($holding['network'], strtoupper($holding['institution']), $holding);
 //		}
 
+		$bibInfoLink = $this->getBibInfoLink(strtolower($holding['institution']));
+		$holding['institutionUrl'] = $bibInfoLink['url'];
+
 		return $holding;
 	}
 
