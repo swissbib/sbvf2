@@ -1351,7 +1351,7 @@ ul.miniactions li.miniaction_link a {
 	font-weight:bold;
 	text-decoration:none;
 	background-image:url(../../images/icon_info.gif);
-	background-position:right 1px;
+	background-position:right 2px;
 }
 ul.miniactions li.miniaction_favorite_add a {
 	display:block;
