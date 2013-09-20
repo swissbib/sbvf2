@@ -153,7 +153,7 @@ input.primary {
 
 /* actions */
 ul.miniactions li.miniaction_link a {
-	background-image:url('img/icon_info.gif');
+	background-image:url('img/icon_miniaction_link.gif');
 }
 ul.miniactions li.miniaction_favorite_add a {
 	background-image:url('img/icon_miniaction_favorite_add.gif');
@@ -394,6 +394,13 @@ ul.miniactions li.miniaction_favorite_remove a {
  ======================================================================================*/
 #inlay #notepad {
 	float:right;
+}
+
+/* -------------------------------------------------------------------------------------
+ Bibliotheksinfo-Link mit Fragezeichen - TVI: 20130920
+ ======================================================================================*/
+.bibinfo {
+    background-image:url('img/icon_info.gif');
 }
 
 }
