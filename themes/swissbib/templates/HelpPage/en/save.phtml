@@ -1,39 +1,36 @@
 <h1>Save</h1>
+
 <table>
 	<tbody>
+	
 	<tr>
-		<td><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_notepad_add.gif') ?>"
-				 alt="Add to My list"></td>
-		<td>Add result/s to the <strong>Temporary list</strong>.<br>
-			When you are logged in you can create additional lists: <i>My swissbib - My list - New list</i>.
-		</td>
-	</tr>
-	<tr>
-		<td><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_pagefunctions_save.gif') ?>"
-				 alt="Save items locally"></td>
-		<td>Different formats to save result/s as a <strong>file</strong>.</td>
-	</tr>
-
-	<tr>
-		<td><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_pagefunctions_send.gif') ?>"
-				 alt="Send items"></td>
-		<td><strong>Email</strong> result/s in different formats.</td>
-	</tr>
-	<tr>
-		<td><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_pagefunctions_print.gif') ?>"
-				 alt="Print items"></td>
-		<td><strong>Print</strong> result/s in different formats.</td>
-	</tr>
-	<tr>
-		<td><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_pagefunctions_perma.gif') ?>"
-				 alt="Permanent link"></td>
-		<td><strong>Share</strong> link on facebook, Twitter etc.</td>
+		<td><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_notepad_add.gif') ?>" alt="add to list"></td>
+		<td>Add result/s to one of your <strong>lists</strong>.</td>
 	</tr>
 	<tr>
 		<td><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_pagefunctions_rss.gif') ?>"
-				 alt="subscribe to Atom feed"></td>
-		<td><strong>Atom feed</strong> notification about new titles that match your search.</td>
+				 alt="get feed of new items matching this search"></td>
+		<td><strong>Feed</strong> notification about new titles that match your search.</td>
 	</tr>
+	
+	<tr>
+		<td><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_pagefunctions_print.gif') ?>"
+				 alt="Print"></td>
+		<td><strong>Print</strong> result/s.</td>
+	</tr>
+	
+	<tr>
+		<td><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_pagefunctions_send.gif') ?>"
+				 alt="Email this"></td>
+		<td><strong>Email</strong> result/s.</td>
+		</tr>
+	
+	<tr>
+		<td><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_pagefunctions_save.gif') ?>"
+				 alt="Export to ..."></td>
+		<td><strong>Export</strong> result/s in different formats.</td>
+	</tr>
+
 	</tbody>
 </table>
 
@@ -42,11 +39,14 @@
 <ul class="list">
 	<li>Click on the title</li>
 	<li>Choose a library</li>
-	<li><i>Go to holdings</i> = lending functions of that library</li>
-	<li><i>retro.seals</i> = link to full text</li>
+	<li>Click <i>Log in</i> below the library's name</li> 
+	<li>Click <i>Loan</i>, <i>Order copy</i> or <i>Booking request</i></li>
+	<li>If you don't see these options the work can't be ordered online, for example because it is located in the open stacks. A click on the <img src="<?= $this->basePath('themes/swissbibmulti/css/img/icon_info.gif') ?>" alt="Library Info"> next to the call number shows you the opening times and address of the library.</li>
 </ul>
+
+
 <h3>Articles &amp; more</h3>
 <ul class="list">
 	<li><i>get it</i> = link to full text</li>
-	<li><i>get it - sfx</i> = link to full text and/or other sfx services</li>
+	<li><img src="<?= $this->basePath('themes/swissbib/images/sfx.gif') ?>" alt="SFX Services"> = link to full text and/or other sfx services</li>
 </ul>
