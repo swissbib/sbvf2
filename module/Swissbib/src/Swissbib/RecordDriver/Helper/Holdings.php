@@ -909,9 +909,9 @@ class Holdings
 		$values = array(
 			'server'            => $data['domain'],
 			'language-code'     => 'de', // @todo fetch from user,
-			'RERO-network-code' => substr($institutionCode, 0, 2), // first two characters should do it. not sure
+			'RERO-network-code' => substr($institutionCode, 2, 2), // third and fourth character
 			'bib-system-number' => $this->getNumericString($item['bibsysnumber']), // remove characters from number string
-			'sub-library-code'  => $institutionCode
+			'sub-library-code'  => substr($institutionCode, 2, 5).'0000' // brings sublibrary code to the requested form
 		);
 
 		return $this->compileString($data['pattern'], $values);
