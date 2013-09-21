@@ -1087,7 +1087,7 @@ class Holdings
 		if (is_array($fields)) {
 			foreach ($fields as $index => $field) {
 				$item        = $this->extractFieldData($field, $mapping);
-				$institution = strtolower($item['institution']);
+				$institution = strtolower($item['institution_chb']);
 
 				if ($institution === $institutionCode) {
 					$data[] = $item;
