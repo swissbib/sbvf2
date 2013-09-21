@@ -47,7 +47,8 @@ class QueryBuilder extends VFBuilder {
         parent::__construct($specs);
 
         if (array_key_exists("allfields",$this->specs) && array_key_exists("DismaxFields",  $this->specs["allfields"]->toArray())) {
-            $this->disMaxSearchFields = $this->specs["allfields"]->toArray()["DismaxFields"];
+            $tempArray = $this->specs["allfields"]->toArray();
+            $this->disMaxSearchFields = $tempArray["DismaxFields"];
         }
 
         $this->disMaxSearchFields = array_map(function($item) {
