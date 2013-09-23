@@ -245,6 +245,7 @@ AllFields:
     - journals^200
     - topic^500                   # all verbal topics, i.e. 6xx
     - addfields_txt_mv^50         # additional fields
+    - publplace_txt_mv^25         # publication country and place, i.e. 752ad
     - fulltext                    # imported fulltext, i.e. TOC/Abstracts
     - id^10000
     - ctrlnum^1000
@@ -279,6 +280,9 @@ AllFields:
       - [onephrase, 300]
       - [and, 250]
     addfields_txt_mv:
+      - [onephrase, 150]
+      - [and, 125]
+    publplace_txt_mv:
       - [onephrase, 150]
       - [and, 125]
     fulltext:
