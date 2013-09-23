@@ -396,4 +396,11 @@ ul.miniactions li.miniaction_favorite_remove a {
 	float:right;
 }
 
+/* -------------------------------------------------------------------------------------
+ Bibliotheksinfo-Link mit Fragezeichen - TVI: 20130920
+ ======================================================================================*/
+.bibinfo {
+    background-image:url('img/icon_info.gif');
+}
+
 }
