@@ -476,6 +476,11 @@ class Holdings
 			}
 		}
 
+		if (!isset($extendingOptions['institutionUrl']) || $extendingOptions['institutionUrl']) {
+			$bibInfoLink = $this->getBibInfoLink(strtolower($item['institution']));
+			$item['institutionUrl'] = $bibInfoLink['url'];
+		}
+
 		return $item;
 	}
 
@@ -504,6 +509,12 @@ class Holdings
 					if ($this->isLoggedIn()) {
 						$item['userActions'] = $this->getAllowedUserActions($item);
 					}
+                    // if a user is not logged in
+                    elseif (!$this->isLoggedIn()) {
+                         $item['userActions'] = array(
+                                    'login'            => 'true',
+                        );
+                    }
 				}
 			}
 
@@ -556,6 +567,9 @@ class Holdings
 //		if (!$this->isRestfulNetwork($holding['network'])) {
 			$holding['backlink'] = $this->getBackLink($holding['network'], strtoupper($holding['institution']), $holding);
 //		}
+
+		$bibInfoLink = $this->getBibInfoLink(strtolower($holding['institution']));
+		$holding['institutionUrl'] = $bibInfoLink['url'];
 
 		return $holding;
 	}
@@ -895,9 +909,9 @@ class Holdings
 		$values = array(
 			'server'            => $data['domain'],
 			'language-code'     => 'de', // @todo fetch from user,
-			'RERO-network-code' => substr($institutionCode, 0, 2), // first two characters should do it. not sure
+			'RERO-network-code' => substr($institutionCode, 2, 2), // third and fourth character
 			'bib-system-number' => $this->getNumericString($item['bibsysnumber']), // remove characters from number string
-			'sub-library-code'  => $institutionCode
+			'sub-library-code'  => substr($institutionCode, 2, 5).'0000' // brings sublibrary code to the requested form
 		);
 
 		return $this->compileString($data['pattern'], $values);
@@ -1073,7 +1087,7 @@ class Holdings
 		if (is_array($fields)) {
 			foreach ($fields as $index => $field) {
 				$item        = $this->extractFieldData($field, $mapping);
-				$institution = strtolower($item['institution']);
+				$institution = strtolower($item['institution_chb']);
 
 				if ($institution === $institutionCode) {
 					$data[] = $item;

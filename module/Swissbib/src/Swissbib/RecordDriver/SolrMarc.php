@@ -93,12 +93,115 @@ class SolrMarc extends VuFindSolrMarc
 	 */
 	public function getOpenURL()
 	{
-		$oldValue                = $this->useOpenUrlFormats;
-		$this->useOpenUrlFormats = true;
-		$openUrl                 = parent::getOpenURL();
-		$this->useOpenUrlFormats = $oldValue;
+        // get the coinsID from config.ini or default to swissbib.ch
+        $coinsID = $this->mainConfig->OpenURL->rfr_id;
+        if (empty($coinsID)) {
+            $coinsID = 'swissbib.ch';
+        }
 
-		return $openUrl;
+        // Get a representative publication date:
+        $pubDate = $this->getPublicationDates();
+        $pubDate = empty($pubDate) ? '' : $pubDate[1];
+
+        // Start an array of OpenURL parameters:
+        $params = array(
+            'ctx_ver' => 'Z39.88-2004',
+            'ctx_enc' => 'info:ofi/enc:UTF-8',
+            'rfr_id' => "info:sid/{$coinsID}:generator",
+            'rft.title' => $this->getTitle(),
+            'rft.date' => $pubDate
+        );
+
+        $this->useOpenUrlFormats = true;
+        $format = $this->getOpenURLFormat();
+        switch ($format) {
+            case 'Book':
+                $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:book';
+                $params['rft.genre'] = 'book';
+                $params['rft.btitle'] = $params['rft.title'];
+                $series = $this->getSeries();
+                if (count($series) > 0) {
+                    // Handle both possible return formats of getSeries:
+                    $params['rft.series'] = is_array($series[0]) ?
+                        $series[0]['name'] : $series[0];
+                }
+                $params['rft.au'] = $this->getPrimaryAuthor();
+                $publishers = $this->getPublishers();
+                if (count($publishers) > 0) {
+                    $params['rft.pub'] = $publishers[0];
+                }
+                $params['rft.edition'] = $this->getEdition();
+                $params['rft.isbn'] = $this->getCleanISBN();
+                break;
+            case 'Article':
+                $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:journal';
+                $params['rft.genre'] = 'article';
+                $params['rft.issn'] = $this->getCleanISSN();
+                // an article may have also an ISBN:
+                $params['rft.isbn'] = $this->getCleanISBN();
+                $params['rft.volume'] = $this->getContainerVolume();
+                $params['rft.issue'] = $this->getContainerIssue();
+                $params['rft.spage'] = $this->getContainerStartPage();
+                // unset default title -- we only want jtitle/atitle here:
+                unset($params['rft.title']);
+                $params['rft.jtitle'] = $this->getContainerTitle();
+                $params['rft.atitle'] = $this->getTitle();
+                $params['rft.au'] = $this->getPrimaryAuthor();
+
+                $params['rft.format'] = $format;
+                $langs = $this->getLanguages();
+                if (count($langs) > 0) {
+                    $params['rft.language'] = $langs[0];
+                }
+                break;
+            case 'Journal':
+                /* This is probably the most technically correct way to represent
+                 * a journal run as an OpenURL; however, it doesn't work well with
+                 * Zotero, so it is currently commented out -- instead, we just add
+                 * some extra fields and then drop through to the default case.
+                $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:journal';
+                $params['rft.genre'] = 'journal';
+                $params['rft.jtitle'] = $params['rft.title'];
+                $params['rft.issn'] = $this->getCleanISSN();
+                $params['rft.au'] = $this->getPrimaryAuthor();
+                break;
+                 */
+                $params['rft.issn'] = $this->getCleanISSN();
+
+                // Including a date in a title-level Journal OpenURL may be too
+                // limiting -- in some link resolvers, it may cause the exclusion
+                // of databases if they do not cover the exact date provided!
+                unset($params['rft.date']);
+
+                // If we're working with the SFX resolver, we should add a
+                // special parameter to ensure that electronic holdings links
+                // are shown even though no specific date or issue is specified:
+                if (isset($this->mainConfig->OpenURL->resolver)
+                    && strtolower($this->mainConfig->OpenURL->resolver) == 'sfx'
+                ) {
+                    $params['sfx.ignore_date_threshold'] = 1;
+                }
+            default:
+                $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:dc';
+                $params['rft.creator'] = $this->getPrimaryAuthor();
+                $publishers = $this->getPublishers();
+                if (count($publishers) > 0) {
+                    $params['rft.pub'] = $publishers[0];
+                }
+                $params['rft.format'] = $format;
+                $langs = $this->getLanguages();
+                if (count($langs) > 0) {
+                    $params['rft.language'] = $langs[0];
+                }
+                break;
+        }
+
+        // Assemble the URL:
+        $parts = array();
+        foreach ($params as $key => $value) {
+            $parts[] = $key . '=' . urlencode($value);
+        }
+        return implode('&', $parts);
 	}
 
 
@@ -180,9 +283,8 @@ class SolrMarc extends VuFindSolrMarc
 
 	/**
 	 * Get formats modified to work with openURL
-	 * Formats: Book, Journal, Article
+	 * Formats: Book (is default), Journal, Article
 	 *
-	 * @todo    Currently, all items are marked as "Book", improve detection
 	 * @return    String[]
 	 */
 	public function getFormatsOpenUrl()
@@ -190,17 +292,27 @@ class SolrMarc extends VuFindSolrMarc
 		$formats = $this->getFormatsRaw();
 		$found   = false;
 		$mapping = array(
-			'BK0100' => 'Article',
-			'BK0700' => 'Article',
-			'BK'     => 'Book',
-			'CR'     => 'Journal'
+			'BK010000' => 'Article',
+            'BK010300' => 'Article',
+            'BK010800' => 'Article',
+            'CR030000' => 'Journal',
+            'CR030300' => 'Journal',
+            'CR030322' => 'Journal',
+            'CR030353' => 'Journal',
+            'CR030500' => 'Journal',
+            'CR030553' => 'Journal',
+            'CR030600' => 'Journal',
+            'CR030619' => 'Journal',
+            'CR030653' => 'Journal',
+            'CR030700' => 'Journal',
+            'CR030753' => 'Journal',
 		);
 
 		// Check each format for all patterns
 		foreach ($formats as $rawFormat) {
 			foreach ($mapping as $pattern => $targetFormat) {
 				// Test for begin of string
-				if (stristr($rawFormat, $pattern) === 0) {
+				if (stristr($rawFormat, $pattern)) {
 					$formats[] = $targetFormat;
 					$found     = true;
 					break 2; // Stop both loops
@@ -262,8 +374,8 @@ class SolrMarc extends VuFindSolrMarc
 		$data = $this->getMarcSubFieldMap(100, $this->personFieldMap);
 
 		if ($asString) {
-			$name = isset($data['forname']) ? $data['forname'] : '';
-			$name .= isset($data['name']) ? ' ' . $data['name'] : '';
+			$name = isset($data['name']) ? $data['name'] : '';
+			$name .= isset($data['forname']) ? ', ' . $data['forname'] : '';
 
 			return trim($name);
 		}
@@ -289,7 +401,7 @@ class SolrMarc extends VuFindSolrMarc
 			foreach ($authors as $author) {
 				$name            = isset($author['name']) ? $author['name'] : '';
 				$forename        = isset($author['forname']) ? $author['forname'] : '';
-				$stringAuthors[] = trim($forename . ' ' . $name);
+				$stringAuthors[] = trim($name . ', ' . $forename);
 			}
 
 			$authors = $stringAuthors;
@@ -430,6 +542,48 @@ class SolrMarc extends VuFindSolrMarc
 	}
 
     /**
+     * Get original title from IDS MARC
+     *
+     * @return array
+     */
+
+    public function getOriginalTitle($asStrings = true)
+    {
+        $data = $this->getMarcSubFieldMaps(509, array(
+                                                    'a' => 'title',
+                                                    'n' => 'count',
+                                                    'p' => 'worktitle',
+                                                    'r' => 'author',
+                                                    'i' => 'addtext',
+                                                    ));
+        if ($asStrings) {
+            $strings = array();
+
+            foreach ($data as $origtitle) {
+                $string = '';
+
+                if (isset($origtitle['title'])) {
+                    $string = str_replace('@', '', $origtitle['title']);
+                }
+                if (isset($origtitle['count'])) {
+                    $string .= '(' . $origtitle['count'] . ')';
+                }
+                if (isset($origtitle['author'])) {
+                    $string .= ' / ' . $origtitle['author'];
+                }
+                if (isset($origtitle['addtext'])) {
+                    $string .= '. - ' . $origtitle['addtext'];
+                }
+
+                $strings[] = trim($string);
+            }
+
+            $data = $strings;
+        }
+        return $data;
+    }
+
+    /**
      * Get citation / reference note for the record
      *
      * @return array
@@ -437,6 +591,16 @@ class SolrMarc extends VuFindSolrMarc
     public function getCitationNotes()
     {
         return $this->getFieldArray('510');
+    }
+
+    /**
+     * Get participant or performer note for the record.
+     *
+     * @return array
+     */
+    public function getPerformerNote()
+    {
+        return $this->getFieldArray('511');
     }
 
     /**
