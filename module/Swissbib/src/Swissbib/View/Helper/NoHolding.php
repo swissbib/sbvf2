@@ -18,9 +18,13 @@ class NoHolding extends AbstractHelper
 	/**
 	 * @return  String
 	 */
-	public function __invoke()
+	public function __invoke($driver)
 	{
+        $retval           = array();
+        $retval['online'] = $driver->getOnlineStatus();
+        $retval['unions'] = $driver->getUnions();
+        $retval['urls']   = $driver->getURLs();
 
-		return 'Keine Bestandsangaben';
-	}
+        return $retval;
+    }
 }
