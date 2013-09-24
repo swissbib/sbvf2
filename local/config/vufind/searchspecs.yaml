@@ -247,7 +247,6 @@ AllFields:
     - addfields_txt_mv^50         # additional fields
     - publplace_txt_mv^25         # publication country and place, i.e. 752ad
     - fulltext                    # imported fulltext, i.e. TOC/Abstracts
-    - id^10000
     - ctrlnum^1000
     - institution^200             # sublibrary codes for librarians who know it
     - publishDate
