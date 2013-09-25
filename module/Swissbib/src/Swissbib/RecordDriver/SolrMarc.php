@@ -234,7 +234,7 @@ class SolrMarc extends VuFindSolrMarc
 		$translator = $this->getTranslator();
 
 		foreach ($formats as $index => $format) {
-			$formats[$index] = $translator->translate($format);
+			$formats[$index] = $translator->translate( strtolower($format));
 		}
 
 		return $formats;
