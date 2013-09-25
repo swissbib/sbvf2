@@ -673,3 +673,23 @@ Bibliotheksinfo-Link mit Fragezeichen - TVI: 20130920
 .ui-autocomplete .ui-corner-all {
 	border-radius: 0;
 }
+
+
+/*
+  Styles for swissbib availability-elements -- changed TVi20130729
+*/
+.availability_ok {
+    background: url(../images/avail_ok_16.16.png) no-repeat scroll left top transparent;
+    border: medium none;
+    display: block;
+    line-height: 0.8em;
+    text-indent: 20px;
+}
+
+.availability_notok {
+    background: url(../images/avail_stop_16.16.png) no-repeat scroll left top transparent;
+    border: medium none;
+    display: block;
+    line-height: 0.8em;
+    text-indent: 20px;
+}
