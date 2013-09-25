@@ -7,11 +7,16 @@ $amountHoldings	= sizeof($institutions);
 
 ?>
 <p>
-	<?php if ($amountHoldings === 0): ?>
-		<?= $this->noHolding() ?>
-	<?php elseif ($amountHoldings === 1): ?>
+	<? if ($amountHoldings === 0): ?>
+		<? $retval = $this->noHolding($driver) ?>
+        <? if (in_array('RETROS', $retval['unions'])): ?>
+            <a class="linkbutton primary icon_link_primary" href="<?=$retval['urls'][1]['url']?>" target="_blank"><span>retro.seals</span></a>
+        <? else: ?>
+            <a class="linkbutton primary icon_link_primary" href="<?=$retval['urls'][0]['url']?>" target="_blank"><span><?= $this->transEsc('online')?></span></a>
+        <? endif; ?>
+	<? elseif ($amountHoldings === 1): ?>
 		1 <?= $this->transEsc('result.library') ?>
-	<?php else: ?>
+	<? else: ?>
 		<?= $amountHoldings ?> <?= $this->transEsc('result.libraries') ?>
-	<?php endif; ?>
+	<? endif; ?>
 </p>

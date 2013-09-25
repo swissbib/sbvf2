@@ -933,8 +933,19 @@ class SolrMarc extends VuFindSolrMarc
 		return isset($this->fields['union']) ? $this->fields['union'] : array();
 	}
 
+    /**
+     * Get online status
+     *
+     * @return Boolean
+     */
 
-	/**
+    public function getOnlineStatus(){
+        $filter = $this->fields['filter_str_mv'];
+        return in_array('ONL', $filter) ? true : false;
+    }
+
+
+    /**
 	 * Get short title
 	 * Override base method to assure a string and not an array
 	 * as long as title_short is multivalued=true in solr (necessary because of faulty data)

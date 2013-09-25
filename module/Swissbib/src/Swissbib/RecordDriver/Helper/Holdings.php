@@ -394,7 +394,7 @@ class Holdings
 	protected function getItemsData(SolrMarc $recordDriver, $institutionCode, $extend = true)
 	{
 		$fieldName          = 949; // Field code for item information in holdings xml
-		$institutionItems = $this->geHoldingsData($fieldName, $this->fieldMapping, $institutionCode);
+		$institutionItems = $this->getHoldingsData($fieldName, $this->fieldMapping, $institutionCode);
 
 		if ($extend) {
 			foreach ($institutionItems as $index => $item) {
@@ -652,8 +652,8 @@ class Holdings
 		$label = '';
 
 			// Has informations with translation?
-		if (isset($item['location_code']) && isset($item['institution']) && isset($item['network'])) {
-			$labelKey	= strtolower($item['institution'] . '_' . $item['location_code']);
+		if (isset($item['location_code']) && isset($item['institution_chb']) && isset($item['network'])) {
+			$labelKey	= strtolower($item['institution_chb'] . '_' . $item['location_code']);
 			$textDomain	= 'location-' . strtolower($item['network']);
 			$translated	= $this->translator->translate($labelKey, $textDomain);
 
@@ -1033,7 +1033,7 @@ class Holdings
 	protected function getHoldingData(SolrMarc $recordDriver, $institutionCode, $extend = true)
 	{
 		$fieldName          = 852; // Field code for item information in holdings xml
-		$institutionHoldings = $this->geHoldingsData($fieldName, $this->fieldMapping, $institutionCode);
+		$institutionHoldings = $this->getHoldingsData($fieldName, $this->fieldMapping, $institutionCode);
 
 		if ($extend) {
 			foreach ($institutionHoldings as $index => $holding) {
@@ -1078,7 +1078,7 @@ class Holdings
 	 * @param    String        $institutionCode
 	 * @return    Array		Items or holdings for institution
 	 */
-	protected function geHoldingsData($fieldName, array $mapping, $institutionCode)
+	protected function getHoldingsData($fieldName, array $mapping, $institutionCode)
 	{
 		$data            = array();
 		$fields          = $this->holdings ? $this->holdings->getFields($fieldName) : false;
@@ -1087,7 +1087,7 @@ class Holdings
 		if (is_array($fields)) {
 			foreach ($fields as $index => $field) {
 				$item        = $this->extractFieldData($field, $mapping);
-				$institution = strtolower($item['institution']);
+				$institution = strtolower($item['institution_chb']);
 
 				if ($institution === $institutionCode) {
 					$data[] = $item;
@@ -1112,14 +1112,14 @@ class Holdings
 		$fields  = $this->holdings ? $this->holdings->getFields($fieldName) : false;
 		$mapping = array(
 			'B' => 'network',
-			'F' => 'institution'
+			'F' => 'institution_chb'
 		);
 
 		if (is_array($fields)) {
 			foreach ($fields as $index => $field) {
 				$item        = $this->extractFieldData($field, $mapping);
 				$networkCode = strtolower($item['network']);
-				$institution = strtolower($item['institution']);
+				$institution = strtolower($item['institution_chb']);
 				$groupCode   = $this->getGroup($institution);
 
 					// Prevent display of untranslated and ungrouped institutions
