@@ -171,8 +171,9 @@ ul.miniactions li.miniaction_favorite_remove a {
 
 /* list */
 .ui-autocomplete li a:hover,
-.ui-autocomplete li a.ui-state-hover  {
-	background-color:#FED99F;
+.ui-autocomplete li a.ui-state-hover,
+.ui-autocomplete li a.ui-state-focus{
+	background: #FED99F;
 }
 
 /* -------------------------------------------------------------------------------------
