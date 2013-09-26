@@ -912,7 +912,7 @@ class Holdings
 			'language-code'     => 'de', // @todo fetch from user,
 			'RERO-network-code' => substr($institutionCode, 2, 2), // third and fourth character
 			'bib-system-number' => $this->getNumericString($item['bibsysnumber']), // remove characters from number string
-			'sub-library-code'  => $institutionCode // brings sublibrary code to the requested form
+			'sub-library-code'  => $institutionCode
 		);
 
 		return $this->compileString($data['pattern'], $values);
