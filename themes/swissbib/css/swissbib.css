@@ -599,7 +599,6 @@ Bibliotheksinfo-Link mit Fragezeichen - TVI: 20130920
 .bibinfo {
     position:relative;
     display:block;
-    float:right;
     width:16px;
     height:16px;
     font-size:0;
