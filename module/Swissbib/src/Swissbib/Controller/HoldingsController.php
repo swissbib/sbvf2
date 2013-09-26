@@ -43,7 +43,8 @@ class HoldingsController extends BaseController
 
 		if (isset($holdingsData['items'])) {
 			$template = 'Holdings/items';
-		} elseif (isset($holdingsData['holdings'])) {
+		}
+        if (isset($holdingsData['holdings'])) {
 			$template = 'Holdings/holdings';
 		}
 
