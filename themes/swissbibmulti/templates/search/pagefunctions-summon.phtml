@@ -3,7 +3,7 @@
 /**
  * The page function 'save' (export) has been removed, because it does not work.
  * see issue #139
- *
+ * 'print' commented out. see issue #
  */
 
 ?>
@@ -15,10 +15,11 @@
 			<a href="<?=$this->results->getUrlQuery()->setViewParam('rss')?>" title="<?=$this->transEsc('Get RSS Feed')?>"><?=$this->transEsc('Get RSS Feed')?></a>
 		</li>
 
+<!--
 		<li id="pagefunction_print">
 			<a href="#" title="<?=$this->transEsc('Print')?>"><?=$this->transEsc('Print')?></a>
 		</li>
-
+-->
 		<li id="pagefunction_send" class="sendResults">
 			<a href="<?=$this->url('search-email')?>" title="<?=$this->transEsc('Email this Search')?>" class="mailSearch" id="mailSearch<?=$this->escapeHtml($this->results->getSearchId())?>"><?=$this->transEsc('Email this Search')?></a>
 		</li>
