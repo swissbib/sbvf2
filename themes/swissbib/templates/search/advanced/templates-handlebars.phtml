@@ -48,13 +48,13 @@
 				{{/each}}
 			</select>
 		</div>
-		<a onclick="swissbib.AdvancedSearch.deleteThisGroup(this)" id="delete_link_{{groupIndex}}" class="delete" href="javascript:void(0)" style="display: inline;">{{deleteLabel}}</a>
+            <a onclick="swissbib.AdvancedSearch.deleteThisGroup(this)" id="delete_link_{{groupIndex}}" class="linkbutton small icon_delete" href="javascript:void(0)" style="display: inline;"><span>{{deleteLabel}}</span></a>
 	</div>
 </script>
 
 <script id="adv-search-group-addfield" type="text/x-handlebars-template">
-	<div class="addSearch">
-		<a onclick="swissbib.AdvancedSearch.addFieldToThisGroup(this)" id="add_search_link_{{groupIndex}}" class="add" href="javascript:void(0)">{{addLabel}}</a>
+	<div class="floatbox">
+		<a onclick="swissbib.AdvancedSearch.addFieldToThisGroup(this)" id="add_search_link_{{groupIndex}}" class="linkbutton small icon_add" href="javascript:void(0)"><span>{{addLabel}}</span></a>
 	</div>
 </script>
 
