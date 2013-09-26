@@ -53,11 +53,11 @@ class AvailabilityInfo extends AbstractHelper
 			switch ($statusfield) {
 				case self::LENDABLE_AVAILABLE:
 
-                    $info = "<span class='availability_ok'> </span>";
+                    $info = "<div class='availability_ok'><p>&nbsp;</p></div>";
                     break;
 				case self::LENDABLE_BORROWED:
 
-					$info = "<span class='availability_notok'> </span>" . "<br/>" . "nr. requests: " . $borrowinginformation["no_requests"] .
+					$info = "<div class='availability_notok'><p>&nbsp;</p> </div>" . "<br/>" . "nr. requests: " . $borrowinginformation["no_requests"] .
                                 "<br/>" . "due_date: " . $borrowinginformation["due_date"] . "<br/>" .
                                 "due_hour: " . $borrowinginformation["due_hour"];
 					break;
