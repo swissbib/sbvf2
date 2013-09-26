@@ -217,7 +217,8 @@ class Holdings
 
 			if ($this->hasItems()) {
 				$this->holdingData['items'] = $this->getItemsData($recordDriver, $institutionCode, $extend);
-			} elseif ($this->hasHoldings()) {
+			}
+            if ($this->hasHoldings()) {
 				$this->holdingData['holdings'] = $this->getHoldingData($recordDriver, $institutionCode, $extend);
 			}
 		}
@@ -911,7 +912,7 @@ class Holdings
 			'language-code'     => 'de', // @todo fetch from user,
 			'RERO-network-code' => substr($institutionCode, 2, 2), // third and fourth character
 			'bib-system-number' => $this->getNumericString($item['bibsysnumber']), // remove characters from number string
-			'sub-library-code'  => substr($institutionCode, 2, 5).'0000' // brings sublibrary code to the requested form
+			'sub-library-code'  => $institutionCode // brings sublibrary code to the requested form
 		);
 
 		return $this->compileString($data['pattern'], $values);
