@@ -13,6 +13,7 @@ class AvailabilityInfo extends AbstractHelper
 	const LENDABLE_AVAILABLE = "lendable_available";    //  -> genrell ausleihbar und vorhanden
 	const LENDABLE_BORROWED = "lendable_borrowed";      //  -> generell ausleihbar jedoch bereits ausgeliehen
     const LOOK_ON_SITE      = "lookOnSite";             //  -> Informationsabruf über das lokale System (fallback)
+    const ONLINE_AVAILABLE   = "onlineAvailable";        //  -> by now only for ETH could be enhanced for other library systems (labels for LoanStatus needed!)
 
 
 
@@ -57,11 +58,22 @@ class AvailabilityInfo extends AbstractHelper
                     break;
 				case self::LENDABLE_BORROWED:
 
-					$info = "<div class='availability_notok'>" . "nr. requests: " . $borrowinginformation["no_requests"] .
-                                "<div class='nice'>" . "due_date: " . $borrowinginformation["due_date"] . "</div><div class='nice'>" .
-                                "due_hour: " . $borrowinginformation["due_hour"] . "</div></div>";
+                    $info = "<div class='availability_notok'>" . "<br/>";
+                    foreach ($borrowinginformation as $key => $value) {
+
+                        if (strcmp(trim($value),"") != 0) {
+                            $info .=  "<div class='nice'>" . $escapedTranslation($key) . "&nbsp;" . $value . "</div>";
+                        }
+                    }
+
+                    $info .= "</div>";
+
 					break;
                 case self::LOOK_ON_SITE:
+                    $info = $escapedTranslation($statusfield);
+                    break;
+                case self::ONLINE_AVAILABLE:
+                    //do something special for online resources (dedicated icon and / or text?)
                     $info = $escapedTranslation($statusfield);
                     break;
 				default:
