@@ -59,6 +59,7 @@ class Holdings
 		'q' => 'localid',
 		'r' => 'sequencenumber',
 		's' => 'signature2',
+		'u' => 'holding_url',
 		'y' => 'opac_note'
 	);
 
@@ -778,6 +779,9 @@ class Holdings
 	 */
 	protected function getBackLink($networkCode, $institutionCode, array $item)
 	{
+		//item has url (subfield u)
+		if (!empty($item['holding_url'])) return $item['holding_url'];
+
 		$method      = false;
 		$data        = array();
 		$networkCode = strtolower($networkCode);
