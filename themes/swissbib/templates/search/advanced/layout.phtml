@@ -108,7 +108,7 @@ $lastSort = $this->options->getLastSort();
 								<option value="OR"<?=(isset($searchDetails) && is_object($searchDetails) && $searchDetails->getOperator() == 'OR') ? ' selected="selected"' : ''?>><?=$this->transEsc("group_OR")?></option>
 							</select>
 						</div>
-						<strong><?=$this->transEsc("search_groups")?></strong>:
+						<h4><?=$this->transEsc("search_groups")?>:</h4>
 					</div>
 
 					<?php /* An empty div. This is the target for the javascript that builds this screen */ ?>
@@ -119,7 +119,9 @@ $lastSort = $this->options->getLastSort();
 						<?php endif; ?>
 					</div>
 
-					<a id="addGroupLink" href="javascript:void(0)" class="add offscreen" onclick="swissbib.AdvancedSearch.addNewGroup()"><?=$this->transEsc("add_search_group")?></a>
+                    <div class="fieldbox">
+                        <a href="javascript:void(0)" class="linkbutton small icon_add" onclick="swissbib.AdvancedSearch.addNewGroup()"><span><?=$this->transEsc("add_search_group")?></span></a>
+                    </div>
 
 				</fieldset>
 
