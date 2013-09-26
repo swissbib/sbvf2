@@ -614,6 +614,18 @@ Bibliotheksinfo-Link mit Fragezeichen - TVI: 20130920
     overflow:visible;
 }
 
+/*
+Linkbutton with smaller text used for example for UEG button in sbHitDetailTabsLibraryTab.jsp
+TVI: 20100811
+*/
+.linkbutton.small {
+    font-size:1.1em;
+    font-weight:normal;
+    line-height:1.1538em;
+    text-decoration:none;
+}
+
+
 /* -------------------------------------------------------------------------------------
  AUTOCOMPLETE
  ======================================================================================*/
