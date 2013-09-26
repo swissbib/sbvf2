@@ -624,6 +624,35 @@ TVI: 20100811
     text-decoration:none;
 }
 
+/*
+  Styles for swissbib availability-elements -- changed TVi20130729
+*/
+.availability_ok {
+    background: url(../images/avail_ok_16.16.png) no-repeat scroll left top transparent;
+    border: medium none;
+    display: block;
+    line-height: 1.3em;
+    text-indent: 20px;
+}
+
+.availability_notok {
+    background: url(../images/avail_stop_16.16.png) no-repeat scroll left top transparent;
+    border: medium none;
+    display: block;
+    line-height: 1.3em;
+    text-indent: 20px;
+}
+
+.availability_moreInfo {
+    background: url(../images/avail_moreInformation_16.16.png) no-repeat scroll left top transparent;
+    border: medium none;
+    display: block;
+    line-height: 1.3em;
+    text-indent: 20px;
+}
+.nice {
+    line-height: 1.3em;
+}
 
 /* -------------------------------------------------------------------------------------
  AUTOCOMPLETE
