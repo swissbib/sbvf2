@@ -876,7 +876,7 @@ class Holdings
 	 * @param    Array         $data
 	 * @return    String
 	 */
-	protected function getBackLinkAlexandria($networkCode, $institutionCode, array $item, array $data)
+	protected function getBackLinkAlex($networkCode, $institutionCode, array $item, array $data)
 	{
 		return $this->getBackLinkVirtua($networkCode, $institutionCode, $item, $data);
 	}
