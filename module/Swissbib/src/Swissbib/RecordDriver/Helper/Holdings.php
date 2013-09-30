@@ -876,7 +876,7 @@ class Holdings
 	 * @param    Array         $data
 	 * @return    String
 	 */
-	protected function getBackLinkAlexandria($networkCode, $institutionCode, array $item, array $data)
+	protected function getBackLinkAlex($networkCode, $institutionCode, array $item, array $data)
 	{
 		return $this->getBackLinkVirtua($networkCode, $institutionCode, $item, $data);
 	}
@@ -898,9 +898,23 @@ class Holdings
 		return $this->getBackLinkVirtua($networkCode, $institutionCode, $item, $data);
 	}
 
+    /**
+     * Get back link for CCSA (poster collection)
+     * Currently only a wrapper for virtua
+     *
+     * @param    String        $networkCode
+     * @param    String        $institutionCode
+     * @param    Array         $item
+     * @param    Array         $data
+     * @return    String
+     */
 
+    protected function getBackLinkCCSA($networkCode, $institutionCode, $item, array $data)
+    {
+        return $this->getBackLinkVirtua($networkCode, $institutionCode, $item, $data);
+    }
 
-	/**
+    /**
 	 * Build rero backlink
 	 *
 	 * @param       $networkCode
