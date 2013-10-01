@@ -189,17 +189,19 @@ return array(
 	),
 	'controllers'     => array(
 		'invokables' => array(
-			'helppage'     		=> 'Swissbib\Controller\HelpPageController',
-			'libadminsync' 		=> 'Swissbib\Controller\LibadminSyncController',
-			'my-research'  		=> 'Swissbib\Controller\MyResearchController',
-			'search'       		=> 'Swissbib\Controller\SearchController',
-			'summon'       		=> 'Swissbib\Controller\SummonController',
-			'holdings'     		=> 'Swissbib\Controller\HoldingsController',
-			'tab40import'  		=> 'Swissbib\Controller\Tab40ImportController',
-			'institutionFavorites'=> 'Swissbib\Controller\FavoritesController',
-			'hierarchycache' 	 => 'Swissbib\Controller\HierarchyCacheController',
-			'cart' 				=> 'Swissbib\Controller\CartController',
-			'shibtest' 				=> 'Swissbib\Controller\ShibtestController'
+			'helppage'     		    => 'Swissbib\Controller\HelpPageController',
+			'libadminsync' 		    => 'Swissbib\Controller\LibadminSyncController',
+			'my-research'  		    => 'Swissbib\Controller\MyResearchController',
+			'search'       		    => 'Swissbib\Controller\SearchController',
+			'summon'       		    => 'Swissbib\Controller\SummonController',
+			'holdings'     		    => 'Swissbib\Controller\HoldingsController',
+			'tab40import'  		    => 'Swissbib\Controller\Tab40ImportController',
+			'institutionFavorites'  => 'Swissbib\Controller\FavoritesController',
+			'hierarchycache' 	    => 'Swissbib\Controller\HierarchyCacheController',
+			'cart' 				    => 'Swissbib\Controller\CartController',
+			'shibtest' 			    => 'Swissbib\Controller\ShibtestController',
+            'ajax'                  => 'Swissbib\Controller\AjaxController',
+
 
 
 		),

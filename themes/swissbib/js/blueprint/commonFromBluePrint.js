@@ -304,8 +304,41 @@ $(document).ready(function(){
 
     // assign click event to "email search" links
     $('a.mailSearch').click(function() {
-        var id = this.id.substr('mailSearch'.length);
-        var $dialog = getLightbox('Search', 'Email', id, null, this.title, 'Search', 'Email', id);
+
+        var elementID = this.id;
+        var elementTitle = this.title;
+
+        $.ajax({
+            url: path + '/AJAX/SHIBLOGIN',
+            dataType: 'json',
+            success: function(response) {
+                if (response.status == 'OK') {
+
+                    if (response.data.toLowerCase() == "true") {
+                        //todo: GH:  I need a php flashmessage "please login" created in JavaScript???
+                        //could be a simple parameter but perhaps there is a better solution
+                        window.location.href = "/MyResearch/Home";
+                    } else {
+                        //we can use a popup dialog because authentication method is not Shibboleth
+                        var id = elementID.substr('mailSearch'.length);
+                        var $dialog = getLightbox('Search', 'Email', id, null, elementTitle, 'Search', 'Email', id);
+                    }
+
+                } else {
+                    //something went wrong - go to login dialog in any case
+                    window.location.href = "/MyResearch/Home";
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                // something went wrong
+                // GH:we need a strategy how to log such situations on the server
+                console.log(textStatus, errorThrown);
+                //by now: send the user to the login dialog
+                window.location.href = "/MyResearch/Home";
+            }
+        });
+
+
         return false;
     });
 
