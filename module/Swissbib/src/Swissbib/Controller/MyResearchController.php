@@ -1,13 +1,12 @@
 <?php
 namespace Swissbib\Controller;
 
-use Zend\View\Model\ViewModel;
-use Zend\Http\Response as HttpResponse;
-
-use VuFind\Controller\MyResearchController as VuFindMyResearchController;
-use VuFind\Db\Row\User;
-
-use Swissbib\VuFind\ILS\Driver\Aleph;
+use Zend\View\Model\ViewModel,
+    Zend\Http\Response as HttpResponse,
+    VuFind\Controller\MyResearchController as VuFindMyResearchController,
+    VuFind\Db\Row\User,
+    Swissbib\VuFind\ILS\Driver\Aleph,
+    Zend\Session\Container as SessionContainer;
 
 class MyResearchController extends VuFindMyResearchController
 {
@@ -286,5 +285,60 @@ class MyResearchController extends VuFindMyResearchController
 
 
     }
+
+
+
+    /**
+     * Login Action
+     * Need to overwrite because of a special handling for Shibboleth workflow
+     *
+     * @return mixed
+     */
+    public function loginAction()
+    {
+
+        //we need to differantiate between Shibboleh and not Shibboleth authentication mechanisms
+        //in case of Shibboleth we will get a problem with HTTP_Referer after successful authentication at IDP
+        //because then the Referer points to the IDP address instead of a valid VuFind resource (often something like save a record in various contexts)
+        //therefor this mechanisms where we store a temporary session for the latest Referer before the IDP request is executed in the next step by the user
+        //at the moment it is used in Swissbib/Controller/RecordController
+        $clazz =  $this->getAuthManager()->getAuthClass();
+        if ($clazz == "Swissbib\\VuFind\\Auth\\Shibboleth" ) {
+            //store the current referrer into a special Session
+            $followup = new SessionContainer('ShibbolethSaveFollowup');
+            $tURL = $this->getRequest()->getServer()->get('HTTP_REFERER');
+            $followup->url = $tURL;
+        }
+
+
+        // If this authentication method doesn't use a VuFind-generated login
+        // form, force it through:
+        if ($this->getSessionInitiator()) {
+            // Don't get stuck in an infinite loop -- if processLogin is already
+            // set, it probably means Home action is forwarding back here to
+            // report an error!
+            //
+            // Also don't attempt to process a login that hasn't happened yet;
+            // if we've just been forced here from another page, we need the user
+            // to click the session initiator link before anything can happen.
+            //
+            // Finally, we don't want to auto-forward if we're in a lightbox, since
+            // it may cause weird behavior -- better to display an error there!
+            if (!$this->params()->fromPost('processLogin', false)
+                && !$this->params()->fromPost('forcingLogin', false)
+                && !$this->inLightbox()
+            ) {
+                $this->getRequest()->getPost()->set('processLogin', true);
+                return $this->forwardTo('MyResearch', 'Home');
+            }
+        }
+
+        // Make request available to view for form updating:
+        $view = $this->createViewModel();
+        $view->request = $this->getRequest()->getPost();
+        return $view;
+    }
+
+
 
 }
