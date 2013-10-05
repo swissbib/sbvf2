@@ -142,6 +142,8 @@ Author:
       - [onephrase, 350]
       - [and, 200]
       - [or, 100]
+  FilterQuery: "institution:E01 OR institution:E02 OR institution:E14 OR institution:E92 OR institution:E15 OR institution:E37 OR institution:E81 OR institution:A100 OR institution:A131 OR institution:A154 OR institution:A168 OR institution:A186 OR institution:A190 OR institution:A196
+
 
 ISN:
   DismaxFields:
@@ -166,6 +168,10 @@ ISN:
     urn_isn_mv:
       - [and, 100]
       - [or, ~]
+  FilterQuery: "institution:E01 OR institution:E02 OR institution:E14 OR institution:E92 OR institution:E15 OR institution:E37 OR institution:E81 OR institution:A100 OR institution:A131 OR institution:A154 OR institution:A168 OR institution:A186 OR institution:A190 OR institution:A196
+
+
+
 
 Subject:
   DismaxFields:
@@ -180,16 +186,16 @@ JournalTitle:
   QueryFields:
     journals:
       - [onephrase, 100]
+  FilterQuery: "institution:E01 OR institution:E02 OR institution:E14 OR institution:E92 OR institution:E15 OR institution:E37 OR institution:E81 OR institution:A100 OR institution:A131 OR institution:A154 OR institution:A168 OR institution:A186 OR institution:A190 OR institution:A196
+
 
 
 FRBR:
   QueryFields:
     groupid_isn_mv:
       - [onephrase, 500]
+  FilterQuery: "institution:E01 OR institution:E02 OR institution:E14 OR institution:E92 OR institution:E15 OR institution:E37 OR institution:E81 OR institution:A100 OR institution:A131 OR institution:A154 OR institution:A168 OR institution:A186 OR institution:A190 OR institution:A196
 
-WLC:
-  DismaxFields:
-    - localcode_txt_mv
 
 Title:
   DismaxFields:
@@ -223,6 +229,9 @@ Title:
     journals:
       - [onephrase, 50]
       - [and , ~]
+  FilterQuery: "institution:E01 OR institution:E02 OR institution:E14 OR institution:E92 OR institution:E15 OR institution:E37 OR institution:E81 OR institution:A100 OR institution:A131 OR institution:A154 OR institution:A168 OR institution:A186 OR institution:A190 OR institution:A196
+
+
 
 Series:
   DismaxFields:
@@ -232,6 +241,8 @@ Series:
       - [onephrase, 500]
       - [and, 200]
       - [or, 100]
+  FilterQuery: "institution:E01 OR institution:E02 OR institution:E14 OR institution:E92 OR institution:E15 OR institution:E37 OR institution:E81 OR institution:A100 OR institution:A131 OR institution:A154 OR institution:A168 OR institution:A186 OR institution:A190 OR institution:A196
+
 
 AllFields:
   DismaxFields:
@@ -245,8 +256,8 @@ AllFields:
     - journals^200
     - topic^500                   # all verbal topics, i.e. 6xx
     - addfields_txt_mv^50         # additional fields
-    - publplace_txt_mv^25         # publication country and place, i.e. 752ad
     - fulltext                    # imported fulltext, i.e. TOC/Abstracts
+    - id^10000
     - ctrlnum^1000
     - institution^200             # sublibrary codes for librarians who know it
     - publishDate
@@ -281,11 +292,11 @@ AllFields:
     addfields_txt_mv:
       - [onephrase, 150]
       - [and, 125]
-    publplace_txt_mv:
-      - [onephrase, 150]
-      - [and, 125]
     fulltext:
       - [or, ~]
+  FilterQuery: "institution:E01 OR institution:E02 OR institution:E14 OR institution:E92 OR institution:E15 OR institution:E37 OR institution:E81 OR institution:A100 OR institution:A131 OR institution:A154 OR institution:A168 OR institution:A186 OR institution:A190 OR institution:A196
+
+
 
 # These are advanced searches that never use Dismax:
 id:
@@ -326,6 +337,10 @@ CallNumber:
     callnumber:
       - [callnumber_exact, 1000]
       - [callnumber_fuzzy, ~]
+  FilterQuery: "institution:E01 OR institution:E02 OR institution:E14 OR institution:E92 OR institution:E15 OR institution:E37 OR institution:E81 OR institution:A100 OR institution:A131 OR institution:A154 OR institution:A168 OR institution:A186 OR institution:A190 OR institution:A196
+
+
+
 
 year:
   DismaxFields:
@@ -334,11 +349,17 @@ year:
     publishDate:
       - [and, 100]
       - [or, ~]
+  FilterQuery: "institution:E01 OR institution:E02 OR institution:E14 OR institution:E92 OR institution:E15 OR institution:E37 OR institution:E81 OR institution:A100 OR institution:A131 OR institution:A154 OR institution:A168 OR institution:A186 OR institution:A190 OR institution:A196
+
+
 
 language:
   QueryFields:
     language:
       - [and, ~]
+  FilterQuery: "institution:E01 OR institution:E02 OR institution:E14 OR institution:E92 OR institution:E15 OR institution:E37 OR institution:E81 OR institution:A100 OR institution:A131 OR institution:A154 OR institution:A168 OR institution:A186 OR institution:A190 OR institution:A196
+
+
 
 oclc_num:
   CustomMunge:
@@ -349,6 +370,8 @@ oclc_num:
   QueryFields:
     oclc_num:
       - [oclc_num, ~]
+  FilterQuery: "institution:E01 OR institution:E02 OR institution:E14 OR institution:E92 OR institution:E15 OR institution:E37 OR institution:E81 OR institution:A100 OR institution:A131 OR institution:A154 OR institution:A168 OR institution:A186 OR institution:A190 OR institution:A196
+
 
 ctrlnum:
   CustomMunge:
@@ -357,3 +380,4 @@ ctrlnum:
   QueryFields:
     ctrlnum:
       - [ctrlnum, ~]
+  FilterQuery: "institution:E01 OR institution:E02 OR institution:E14 OR institution:E92 OR institution:E15 OR institution:E37 OR institution:E81 OR institution:A100 OR institution:A131 OR institution:A154 OR institution:A168 OR institution:A186 OR institution:A190 OR institution:A196
