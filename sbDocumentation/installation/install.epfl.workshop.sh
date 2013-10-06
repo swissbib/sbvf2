@@ -34,7 +34,7 @@ read tonull
 
 
 cp $EPFL_INSTALLATION/searchspecs.nofilter.yaml $EPFL_CONFIG/searchspecs.yaml
-cp $EPFL_INSTALLATION/http-vufind.conf $EPFL_CONFIG/local
+cp $EPFL_INSTALLATION/httpd-vufind.conf $EPFL_DIR/local
 cp $EPFL_INSTALLATION/config.ini $EPFL_CONFIG
 
 cd $EPFL_DIR
@@ -46,14 +46,16 @@ read tonull
 ./cli/sync.ubuntu.sh -v
 
 
+
 echo "configure the webserver and restart the webservice"
 read tonull
 
 cd $WEB_SERVER_CONF
-unlink http-epfl-vufind.conf
-ln -s $EPFL_DIR/local/http-vufind.conf http-epfl-vufind.conf
+unlink httpd-epfl-vufind.conf
+ln -s $EPFL_DIR/local/httpd-vufind.conf httpd-epfl-vufind.conf
 
 service apache2 restart
+
 
 
 echo "change user:group application files"
@@ -65,9 +67,6 @@ find $EPFL_DIR -name '*' | xargs chown $localuser:$localgroup
 
 
 
-echo "finished - sart the application with http://localhost/epfl in the browser"
-
-
-
+echo "finished - Start the application with http://localhost/epfl in the browser"
 
 
