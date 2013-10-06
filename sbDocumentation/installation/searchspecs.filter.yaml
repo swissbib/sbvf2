@@ -142,7 +142,7 @@ Author:
       - [onephrase, 350]
       - [and, 200]
       - [or, 100]
-#  FilterQuery: "institution:e92 OR institution:E81 OR institution:re61010 OR institution:e37 OR institution:re61013 OR institution:e15 OR institution:e14 OR institution:e02 OR institution:e01 OR institution:re61001 OR institution:re61011 OR institution:re61012 OR institution:re31002 OR institution:a186 OR institution:a190 OR institution:a100 OR institution:a131 OR institution:a168 OR institution:a154 OR institution:a196"
+  FilterQuery: "institution:e92 OR institution:E81 OR institution:re61010 OR institution:e37 OR institution:re61013 OR institution:e15 OR institution:e14 OR institution:e02 OR institution:e01 OR institution:re61001 OR institution:re61011 OR institution:re61012 OR institution:re31002 OR institution:a186 OR institution:a190 OR institution:a100 OR institution:a131 OR institution:a168 OR institution:a154 OR institution:a196"
 
 
 
@@ -169,7 +169,7 @@ ISN:
     urn_isn_mv:
       - [and, 100]
       - [or, ~]
-#  FilterQuery: "institution:e92 OR institution:E81 OR institution:re61010 OR institution:e37 OR institution:re61013 OR institution:e15 OR institution:e14 OR institution:e02 OR institution:e01 OR institution:re61001 OR institution:re61011 OR institution:re61012 OR institution:re31002 OR institution:a186 OR institution:a190 OR institution:a100 OR institution:a131 OR institution:a168 OR institution:a154 OR institution:a196"
+  FilterQuery: "institution:e92 OR institution:E81 OR institution:re61010 OR institution:e37 OR institution:re61013 OR institution:e15 OR institution:e14 OR institution:e02 OR institution:e01 OR institution:re61001 OR institution:re61011 OR institution:re61012 OR institution:re31002 OR institution:a186 OR institution:a190 OR institution:a100 OR institution:a131 OR institution:a168 OR institution:a154 OR institution:a196"
 
 
 
@@ -180,7 +180,7 @@ Subject:
   QueryFields:
     topic:
       - [onephrase, 350]
-#  FilterQuery: "institution:e92 OR institution:E81 OR institution:re61010 OR institution:e37 OR institution:re61013 OR institution:e15 OR institution:e14 OR institution:e02 OR institution:e01 OR institution:re61001 OR institution:re61011 OR institution:re61012 OR institution:re31002 OR institution:a186 OR institution:a190 OR institution:a100 OR institution:a131 OR institution:a168 OR institution:a154 OR institution:a196"
+  FilterQuery: "institution:e92 OR institution:E81 OR institution:re61010 OR institution:e37 OR institution:re61013 OR institution:e15 OR institution:e14 OR institution:e02 OR institution:e01 OR institution:re61001 OR institution:re61011 OR institution:re61012 OR institution:re31002 OR institution:a186 OR institution:a190 OR institution:a100 OR institution:a131 OR institution:a168 OR institution:a154 OR institution:a196"
 
 
 JournalTitle:
@@ -189,7 +189,7 @@ JournalTitle:
   QueryFields:
     journals:
       - [onephrase, 100]
-#  FilterQuery: "institution:e92 OR institution:E81 OR institution:re61010 OR institution:e37 OR institution:re61013 OR institution:e15 OR institution:e14 OR institution:e02 OR institution:e01 OR institution:re61001 OR institution:re61011 OR institution:re61012 OR institution:re31002 OR institution:a186 OR institution:a190 OR institution:a100 OR institution:a131 OR institution:a168 OR institution:a154 OR institution:a196"
+  FilterQuery: "institution:e92 OR institution:E81 OR institution:re61010 OR institution:e37 OR institution:re61013 OR institution:e15 OR institution:e14 OR institution:e02 OR institution:e01 OR institution:re61001 OR institution:re61011 OR institution:re61012 OR institution:re31002 OR institution:a186 OR institution:a190 OR institution:a100 OR institution:a131 OR institution:a168 OR institution:a154 OR institution:a196"
 
 
 
@@ -197,7 +197,7 @@ FRBR:
   QueryFields:
     groupid_isn_mv:
       - [onephrase, 500]
-#  FilterQuery: "institution:e92 OR institution:E81 OR institution:re61010 OR institution:e37 OR institution:re61013 OR institution:e15 OR institution:e14 OR institution:e02 OR institution:e01 OR institution:re61001 OR institution:re61011 OR institution:re61012 OR institution:re31002 OR institution:a186 OR institution:a190 OR institution:a100 OR institution:a131 OR institution:a168 OR institution:a154 OR institution:a196"
+  FilterQuery: "institution:e92 OR institution:E81 OR institution:re61010 OR institution:e37 OR institution:re61013 OR institution:e15 OR institution:e14 OR institution:e02 OR institution:e01 OR institution:re61001 OR institution:re61011 OR institution:re61012 OR institution:re31002 OR institution:a186 OR institution:a190 OR institution:a100 OR institution:a131 OR institution:a168 OR institution:a154 OR institution:a196"
 
 
 Title:
@@ -232,7 +232,7 @@ Title:
     journals:
       - [onephrase, 50]
       - [and , ~]
-#  FilterQuery: "institution:e92 OR institution:E81 OR institution:re61010 OR institution:e37 OR institution:re61013 OR institution:e15 OR institution:e14 OR institution:e02 OR institution:e01 OR institution:re61001 OR institution:re61011 OR institution:re61012 OR institution:re31002 OR institution:a186 OR institution:a190 OR institution:a100 OR institution:a131 OR institution:a168 OR institution:a154 OR institution:a196"
+  FilterQuery: "institution:e92 OR institution:E81 OR institution:re61010 OR institution:e37 OR institution:re61013 OR institution:e15 OR institution:e14 OR institution:e02 OR institution:e01 OR institution:re61001 OR institution:re61011 OR institution:re61012 OR institution:re31002 OR institution:a186 OR institution:a190 OR institution:a100 OR institution:a131 OR institution:a168 OR institution:a154 OR institution:a196"
 
 
 
@@ -244,7 +244,7 @@ Series:
       - [onephrase, 500]
       - [and, 200]
       - [or, 100]
-#  FilterQuery: "institution:e92 OR institution:E81 OR institution:re61010 OR institution:e37 OR institution:re61013 OR institution:e15 OR institution:e14 OR institution:e02 OR institution:e01 OR institution:re61001 OR institution:re61011 OR institution:re61012 OR institution:re31002 OR institution:a186 OR institution:a190 OR institution:a100 OR institution:a131 OR institution:a168 OR institution:a154 OR institution:a196"
+  FilterQuery: "institution:e92 OR institution:E81 OR institution:re61010 OR institution:e37 OR institution:re61013 OR institution:e15 OR institution:e14 OR institution:e02 OR institution:e01 OR institution:re61001 OR institution:re61011 OR institution:re61012 OR institution:re31002 OR institution:a186 OR institution:a190 OR institution:a100 OR institution:a131 OR institution:a168 OR institution:a154 OR institution:a196"
 
 
 AllFields:
@@ -297,7 +297,7 @@ AllFields:
       - [and, 125]
     fulltext:
       - [or, ~]
-#  FilterQuery: "institution:e92 OR institution:E81 OR institution:re61010 OR institution:e37 OR institution:re61013 OR institution:e15 OR institution:e14 OR institution:e02 OR institution:e01 OR institution:re61001 OR institution:re61011 OR institution:re61012 OR institution:re31002 OR institution:a186 OR institution:a190 OR institution:a100 OR institution:a131 OR institution:a168 OR institution:a154 OR institution:a196"
+  FilterQuery: "institution:e92 OR institution:E81 OR institution:re61010 OR institution:e37 OR institution:re61013 OR institution:e15 OR institution:e14 OR institution:e02 OR institution:e01 OR institution:re61001 OR institution:re61011 OR institution:re61012 OR institution:re31002 OR institution:a186 OR institution:a190 OR institution:a100 OR institution:a131 OR institution:a168 OR institution:a154 OR institution:a196"
 
 
 
@@ -340,7 +340,7 @@ CallNumber:
     callnumber:
       - [callnumber_exact, 1000]
       - [callnumber_fuzzy, ~]
-#  FilterQuery: "institution:e92 OR institution:E81 OR institution:re61010 OR institution:e37 OR institution:re61013 OR institution:e15 OR institution:e14 OR institution:e02 OR institution:e01 OR institution:re61001 OR institution:re61011 OR institution:re61012 OR institution:re31002 OR institution:a186 OR institution:a190 OR institution:a100 OR institution:a131 OR institution:a168 OR institution:a154 OR institution:a196"
+  FilterQuery: "institution:e92 OR institution:E81 OR institution:re61010 OR institution:e37 OR institution:re61013 OR institution:e15 OR institution:e14 OR institution:e02 OR institution:e01 OR institution:re61001 OR institution:re61011 OR institution:re61012 OR institution:re31002 OR institution:a186 OR institution:a190 OR institution:a100 OR institution:a131 OR institution:a168 OR institution:a154 OR institution:a196"
 
 
 
@@ -352,7 +352,7 @@ year:
     publishDate:
       - [and, 100]
       - [or, ~]
-#  FilterQuery: "institution:e92 OR institution:E81 OR institution:re61010 OR institution:e37 OR institution:re61013 OR institution:e15 OR institution:e14 OR institution:e02 OR institution:e01 OR institution:re61001 OR institution:re61011 OR institution:re61012 OR institution:re31002 OR institution:a186 OR institution:a190 OR institution:a100 OR institution:a131 OR institution:a168 OR institution:a154 OR institution:a196"
+  FilterQuery: "institution:e92 OR institution:E81 OR institution:re61010 OR institution:e37 OR institution:re61013 OR institution:e15 OR institution:e14 OR institution:e02 OR institution:e01 OR institution:re61001 OR institution:re61011 OR institution:re61012 OR institution:re31002 OR institution:a186 OR institution:a190 OR institution:a100 OR institution:a131 OR institution:a168 OR institution:a154 OR institution:a196"
 
 
 
@@ -373,7 +373,7 @@ oclc_num:
   QueryFields:
     oclc_num:
       - [oclc_num, ~]
-#  FilterQuery: "institution:e92 OR institution:E81 OR institution:re61010 OR institution:e37 OR institution:re61013 OR institution:e15 OR institution:e14 OR institution:e02 OR institution:e01 OR institution:re61001 OR institution:re61011 OR institution:re61012 OR institution:re31002 OR institution:a186 OR institution:a190 OR institution:a100 OR institution:a131 OR institution:a168 OR institution:a154 OR institution:a196"
+  FilterQuery: "institution:e92 OR institution:E81 OR institution:re61010 OR institution:e37 OR institution:re61013 OR institution:e15 OR institution:e14 OR institution:e02 OR institution:e01 OR institution:re61001 OR institution:re61011 OR institution:re61012 OR institution:re31002 OR institution:a186 OR institution:a190 OR institution:a100 OR institution:a131 OR institution:a168 OR institution:a154 OR institution:a196"
 
 
 ctrlnum:
@@ -383,4 +383,4 @@ ctrlnum:
   QueryFields:
     ctrlnum:
       - [ctrlnum, ~]
-#  FilterQuery: "institution:e92 OR institution:E81 OR institution:re61010 OR institution:e37 OR institution:re61013 OR institution:e15 OR institution:e14 OR institution:e02 OR institution:e01 OR institution:re61001 OR institution:re61011 OR institution:re61012 OR institution:re31002 OR institution:a186 OR institution:a190 OR institution:a100 OR institution:a131 OR institution:a168 OR institution:a154 OR institution:a196"
+  FilterQuery: "institution:e92 OR institution:E81 OR institution:re61010 OR institution:e37 OR institution:re61013 OR institution:e15 OR institution:e14 OR institution:e02 OR institution:e01 OR institution:re61001 OR institution:re61011 OR institution:re61012 OR institution:re31002 OR institution:a186 OR institution:a190 OR institution:a100 OR institution:a131 OR institution:a168 OR institution:a154 OR institution:a196"
