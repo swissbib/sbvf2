@@ -557,7 +557,14 @@ return array(
 				),
 				'swissbibsingle' => array(
 					'swissbib'
-				)
+				),
+                'epflworkshopblue' => array(
+                    'swissbib'
+                ),
+                'epflworkshopred' => array(
+                    'swissbib'
+                )
+
 			),
 				// Configuration of tabs
 			'tabs' => array(
