@@ -10,10 +10,11 @@ use Zend\Form\View\Helper\AbstractHelper;
 class AvailabilityInfo extends AbstractHelper
 {
 	/** Expected status codes */
-	const LENDABLE_AVAILABLE = "lendable_available";    //  -> genrell ausleihbar und vorhanden
-	const LENDABLE_BORROWED = "lendable_borrowed";      //  -> generell ausleihbar jedoch bereits ausgeliehen
-    const LOOK_ON_SITE      = "lookOnSite";             //  -> Informationsabruf über das lokale System (fallback)
-    const ONLINE_AVAILABLE   = "onlineAvailable";        //  -> by now only for ETH could be enhanced for other library systems (labels for LoanStatus needed!)
+	const LENDABLE_AVAILABLE = "lendable_available";   // generell ausleihbar und vorhandene Exemplare
+	const LENDABLE_BORROWED  = "lendable_borrowed";    // generell ausleihbar, jedoch bereits ausgeliehene Exemplare
+    const USE_ON_SITE        = "use-on-site";          // vor Ort einsehbare Exemplare (Lesesaal)
+    const LOOK_ON_SITE       = "lookOnSite";           // Informationsabruf über das lokale System (fallback)
+    const ONLINE_AVAILABLE   = "onlineAvailable";      // by now only for ETH, could be enhanced for other library systems (labels for LoanStatus needed!)
 
 
 
@@ -58,6 +59,7 @@ class AvailabilityInfo extends AbstractHelper
                     break;
 				case self::LENDABLE_BORROWED:
 
+                    unset($borrowinginformation['due_hour']);
                     $info = "<div class='availability_notok'>" . "<br/>";
                     foreach ($borrowinginformation as $key => $value) {
 
@@ -69,10 +71,17 @@ class AvailabilityInfo extends AbstractHelper
                     $info .= "</div>";
 
 					break;
+                case self::USE_ON_SITE:
+
+                    $infotext = $escapedTranslation($statusfield);
+                    $info = "<div class='availability_ok'>" . "$infotext" . "</div>";
+                    break;
                 case self::LOOK_ON_SITE:
+
                     $info = $escapedTranslation($statusfield);
                     break;
                 case self::ONLINE_AVAILABLE:
+
                     //do something special for online resources (dedicated icon and / or text?)
                     $info = $escapedTranslation($statusfield);
                     break;
@@ -83,7 +92,7 @@ class AvailabilityInfo extends AbstractHelper
 			}
 
 		} else {
-			$info = 'No data';
+			$info = 'no_ava_info';
 		}
 
 		return $info;
