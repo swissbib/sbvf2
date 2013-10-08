@@ -102,6 +102,7 @@ class SearchController extends VuFindSearchController
 		$activeTabConfig     = $allTabsConfig[$activeTabKey];
 		$this->searchClassId = $activeTabConfig['searchClassId'];
 		$viewModel           = parent::advancedAction();
+		$viewModel->options  = $this->getServiceLocator()->get('Swissbib\SearchOptionsPluginManager')->get($this->searchClassId);
 
 		$viewModel->setVariable('allTabsConfig', $allTabsConfig);
 		$viewModel->setVariable('activeTabKey', $activeTabKey);
