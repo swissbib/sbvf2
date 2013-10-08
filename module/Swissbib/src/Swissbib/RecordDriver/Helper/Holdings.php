@@ -59,6 +59,7 @@ class Holdings
 		'q' => 'localid',
 		'r' => 'sequencenumber',
 		's' => 'signature2',
+		'u' => 'holding_url',
 		'y' => 'opac_note'
 	);
 
@@ -217,7 +218,8 @@ class Holdings
 
 			if ($this->hasItems()) {
 				$this->holdingData['items'] = $this->getItemsData($recordDriver, $institutionCode, $extend);
-			} elseif ($this->hasHoldings()) {
+			}
+            if ($this->hasHoldings()) {
 				$this->holdingData['holdings'] = $this->getHoldingData($recordDriver, $institutionCode, $extend);
 			}
 		}
@@ -394,7 +396,7 @@ class Holdings
 	protected function getItemsData(SolrMarc $recordDriver, $institutionCode, $extend = true)
 	{
 		$fieldName          = 949; // Field code for item information in holdings xml
-		$institutionItems = $this->geHoldingsData($fieldName, $this->fieldMapping, $institutionCode);
+		$institutionItems = $this->getHoldingsData($fieldName, $this->fieldMapping, $institutionCode);
 
 		if ($extend) {
 			foreach ($institutionItems as $index => $item) {
@@ -652,8 +654,8 @@ class Holdings
 		$label = '';
 
 			// Has informations with translation?
-		if (isset($item['location_code']) && isset($item['institution']) && isset($item['network'])) {
-			$labelKey	= strtolower($item['institution'] . '_' . $item['location_code']);
+		if (isset($item['location_code']) && isset($item['institution_chb']) && isset($item['network'])) {
+			$labelKey	= strtolower($item['institution_chb'] . '_' . $item['location_code']);
 			$textDomain	= 'location-' . strtolower($item['network']);
 			$translated	= $this->translator->translate($labelKey, $textDomain);
 
@@ -777,6 +779,9 @@ class Holdings
 	 */
 	protected function getBackLink($networkCode, $institutionCode, array $item)
 	{
+		//item has url (subfield u)
+		if (!empty($item['holding_url'])) return $item['holding_url'];
+
 		$method      = false;
 		$data        = array();
 		$networkCode = strtolower($networkCode);
@@ -871,7 +876,7 @@ class Holdings
 	 * @param    Array         $data
 	 * @return    String
 	 */
-	protected function getBackLinkAlexandria($networkCode, $institutionCode, array $item, array $data)
+	protected function getBackLinkAlex($networkCode, $institutionCode, array $item, array $data)
 	{
 		return $this->getBackLinkVirtua($networkCode, $institutionCode, $item, $data);
 	}
@@ -893,9 +898,23 @@ class Holdings
 		return $this->getBackLinkVirtua($networkCode, $institutionCode, $item, $data);
 	}
 
+    /**
+     * Get back link for CCSA (poster collection)
+     * Currently only a wrapper for virtua
+     *
+     * @param    String        $networkCode
+     * @param    String        $institutionCode
+     * @param    Array         $item
+     * @param    Array         $data
+     * @return    String
+     */
 
+    protected function getBackLinkCCSA($networkCode, $institutionCode, $item, array $data)
+    {
+        return $this->getBackLinkVirtua($networkCode, $institutionCode, $item, $data);
+    }
 
-	/**
+    /**
 	 * Build rero backlink
 	 *
 	 * @param       $networkCode
@@ -909,7 +928,7 @@ class Holdings
 		$values = array(
 			'server'            => $data['domain'],
 			'language-code'     => 'de', // @todo fetch from user,
-			'RERO-network-code' => substr($institutionCode, 0, 2), // first two characters should do it. not sure
+			'RERO-network-code' => substr($institutionCode, 2, 2), // third and fourth character
 			'bib-system-number' => $this->getNumericString($item['bibsysnumber']), // remove characters from number string
 			'sub-library-code'  => $institutionCode
 		);
@@ -1033,7 +1052,7 @@ class Holdings
 	protected function getHoldingData(SolrMarc $recordDriver, $institutionCode, $extend = true)
 	{
 		$fieldName          = 852; // Field code for item information in holdings xml
-		$institutionHoldings = $this->geHoldingsData($fieldName, $this->fieldMapping, $institutionCode);
+		$institutionHoldings = $this->getHoldingsData($fieldName, $this->fieldMapping, $institutionCode);
 
 		if ($extend) {
 			foreach ($institutionHoldings as $index => $holding) {
@@ -1078,7 +1097,7 @@ class Holdings
 	 * @param    String        $institutionCode
 	 * @return    Array		Items or holdings for institution
 	 */
-	protected function geHoldingsData($fieldName, array $mapping, $institutionCode)
+	protected function getHoldingsData($fieldName, array $mapping, $institutionCode)
 	{
 		$data            = array();
 		$fields          = $this->holdings ? $this->holdings->getFields($fieldName) : false;
@@ -1087,7 +1106,7 @@ class Holdings
 		if (is_array($fields)) {
 			foreach ($fields as $index => $field) {
 				$item        = $this->extractFieldData($field, $mapping);
-				$institution = strtolower($item['institution']);
+				$institution = strtolower($item['institution_chb']);
 
 				if ($institution === $institutionCode) {
 					$data[] = $item;
@@ -1112,14 +1131,14 @@ class Holdings
 		$fields  = $this->holdings ? $this->holdings->getFields($fieldName) : false;
 		$mapping = array(
 			'B' => 'network',
-			'F' => 'institution'
+			'F' => 'institution_chb'
 		);
 
 		if (is_array($fields)) {
 			foreach ($fields as $index => $field) {
 				$item        = $this->extractFieldData($field, $mapping);
 				$networkCode = strtolower($item['network']);
-				$institution = strtolower($item['institution']);
+				$institution = strtolower($item['institution_chb']);
 				$groupCode   = $this->getGroup($institution);
 
 					// Prevent display of untranslated and ungrouped institutions

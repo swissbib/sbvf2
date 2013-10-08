@@ -42,6 +42,7 @@ return array(
 		'swissbib-jq-plugins/dropdown.js',
 		'swissbib-jq-plugins/tabbed.js',
 		'swissbib-jq-plugins/enhancedsearch.js',
+		'swissbib-jq-plugins/extended.ui.autocomplete.js',
 
 		'swissbib/swissbib.js',
 

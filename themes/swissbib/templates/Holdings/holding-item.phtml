@@ -15,16 +15,11 @@ if (isset($item['locationMap']) && $item['locationMap']) {
 	<td><?=$this->holdingActions($item, 'holdingActionsItem')?> </td>
 	<td><?=$this->availabilityInfo($item['availability'])?></td>
 	<td><?=$this->escapeHtml($item['locationLabel'])?><?=$mapLink?></td>
-	<td>
-		<?=$this->escapeHtml($item['signature'])?>
-		<?php  if (isset($item['institutionUrl']) && !empty($item['institutionUrl'])): ?>
-			<ul class="miniactions miniactions-<?=$institutionCode?>">
-				<li class="miniaction_link">
-					<a href="<?=$this->escapeHtml($item['institutionUrl'])?>" class="externallink" target="_blank" title="<?=$this->transEsc('Library_Information')?>"></a>
-				</li>
-			</ul>
-		<?php endif; ?>
-	</td>
+	<td><?=$this->escapeHtml($item['signature'])?>
+      <?php  if (isset($item['institutionUrl'])): ?>
+        <a href="<?=$this->escapeHtml($item['institutionUrl'])?>" class="bibinfo" target="_blank" title="<?=$this->transEsc('Library_Information')?>"></a>
+      <?php endif; ?>
+  </td>
 	<td><?=$this->qrCodeHolding($item, $recordTitle)?></td>
 	<td><?=$this->escapeHtml($description)?></td>
 </tr>

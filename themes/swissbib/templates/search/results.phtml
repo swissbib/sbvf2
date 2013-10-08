@@ -45,7 +45,7 @@
 			<!-- end: tabbed view -->
 
 			<!-- begin: pagefunctions -->
-			<?=$this->render('search/pagefunctions')?>
+			<?=$this->render($this->tabTemplate('search/pagefunctions', $this->activeTabKey));?>
 			<!-- end: pagefunctions -->
 
 		</div>
