@@ -91,6 +91,10 @@ class QueryBuilder extends VFBuilder {
 
         }
 
+        if (preg_match('/:/', $input)) {
+            $alreadyPrepared = $input;
+        }
+
         $alreadyPrepared = str_replace('-', ' ', $alreadyPrepared);
 
         return $alreadyPrepared;
