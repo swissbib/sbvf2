@@ -91,6 +91,8 @@ class QueryBuilder extends VFBuilder {
 
         }
 
+        $alreadyPrepared = str_replace('-', ' ', $alreadyPrepared);
+
         return $alreadyPrepared;
 
     }
