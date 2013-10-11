@@ -112,49 +112,6 @@ if (!empty($series)): ?>
 	</div>
 <?php endif; ?>
 
-<?php /* Display and link to related items (field configured in config_base.ini -> marc_links) */ ?>
-<?php $recordLinks = $this->driver->getAllRecordLinks(); ?>
-<?php if (!empty($recordLinks)): ?>
-	<?php $contentDisplayed = true; ?>
-	<div class="details">
-		<h4><?= $this->transEsc('Related Items') ?></h4>
-
-		<p>
-			<?php foreach ($recordLinks as $recordLink): ?>
-				<?= $this->transEsc($recordLink['title']) ?>:
-				<a href="<?= $this->recordLink()->related($recordLink['link']) ?>"><?= $this->escapeHtml($recordLink['value']) ?></a>
-				<br/>
-			<?php endforeach; ?>
-		</p>
-	</div>
-<?php endif; ?>
-
-<?php /* This section is only valid when the above links do not exist */ ?>
-<?php $nextTitles = $this->driver->getNewerTitles();
-$prevTitles = $this->driver->getPreviousTitles(); ?>
-<?php if (!empty($nextTitles) or !empty($prevTitles)): ?>
-	<div class="details">
-		<?php if (!empty($nextTitles)): ?>
-			<h4><?= $this->transEsc('New Title') ?>: </h4>
-			<p>
-				<?php foreach ($nextTitles as $field): ?>
-					<a href="<?= $this->record($this->driver)->getLink('title', $field) ?>"><?= $this->escapeHtml($field) ?></a>
-					<br/>
-				<?php endforeach; ?>
-			</p>
-		<?php endif; ?>
-		<?php if (!empty($prevTitles)): ?>
-			<h4><?= $this->transEsc('Previous Title') ?>: </h4>
-			<p>
-				<?php foreach ($prevTitles as $field): ?>
-					<a href="<?= $this->record($this->driver)->getLink('title', $field) ?>"><?= $this->escapeHtml($field) ?></a>
-					<br/>
-				<?php endforeach; ?>
-			</p>
-		<?php endif; ?>
-	</div>
-<?php endif; ?>
-
 <?php /* div-box for all notes */ ?>
 
 <?php

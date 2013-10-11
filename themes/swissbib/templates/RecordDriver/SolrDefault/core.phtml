@@ -21,6 +21,7 @@ $summary				= trim(implode($record->getSummary()));
 $groupID				= $record->getGroup(true);
 
 $publicationDate		= $this->publicationDateMarc($record->getPublicationDates());
+$hostitems              = $record->getHostItemEntry();
 // prepared to activate openURL-display in solr-Tab, openURL switched of @todo analyse later
 //$openUrl				= $record->openURLActive('record') ? $record->getOpenURL() : false;
 //$urls                   = ($openUrl && $record->replaceURLsWithOpenURL()) ? array() : $viewRecord->getLinkDetails();
@@ -57,10 +58,21 @@ $highlightedFulltext	= $record->getHighlightedFulltext();
 			<?php endif; ?>
         <?php endif; ?>
 
-		<?php if($publishers): ?>
+        <? if ($hostitems): ?>
+            <? foreach ($hostitems as $hostitem): ?>
+                <h4><?=$this->transEsc('note_773')?>: </h4>
+                <? $text = array_key_exists('related', $hostitem) ? $hostitem['title'] . ', ' . $hostitem['related'] : $hostitem['title'] ?>
+                <p><?=$this->escapeHtml($text)?></p>
+            <? endforeach; ?>
+        <? endif; ?>
+
+		<? if($publishers): ?>
 			<h4><?=$this->transEsc('Publication')?>:</h4>
-			<p><?=$this->escapeHtml(implode(' | ', $publishers))?>, <?=$publicationDate?></p>
-		<?php endif; ?>
+			<p><?=$this->escapeHtml(implode(' | ', $publishers))?>, <?=$this->escapeHtml($publicationDate)?></p>
+        <? elseif ($publicationDate): ?>
+            <h4><?=$this->transEsc('Year')?>:</h4>
+            <p><?=$this->escapeHtml($publicationDate)?></p>
+		<? endif; ?>
 
         <?php if($physicalDescriptions): ?>
             <h4><?=$this->transEsc('Physical Description')?>:</h4>
