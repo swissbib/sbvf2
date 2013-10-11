@@ -30,7 +30,7 @@ if (!$gndHeadings) {
 						$lookFor	= implode(' ', $urlValues);
 						$searchUrl	= $this->url('search-results') . '?lookfor=' . urlencode($lookFor) . '&amp;type=Subject';
 
-						echo '<a href="' . $searchUrl . '">' . $this->escapeHtml(implode(' > ', $fieldValues)) . '</a>';
+						echo '<a href="' . $searchUrl . '" title="' . $this->escapeHtml(implode(' > ' , $fieldValues)) . '">' . $this->escapeHtml(implode(' > ', $fieldValues)) . '</a>';
 					?>
 				</li>
 			<?php endforeach; ?>

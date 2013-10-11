@@ -834,17 +834,14 @@ class SolrMarc extends VuFindSolrMarc
 	/**
 	 * Get host item entry
 	 *
-	 * @todo    Add relevant fields if required
 	 * @return    Array
 	 */
 	public function getHostItemEntry()
 	{
 		return $this->getMarcSubFieldMaps(773, array(
-													'a' => 'heading',
-													'b' => 'edition',
 													'd' => 'place',
+                                                    't' => 'title',
 													'g' => 'related',
-													'h' => 'physical_description'
 											   ));
 	}
 
