@@ -5,7 +5,6 @@ use Zend\Form\View\Helper\AbstractHelper;
 
 /**
  * Show availability infos
- *
  */
 class AvailabilityInfo extends AbstractHelper
 {
@@ -17,41 +16,35 @@ class AvailabilityInfo extends AbstractHelper
     const ONLINE_AVAILABLE   = "onlineAvailable";      // by now only for ETH, could be enhanced for other library systems (labels for LoanStatus needed!)
     const ITEM_LOST          = "itemlost";             // vermisst, in Reparatur, abbestellt: Exemplar für Benutzer verloren
 
-
-
 	/**
 	 * Convert availability info into html string
 	 *
 	 * @param	Boolean|Array		$availability
 	 * @return	String
 	 */
-	public function __invoke($availability)
-	{
 
-        //availability always contains an associative  array with only 'one' key (the barcode of the item)
-        //(this method is called for every single item)
-        //the barcode references an additional array (derived from json) which contains the so called statusfield
-        //the value of the statusfield is part of the translation files
+	public function __invoke($availability)
+	{   $escapedTranslation =  $this->getView()->plugin('transEsc');
+
+        /* availability always contains an associative  array with only 'one' key (the barcode of the item)
+         * (this method is called for every single item)
+         * the barcode references an additional array (derived from json) which contains the so called statusfield
+         * the value of the statusfield is part of the translation files
+         */
 
 		if (is_array($availability)) {
-
-            $escapedTranslation =  $this->getView()->plugin('transEsc');
-
 
             $statusfield = self::LOOK_ON_SITE;
             $borrowinginformation = array();
 
             foreach ($availability as  $barcode => $availinfo ) {
-
                 $statusfield = $availinfo["statusfield"];
 
                 if (isset ($availinfo["borrowingInformation"]) ){
-
                     $borrowinginformation = $availinfo["borrowingInformation"];
 
                 }
             }
-
 
 			switch ($statusfield) {
 				case self::LENDABLE_AVAILABLE:
@@ -99,7 +92,7 @@ class AvailabilityInfo extends AbstractHelper
 			}
 
 		} else {
-			$info = 'no_ava_info';
+			$info = $escapedTranslation('no_ava_info');
 		}
 
 		return $info;
