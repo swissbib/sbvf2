@@ -1,16 +1,42 @@
 <h1>Suchen</h1>
 
 <h3>Kombinieren</h3>
-<p>AND, OR, NOT. Bsp.: <i>art* OR kunst*</i>
-    <br>Die Operatoren müssen in Grossbuchstaben geschrieben werden, Default ist AND
-</p>
+
+<table>
+    <tbody>
+    <tr>
+        <td>AND / OR / NOT</td>
+        <td><i>art* OR kunst*</i></td>
+        <td>Die Operatoren müssen in Grossbuchstaben geschrieben werden, Default ist AND</td>
+    </tr>
+    </tbody>
+</table>
+
 
 <h3>Phrasensuche mit Anführungszeichen</h3>
-<p>
-    <i>"street art"</i> = die beiden Wörter müssen direkt hintereinander stehen
-    <br><i>"street art"~5</i> = die beiden Wörter müssen innerhalb von 5 Wörtern Abstand vorkommen</p>
-    <br><i>"Müller-Lüdenscheidt"</i>: Anführungszeichen auch für Doppelnamen und andere Bindestrich-Wortkombinationen benutzen.
-</p>
+
+<table>
+    <tbody>
+    <tr>
+        <td><i>"street art"</i></td>
+        <td>= die beiden Wörter müssen direkt hintereinander stehen</td>
+        </tr>
+    
+    <tr>
+        <td><i>"street art"~5</i></td>
+        <td>= die beiden Wörter müssen innerhalb von 5 Wörtern Abstand vorkommen</td>
+           </tr>
+    <tr>
+        <td><i>"Müller-Lüdenscheidt"</i></td>
+        <td>Anführungszeichen auch für Doppelnamen und andere Bindestrich-Wortkombinationen benutzen.</td>
+    </tr>
+    <tr>
+        <td>"PZB E 62 2:6"</td>
+        <td>in der einfachen Suche Anführungszeichen für die Suche nach Signatur verwenden. </td>
+    </tr>
+    
+    </tbody>
+</table>
 
 <h3>Platzhalter</h3>
 <table>
@@ -38,23 +64,24 @@
         <td>Lindquist, Lindkvist, Lindqvist etc. **</td>
     </tr>
 
-
-
     <tr>
         <td>~</td>
         <td>wenn Sie die genaue Schreibweise nicht kennen</td>
         <td><i>Copenhagen~</i></td>
         <td>Copenhagen, København, Kopenhagen etc. **</td>
     </tr>
+    
+     <tr>
+        <td>~</td>
+        <td>Bereichssuche</td>
+        <td><i>Wetter [2010 TO 2013]</i></td>
+        <td>anstatt <i>Wetter [2010 OR 2011 OR 2012 OR 2013]</i>**</td>
+    </tr>
     </tbody>
 
 </table>
 
-
-<h3>Bereichssuche **</h3>
-<p><i>Wetter [2010 TO 2013]</i>
-    <br>
-    <br>** nur für <i>Bücher & mehr</i>
+<p>** nur für <i>Bücher & mehr</i>
 </p>
 
 <h2>Zu viel gefunden?</h2>
