@@ -6,7 +6,7 @@ $publishDateTo = isset($_GET['publishDateto']) ? intval($_GET['publishDateto']) 
 ?>
 <div id="facet_pubdate_slider" class="facet">
 	<h5 id="facet_toggler_publishdate" onclick="$('#publishDateForceHeight').toggleClass('publishDateForceHeight')"
-		class="toggler persist expanded" title="adv_search_year">Erscheinungsjahr</h5>
+		class="toggler persist expanded" title="adv_search_year"><?=$this->transEsc('adv_search_year')?></h5>
 
 	<form action="" name="publishDateFilter" id="publishDateFilter">
 		<?php /* Pass on other filter criteria via hidden fields, remove last publishDate */ ?>
