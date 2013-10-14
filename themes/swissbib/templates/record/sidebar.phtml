@@ -1,12 +1,9 @@
 <div id="sidebar">
 
-	<?php /** MORE LIKE THIS BREAKS AT THE MOMENT  ?>
-	  <? foreach ($this->driver->getRelated() as $current): ?>
-	    <?=$this->related($current)?>
-	  <? endforeach; */?>
-
 	<?=$this->render('record/sidebar-subject')?>
 
 	<?=$this->render('record/sidebar-author')?>
+
+    <?=$this->render('record/related-items')?>
 
 </div>

@@ -20,7 +20,7 @@ if (!$hasAuthors) {
         <ul>
             <?php if (!empty($authors['main'])): ?>
                 <li>
-                    <a href="<?=$viewRecord->getLink('author', $authors['main'])?>"><?=$this->escapeHtml($authors['main'])?></a>
+                    <a href="<?=$viewRecord->getLink('author', $authors['main'])?>" title="<?=$this->escapeHtml($authors['main'])?>"><?=$this->escapeHtml($authors['main'])?></a>
                 </li>
             <?php endif; ?>
             <?php if (!empty($authors['secondary'])): ?>
@@ -35,7 +35,7 @@ if (!$hasAuthors) {
                 <?php endforeach; ?>
                 <?php foreach ($tauthors as $secondaryAuthor): ?>
                     <li>
-                        <a href="<?=$viewRecord->getLink('author', $secondaryAuthor)?>"><?=$this->escapeHtml($secondaryAuthor)?></a>
+                        <a href="<?=$viewRecord->getLink('author', $secondaryAuthor)?>" title="<?=$this->escapeHtml($secondaryAuthor)?>"><?=$this->escapeHtml($secondaryAuthor)?></a>
                     </li>
                 <?php endforeach; ?>
 
@@ -48,7 +48,7 @@ if (!$hasAuthors) {
                 ?>
                 <?php foreach ($authors['corporate'] as $corporateAuthor): ?>
                     <li>
-                        <a href="<?=$viewRecord->getLink('author', $corporateAuthor)?>"><?=$this->escapeHtml($corporateAuthor)?></a>
+                        <a href="<?=$viewRecord->getLink('author', $corporateAuthor)?>" title="<?=$this->escapeHtml($corporateAuthor)?>"><?=$this->escapeHtml($corporateAuthor)?></a>
                     </li>
                 <?php endforeach; ?>
             <?php endif; ?>
