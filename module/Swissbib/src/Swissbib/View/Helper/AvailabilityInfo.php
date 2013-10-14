@@ -54,11 +54,16 @@ class AvailabilityInfo extends AbstractHelper
 				case self::LENDABLE_BORROWED:
 
                     unset($borrowinginformation['due_hour']);
-                    $info = "<div class='availability_notok'>" . "<br/>";
-                    foreach ($borrowinginformation as $key => $value) {
+                    $info = "<div class='availability_notok'>";
 
-                        if (strcmp(trim($value),"") != 0) {
-                            $info .=  "<div class='nice'>" . $escapedTranslation($key) . "&nbsp;" . $value . "</div>";
+                    if ($borrowinginformation['due_date'] === 'on reserve') {
+                        $info .= $escapedTranslation('On Reserve') . " (" . $borrowinginformation['no_requests'] . ")";
+                    }
+                    else {
+                        foreach ($borrowinginformation as $key => $value) {
+                            if (strcmp(trim($value),"") != 0) {
+                                $info .=  "<div class='nice'>" . $escapedTranslation($key) . "&nbsp;" . $value . "</div>";
+                            }
                         }
                     }
 
