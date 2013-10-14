@@ -360,8 +360,7 @@ class Aleph extends VuFindDriver
 
 		foreach ($map as $resultField => $path) {
 			list($group, $field) = explode('-', $path, 2);
-
-			$data[$resultField] = (string)$xmlResponse->$group->$path;
+			$data[$resultField] =  isset($xmlResponse->$path) ? (string)$xmlResponse->$path :  (string)$xmlResponse->$group->$path;
 		}
 
 		return $data;
