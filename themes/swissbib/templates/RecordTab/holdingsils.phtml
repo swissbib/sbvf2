@@ -52,7 +52,9 @@ $holdings	= $this->extractFavoriteInstitutionsForHoldings($holdings);
 								<?=$this->escapeHtml($this->zendTranslate($institution['label'], 'institution'))?>
 							</h4>
 
-							<? if ($institutionCode != 'c001'): ?>
+
+
+							<? if ($this->institutionDefinedAsFavorite()->isInstitutionDefinedAsFavorite($institutionCode)): ?>
                             <ul class="miniactions miniactions-<?=$institutionCode?>">
 								<li class="institutionFavorite">
 									<? $favoriteLabel = isset($institution['favorite']) ? 'mylibraries.remove' : 'mylibraries.add'; ?>
