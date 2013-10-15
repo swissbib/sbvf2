@@ -751,7 +751,7 @@ class SolrMarc extends VuFindSolrMarc
                implement with new CBS-data (standardised MARC, not IDSMARC)
             */
 			'local'       => array(
-				'ind'        => I,
+				'ind'        => "",
 				'fieldsOnly' => array(690, 691),
 				'detect'     => true // extract vocabulary from sub field 2
 			),
