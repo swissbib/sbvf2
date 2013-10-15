@@ -611,6 +611,14 @@ Bibliotheksinfo-Link mit Fragezeichen - TVI: 20130920
     overflow: visible;
 }
 
+.placeMaskIcon {
+
+    margin-left: 40px;
+    width: 150px;
+    height: 60px;
+    background-color: #F5F5F5;
+}
+
 /*
 Linkbutton with smaller text used for example for UEG button in sbHitDetailTabsLibraryTab.jsp
 TVI: 20100811
