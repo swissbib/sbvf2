@@ -402,6 +402,17 @@ $(document).ready(function(){
         $(this).addClass('gridMouseOver');
     });
 
+
+    $('.showMaskIcon').click(function() {
+
+        $('.placeMaskIcon').removeClass('hidden');
+        $('.placeMaskIcon').mask('Running request...');
+        return true;
+
+    });
+
+
+
     // attach mouseout event to grid view records
     $('.gridCellHover').mouseout(function() {
         $(this).removeClass('gridMouseOver');

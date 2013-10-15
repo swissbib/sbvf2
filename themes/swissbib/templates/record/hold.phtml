@@ -32,6 +32,13 @@ $record	= $this->driver;
 
 			<div class="hold-form">
 				<form class="form" action="" method="post">
+
+                    <div style="margin-left: 40px; width: 200px; height: 60px" class="hidden placeMaskIcon">
+
+
+
+                    </div>
+
                     <fieldset>
                         <?php if( in_array("pickUpLocation", $this->extraHoldFields) ): ?>
                             <div class="fieldbox">
@@ -69,7 +76,6 @@ $record	= $this->driver;
                                 <?php endif; ?>
                             </div>
                         <?php endif; ?>
-
                         <?php if( in_array("comments", $this->extraHoldFields) ): ?>
                             <div class="fieldbox">
                                 <label class="label" for="gatheredDetails[comment]"><?=$this->transEsc('Comments')?>:</label>
@@ -89,7 +95,7 @@ $record	= $this->driver;
                     </fieldset>
                     <fieldset class="actions">
                         <div class="fieldbox">
-                            <input class="submit primary" style="margin-left: 170px" type="submit" name="placeHold" value="<?=$this->transEsc('request_submit_text')?>"/>
+                            <input class="submit primary showMaskIcon" style="margin-left: 170px" type="submit" name="placeHold" value="<?=$this->transEsc('request_submit_text')?>"/>
                         </div>
                     </fieldset>
                     <fieldset>
