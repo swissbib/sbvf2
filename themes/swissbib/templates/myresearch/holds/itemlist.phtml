@@ -34,8 +34,8 @@
         <td><?=$this->escapeHtml($ilsDetails['title']) ?> <?=$this->escapeHtml($ilsDetails['description']) ?></td>
         <td><?=$this->escapeHtml($ilsDetails['create']) ?></td>
         <!--<td><?=$this->escapeHtml($ilsDetails['position']) ?></td>-->
-        <td><?=$this->escapeHtml($ilsDetails['location']) ?></td>
-        <td><?=$this->escapeHtml($ilsDetails['status']) ?><?=$balanceInfo?> (Nr. <?=$this->escapeHtml($ilsDetails['position']) ?>)</td>
+        <td><?=$this->escapeHtml($this->transEsc($ilsDetails['location'])) ?></td>
+        <td><?=$this->escapeHtml($this->transEsc($ilsDetails['status'])) ?><?=$balanceInfo?> (Nr. <?=$this->escapeHtml($ilsDetails['position']) ?>)</td>
         <td><?=$this->escapeHtml($this->zendTranslate($institution, 'institution'))?></td>
         <td><?=$this->escapeHtml($ilsDetails['signature'])?></td>
     </tr>
