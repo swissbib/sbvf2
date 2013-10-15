@@ -249,6 +249,55 @@ var contextHelp = {
     }
 };
 
+
+function checkPopUpLogin() {
+
+
+    var popUpLogin = true;
+
+    $.ajax({
+        url: '/AJAX/SHIBLOGIN',
+        dataType: 'json',
+        success: function(response) {
+
+
+            if (response.status == 'OK') {
+
+
+
+                if (response.data.toLowerCase() == "true") {
+                    //todo: GH:  I need a php flashmessage "please login" created in JavaScript???
+                    //could be a simple parameter but perhaps there is a better solution
+                    alert ("back: " + false);
+                    return false;
+
+                } else {
+                    alert ("back: " + true);
+                    return true;
+                }
+
+            } else {
+                //something went wrong - go to login dialog in any case
+                alert ("something went wrong");
+                return false;
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            // something went wrong
+            // GH:we need a strategy how to log such situations on the server
+            alert ("im Fehler");
+            console.log(textStatus, errorThrown);
+            return true;
+            //by now: send the user to the login dialog
+        }
+    });
+
+    //return popUpLogin;
+
+
+}
+
+
 function extractDataByClassPrefix(element, prefix)
 {
     var classes = $(element).attr('class').split(/\s+/);
@@ -305,23 +354,22 @@ $(document).ready(function(){
     // assign click event to "email search" links
     $('a.mailSearch').click(function() {
 
-        var elementID = this.id;
-        var elementTitle = this.title;
+        var currentElement = this;
 
         $.ajax({
-            url: path + '/AJAX/SHIBLOGIN',
+            url:  '/AJAX/SHIBLOGIN',
             dataType: 'json',
             success: function(response) {
+
+
                 if (response.status == 'OK') {
 
                     if (response.data.toLowerCase() == "true") {
                         //todo: GH:  I need a php flashmessage "please login" created in JavaScript???
-                        //could be a simple parameter but perhaps there is a better solution
                         window.location.href = "/MyResearch/Home";
                     } else {
-                        //we can use a popup dialog because authentication method is not Shibboleth
-                        var id = elementID.substr('mailSearch'.length);
-                        var $dialog = getLightbox('Search', 'Email', id, null, elementTitle, 'Search', 'Email', id);
+                        var id = currentElement.id.substr('mailSearch'.length);
+                        var $dialog = getLightbox('Search', 'Email', id, null, currentElement.title, 'Search', 'Email', id);
                     }
 
                 } else {
@@ -334,12 +382,14 @@ $(document).ready(function(){
                 // GH:we need a strategy how to log such situations on the server
                 console.log(textStatus, errorThrown);
                 //by now: send the user to the login dialog
-                window.location.href = "/MyResearch/Home";
             }
         });
 
 
         return false;
+
+
+
     });
 
     // assign action to the "select all checkboxes" class
