@@ -55,7 +55,7 @@ $record	= $this->driver;
                                                 <? unset($lib); ?>
                                             <?php else: ?>
                                             <option value="<?=$this->escapeHtml($lib['locationID'])?>"<?=($selected == $lib['locationID']) ? ' selected="selected"' : ''?>>
-                                                <?=$this->escapeHtml($lib['locationDisplay'])?>
+                                                <?=$this->escapeHtml($this->transEsc($lib['locationDisplay']))?>
                                             </option>
                                             <?php endif; ?>
                                         <?php endforeach; ?>
