@@ -30,6 +30,7 @@ use Swissbib\Highlight\SolrConfigurator as HighlightSolrConfigurator;
 use Swissbib\VuFind\Hierarchy\TreeDataSource\Solr as TreeDataSourceSolr;
 use Swissbib\Log\Logger as SwissbibLogger;
 use Swissbib\View\Helper\DomainURL;
+use Swissbib\View\Helper\InstitutionDefinedAsFavorite as DefinedFavoriteInstitutions;
 
 return array(
 	'router'          => array(
@@ -377,6 +378,14 @@ return array(
 
 				return new ExtractFavoriteInstitutionsForHoldings($userInstitutionCodes);
 			},
+
+            'institutionDefinedAsFavorite' => function ($sm) {
+                $dataSource =  $sm->getServiceLocator()->get('Swissbib\FavoriteInstitutions\DataSource');
+
+                $tInstitutions = $dataSource->getFavoriteInstitutions();
+                return new DefinedFavoriteInstitutions($tInstitutions);
+            },
+
 			'qrCode' => function ($sm) {
 				$qrCodeService = $sm->getServiceLocator()->get('Swissbib\QRCode');
 
