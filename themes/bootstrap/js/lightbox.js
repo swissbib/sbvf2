@@ -1,4 +1,4 @@
-/*global deparam, htmlEncode, path, rc4Encrypt, refreshCommentList, vufindString */
+/*global checkSaveStatuses, console, deparam, extractSource, getFullCartItems, hexEncode, htmlEncode, path, rc4Encrypt, refreshCommentList, vufindString */
 
 var lastLightboxURL,lastLightboxPOST; // Replacement for empty form actions
 var lightboxShown = false; // is the lightbox deployed?
@@ -10,9 +10,7 @@ var modalXHR; // Used for current in-progress XHR lightbox request
 // Cart actions based on submission
 // Change the content of the lightbox
 function changeModalContent(html) {
-  $('#modal .modal-body').html(html);
-  registerModalEvents($('#modal'));
-  registerModalForms($('#modal'));
+  $('#modal .modal-body').html(html).modal({'show':true,'backdrop':false});
 }
 // Close the lightbox and run update functions
 function closeLightbox() {
@@ -29,18 +27,21 @@ function closeLightbox() {
     checkSaveStatuses();
   }
   // Update cart items
-  var cart = getFullCartItems();
-  var id = $('#cartId');
-  if(id.length > 0) {
-    id = id.val();
-    $('#cart-add,#cart-remove').addClass('hidden');
-    if(cart.indexOf(id) > -1) {
-      $('#cart-remove').removeClass('hidden');
-    } else {
-      $('#cart-add').removeClass('hidden');
+  var cartCount = $('#cartItems strong');
+  if(cartCount.length > 0) {
+    var cart = getFullCartItems();
+    var id = $('#cartId');
+    if(id.length > 0) {
+      id = id.val();
+      $('#cart-add,#cart-remove').addClass('hidden');
+      if(cart.indexOf(id) > -1) {
+        $('#cart-remove').removeClass('hidden');
+      } else {
+        $('#cart-add').removeClass('hidden');
+      }
     }
+    cartCount.html(cart.length);
   }
-  $('#cartItems strong').html(cart.length);
 }
 // Make an error box appear in the lightbox, or insert one
 function displayLightboxError(message) {
@@ -180,9 +181,20 @@ function ajaxLogin(form) {
           data: {username:username, password:password},
           success: function(response) {
             if (response.status == 'OK') {
+              // If summon, reload
+              $('.hiddenSource').each(function(i, e) {
+                console.log(e.value);
+                if(e.value == 'Summon') {
+                  document.location.reload(true);
+                  return;
+                }
+              });
+              
               // Hide "log in" options and show "log out" options:
               $('#loginOptions').hide();
               $('.logoutOptions').show();
+              
+              var recordId = $('#record_id').val();
 
               // Update user save statuses if the current context calls for it:
               if (typeof(checkSaveStatuses) == 'function') {
@@ -191,13 +203,33 @@ function ajaxLogin(form) {
 
               // refresh the comment list so the "Delete" links will show
               $('.commentList').each(function(){
-                var recordId = $('#record_id').val();
                 var recordSource = extractSource($('#record'));
                 refreshCommentList(recordId, recordSource);
               });
+              
+              // Refresh tab content
+              var recordTabs = $('.recordTabs');
+              if(recordTabs.length > 0) {
+                var tab = recordTabs.find('.active a').attr('id');
+                $.ajax({
+                  type:'POST',
+                  url:path+'/AJAX/JSON?method=getLightbox&submodule=Record&subaction=AjaxTab&id='+recordId,
+                  data:{tab:tab},
+                  success:function(html) {
+                    recordTabs.next('.tab-container').html(html);
+                  },
+                  error:function(d,e) {
+                    console.log(d,e);
+                  }
+                });
+              }
 
               // and we update the modal
-              getLightboxByUrl(lastLightboxURL, lastLightboxPOST);
+              if(lastLightboxPOST && lastLightboxPOST['loggingin']) {
+                closeLightbox();
+              } else {
+                getLightboxByUrl(lastLightboxURL, lastLightboxPOST);
+              }
             } else {
               displayLightboxError(response.data);
             }
@@ -266,7 +298,9 @@ function registerModalEvents(modal) {
   // Highlight which submit button clicked
   $(modal).find("form input[type=submit]").click(function() {
     $(this).attr("clicked", "true");
-    $(this).after(' <i class="icon-spinner icon-spin"></i> ');
+  });
+  $(modal).find("form").submit(function() {
+    $(this).find('*[clicked="true"]').after(' <i class="icon-spinner icon-spin"></i> ');
 });
 }
 // Prevent forms from submitting in the lightbox
@@ -284,8 +318,10 @@ function registerModalForms(modal) {
     ajaxSubmit($(this), changeModalContent);
     return false;
   });
-  $(modal).find('form[name="loginForm"]').unbind('submit')
-    .submit(function(){ajaxLogin(this);return false;});
+  $(modal).find('form[name="loginForm"]').unbind('submit').submit(function(){
+    ajaxLogin(this);
+    return false;
+  });
 }
 // Default lightbox behaviour
 // Tell links to open lightboxes
@@ -315,11 +351,15 @@ $(document).ready(function() {
     var hierarchyID = $(this).parent().find(".hiddenHierarchyId")[0].value;
     return getLightbox('Record','AjaxTab',{id:id},{hierarchy:hierarchyID,tab:'HierarchyTree'});
   });
-  // Hierarchy links
+  // Help links
   $('.help-link').click(function() {
     var split = this.href.split('=');
     return getLightbox('Help','Home',{topic:split[1]});
-  });  
+  });
+  // Login link
+  $('#loginOptions a').click(function() {
+    return getLightbox('MyResearch','Login',{},{'loggingin':true});
+  });
   // Modal title
   $('.modal-link,.help-link').click(function() {
     $('#modal .modal-header h3').html($(this).attr('title'));
