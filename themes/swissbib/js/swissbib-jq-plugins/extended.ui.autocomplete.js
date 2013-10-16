@@ -10,3 +10,9 @@ jQuery.ui.autocomplete.prototype._renderItem = function( ul, item){
 		.append( "<a>" + t + "</a>" )
 		.appendTo( ul );
 };
+
+jQuery.ui.autocomplete.prototype.options.position = {
+	my: "left top-1",
+	at: "left bottom",
+	collision: "none"
+};
