@@ -72,6 +72,7 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 
 			// Populate client info properties from request
 		$RemoteAddress	= new RemoteAddress();
+        $RemoteAddress->setUseProxy(true); // @todo make this configurable
 		$ipAddress		= $RemoteAddress->getIpAddress();
 		$this->clientIp	= array(
 			'IPv4'	=> $ipAddress,			// i.e.: aaa.bbb.ccc.ddd - standard dotted format

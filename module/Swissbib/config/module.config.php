@@ -30,6 +30,7 @@ use Swissbib\Highlight\SolrConfigurator as HighlightSolrConfigurator;
 use Swissbib\VuFind\Hierarchy\TreeDataSource\Solr as TreeDataSourceSolr;
 use Swissbib\Log\Logger as SwissbibLogger;
 use Swissbib\View\Helper\DomainURL;
+use Swissbib\View\Helper\InstitutionDefinedAsFavorite as DefinedFavoriteInstitutions;
 
 return array(
 	'router'          => array(
@@ -189,17 +190,19 @@ return array(
 	),
 	'controllers'     => array(
 		'invokables' => array(
-			'helppage'     		=> 'Swissbib\Controller\HelpPageController',
-			'libadminsync' 		=> 'Swissbib\Controller\LibadminSyncController',
-			'my-research'  		=> 'Swissbib\Controller\MyResearchController',
-			'search'       		=> 'Swissbib\Controller\SearchController',
-			'summon'       		=> 'Swissbib\Controller\SummonController',
-			'holdings'     		=> 'Swissbib\Controller\HoldingsController',
-			'tab40import'  		=> 'Swissbib\Controller\Tab40ImportController',
-			'institutionFavorites'=> 'Swissbib\Controller\FavoritesController',
-			'hierarchycache' 	 => 'Swissbib\Controller\HierarchyCacheController',
-			'cart' 				=> 'Swissbib\Controller\CartController',
-			'shibtest' 				=> 'Swissbib\Controller\ShibtestController'
+			'helppage'     		    => 'Swissbib\Controller\HelpPageController',
+			'libadminsync' 		    => 'Swissbib\Controller\LibadminSyncController',
+			'my-research'  		    => 'Swissbib\Controller\MyResearchController',
+			'search'       		    => 'Swissbib\Controller\SearchController',
+			'summon'       		    => 'Swissbib\Controller\SummonController',
+			'holdings'     		    => 'Swissbib\Controller\HoldingsController',
+			'tab40import'  		    => 'Swissbib\Controller\Tab40ImportController',
+			'institutionFavorites'  => 'Swissbib\Controller\FavoritesController',
+			'hierarchycache' 	    => 'Swissbib\Controller\HierarchyCacheController',
+			'cart' 				    => 'Swissbib\Controller\CartController',
+			'shibtest' 			    => 'Swissbib\Controller\ShibtestController',
+            'ajax'                  => 'Swissbib\Controller\AjaxController',
+
 
 
 		),
@@ -375,6 +378,14 @@ return array(
 
 				return new ExtractFavoriteInstitutionsForHoldings($userInstitutionCodes);
 			},
+
+            'institutionDefinedAsFavorite' => function ($sm) {
+                $dataSource =  $sm->getServiceLocator()->get('Swissbib\FavoriteInstitutions\DataSource');
+
+                $tInstitutions = $dataSource->getFavoriteInstitutions();
+                return new DefinedFavoriteInstitutions($tInstitutions);
+            },
+
 			'qrCode' => function ($sm) {
 				$qrCodeService = $sm->getServiceLocator()->get('Swissbib\QRCode');
 

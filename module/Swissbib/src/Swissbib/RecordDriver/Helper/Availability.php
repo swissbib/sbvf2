@@ -55,8 +55,8 @@ class Availability
 			$responseBody	= $this->fetch($apiUrl);
 			$responseData	= json_decode($responseBody, true);
 
-			if (is_array($responseData) && isset($responseData[0])) {
-				return $responseData[0];
+			if (is_array($responseData)) {
+				return $responseData;
 			}
 
 			throw new \Exception('Unknown response data');

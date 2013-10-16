@@ -43,6 +43,7 @@ use Swissbib\VuFindSearch\Backend\Solr\Backend;
 use Swissbib\Highlight\SolrConfigurator as HighlightSolrConfigurator;
 use VuFindSearch\Backend\Solr\Connector;
 use VuFindSearch\Backend\Solr\Response\Json\RecordCollectionFactory;
+use Swissbib\VuFindSearch\Backend\Solr\QueryBuilder;
 
 
 /**
@@ -144,6 +145,29 @@ class SolrDefaultBackendFactory extends VuFindSolrDefaultBackendFactory
 
 
     }
+
+    /**
+     * Create the query builder.
+     *
+     * @return QueryBuilder
+     */
+    protected function createQueryBuilder()
+    {
+        $specs   = $this->loadSpecs();
+        $builder = new QueryBuilder($specs);
+
+        // Configure builder:
+        $search = $this->config->get($this->searchConfig);
+        $builder->caseSensitiveRanges
+            = isset($search->General->case_sensitive_ranges)
+            ? $search->General->case_sensitive_ranges : true;
+        $builder->caseSensitiveBooleans
+            = isset($search->General->case_sensitive_bools)
+            ? $search->General->case_sensitive_bools : true;
+
+        return $builder;
+    }
+
 
 
 
