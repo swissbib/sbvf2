@@ -41,13 +41,13 @@ $memorizeLink	   = $this->recordLink()->getActionUrl($this->driver, 'Save');
 ?>
 <tr>
     <!-- Column 1: Index -->
-	<td class="small center nodivider"><?=$this->recordIndex?></td>
+	<td class="col-1 small center nodivider"><?=$this->recordIndex?></td>
     <!-- Column 2: Memo list -->
-	<td class="nodivider">
+	<td class="col-2 nodivider">
 		<a href="<?=$memorizeLink?>" class="icon_notepad_add" title="<?=$this->transEsc('memorizelistadd')?>"></a>
 	</td>
     <!-- Column 3: Teaser-image / Thumbnail -->
-	<td class="right nodivider">
+	<td class="col-3 right nodivider">
 		<a href="<?=$detailLink?>" title="<?=$this->escapeHtml($title)?>">
             <? /** ---------------------------------------------------- */ ?>
             <? /** temporary fix params over here, @todo: fix in driver */ ?>
@@ -57,7 +57,7 @@ $memorizeLink	   = $this->recordLink()->getActionUrl($this->driver, 'Save');
 		</a>
 	</td>
     <!-- Column 4: Title and author details => links to full-view -->
-	<td>
+	<td class="col-4">
 		<h3>
             <a href="<?=$detailLink?>" title="<?=$this->escapeHtml($title)?>" class="color singleLink"><?=$this->escapeHtml($title)?></a>
         </h3>
@@ -107,10 +107,10 @@ $memorizeLink	   = $this->recordLink()->getActionUrl($this->driver, 'Save');
 	</td>
 
     <!-- Column 5 & 6 : libraries, links, info -->
-	<td class="small right nodivider colholdingscounter">
+	<td class="col-5 small right nodivider colholdingscounter">
 		<?=$this->render('search/results/available.phtml')?>
 	</td>
-	<td class="right">
+	<td class="col-6 right">
 		<?=$this->render('search/results/libraries.phtml')?>
 		<?php if ($this->isFavoriteInstitution($resultItem->getInstitutions())): ?>
 			<img src="<?= $this->basePath('themes/swissbib/images/icon_favorit_library.gif') ?>" alt="Favourite library icon (heart)" class="favourite-library">
