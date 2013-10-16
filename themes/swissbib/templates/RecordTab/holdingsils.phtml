@@ -3,16 +3,17 @@
 /** @var	Swissbib\RecordDriver\SolrMarc	$record  */
 $record		= $this->driver;
 $holdings	= $record->getHoldingsStructure();
-	// Copy favorites to own container
+
+// Copy favorites to own container
 $holdings	= $this->extractFavoriteInstitutionsForHoldings($holdings);
 
 ?>
-<?php if ($holdings): ?>
+<? if ($holdings): ?>
 
-	<?php foreach($holdings as $groupCode => $group): ?>
+	<? foreach($holdings as $groupCode => $group): ?>
 		<!-- begin: innerbox <?=$groupCode?> -->
 		<div class="innerbox grey holdingsBox" id="holdings-<?=$groupCode?>">
-			<?php
+			<?
 				$expandLib	= isset($_GET['expandlib']) ? $_GET['expandlib'] : '';
 				$expandedOrCollapsedClass = 'collapsed';
 				$expandOnLoad = '';
@@ -45,18 +46,22 @@ $holdings	= $this->extractFavoriteInstitutionsForHoldings($holdings);
 			<div class="holding-group-<?=$groupCode?>">
 
 				<div class="innerbox">
-					<?php foreach($group['institutions'] as $institutionCode => $institution): ?>
+					<? foreach($group['institutions'] as $institutionCode => $institution): ?>
 						<div class="institutionBox institution-<?=$institutionCode?>-box" id="holding-institution-<?=$groupCode?>-<?=$institutionCode?>-box">
 							<h4 id="holding-institution-<?=$groupCode?>-<?=$institutionCode?>" class="toggler institutionToggler">
 								<?=$this->escapeHtml($this->zendTranslate($institution['label'], 'institution'))?>
 							</h4>
 
-							<ul class="miniactions miniactions-<?=$institutionCode?>">
+
+
+							<? if ($this->institutionDefinedAsFavorite()->isInstitutionDefinedAsFavorite($institutionCode)): ?>
+                            <ul class="miniactions miniactions-<?=$institutionCode?>">
 								<li class="institutionFavorite">
-									<?php $favoriteLabel = isset($institution['favorite']) ? 'mylibraries.remove' : 'mylibraries.add'; ?>
+									<? $favoriteLabel = isset($institution['favorite']) ? 'mylibraries.remove' : 'mylibraries.add'; ?>
 									<a href="javascript:void(0)" title="<?=$this->transEsc($favoriteLabel)?>"><?=$this->transEsc($favoriteLabel)?></a>
 								</li>
 							</ul>
+                            <? endif; ?>
 
 							<div class="holding-institution-<?=$groupCode?>-<?=$institutionCode?>">
 								<div class="holdingsAjaxSpinner holding-ajax-spinner-<?=$institutionCode?>">
@@ -65,14 +70,14 @@ $holdings	= $this->extractFavoriteInstitutionsForHoldings($holdings);
 								</div>
 							</div>
 						</div>
-					<?php endforeach; ?>
+					<? endforeach; ?>
 
 				</div>
 			</div>
 		</div>
 		<!-- end: innerbox <?=$groupCode?> -->
 
-	<?php endforeach; ?>
+	<? endforeach; ?>
 
 	<div id="holdings-items-popup" style="display:none">
 		Loading...
@@ -84,8 +89,8 @@ $holdings	= $this->extractFavoriteInstitutionsForHoldings($holdings);
 		vufindString.favoriteReload = '<?=$this->transEsc('mylibraries.reload')?>';
 	</script>
 
-<?php else: ?>
+<? else: ?>
 
 	<?=$this->render('RecordTab/holdingils-noholdings')?>
 
-<?php endif; ?>
+<? endif; ?>

@@ -34,6 +34,7 @@ $responsible       = isset($titleStatement['statement_responsibility']) ? $title
 $responsible       = isset($responsible) && !empty($responsible) ? $responsible : implode('; ', $resultItem->getSecondaryAuthors(true));
 $edition		   = $resultItem->getEdition();
 $publicationDate   = $this->publicationDateMarc($resultItem->getPublicationDates());
+$hostitems         = $resultItem->getHostItemEntry();
 $groupID		   = $resultItem->getGroup(true);
 $showFRBR          = $this->configAccess()->Site->displayFrbr;
 $memorizeLink	   = $this->recordLink()->getActionUrl($this->driver, 'Save');
@@ -80,8 +81,15 @@ $memorizeLink	   = $this->recordLink()->getActionUrl($this->driver, 'Save');
             <?php endif; ?>
         </div>
 
-        <!-- Jahr -->
+        <!-- Host Item & Jahr -->
         <div class="meta">
+            <? if ($hostitems): ?>
+                <? foreach ($hostitems as $hostitem): ?>
+                <h6><?=$this->transEsc('note_773')?>: </h6>
+                <? $text = array_key_exists('related', $hostitem) ? $hostitem['title'] . ', ' . $hostitem['related'] : $hostitem['title'] ?>
+                <span><?=$this->escapeHtml($text)?></span><br />
+                <? endforeach; ?>
+            <? endif; ?>
 			<h6><?=$this->transEsc('Year')?>:</h6>
             <span><?=$this->escapeHtml($publicationDate)?></span>
             <?php if ($edition): ?>

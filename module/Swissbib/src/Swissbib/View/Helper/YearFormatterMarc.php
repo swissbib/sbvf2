@@ -56,7 +56,8 @@ class YearFormatterMarc extends AbstractHelper
 			case 'q':
 				if ($year2 === '9999') {
 					$retVal = $year1;
-				} elseif ($year2 != '9999') {
+				}
+                elseif ($year2 != '9999') {
 					$retVal = $year1 . ' / ' . $year2;
 				}
 				break;
@@ -64,10 +65,23 @@ class YearFormatterMarc extends AbstractHelper
 			case 'm':
 				if ($year2 === '9999') {
 					$retVal = $year1 . '-';
-				} elseif ($year2 != '9999') {
+				}
+                elseif ($year2 != '9999') {
 					$retVal = $year1 . '-' . $year2;
 				}
 				break;
+
+            case 'i':
+                if ($year1 === $year2) {
+                    $retVal = $year1;
+                }
+                if ($year2 === '9999') {
+                    $retVal = $year1 . '-';
+                }
+                else {
+                    $retVal = $year1 . '-' . $year2;
+                }
+                break;
 		}
 
 		return str_replace('u', '?', $retVal);

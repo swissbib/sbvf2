@@ -234,7 +234,7 @@ class SolrMarc extends VuFindSolrMarc
 		$translator = $this->getTranslator();
 
 		foreach ($formats as $index => $format) {
-			$formats[$index] = $translator->translate($format);
+			$formats[$index] = $translator->translate( strtolower($format));
 		}
 
 		return $formats;
@@ -751,7 +751,7 @@ class SolrMarc extends VuFindSolrMarc
                implement with new CBS-data (standardised MARC, not IDSMARC)
             */
 			'local'       => array(
-				'ind'        => I,
+				'ind'        => "",
 				'fieldsOnly' => array(690, 691),
 				'detect'     => true // extract vocabulary from sub field 2
 			),
@@ -834,17 +834,14 @@ class SolrMarc extends VuFindSolrMarc
 	/**
 	 * Get host item entry
 	 *
-	 * @todo    Add relevant fields if required
 	 * @return    Array
 	 */
 	public function getHostItemEntry()
 	{
 		return $this->getMarcSubFieldMaps(773, array(
-													'a' => 'heading',
-													'b' => 'edition',
 													'd' => 'place',
+                                                    't' => 'title',
 													'g' => 'related',
-													'h' => 'physical_description'
 											   ));
 	}
 
@@ -933,8 +930,19 @@ class SolrMarc extends VuFindSolrMarc
 		return isset($this->fields['union']) ? $this->fields['union'] : array();
 	}
 
+    /**
+     * Get online status
+     *
+     * @return Boolean
+     */
 
-	/**
+    public function getOnlineStatus(){
+        $filter = $this->fields['filter_str_mv'];
+        return in_array('ONL', $filter) ? true : false;
+    }
+
+
+    /**
 	 * Get short title
 	 * Override base method to assure a string and not an array
 	 * as long as title_short is multivalued=true in solr (necessary because of faulty data)
