@@ -694,6 +694,14 @@ TVI: 20100811
     list-style: none;
 }
 
+.ui-autocomplete li.ui-menu-item:first-child a,
+.ui-autocomplete li.ui-menu-item:first-child a:hover,
+.ui-autocomplete li.ui-menu-item:first-child a.ui-state-hover,
+.ui-autocomplete li.ui-menu-item:first-child a.ui-state-focus{
+    border-top: 1px solid #494E59;
+    margin: 0;
+}
+
 .ui-autocomplete li a,
 .ui-autocomplete .ui-menu-item a {
     border-bottom: 1px solid #494E59;
