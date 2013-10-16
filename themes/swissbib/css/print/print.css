@@ -1,105 +1,102 @@
-/* --- NOSE AG Design Intelligence --------------------------------------------------- */
-/* --- CSS Framework: print styles --------------------------------------------------- */
-/* --- swissbib  --------------------------------------------------------------------- */
-
-
 @media print {
 
- 
+
 /* -------------------------------------------------------------------------------------
  basemod.css
  ======================================================================================*/
- 
-/* general settings */
-body{
-	font-size: 10pt;
-	line-height:15pt;
-	text-align: left;
-	background-color:#FFFFFF;
-	color:#000000;
-}
 
-/* hide areas */
-#header, #search, #navigation, #logo, #service, #col1, .c25l .dropshadow, #notepad, #sponsors, #pagefunctions, .addthis_button_compact, h1, .paging.paging_pages, .tools.floatbox  {
+#access, #service, #meta, #navigation, #logo h1,
+#search,
+.facets,
+.tools,
+#notepad,
+.data colgroup, .data caption, .data .col-1, .data .col-2, .data .col-3,
+.data th.col-6, .data td.col-5,
+#pagefunctions {
 	display: none;
 }
- 
-/* adjust size of areas */
 
-html, body, #container, #main, table.data {
-	width:17cm;
-	padding:0;
-	margin:0;
-	background-image:none;
-	background-color:#FFFFFF;
+#header {
+	background: none;
+}
+
+.data {
+	text-align: left;
+}
+
+.data th {
+	border-bottom: 1px solid #000;
+}
+
+.data td {
+	vertical-align: top;
+	padding-bottom: 20pt;
+}
+
+.data ul {
+	padding-left: 20px;
+}
+
+.data td span{
+	margin-bottom: 5px;
+}
+
+.data .col-6 {
+	width: 40% !important;
+}
+
+a,a:link,a:visited {
+	text-decoration: none;
+	color:#000;
+}
+
+body {
+	font-size: 12pt;
+}
+
+h6 {
+	font-size: 10pt;
+	margin: 0;
+	display: inline;
+}
+
+h3 {
+	font-size: 13pt;
+	margin: 0 0 5pt 0;
+}
+
+.data td span{
+	margin-bottom: 5px;
+}
+
+#tabbed li {
+	display: none;
+}
+
+#tabbed li.selected {
+	display: block;
 }
 
 
-#col3 {
-margin:0 0 0 0px;
-width:auto;
-}
 
 
 /* -------------------------------------------------------------------------------------
  fonts.css
  ======================================================================================*/
- 
-/* adjust font size */
-h1, h2, h3, h4 {
-	color:#000000;
-	font-weight:bold;
-}
-h1 {
-	font-size:18pt;
-	font-weight:normal;
-}
-h2 {
-	font-size:14pt;
-}
-h3 {
-	font-size:12pt;
-}
-h4 {
-	font-size:9pt;
-	line-height:15pt;
-}
-p, a, ul, ol, ul li, ul li a, ol li, ol li a, table, table th, table td, table tbody th, table tbody td, label, input, textarea {
-	font-size:9pt;
-	line-height:15pt;
-	color:#000000;
-} 
-
-.toggler_rendered_marcview div p {
-	font-size:9pt;
-	line-height:12pt;
-	color:#000000;
-}
-
-/* list */
-ul.list li {
-	background-image:none;
-	list-style-type:square;
-	list-style-position:inside;
-	padding-left:0;
-}
-
-/* table */
-table td, table th, table td.background, table.background td,
-table th, table th, table th.background, table.background th {
-	padding:0 5px 0 0;
-	background-color:#FFFFFF;
-	border:none;
-	color:#000000;
-}
-table th, table th, table th.background, table.background th {
-	font-weight:bold;
-}
 
 
 /* -------------------------------------------------------------------------------------
  content.css
  ======================================================================================*/
- 
- 
+
+
+
+/* -------------------------------------------------------------------------------------
+ blueprint.css
+ ======================================================================================*/
+
+a:link:after, a:visited:after {
+	content:none;
+}
+
 }
