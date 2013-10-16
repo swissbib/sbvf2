@@ -485,6 +485,7 @@ return array(
 				'factories' => array(
 					'aleph' => function ($sm) {
 						return new \Swissbib\VuFind\ILS\Driver\Aleph(
+                            new \VuFind\Date\Converter(),
 							$sm->getServiceLocator()->get('VuFind\CacheManager')
 						);
 					}
