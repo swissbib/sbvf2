@@ -1381,7 +1381,8 @@ class SolrMarc extends VuFindSolrMarc
 							$index += 1;
 						}
 					}
-				} elseif ($currentTag ===  't') {
+				}
+                elseif ($currentTag ===  't') {
 					if ($hasNext) {
 						if ($nextTag === 'r') { // $t / $r
 							$lines[] = $currentData . ' / ' . $nextData;
@@ -1397,11 +1398,17 @@ class SolrMarc extends VuFindSolrMarc
 						$debugLog[$fieldIndex][] = $index . ' | $t';
 						$index += 1;
 					}
-				} elseif ($currentTag ===  'r') { // $r
+				}
+                elseif ($currentTag ===  'r') { // $r
 					$lines[] = $currentData;
 					$debugLog[$fieldIndex][] = $index . ' | $r';
 					$index += 1;
-				} else {
+				}
+                elseif ($currentTag === 'a') { // $a
+                    $lines[] = $currentData;
+                    $index += 1;
+                }
+                else {
 					// unknown order
 					$debugLog[$fieldIndex][] = $index . ' | unknown order';
 					$index += 1;
