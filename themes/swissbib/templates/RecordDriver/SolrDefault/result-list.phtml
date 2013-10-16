@@ -35,6 +35,7 @@ $responsible       = isset($responsible) && !empty($responsible) ? $responsible 
 $edition		   = $resultItem->getEdition();
 $publicationDate   = $this->publicationDateMarc($resultItem->getPublicationDates());
 $groupID		   = $resultItem->getGroup(true);
+$uniqueID						= $resultItem->getUniqueID();
 $showFRBR          = $this->configAccess()->Site->displayFrbr;
 $memorizeLink	   = $this->recordLink()->getActionUrl($this->driver, 'Save');
 
@@ -70,6 +71,11 @@ $memorizeLink	   = $this->recordLink()->getActionUrl($this->driver, 'Save');
 						<?=$this->escapeHtml($titleStatement['title_remainder'])?>
 					</span><br />
 				<?php endif; ?>
+			<?php endif; ?>
+			<?php if (true): ?>
+				<div class="print">
+					<h6>ID:</h6> <span><?=$uniqueID ?> </span>
+				</div>
 			<?php endif; ?>
 
             <?php if ($responsible): ?>

@@ -16,6 +16,10 @@
 	display: none;
 }
 
+.print {
+	display: block;
+}
+
 #header {
 	background: none;
 }
