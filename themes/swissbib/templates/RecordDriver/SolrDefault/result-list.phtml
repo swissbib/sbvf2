@@ -26,7 +26,7 @@ if ($this->configAccess()->Content->setSmallIcons) {
     $thumbnailSrc	=  isset($notAvailableImage) ? $path . $notAvailableImage :  $this->url('cover-unavailable');
 
 }
-
+$id                = $resultItem->getUniqueID();
 $detailLink		   = $this->recordLink()->getUrl($resultItem);
 $title			   = $this->mainTitle($resultItem->getShortTitle());
 $titleStatement	   = $resultItem->getTitleStatement(true);
