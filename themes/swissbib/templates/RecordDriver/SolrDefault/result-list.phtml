@@ -26,7 +26,6 @@ if ($this->configAccess()->Content->setSmallIcons) {
     $thumbnailSrc	=  isset($notAvailableImage) ? $path . $notAvailableImage :  $this->url('cover-unavailable');
 
 }
-$id                = $resultItem->getUniqueID();
 $detailLink		   = $this->recordLink()->getUrl($resultItem);
 $title			   = $this->mainTitle($resultItem->getShortTitle());
 $titleStatement	   = $resultItem->getTitleStatement(true);
@@ -72,9 +71,9 @@ $memorizeLink	   = $this->recordLink()->getActionUrl($this->driver, 'Save');
 					</span><br />
 				<?php endif; ?>
 			<?php endif; ?>
-			<?php if (true): ?>
+			<?php if (!empty($uniqueID)): ?>
 				<div class="print">
-					<h6>ID:</h6> <span><?=$uniqueID ?> </span>
+					<h6><?=$this->transEsc('Item_ID')?>:</h6> <span><?=$uniqueID ?> </span>
 				</div>
 			<?php endif; ?>
 
