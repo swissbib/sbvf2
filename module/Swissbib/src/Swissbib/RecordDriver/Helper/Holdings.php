@@ -46,6 +46,7 @@ class Holdings
 		'0' => 'local_branch_expanded',
 		'1' => 'location_expanded',
 		'4' => 'holding_status',
+        '6' => 'process_status',
 		'a' => 'holding_information',
 		'B' => 'network',
 		'b' => 'institution',
