@@ -48,7 +48,7 @@ class ExtractFavoriteInstitutionsForHoldings extends AbstractTranslatorHelper
 
 		if ($favoriteInstitutions) {
 			$favoriteHoldings = array(
-				'label'			=> $this->translator->translate('mylibraries'),
+				'label'			=> 'mylibraries',
 				'institutions'	=> $favoriteInstitutions
 			);
 
