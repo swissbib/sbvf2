@@ -12,7 +12,7 @@ if ($this->export()->recordSupportsFormat($this->driver, 'RDF')) {
 	$this->headLink()->appendAlternate($this->recordLink()->getActionUrl($this->driver, 'RDF'), 'application/rdf+xml', 'RDF Representation');
 }
 
-$lastSearchUrl = VuFind\Search\Memory::retrieve();
+$lastSearchUrl = $this->getextendedlastsearchlink()->getEscapedLinkOnly();
 
 $this->headTitle($this->driver->getShortTitle());
 
@@ -46,7 +46,7 @@ $this->headTitle($this->driver->getShortTitle());
 
 			<div class="tools floatbox">
 				<?php if($lastSearchUrl): ?>
-					<a href="<?=$this->escapeHtml($lastSearchUrl)?>" title="<?= $this->transEsc('result.backtohitlist') ?>" class="linkbutton icon_backto">
+					<a href="<?=$lastSearchUrl?>" title="<?= $this->transEsc('result.backtohitlist') ?>" class="linkbutton icon_backto">
                         <span><?= $this->transEsc('result.backtohitlist') ?></span>
                     </a>
 				<?php endif; ?>
@@ -66,7 +66,7 @@ $this->headTitle($this->driver->getShortTitle());
 
 			<div class="tools floatbox">
 				<?php if($lastSearchUrl): ?>
-					<a href="<?=$this->escapeHtml($lastSearchUrl)?>" title="<?= $this->transEsc('result.backtohitlist') ?>" class="linkbutton icon_backto">
+					<a href="<?=$lastSearchUrl?>" title="<?= $this->transEsc('result.backtohitlist') ?>" class="linkbutton icon_backto">
                         <span><?= $this->transEsc('result.backtohitlist') ?></span>
                     </a>
 				<?php endif; ?>
