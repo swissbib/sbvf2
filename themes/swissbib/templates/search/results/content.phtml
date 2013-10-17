@@ -70,7 +70,7 @@
             <?
 
                 if ( !empty($showFRBR) && $showFRBR  && strcmp($searchHandler,'FRBR') == 0):
-                    $lastSearchUrl = VuFind\Search\Memory::retrieve();
+                    $lastSearchUrl = $this->getextendedlastsearchlink()->getEscapedLinkOnly();
              ?>
 
                     <a href="<?=$lastSearchUrl?>" class="linkbutton icon_backto" title="Zurück"><span>Zurück</span></a>

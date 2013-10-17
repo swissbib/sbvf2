@@ -77,7 +77,13 @@ return array(
 				return new \Swissbib\View\Helper\RecordLink(
 					$sm->getServiceLocator()->get('VuFind\RecordRouter')
 				);
-			}
+			},
+            'getextendedlastsearchlink' => function ($sm) {
+                return new \Swissbib\View\Helper\GetExtendedLastSearchLink(
+                    $sm->getServiceLocator()->get('VuFind\Search\Memory')
+                );
+},
+
 		)
 	)
 );
