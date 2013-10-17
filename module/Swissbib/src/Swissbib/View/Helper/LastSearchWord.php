@@ -20,7 +20,8 @@ class LastSearchWord extends AbstractHelper
 	public function __invoke()
 	{
 		$lookFor       = '';
-		$lastSearchUrl = Memory::retrieve();
+
+		$lastSearchUrl = $this->getView()->plugin('getextendedlastsearchlink')->getLinkOnly();
 		$lastSearch    = parse_url($lastSearchUrl);
 
 		if (isset($lastSearch['query'])) {
