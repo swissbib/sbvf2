@@ -1,9 +1,9 @@
 <?php
 
-$initJs		= '$(document).ready(function() { $(\'#loginForm\').validate(); });';
-$initScript	= $this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $initJs);
+$initJs = '$(document).ready(function() { $(\'#loginForm\').validate(); });';
+$initScript = $this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $initJs);
 
-	// Convenience variables
+// Convenience variables
 $account = $this->auth()->getManager();
 $hideLogin = !(is_object($account) && $account->loginEnabled());
 //$offlineMode = $this->ils()->getOfflineMode();
@@ -13,40 +13,40 @@ $sessionInitiator = $account->getSessionInitiator($this->serverUrl($this->url('m
 
 ?>
 
-<?=$this->flashmessages()?>
+<h1><?= $this->transEsc('Login') ?></h1>
+<?= $this->flashmessages() ?>
 
 
-
-<? if( $hideLogin ): ?>
-    <div class="error"><?=$this->transEsc('login_disabled')?></div>
+<? if ($hideLogin): ?>
+    <div class="error"><?= $this->transEsc('login_disabled') ?></div>
 <? else: ?>
-    <? if( !$sessionInitiator ): // display default login form if no login URL provided ?>
-        <h1><?=$this->transEsc('Login')?></h1>
+    <? if (!$sessionInitiator): // display default login form if no login URL provided ?>
+        <form method="post" action="<?= $this->url('myresearch-home') ?>" name="loginForm" id="loginForm">
+            <?= $this->auth()->getLoginFields() ?>
+            <input class="push-2 button" type="submit" name="processLogin" value="<?= $this->transEsc('Login') ?>"/>
 
-        <form method="post" action="<?=$this->url('myresearch-home')?>" name="loginForm" id="loginForm">
-            <?=$this->auth()->getLoginFields()?>
-            <input class="push-2 button" type="submit" name="processLogin" value="<?=$this->transEsc('Login')?>"/>
             <div class="clear"></div>
         </form>
-        <?=$initScript?>
+        <?= $initScript ?>
         <?php /** temporary disabled by ferni@snowflake.ch
         <?php if( $account->supportsCreation() ): ?>
         <a class="new_account"
         href="<?=$this->url('myresearch-account')?>"><?=$this->transEsc('Create New Account')?></a>
         <? endif; ?>
-         */ ?>
+         */
+        ?>
     <? else:
 
 
         //at first prepare the necessary URLs
 
-        $encodedProviderID =  urlencode($this->serverUrl() . "/" . "shibboleth");
-        $encodedTarget = urlencode($this->serverUrl()  . "/MyResearch/Home");
+        $encodedProviderID = urlencode($this->serverUrl() . "/" . "shibboleth");
+        $encodedTarget = urlencode($this->serverUrl() . "/MyResearch/Home");
         $encodedGuestURL = "https://aai.guest-login.ch/idp/profile/SAML2/Unsolicited/SSO?providerId=" . $encodedProviderID . "&target=" . $encodedTarget;
         ?>
 
 
-        <h1>Bitte wählen Sie die für Sie zutreffende Login Variante aus</h1>
+        <h2>Bitte wählen Sie die für Sie zutreffende Login Variante aus</h2>
         <p>&nbsp;</p>
 
 
@@ -86,7 +86,7 @@ $sessionInitiator = $account->getSessionInitiator($this->serverUrl($this->url('m
 
             //////////////////// RECOMMENDED SETTINGS ////////////////////
 
-            var wayf_hide_categories =  new Array("tertiaryb","uppersecondary");
+            var wayf_hide_categories = new Array("tertiaryb", "uppersecondary");
 
             var wayf_unhide_idps = new Array();
 
@@ -94,15 +94,12 @@ $sessionInitiator = $account->getSessionInitiator($this->serverUrl($this->url('m
             var wayf_hide_idps = new Array();
 
 
-
             //////////////////// ADVANCED SETTINGS ////////////////////
 
             var wayf_sp_samlDSURL = <?= '"' . $this->serverUrl() . "/Shibboleth.sso/Login" . '"'; ?>;
 
 
-
             //////////////////// ADDITIONAL CSS CUSTOMIZATIONS ////////////////////
-
 
 
             //-->
@@ -128,14 +125,15 @@ $sessionInitiator = $account->getSessionInitiator($this->serverUrl($this->url('m
             </thead>
             <tbody>
 
-                <tr>
+            <tr>
 
-                    <td colspan="2">
-                        <script type="text/javascript" src="https://wayf.switch.ch/SWITCHaai/WAYF/embedded-wayf.js"></script>
+                <td colspan="2">
+                    <script type="text/javascript"
+                            src="https://wayf.switch.ch/SWITCHaai/WAYF/embedded-wayf.js"></script>
 
-                    </td>
+                </td>
 
-                </tr>
+            </tr>
 
             </tbody>
         </table>
@@ -151,7 +149,9 @@ $sessionInitiator = $account->getSessionInitiator($this->serverUrl($this->url('m
             -->
             <table style="width: 70%">
 
-                <caption>Javascript is not enabled for your web browser. Please use the link to the external selection box</caption>
+                <caption>Javascript is not enabled for your web browser. Please use the link to the external selection
+                    box
+                </caption>
                 <thead>
                 <tr>
                     <th>SWITCHaai Federation</th>
@@ -162,7 +162,7 @@ $sessionInitiator = $account->getSessionInitiator($this->serverUrl($this->url('m
                 <tr>
 
                     <td>
-                        <a href="<?=$this->escapeHtml($sessionInitiator)?>"><?=$this->transEsc("Institutional Login with external WAYF - non Java Script")?></a>
+                        <a href="<?= $this->escapeHtml($sessionInitiator) ?>"><?= $this->transEsc("Institutional Login with external WAYF - non Java Script") ?></a>
 
                     </td>
 
