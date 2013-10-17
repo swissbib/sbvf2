@@ -1,46 +1,49 @@
 <?
-    	// Set page title
-    $this->headTitle($this->translate('Search History'));
+// Set page title
+$this->headTitle($this->translate('Search History'));
 
-    	// Set up breadcrumbs
+// Set up breadcrumbs
 //    $this->layout()->breadcrumbs = '<em>' . $this->transEsc('History') . '</em>';
 
 ?>
 
-<?=$this->myResearchSideBar('history');?>
+<?= $this->myResearchSideBar('history'); ?>
 <!-- begin: col3 (content) -->
 <div id="col3" class="content">
-	<div id="col3_content" class="clearfix">
-		<!-- begin: content -->
-		<div id="content">
+    <div id="col3_content" class="clearfix">
+        <!-- begin: content -->
+        <div id="content">
 
-			<?php if( !empty($this->saved) || !empty($this->unsaved) ): ?>
-					
-				<?= $this->flashmessages() ?>
+            <?php if (!empty($this->saved) || !empty($this->unsaved)): ?>
 
-				<?php if( !empty($this->saved) ): ?>
-					<h1><?=$this->transEsc('history_saved_searches')?></h1>
-					<?= $this->context()->renderInContext('search/history-table.phtml', array('showSaved' => true)); ?>
-				<?php endif; ?>
+                <div id="popupDetails">
+                    <?= $this->flashmessages() ?>
+                </div>
 
-				<?php if( !empty($this->unsaved) ): ?>
-					<h1><?=$this->transEsc('history_recent_searches')?></h1>
-					<?= $this->context()->renderInContext('search/history-table.phtml', array('showSaved' => false)); ?>
+                <?php if (!empty($this->saved)): ?>
+                    <h1><?= $this->transEsc('history_saved_searches') ?></h1>
+                    <?= $this->context()->renderInContext('search/history-table.phtml', array('showSaved' => true)); ?>
+                <?php endif; ?>
+
+                <?php if (!empty($this->unsaved)): ?>
+                    <h1><?= $this->transEsc('history_recent_searches') ?></h1>
+                    <?= $this->context()->renderInContext('search/history-table.phtml', array('showSaved' => false)); ?>
                     <div class="tools floatbox">
-                        <a href="?purge=true" class="linkbutton icon_delete"><span><?=$this->transEsc('history_purge')?></span></a>
+                        <a href="?purge=true"
+                           class="linkbutton icon_delete"><span><?= $this->transEsc('history_purge') ?></span></a>
                     </div>
-				<?php endif; ?>
+                <?php endif; ?>
 
-			<?php else: ?>
-				<h1><?=$this->transEsc('history_recent_searches')?></h1>
-				<p><?= $this->transEsc('history_no_searches') ?></p>
-			<?php endif; ?>
+            <?php else: ?>
+                <h1><?= $this->transEsc('history_recent_searches') ?></h1>
+                <p><?= $this->transEsc('history_no_searches') ?></p>
+            <?php endif; ?>
 
-		</div>
-		<!-- end: content -->
-	</div>
-	<div id="ie_clearing">
-		&nbsp;
-	</div>
+        </div>
+        <!-- end: content -->
+    </div>
+    <div id="ie_clearing">
+        &nbsp;
+    </div>
 </div>
 <!-- end: col3 (content) -->

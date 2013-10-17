@@ -354,11 +354,22 @@ form[name="bulkActionForm"] .mail {
 }
 
 #popupDetails {
-    padding-top: 20px;
+    padding-top: 40px;
 }
 
 #popupDetails .info {
     height: auto;
+
+}
+
+#popupDetails .status_info {
+    height: auto;
+    margin-bottom: 0px;
+}
+
+#popupDetails .status_error {
+    height: auto;
+    margin-bottom: 0px;
 }
 
 /* Disable favorites search in search box */
@@ -697,7 +708,7 @@ TVI: 20100811
 .ui-autocomplete li.ui-menu-item:first-child a,
 .ui-autocomplete li.ui-menu-item:first-child a:hover,
 .ui-autocomplete li.ui-menu-item:first-child a.ui-state-hover,
-.ui-autocomplete li.ui-menu-item:first-child a.ui-state-focus{
+.ui-autocomplete li.ui-menu-item:first-child a.ui-state-focus {
     border-top: 1px solid #494E59;
     margin: 0;
 }
