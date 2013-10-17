@@ -38,19 +38,26 @@ a,a:link,a:visited {
  swissbib.css / global.css
  ======================================================================================*/
 
+table.data {
+	border-collapse: collapse;
+}
+
 .data th {
-	border-bottom: 1px solid #000;
+	border-bottom: 2pt solid #000;
 	text-align: left;
 }
 
 .data td {
 	vertical-align: top;
-	padding-bottom: 20pt;
+	padding: 15pt 0 5pt 0;
 	text-align: left;
+	border-bottom: 1pt solid #AAA;
+	border-right: none;
 }
 
 .data ul {
-	padding-left: 20pt;
+	padding-left: 16pt;
+	margin-top: 0;
 }
 
 .data .col-6 {
