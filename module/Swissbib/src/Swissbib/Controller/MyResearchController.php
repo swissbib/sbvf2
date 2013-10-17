@@ -201,7 +201,13 @@ class MyResearchController extends VuFindMyResearchController
 	public function mylistAction()
 	{
 		try {
-			return parent::mylistAction();
+			$viewModel = parent::mylistAction();
+            //GH fromRoute only for base URL -> do we need more?
+            //$currentURL = $this->url()->fromRoute();
+            //aim: accomplish navigation between 'merkliste' and full view
+            $currentURL = $this->getRequest()->getRequestUri();
+            $this->getSearchMemory()->rememberSearch($currentURL);
+            return $viewModel;
 		} catch (\Exception $e) {
 			$this->flashMessenger()->setNamespace('error')->addMessage($e->getMessage());
 
