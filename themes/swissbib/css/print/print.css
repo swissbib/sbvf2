@@ -2,51 +2,30 @@
 
 
 /* -------------------------------------------------------------------------------------
- basemod.css
+ display options
  ======================================================================================*/
 
 #access, #service, #meta, #navigation, #logo h1,
-#search,
-.facets,
-.tools,
-#notepad,
+#search, #sidebar h3, .facets, .tools, #notepad, h4.filters_indicator,
 .data colgroup, .data caption, .data .col-1, .data .col-2, .data .col-3,
-.data th.col-6, .data td.col-5,
-#pagefunctions {
+.data th.col-6, .data td.col-5, .data td.col-6 img,
+.format a, #tabbed li, #pagefunctions {
 	display: none;
 }
 
-.print {
+.print,
+#sidebar .print h3 {
 	display: block;
 }
 
+
+/* -------------------------------------------------------------------------------------
+ basemod.css
+ ======================================================================================*/
+
 #header {
-	background: none;
-}
-
-.data {
-	text-align: left;
-}
-
-.data th {
-	border-bottom: 1px solid #000;
-}
-
-.data td {
-	vertical-align: top;
-	padding-bottom: 20pt;
-}
-
-.data ul {
-	padding-left: 20px;
-}
-
-.data td span{
-	margin-bottom: 5px;
-}
-
-.data .col-6 {
-	width: 40% !important;
+	background: none !important;
+	border: none !important;
 }
 
 a,a:link,a:visited {
@@ -54,12 +33,38 @@ a,a:link,a:visited {
 	color:#000;
 }
 
-body {
-	font-size: 12pt;
+
+/* -------------------------------------------------------------------------------------
+ swissbib.css / global.css
+ ======================================================================================*/
+
+.data th {
+	border-bottom: 1px solid #000;
+	text-align: left;
+}
+
+.data td {
+	vertical-align: top;
+	padding-bottom: 20pt;
+	text-align: left;
+}
+
+.data ul {
+	padding-left: 20pt;
+}
+
+.data .col-6 {
+	width: 40% !important;
+}
+
+
+h1, h6, h5 {
+	font-size: 10pt;
+	margin: 5pt 0 0 0;
+	font-weight: bold;
 }
 
 h6 {
-	font-size: 10pt;
 	margin: 0;
 	display: inline;
 }
@@ -69,30 +74,32 @@ h3 {
 	margin: 0 0 5pt 0;
 }
 
-.data td span{
-	margin-bottom: 5px;
+a:link, a:visited,
+.print h3 span {
+	font-weight: normal;
 }
-
-#tabbed li {
-	display: none;
-}
-
-#tabbed li.selected {
-	display: block;
-}
-
-
-
-
-/* -------------------------------------------------------------------------------------
- fonts.css
- ======================================================================================*/
 
 
 /* -------------------------------------------------------------------------------------
  content.css
  ======================================================================================*/
 
+.filter ul {
+	margin: 0;
+	padding-left: 15pt;
+}
+
+.filters h4 {
+	font-weight: normal;
+}
+
+.filters p span {
+	font-weight: bold;
+}
+
+.filters ul li a.filter_remove {
+	background: none !important;
+}
 
 
 /* -------------------------------------------------------------------------------------
