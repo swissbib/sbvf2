@@ -314,8 +314,9 @@ return array(
 			'Swissbib\Highlight\SolrConfigurator' => function ($sm) {
 				$config			= $sm->get('Vufind\Config')->get('config')->Highlight;
 				$eventsManager	= $sm->get('SharedEventManager');
+                $memory         = $sm->get('VuFind\Search\Memory');
 
-				return new HighlightSolrConfigurator($eventsManager, $config);
+				return new HighlightSolrConfigurator($eventsManager, $config, $memory);
 			},
 			'Swissbib\Logger' => function ($sm) {
 				$logger = new SwissbibLogger();
