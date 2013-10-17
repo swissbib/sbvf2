@@ -1,58 +1,62 @@
 <?php
-        // Set page title
-    $lookFor = $this->params->getDisplayQuery();
-    if (isset($this->overrideTitle)) {
-        $this->headTitle($this->overrideTitle);
-    } else {
-        $this->headTitle($this->translate('Search Results') . (empty($lookFor) ? '' : " - {$lookFor}"));
-    }
+// Set page title
+$lookFor = $this->params->getDisplayQuery();
+if (isset($this->overrideTitle)) {
+    $this->headTitle($this->overrideTitle);
+} else {
+    $this->headTitle($this->translate('Search Results') . (empty($lookFor) ? '' : " - {$lookFor}"));
+}
 
-	    // Set up search box
-    $this->layout()->searchboxParams = array(
-		'tab'				=> $this->activeTabKey,
-		'searchType'        => $this->params->getSearchType(),
-		'searchId'          => $this->results->getSearchId()
-    );
+// Set up search box
+$this->layout()->searchboxParams = array(
+    'tab' => $this->activeTabKey,
+    'searchType' => $this->params->getSearchType(),
+    'searchId' => $this->results->getSearchId()
+);
 
 ?>
 <!-- begin: col1 (sidebar)  -->
 <div id="col1" class="sidebar">
-	<div id="col1_content" class="clearfix">
-		<!-- begin: sidebar -->
-		<div id="sidebar">
-			<?=$this->render($this->tabTemplate('search/sidebar/results', $this->activeTabKey));?>
+    <div id="col1_content" class="clearfix">
+        <!-- begin: sidebar -->
+        <div id="sidebar">
+            <?= $this->render($this->tabTemplate('search/sidebar/results', $this->activeTabKey)); ?>
 
-		</div>
-		<!-- end: sidebar -->
-	</div>
+        </div>
+        <!-- end: sidebar -->
+    </div>
 </div>
 <!-- end: col1 (sidebar) -->
 <!-- begin: col3 (content) -->
 <div id="col3" class="content">
-	<div id="col3_content" class="clearfix">
-		<!-- begin: content -->
-		<div id="content">
+    <div id="col3_content" class="clearfix">
+        <!-- begin: content -->
+        <div id="content">
 
-			<!-- begin: inlay -->
-			<div id="inlay">
-				<?=$this->render($this->tabTemplate('search/results/inlay', $this->activeTabKey));?>
-			</div><!-- end: inlay -->
+            <!-- begin: inlay -->
+            <div id="inlay">
+                <?= $this->render($this->tabTemplate('search/results/inlay', $this->activeTabKey)); ?>
+            </div>
+            <!-- end: inlay -->
 
-			<?=$this->flashmessages()?>
+            <!-- ACHTUNG: geht das oder zerreisst es die Darstellung? -->
+            <div id="popupDetails">
+                <?= $this->flashmessages() ?>
+            </div>
 
-			<!-- begin: tabbed view -->
-			<?=$this->render($this->tabTemplate('search/results/content', $this->activeTabKey))?>
-			<!-- end: tabbed view -->
+            <!-- begin: tabbed view -->
+            <?= $this->render($this->tabTemplate('search/results/content', $this->activeTabKey)) ?>
+            <!-- end: tabbed view -->
 
-			<!-- begin: pagefunctions -->
-			<?=$this->render($this->tabTemplate('search/pagefunctions', $this->activeTabKey));?>
-			<!-- end: pagefunctions -->
+            <!-- begin: pagefunctions -->
+            <?= $this->render($this->tabTemplate('search/pagefunctions', $this->activeTabKey)); ?>
+            <!-- end: pagefunctions -->
 
-		</div>
-		<!-- end: content -->
-	</div>
-	<div id="ie_clearing">
-		&nbsp;
-	</div>
+        </div>
+        <!-- end: content -->
+    </div>
+    <div id="ie_clearing">
+        &nbsp;
+    </div>
 </div>
 <!-- end: col3 (content) -->

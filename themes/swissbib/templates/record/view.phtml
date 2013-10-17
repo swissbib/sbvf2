@@ -3,13 +3,13 @@
  * Record detail view
  */
 
-    // Set up standard record scripts
+// Set up standard record scripts
 $this->headScript()->appendFile("record.js");
 $this->headScript()->appendFile("check_save_statuses.js");
 
-    // Add RDF header link if applicable
+// Add RDF header link if applicable
 if ($this->export()->recordSupportsFormat($this->driver, 'RDF')) {
-	$this->headLink()->appendAlternate($this->recordLink()->getActionUrl($this->driver, 'RDF'), 'application/rdf+xml', 'RDF Representation');
+    $this->headLink()->appendAlternate($this->recordLink()->getActionUrl($this->driver, 'RDF'), 'application/rdf+xml', 'RDF Representation');
 }
 
 $lastSearchUrl = VuFind\Search\Memory::retrieve();
@@ -19,67 +19,72 @@ $this->headTitle($this->driver->getShortTitle());
 ?>
 <!-- begin: col1 (sidebar)  -->
 <div id="col1" class="sidebar">
-	<div id="col1_content" class="clearfix">
-		<!-- begin: sidebar -->
-		<?=$this->render('record/sidebar')?>
-		<!-- end: sidebar -->
-	</div>
+    <div id="col1_content" class="clearfix">
+        <!-- begin: sidebar -->
+        <?= $this->render('record/sidebar') ?>
+        <!-- end: sidebar -->
+    </div>
 </div>
 <!-- end: col1 (sidebar) -->
 
 <!-- begin: col3 (content) -->
 <div id="col3" class="content">
-	<div id="col3_content" class="clearfix">
-		<!-- begin: content -->
-		<div id="content">
+    <div id="col3_content" class="clearfix">
+        <!-- begin: content -->
+        <div id="content">
 
-			<div id="inlay">
-				<?=$this->render('global/notepad')?>
-			</div>
+            <div id="inlay">
+                <?= $this->render('global/notepad') ?>
+            </div>
 
-			<?=$this->flashmessages()?>
+            <div id="popupDetails">
+                <?= $this->flashmessages() ?>
+            </div>
 
-			<input type="hidden" value="<?=$this->escapeHtml($this->driver->getUniqueId())?>" class="hiddenId" id="record_id" />
+            <input type="hidden" value="<?= $this->escapeHtml($this->driver->getUniqueId()) ?>" class="hiddenId"
+                   id="record_id"/>
 
-			<!-- title -->
-			<h1 class="invisible"><? $this->transEsc('Details') ?></h1>
+            <!-- title -->
+            <h1 class="invisible"><? $this->transEsc('Details') ?></h1>
 
-			<div class="tools floatbox">
-				<?php if($lastSearchUrl): ?>
-					<a href="<?=$this->escapeHtml($lastSearchUrl)?>" title="<?= $this->transEsc('result.backtohitlist') ?>" class="linkbutton icon_backto">
+            <div class="tools floatbox">
+                <?php if ($lastSearchUrl): ?>
+                    <a href="<?= $this->escapeHtml($lastSearchUrl) ?>"
+                       title="<?= $this->transEsc('result.backtohitlist') ?>" class="linkbutton icon_backto">
                         <span><?= $this->transEsc('result.backtohitlist') ?></span>
                     </a>
-				<?php endif; ?>
+                <?php endif; ?>
 
-				<?=$this->render('record/paging')?>
-			</div>
+                <?= $this->render('record/paging') ?>
+            </div>
 
-			<!-- begin: box -->
-			<div class="box">
-				<?=$this->record($this->driver)->getCoreMetadata()?>
-			</div>
-			<!-- end: box -->
+            <!-- begin: box -->
+            <div class="box">
+                <?= $this->record($this->driver)->getCoreMetadata() ?>
+            </div>
+            <!-- end: box -->
 
-			<?=$this->render('record/tabs')?>
+            <?= $this->render('record/tabs') ?>
 
-			<span class="Z3988" title="<?=$this->escapeHtml($this->driver->getOpenURL())?>"></span>
+            <span class="Z3988" title="<?= $this->escapeHtml($this->driver->getOpenURL()) ?>"></span>
 
-			<div class="tools floatbox">
-				<?php if($lastSearchUrl): ?>
-					<a href="<?=$this->escapeHtml($lastSearchUrl)?>" title="<?= $this->transEsc('result.backtohitlist') ?>" class="linkbutton icon_backto">
+            <div class="tools floatbox">
+                <?php if ($lastSearchUrl): ?>
+                    <a href="<?= $this->escapeHtml($lastSearchUrl) ?>"
+                       title="<?= $this->transEsc('result.backtohitlist') ?>" class="linkbutton icon_backto">
                         <span><?= $this->transEsc('result.backtohitlist') ?></span>
                     </a>
-				<?php endif; ?>
-			</div>
+                <?php endif; ?>
+            </div>
 
-			<!-- begin: pagefunctions -->
-			<?=$this->render('record/pagefunctions')?>
-			<!-- end: pagefunctions -->
-		</div>
-		<!-- end: content -->
-	</div>
-	<div id="ie_clearing">
-		&nbsp;
-	</div>
+            <!-- begin: pagefunctions -->
+            <?= $this->render('record/pagefunctions') ?>
+            <!-- end: pagefunctions -->
+        </div>
+        <!-- end: content -->
+    </div>
+    <div id="ie_clearing">
+        &nbsp;
+    </div>
 </div>
 <!-- end: col3 (content) -->
