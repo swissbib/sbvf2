@@ -1,36 +1,37 @@
 <?php
 
-/** @var    VuFind\View\Helper\Root\Record $viewRecord */
-/** @var    Swissbib\RecordDriver\SolrMarc $record */
+/** @var	VuFind\View\Helper\Root\Record		$viewRecord  */
+/** @var	Swissbib\RecordDriver\SolrMarc		$record  */
 
-$record = $this->driver;
-$viewRecord = $this->record($record);
+$record	= $this->driver;
+$viewRecord	= $this->record($record);
 
 //$authors	= $this->Authors($resultItem->getDeduplicatedAuthors());
 
 //$thumbnail		= $viewRecord->getThumbnail('medium');
-$thumbnail = $viewRecord->getThumbnail('large');
-$thumbnailSrc = $thumbnail ? $thumbnail : $this->url('cover-unavailable');
+$thumbnail		= $viewRecord->getThumbnail('large');
+$thumbnailSrc	= $thumbnail ? $thumbnail : $this->url('cover-unavailable');
 
-$titleStatement = $record->getTitleStatement(true);
-$secondaryAuthors = $record->getSecondaryAuthors(true);
-$publishers = $record->getPublishers(true);
-$physicalDescriptions = $record->getPhysicalDescriptions(false);
-$edition = $record->getEdition();
-$summary = trim(implode($record->getSummary()));
-$groupID = $record->getGroup(true);
+$titleStatement			= $record->getTitleStatement(true);
+$secondaryAuthors		= $record->getSecondaryAuthors(true);
+$publishers				= $record->getPublishers(true);
+$physicalDescriptions	= $record->getPhysicalDescriptions(false);
+$edition				= $record->getEdition();
+$summary				= trim(implode($record->getSummary()));
+$groupID				= $record->getGroup(true);
+$uniqueID				= $record->getUniqueID();
 
-$publicationDate = $this->publicationDateMarc($record->getPublicationDates());
-$hostitems = $record->getHostItemEntry();
+$publicationDate		= $this->publicationDateMarc($record->getPublicationDates());
+$hostitems              = $record->getHostItemEntry();
 // prepared to activate openURL-display in solr-Tab, openURL switched of @todo analyse later
 //$openUrl				= $record->openURLActive('record') ? $record->getOpenURL() : false;
 //$urls                   = ($openUrl && $record->replaceURLsWithOpenURL()) ? array() : $viewRecord->getLinkDetails();
-$urls = $viewRecord->getLinkDetails();
-$memorizeLink = $this->recordLink()->getActionUrl($record, 'Save');
-$highlightedFulltext = $record->getHighlightedFulltext();
+$urls                   = $viewRecord->getLinkDetails();
+$memorizeLink			= $this->recordLink()->getActionUrl($record, 'Save');
+$highlightedFulltext	= $record->getHighlightedFulltext();
 
 ?>
-<? /* Common parts of recordDriver's core.phtml templates*/ ?>
+<?/* Common parts of recordDriver's core.phtml templates*/?>
 <!-- col -->
 <div class="c25l">
     <a title="<?= $this->transEsc('memorizelistadd') ?>" class="memorize" href="<?= $memorizeLink ?>">
@@ -43,78 +44,85 @@ $highlightedFulltext = $record->getHighlightedFulltext();
 
 <!-- col -->
 <div class="c75l">
-    <h2><?= $this->escapeHtml($record->getShortTitle()) ?></h2>
-    <?php if (isset($titleStatement['title_remainder'])): ?>
-        <p><?= $this->escapeHtml($titleStatement['title_remainder']) ?></p>
+	<h2><?=$this->escapeHtml($record->getShortTitle())?></h2>
+	<?php if(isset($titleStatement['title_remainder'])): ?>
+        <p><?=$this->escapeHtml($titleStatement['title_remainder'])?></p>
     <?php endif ?>
-    <!-- details -->
-    <div class="details">
+	<!-- details -->
+	<div class="details">
 
-        <?php if (isset($titleStatement['statement_responsibility']) || $secondaryAuthors): ?>
-            <h4><?= $this->transEsc('Author') ?>:</h4>
-            <?php if (isset($titleStatement['statement_responsibility'])): ?>
-                <p><?= $this->escapeHtml($titleStatement['statement_responsibility']) ?></p>
+		<?php if(isset($titleStatement['statement_responsibility']) || $secondaryAuthors): ?>
+			<h4><?=$this->transEsc('Author')?>:</h4>
+			<?php if( isset($titleStatement['statement_responsibility']) ): ?>
+				<p><?=$this->escapeHtml($titleStatement['statement_responsibility'])?></p>
             <?php else: ?>
                 <p>
-                    <?= $this->escapeHtml(implode('; ', $secondaryAuthors)) ?>
+                    <?=$this->escapeHtml(implode('; ', $secondaryAuthors)) ?>
                 </p>
-            <?php endif; ?>
+			<?php endif; ?>
         <?php endif; ?>
 
         <? if ($hostitems): ?>
             <? foreach ($hostitems as $hostitem): ?>
-                <h4><?= $this->transEsc('note_773') ?>: </h4>
+                <h4><?=$this->transEsc('note_773')?>: </h4>
                 <? $text = array_key_exists('related', $hostitem) ? $hostitem['title'] . ', ' . $hostitem['related'] : $hostitem['title'] ?>
-                <p><?= $this->escapeHtml($text) ?></p>
+                <p><?=$this->escapeHtml($text)?></p>
             <? endforeach; ?>
         <? endif; ?>
 
-        <? if ($publishers): ?>
-            <h4><?= $this->transEsc('Publication') ?>:</h4>
-            <p><?= $this->escapeHtml(implode(' | ', $publishers)) ?>, <?= $this->escapeHtml($publicationDate) ?></p>
+		<? if($publishers): ?>
+			<h4><?=$this->transEsc('Publication')?>:</h4>
+			<p><?=$this->escapeHtml(implode(' | ', $publishers))?>, <?=$this->escapeHtml($publicationDate)?></p>
         <? elseif ($publicationDate): ?>
-            <h4><?= $this->transEsc('Year') ?>:</h4>
-            <p><?= $this->escapeHtml($publicationDate) ?></p>
-        <? endif; ?>
+            <h4><?=$this->transEsc('Year')?>:</h4>
+            <p><?=$this->escapeHtml($publicationDate)?></p>
+		<? endif; ?>
 
-        <?php if ($physicalDescriptions): ?>
-            <h4><?= $this->transEsc('Physical Description') ?>:</h4>
-            <p><?= $this->physicalDescription($physicalDescriptions) ?></p>
+        <?php if($physicalDescriptions): ?>
+            <h4><?=$this->transEsc('Physical Description')?>:</h4>
+			<p><?=$this->physicalDescription($physicalDescriptions)?></p>
         <?php endif; ?>
 
-        <h4><?= $this->transEsc('Format') ?>:</h4>
+		<h4><?=$this->transEsc('Format')?>:</h4>
+		<p>
+		<?php foreach($record->getFormats() as $format): ?>
+			<span class="icon_format_book"><?=$this->escapeHtml($format)?></span>
+		<?php endforeach; ?>
+		</p>
 
-        <p>
-            <?php foreach ($record->getFormats() as $format): ?>
-                <span class="icon_format_book"><?= $this->escapeHtml($format) ?></span>
-            <?php endforeach; ?>
-        </p>
+		<?php if($edition): ?>
+		    <h4><?=$this->transEsc('Edition')?>:</h4>
+		    <p><?=$this->escapeHtml($edition)?></p>
+		<?php endif; ?>
 
-        <?php if ($edition): ?>
-            <h4><?= $this->transEsc('Edition') ?>:</h4>
-            <p><?= $this->escapeHtml($edition) ?></p>
-        <?php endif; ?>
-
-        <? /*if (!empty($urls) || $openUrl): */ ?>
-        <? if ($urls): ?>
-            <h4><?= $this->transEsc('Online Access') ?>: </h4>
+        <? /*if (!empty($urls) || $openUrl): */?>
+        <? if($urls): ?>
+            <h4><?=$this->transEsc('Online Access')?>: </h4>
             <? foreach ($urls as $current): ?>
                 <p>
-                    <a href="<?= $this->escapeHtml($this->proxyUrl($current['url'])) ?>"
-                       target="_blank"><?= $this->escapeHtml($current['desc']) ?></a><br/>
+                    <a href="<?=$this->escapeHtml($this->proxyUrl($current['url']))?>" target="_blank"><?=$this->escapeHtml($current['desc'])?></a><br/>
                 </p>
             <? endforeach; ?>
             <? // openURL deactivated, see file head ?>
             <? //if ($openUrl): ?>
-            <? //=$this->openUrl($openUrl)?><br/>
+                <? //=$this->openUrl($openUrl)?>
             <? //endif; ?>
         <?php endif; ?>
 
-        <?php if ($highlightedFulltext): ?>
-            <h4><?= $this->transEsc('fulltexthighlight') ?>: </h4>
-            <p><?= $this->highlight($highlightedFulltext) ?></p>
-        <?php endif; ?>
+		<?php if ($highlightedFulltext): ?>
+			<div class="no-print">
+				<h4><?=$this->transEsc('fulltexthighlight')?>: </h4>
+				<p><?=$this->highlight($highlightedFulltext)?></p>
+			</div>
+		<?php endif; ?>
 
-    </div>
+		<?php if (!empty($uniqueID)): ?>
+			<div class="print">
+				<h4><?=$this->transEsc('Item_ID')?>:</h4>
+				<p><?=$uniqueID ?></p>
+			</div>
+		<?php endif; ?>
+
+	</div>
 
 </div>
