@@ -26,7 +26,9 @@
                           echo empty($desc) ? $this->transEsc("history_empty_search") : $this->escapeHtml($desc);
                           ?></a>
                   </h3>
-                  <span class="meta"><?=$this->transEsc('tab.' . $info->getTarget())?></span>
+                  <? if (method_exists($info,'getTarget')): ?>
+                      <span class="meta"><?=$this->transEsc('tab.' . $info->getTarget())?></span>
+                  <? endif; ?>
               </td>
               <td class="small left">
                   <? $info->getParams()->activateAllFacets(); foreach ($info->getParams()->getFilterList() as $field => $filters): ?>
