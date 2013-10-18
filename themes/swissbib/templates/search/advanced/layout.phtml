@@ -97,7 +97,7 @@ $lastSort = $this->options->getLastSort();
                 <?php if (!empty($lastSort)): ?>
                     <input type="hidden" name="sort" value="<?= $this->escapeHtml($lastSort) ?>"/>
                 <?php endif; ?>
-                <h3>Sucheingabe</h3>
+                <h3><?= $this->transEsc("Your search terms") ?></h3>
 
                 <fieldset class="actions">
                     <label for="advancedsearch_submit" class="hidden"><?= $this->transEsc("Find") ?></label>
@@ -105,7 +105,7 @@ $lastSort = $this->options->getLastSort();
                            value="<?= $this->transEsc("Find") ?>"/>
                     <label for="advancedsearch_reset" class="hidden"><?= $this->transEsc("Reset") ?></label>
                     <input id="advancedsearch_reset" name="advancedsearch_reset" type="reset" class="reset"
-                           value="<?= $this->transEsc("Reset") ?>"/>
+                           value="<?= $this->transEsc('Reset') ?>"/>
                 </fieldset>
 
                 <fieldset>
