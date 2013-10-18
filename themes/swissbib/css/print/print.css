@@ -1,105 +1,227 @@
-/* --- NOSE AG Design Intelligence --------------------------------------------------- */
-/* --- CSS Framework: print styles --------------------------------------------------- */
-/* --- swissbib  --------------------------------------------------------------------- */
-
-
 @media print {
 
- 
+
+/* -------------------------------------------------------------------------------------
+ display options
+ ======================================================================================*/
+
+.no-print,
+#access, #service, #meta, #navigation, #logo h1, #inlay,
+#search, #sidebar h3, #sidebar .subnavigation, .facets, .tools, #notepad, h4.filters_indicator,
+.data colgroup, .data caption, .data .col-1, .data .col-2, .data .col-3,
+.data th.col-6, .data td.col-5, .data td.col-6 img,
+.format a, #tabbed li, #pagefunctions, #content .box img,
+#tabnav > h3, #tab-holdings .miniactions, #tab-description > *,
+.ui-widget-header {
+	display: none;
+}
+
+.print,
+#sidebar .print h3, #tabnav, #tab-description .print {
+	display: block;
+}
+
+#tab-holdings, #tab-description, .holdingsBox > div {
+	display: block !important; /* override element style added by jQuery */
+}
+
+
 /* -------------------------------------------------------------------------------------
  basemod.css
  ======================================================================================*/
- 
-/* general settings */
-body{
-	font-size: 10pt;
-	line-height:15pt;
-	text-align: left;
-	background-color:#FFFFFF;
-	color:#000000;
+
+body {
+	margin: 0;
+	padding: 0;
 }
 
-/* hide areas */
-#header, #search, #navigation, #logo, #service, #col1, .c25l .dropshadow, #notepad, #sponsors, #pagefunctions, .addthis_button_compact, h1, .paging.paging_pages, .tools.floatbox  {
-	display: none;
-}
- 
-/* adjust size of areas */
-
-html, body, #container, #main, table.data {
-	width:17cm;
-	padding:0;
-	margin:0;
-	background-image:none;
-	background-color:#FFFFFF;
+h1, h2, h3, h4, h6 {
+	font-family: Georgia, "Times New Roman", Times, serif;
 }
 
+#tab-holdings h4, h5,
+#sidebar .print h3 {
+	font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+}
 
-#col3 {
-margin:0 0 0 0px;
-width:auto;
+#header {
+	background: none !important; /* override orange.css to only have one print.css */
+	border: none !important;
+}
+
+a,a:link,a:visited {
+	text-decoration: none;
+	color:#000;
+}
+
+h1, h4, h5, h6 {
+	font-weight: bold;
+	font-size: 13px;
+	margin: 0;
+}
+
+h2, h3 {
+	font-weight: bold;
+	font-size: 16px;
+	margin: 0 0 5px 0;
+}
+
+h6 {
+	display: inline;
 }
 
 
 /* -------------------------------------------------------------------------------------
- fonts.css
+ swissbib.css / global.css
  ======================================================================================*/
- 
-/* adjust font size */
-h1, h2, h3, h4 {
-	color:#000000;
-	font-weight:bold;
-}
-h1 {
-	font-size:18pt;
-	font-weight:normal;
-}
-h2 {
-	font-size:14pt;
-}
-h3 {
-	font-size:12pt;
-}
-h4 {
-	font-size:9pt;
-	line-height:15pt;
-}
-p, a, ul, ol, ul li, ul li a, ol li, ol li a, table, table th, table td, table tbody th, table tbody td, label, input, textarea {
-	font-size:9pt;
-	line-height:15pt;
-	color:#000000;
-} 
 
-.toggler_rendered_marcview div p {
-	font-size:9pt;
-	line-height:12pt;
-	color:#000000;
+/*
+	List (Trefferliste)
+*/
+.data {
+	border-spacing: 0;
+	border: none;
+	position: relative;
 }
 
-/* list */
-ul.list li {
-	background-image:none;
-	list-style-type:square;
-	list-style-position:inside;
-	padding-left:0;
+.data tr {
+	position: relative;
 }
 
-/* table */
-table td, table th, table td.background, table.background td,
-table th, table th, table th.background, table.background th {
-	padding:0 5px 0 0;
-	background-color:#FFFFFF;
-	border:none;
-	color:#000000;
-}
-table th, table th, table th.background, table.background th {
-	font-weight:bold;
+.data tr th {
+	border-top: 0px solid #fff; /*ie fix*/
+	border-right: 0px solid #fff;
+	border-left: 0px solid #fff;
+	border-bottom: 2px solid #000;
+	text-align: left;
 }
 
+.data tr td {
+	vertical-align: top;
+	padding: 15px 0 5px 0;
+	text-align: left;
+	border-top: 0px solid #fff; /*ie fix*/
+	border-right: 0px solid #fff;
+	border-left: 0px solid #fff;
+	border-bottom: 1px solid #AAA;
+	position: relative;
+	page-break-inside: avoid;
+}
+
+.data ul {
+	padding-left: 16px;
+	margin-top: 0;
+}
+
+.data .col-6 {
+	width: 40%;
+}
+
+a:link, a:visited,
+.print h3 span {
+	font-weight: normal;
+}
+
+/*
+	Detail (Vollanzeige)
+*/
+.box .details,
+.tabs .details,
+#tab-holdings .holdingsBox {
+	border: none;
+	border-left: 1px solid #333;
+	margin-left: 5px;
+	padding-left: 8px;
+}
+
+.box .details h4 {
+	float: left;
+	padding: 0 5px 0 0;
+	margin: 0;
+}
+
+.box .details p {
+	margin: 4px 0;
+}
+
+.box h2,
+.tabs h2 {
+	margin-top: 10px;
+	margin-bottom: 0;
+}
+
+.tabs h3 {
+	font-size: 13px;
+}
+
+#tab-holdings .institutionToggler,
+#tab-holdings .toggler{
+	margin: 0;
+}
+
+#tab-holdings h4 {
+	font-size: 13px;
+	font-weight: normal;
+	color: #000;
+}
+
+.holdingsBox > div {
+	padding-left: 10px;
+}
+
+#tab-description p {
+	margin: 0;
+}
+
+#tabnav {
+	padding: 0;
+}
 
 /* -------------------------------------------------------------------------------------
  content.css
  ======================================================================================*/
- 
- 
+
+.filter ul {
+	margin: 0;
+	padding-left: 15px;
+}
+
+.filters h4 {
+	font-weight: normal;
+}
+
+.filters p span {
+	font-weight: bold;
+}
+
+.filters ul li a.filter_remove {
+	background: none !important; /* override orange.css to only have one print.css */
+}
+
+
+/* -------------------------------------------------------------------------------------
+ blueprint.css
+ ======================================================================================*/
+
+a:link:after, a:visited:after {
+	content: none;
+}
+
+
+/* -------------------------------------------------------------------------------------
+ jQuery UI
+ ======================================================================================*/
+
+.ui-widget-content {
+	background: none;
+}
+
+.ui-tabs .ui-tabs-panel {
+	padding: 0;
+}
+
+.ui-widget {
+	font-size: 13px;
+}
+
 }
