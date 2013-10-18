@@ -71,11 +71,6 @@ $memorizeLink	   = $this->recordLink()->getActionUrl($this->driver, 'Save');
 					</span><br />
 				<?php endif; ?>
 			<?php endif; ?>
-			<?php if (!empty($uniqueID)): ?>
-				<div class="print">
-					<h6><?=$this->transEsc('Item_ID')?>:</h6> <span><?=$uniqueID ?> </span>
-				</div>
-			<?php endif; ?>
 
             <?php if ($responsible): ?>
 			    <h6><?=$this->transEsc('Author')?>:</h6>
@@ -109,6 +104,13 @@ $memorizeLink	   = $this->recordLink()->getActionUrl($this->driver, 'Save');
             <?php endif; ?>
 		</div>
 		<span class="Z3988" title="<?=$this->escapeHtml($this->driver->getOpenURL())?>"></span>
+
+		<?php if (!empty($uniqueID)): ?>
+			<div class="print">
+				<h6><?=$this->transEsc('Item_ID')?>:</h6> <span><?=$uniqueID ?> </span>
+			</div>
+		<?php endif; ?>
+
 	</td>
 
     <!-- Column 5 & 6 : libraries, links, info -->

@@ -5,6 +5,7 @@
  display options
  ======================================================================================*/
 
+.no-print,
 #access, #service, #meta, #navigation, #logo h1, #inlay,
 #search, #sidebar h3, #sidebar .subnavigation, .facets, .tools, #notepad, h4.filters_indicator,
 .data colgroup, .data caption, .data .col-1, .data .col-2, .data .col-3,
@@ -15,7 +16,8 @@
 	display: none;
 }
 
-.print, #sidebar .print h3, #tabnav, #tab-description .print {
+.print,
+#sidebar .print h3, #tabnav, #tab-description .print {
 	display: block;
 }
 

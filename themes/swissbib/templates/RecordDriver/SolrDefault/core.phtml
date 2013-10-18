@@ -19,6 +19,7 @@ $physicalDescriptions	= $record->getPhysicalDescriptions(false);
 $edition				= $record->getEdition();
 $summary				= trim(implode($record->getSummary()));
 $groupID				= $record->getGroup(true);
+$uniqueID				= $record->getUniqueID();
 
 $publicationDate		= $this->publicationDateMarc($record->getPublicationDates());
 // prepared to activate openURL-display in solr-Tab, openURL switched of @todo analyse later
@@ -89,13 +90,22 @@ $highlightedFulltext	= $record->getHighlightedFulltext();
             <? endforeach; ?>
             <? // openURL deactivated, see file head ?>
             <? //if ($openUrl): ?>
-                <? //=$this->openUrl($openUrl)?><br/>
+                <? //=$this->openUrl($openUrl)?>
             <? //endif; ?>
         <?php endif; ?>
 
 		<?php if ($highlightedFulltext): ?>
-			<h4><?=$this->transEsc('fulltexthighlight')?>: </h4>
-			<p><?=$this->highlight($highlightedFulltext)?></p>
+			<div class="no-print">
+				<h4><?=$this->transEsc('fulltexthighlight')?>: </h4>
+				<p><?=$this->highlight($highlightedFulltext)?></p>
+			</div>
+		<?php endif; ?>
+
+		<?php if (!empty($uniqueID)): ?>
+			<div class="print">
+				<h4><?=$this->transEsc('Item_ID')?>:</h4>
+				<p><?=$uniqueID ?></p>
+			</div>
 		<?php endif; ?>
 
 	</div>
