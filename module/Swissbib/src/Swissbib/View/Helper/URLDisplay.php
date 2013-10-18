@@ -12,7 +12,7 @@ use Zend\View\Helper\AbstractHelper;
  * @link     http://www.swissbib.org
  */
 
-class NoHolding extends AbstractHelper
+class URLDisplay extends AbstractHelper
 {
 
 	/**
@@ -23,6 +23,7 @@ class NoHolding extends AbstractHelper
         $retval           = array();
         $retval['online'] = $driver->getOnlineStatus();
         $retval['unions'] = $driver->getUnions();
+        $retval['format'] = $driver->getFormatsRaw();
         $retval['urls']   = $driver->getURLs();
 
         return $retval;

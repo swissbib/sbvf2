@@ -337,7 +337,7 @@ return array(
 			'lastTabbedSearchUri'     => 'Swissbib\View\Helper\LastTabbedSearchUri',
 			'mainTitle'               => 'Swissbib\View\Helper\MainTitle',
 			'myResearchSideBar'       => 'Swissbib\View\Helper\MyResearchSideBar',
-			'noHolding'               => 'Swissbib\View\Helper\NoHolding',
+			'urlDisplay'              => 'Swissbib\View\Helper\URLDisplay',
 			'number'                  => 'Swissbib\View\Helper\Number',
 			'physicalDescription'     => 'Swissbib\View\Helper\PhysicalDescriptions',
 			'publicationDateMarc'     => 'Swissbib\View\Helper\YearFormatterMarc',
