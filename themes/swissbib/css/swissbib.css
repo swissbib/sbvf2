@@ -746,3 +746,17 @@ TVI: 20100811
 .ui-autocomplete .ui-corner-all {
     border-radius: 0;
 }
+
+/** Preview-Bild in Vollanzeige */
+.c25l .memorize img {
+    border-top: none 40px;
+    border-left: 10px;
+    z-index: 2;
+}
+
+.c25l .preview img {
+    position: absolute;
+    left: 60px;
+    max-width: 125px;
+    z-index: 1;
+}
