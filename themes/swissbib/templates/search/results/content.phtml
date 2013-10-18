@@ -1,70 +1,70 @@
 <?php
 
-	/** @var \VuFind\Search\Solr\Results	$results  */
-	$results	= $this->results;
-	/** @var \VuFind\Search\Solr\Params		$params  */
-	$params		= $this->params;
+/** @var \VuFind\Search\Solr\Results $results */
+$results = $this->results;
+/** @var \VuFind\Search\Solr\Params $params */
+$params = $this->params;
 
-	$recordTotal= $results->getResultTotal();
-	$lookFor	= $params->getDisplayQuery();
-    if (strlen($lookFor) > 30 ) {
-        $lookFor = substr($lookFor,0,30) . " ...";
-    }
-	$view		= $results->getParams()->getView();
-    $showFRBR =  $this->configAccess()->Site->displayFrbr;
-    $searchHandler = $results->getParams()->getSearchHandler()
+$recordTotal = $results->getResultTotal();
+$lookFor = $params->getDisplayQuery();
+if (strlen($lookFor) > 30) {
+    $lookFor = substr($lookFor, 0, 30) . " ...";
+}
+$view = $results->getParams()->getView();
+$showFRBR = $this->configAccess()->Site->displayFrbr;
+$searchHandler = $results->getParams()->getSearchHandler()
 
 ?>
 <div>
     <?php if (!isset($allTabsConfig) || count($allTabsConfig) == 1): ?>
-	<h1>
+        <h1>
 
-        <? if (strcmp($searchHandler,"FRBR") != 0): ?>
-            <?=$this->number($recordTotal)?> Treffer für ihre Suchanfrage
-            <cite><?=$this->escapeHtml($lookFor)?></cite>
-        <? else:?>
+            <? if (strcmp($searchHandler, "FRBR") != 0): ?>
+                <?= $this->number($recordTotal) ?>&nbsp;<?= $this->transEsc('hits for your search') ?>
+                <cite><?= $this->escapeHtml($lookFor) ?></cite>
+            <? else: ?>
 
-            <?=$this->number($recordTotal)?> ähnliche Ausgaben und Formate des Werks
+                <?= $this->number($recordTotal) ?>&nbsp;<?= $this->transEsc('zero hits for your search') ?>
 
-        <? endif; ?>
+            <? endif; ?>
 
-	</h1>
+        </h1>
     <?php else: ?>
-    <h1>&nbsp;</h1>
+        <h1>&nbsp;</h1>
     <?php endif; ?>
 
-	<?php if($recordTotal): ?>
-		<!-- begin: tools -->
-		<div class="tools floatbox">
-			<!-- sort -->
-			<h3 class="hidden">Einstellungen Suchresultat Anzeige</h3>
+    <?php if ($recordTotal): ?>
+        <!-- begin: tools -->
+        <div class="tools floatbox">
+            <!-- sort -->
+            <h3 class="hidden">Einstellungen Suchresultat Anzeige</h3>
 
-			<?=$this->render('search/controls/sort.phtml')?>
-			<!-- display -->
-			<?=$this->render('search/controls/limit.phtml')?>
-			<!-- paging -->
-			<?=$this->paginationControl($results->getPaginator(), 'Sliding', 'search/pagination.phtml', array('results' => $this->results))?>
-		</div>
-		<!-- end: tools -->
-	<?php endif; ?>
+            <?= $this->render('search/controls/sort.phtml') ?>
+            <!-- display -->
+            <?= $this->render('search/controls/limit.phtml') ?>
+            <!-- paging -->
+            <?= $this->paginationControl($results->getPaginator(), 'Sliding', 'search/pagination.phtml', array('results' => $this->results)) ?>
+        </div>
+        <!-- end: tools -->
+    <?php endif; ?>
 
 
-	<!-- Recommendations -->
-	<? if (isset($activeTabConfig) && $activeTabConfig['searchClassId'] === 'Summon'): ?>
-		<?=$this->render('Recommend/SummonDatabases.phtml')?>
-	<? endif; ?>
+    <!-- Recommendations -->
+    <? if (isset($activeTabConfig) && $activeTabConfig['searchClassId'] === 'Summon'): ?>
+        <?= $this->render('Recommend/SummonDatabases.phtml') ?>
+    <? endif; ?>
 
 
     <?php if ($recordTotal): ?>
-	    <!-- nio zero hits -->
-	    <?=$this->render('search/list-' . $view . '.phtml')?>
+        <!-- nio zero hits -->
+        <?= $this->render('search/list-' . $view . '.phtml') ?>
 
-		<!-- begin: tools -->
-		<div class="tools floatbox">
-			<!-- paging -->
-			<?=$this->partial('search/controls/view.phtml')?>
+        <!-- begin: tools -->
+        <div class="tools floatbox">
+            <!-- paging -->
+            <?= $this->partial('search/controls/view.phtml') ?>
 
-            <?=$this->paginationControl($results->getPaginator(), 'Sliding', 'search/pagination.phtml', array('results' => $this->results))?>
+            <?= $this->paginationControl($results->getPaginator(), 'Sliding', 'search/pagination.phtml', array('results' => $this->results)) ?>
 
 
             <?
@@ -73,23 +73,21 @@
                     $lastSearchUrl = $this->getextendedlastsearchlink()->getEscapedLinkOnly();
              ?>
 
-                    <a href="<?=$lastSearchUrl?>" class="linkbutton icon_backto" title="Zurück"><span>Zurück</span></a>
+                <a href="<?= $lastSearchUrl ?>" class="linkbutton icon_backto"
+                   title="<?= $this->transEsc('navigate_back') ?>"><span><?= $this->transEsc('navigate_back') ?></span></a>
 
             <?
-                endif;
+            endif;
             ?>
 
 
-		</div><!-- end: tools -->
+        </div><!-- end: tools -->
 
     <?php else: ?>
 
-        <?=$this->partial('search/list-empty.phtml')?>
+        <?= $this->partial('search/list-empty.phtml') ?>
 
-	<?php endif; ?>
-
-
-
+    <?php endif; ?>
 
 
 </div>

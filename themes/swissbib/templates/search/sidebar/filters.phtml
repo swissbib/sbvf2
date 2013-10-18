@@ -9,10 +9,14 @@
 
 ?>
 
+<div class="print">
+	<h3><?=$this->transEsc('Your_Search')?>: <span><?=$tabName . ", " . $results->getResultTotal() . " " . $this->transEsc('history_results')?> </span></h3>
+</div>
+
 <h3><?=$this->transEsc('Your_Search')?></h3>
 <div class="filters">
 	<p>
-		<?=$this->transEsc('All_Fields')?> = <br/>
+		<span><?=$this->transEsc('All_Fields')?> = </span> <br/>
 		<cite><?=$this->escapeHtml($this->params->getDisplayQuery())?></cite>
 	</p>
 

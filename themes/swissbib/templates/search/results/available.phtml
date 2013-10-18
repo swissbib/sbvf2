@@ -1,23 +1,31 @@
 <?php
 
 /** @var    \Swissbib\RecordDriver\SolrMarc $driver */
-$institutions = $driver->getInstitutions();
-$institutions = $this->filterUntranslatedInstitutions($institutions);
-$amountHoldings = sizeof($institutions);
+$institutions    = $driver->getInstitutions();
+$institutions    = $this->filterUntranslatedInstitutions($institutions);
+$amountHoldings  = sizeof($institutions);
+$urldisplay      = $this->urlDisplay($driver);
 
 ?>
-<? if ($amountHoldings === 0): ?>
-    <? $retval = $this->noHolding($driver) ?>
-    <? if (in_array('RETROS', $retval['unions'])): ?>
-        <a class="linkbutton primary icon_link_primary" href="<?= $retval['urls'][1]['url'] ?>" target="_blank"><span>retro.seals</span></a>
-    <? else: ?>
-        <a class="linkbutton primary icon_link_primary" href="<?= $retval['urls'][0]['url'] ?>"
-           target="_blank"><span><?= $this->transEsc('online') ?></span></a>
+
+<? if ($amountHoldings === 1): ?>
+    <p>1 <?= $this->transEsc('result.library') ?></p>
+    <? if (in_array('RETROS', $urldisplay['unions'])): ?>
+        <a class="linkbutton primary icon_link_primary" href="<?= $urldisplay['urls'][1]['url'] ?>" target="_blank"><span>retro.seals</span></a>
     <? endif; ?>
-<? elseif ($amountHoldings === 1): ?>
-    <p>1 <?= $this->transEsc('result.library') ?>
-    </p>
+
+<? elseif ($amountHoldings > 1): ?>
+    <p><?= $amountHoldings ?> <?= $this->transEsc('result.libraries') ?></p>
+    <? if (in_array('RETROS', $urldisplay['unions'])): ?>
+        <a class="linkbutton primary icon_link_primary" href="<?= $urldisplay['urls'][1]['url'] ?>" target="_blank"><span>retro.seals</span></a>
+    <? endif; ?>
+
 <? else: ?>
-    <p><?= $amountHoldings ?> <?= $this->transEsc('result.libraries') ?>
-    </p>
+    <? if (in_array('RETROS', $urldisplay['unions'])): ?>
+        <a class="linkbutton primary icon_link_primary" href="<?= $urldisplay['urls'][1]['url'] ?>" target="_blank"><span>retro.seals</span></a>
+    <? elseif ($urldisplay['online']): ?>
+        <a class="linkbutton primary icon_link_primary" href="<?= $urldisplay['urls'][1]['url'] ?>" target="_blank"><span>retro.seals</span></a>
+    <? else: ?>
+    <p>There are no holdings available in the system</p>
+    <? endif; ?>
 <? endif; ?>
