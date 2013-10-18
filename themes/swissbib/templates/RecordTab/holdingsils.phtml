@@ -8,6 +8,10 @@ $holdings	= $record->getHoldingsStructure();
 $holdings	= $this->extractFavoriteInstitutionsForHoldings($holdings);
 
 ?>
+<?php if ($holdings): ?>
+	<div class="print">
+		<h2><?= $this->transEsc('Holdings') ?></h2>
+	</div>
 <? if ($holdings): ?>
 
 	<? foreach($holdings as $groupCode => $group): ?>
