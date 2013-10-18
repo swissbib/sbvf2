@@ -39,10 +39,9 @@ $this->layout()->searchboxParams = array(
             </div>
             <!-- end: inlay -->
 
-            <!-- ACHTUNG: geht das oder zerreisst es die Darstellung? -->
-            <div id="popupDetails">
+            <span id="popupDetails">
                 <?= $this->flashmessages() ?>
-            </div>
+            </span>
 
             <!-- begin: tabbed view -->
             <?= $this->render($this->tabTemplate('search/results/content', $this->activeTabKey)) ?>

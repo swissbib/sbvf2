@@ -24,22 +24,22 @@ $recordTotal = $this->results->getResultTotal()
 ?>
 <?=
 $this->render('myresearch/sidebar/wrap.phtml', array(
-													'active'   => 'favorites',
-													'location' => '',
-													'results'  => $this->results
-											   ));?>
+    'active' => 'favorites',
+    'location' => '',
+    'results' => $this->results
+));?>
 
 <!-- begin: col3 (content) -->
 <div id="col3" class="content">
-	<div id="col3_content" class="clearfix">
-		<!-- begin: content -->
-		<div id="content">
+    <div id="col3_content" class="clearfix">
+        <!-- begin: content -->
+        <div id="content">
 
-			<div id="popupDetails">
+			<span id="popupDetails">
 				<?= $this->flashmessages() ?>
-			</div>
+			</span>
 
-			<div>
+            <div>
                 <?php if (isset($list)): ?>
                     <div id="breadcrumb">
                         <ul>
@@ -66,100 +66,100 @@ $this->render('myresearch/sidebar/wrap.phtml', array(
                         <?php endif; ?>
 
                     </div>
-				<?php else: ?>
+                <?php else: ?>
                     <div id="breadcrumb">
-                    <ul>
-                        <li class="selected">
-                            <a class="notepad" href="#"><?= $this->transEsc("mymemorizelists") ?></a>
-                        </li>
-                    </ul>
+                        <ul>
+                            <li class="selected">
+                                <a class="notepad" href="#"><?= $this->transEsc("mymemorizelists") ?></a>
+                            </li>
+                        </ul>
                     </div>
-				<?php endif; ?>
+                <?php endif; ?>
 
 
-				<?php if ($recordTotal > 0): ?>
+                <?php if ($recordTotal > 0): ?>
 
-						<div class="floatbox">
-							<div class="floatleft">
-								<p><?= $this->transEsc("Showing") ?>
-								<strong><?= $this->escapeHtml($this->results->getStartRecord()) ?></strong> -
-								<strong><?= $this->escapeHtml($this->results->getEndRecord()) ?></strong>
-								<?= $this->transEsc('of') ?> <strong><?= $this->escapeHtml($recordTotal) ?></strong></p>
-							</div>
-                            <div class="floatright">
-                                <?= $this->render('search/controls/sort.phtml') ?>
-                            </div>
-							<div class="clear"></div>
-						</div>
+                    <div class="floatbox">
+                        <div class="floatleft">
+                            <p><?= $this->transEsc("Showing") ?>
+                                <strong><?= $this->escapeHtml($this->results->getStartRecord()) ?></strong> -
+                                <strong><?= $this->escapeHtml($this->results->getEndRecord()) ?></strong>
+                                <?= $this->transEsc('of') ?> <strong><?= $this->escapeHtml($recordTotal) ?></strong></p>
+                        </div>
+                        <div class="floatright">
+                            <?= $this->render('search/controls/sort.phtml') ?>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
 
 
-					<form method="post" name="bulkActionForm" action="<?= $this->url('cart-myresearchbulk') ?>">
+                    <form method="post" name="bulkActionForm" action="<?= $this->url('cart-myresearchbulk') ?>">
 
-						<?php if (isset($list)): ?>
-							<input type="hidden" name="listID" value="<?= $this->escapeHtml($list->id) ?>"/>
-							<input type="hidden" name="listName" value="<?= $this->escapeHtml($list->title) ?>"/>
-						<?php endif; ?>
+                        <?php if (isset($list)): ?>
+                            <input type="hidden" name="listID" value="<?= $this->escapeHtml($list->id) ?>"/>
+                            <input type="hidden" name="listName" value="<?= $this->escapeHtml($list->title) ?>"/>
+                        <?php endif; ?>
 
-						<div class="tools floatbox">
+                        <div class="tools floatbox">
                             <div class="floatleft">
                                 <?= $this->context($this)->renderInContext('myresearch/bulk-action-buttons.phtml', array('idPrefix' => '', 'list' => isset($list) ? $list : null)) ?>
                             </div>
                             <div class="floatright">
                                 <?= $this->paginationControl($this->results->getPaginator(), 'Sliding', 'search/pagination.phtml', array('results' => $this->results)) ?>
                             </div>
-						</div>
+                        </div>
 
-						<table class="data">
-							<colgroup>
-								<col width="3%"/>
-								<col width="10%"/>
-								<col width="7%"/>
-								<col width="*"/>
-								<col width="13%"/>
-							</colgroup>
-							<caption class="hidden">
+                        <table class="data">
+                            <colgroup>
+                                <col width="3%"/>
+                                <col width="10%"/>
+                                <col width="7%"/>
+                                <col width="*"/>
+                                <col width="13%"/>
+                            </colgroup>
+                            <caption class="hidden">
                                 <?php if (isset($list)): ?>
                                     <?= $this->transEsc("mymemorizelists") ?> &quot;<?= $this->escapeHtml($list->title) ?>&quot;
                                 <?php else: ?>
                                     <?= $this->transEsc("mymemorizelists") ?>
-                                <?php endif?>
-							</caption>
-							<thead class="hidden">
-							<tr>
-								<th>Nummer</th>
-								<th>Verwalten</th>
-								<th>Bild</th>
-								<th>Beschreibung</th>
-								<th>Verfügbarkeit</th>
-							</tr>
-							</thead>
-							<tbody>
-							<?php foreach ($this->results->getResults() as $index => $favoriteItem): ?>
-								<?php $favoriteItem->position = $this->results->getStartRecord() + $index; ?>
-								<?= $this->record($favoriteItem)->getListEntry($list, $account->isLoggedIn()) ?>
-							<?php endforeach; ?>
-							</tbody>
-						</table>
+                                <?php endif ?>
+                            </caption>
+                            <thead class="hidden">
+                            <tr>
+                                <th>Nummer</th>
+                                <th>Verwalten</th>
+                                <th>Bild</th>
+                                <th>Beschreibung</th>
+                                <th>Verfügbarkeit</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach ($this->results->getResults() as $index => $favoriteItem): ?>
+                                <?php $favoriteItem->position = $this->results->getStartRecord() + $index; ?>
+                                <?= $this->record($favoriteItem)->getListEntry($list, $account->isLoggedIn()) ?>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
 
-						<div class="floatbox">
-							<?= $this->context($this)->renderInContext('myresearch/bulk-action-buttons.phtml', array('idPrefix' => 'bottom_', 'list' => isset($list) ? $list : null)) ?>
-						</div>
+                        <div class="floatbox">
+                            <?= $this->context($this)->renderInContext('myresearch/bulk-action-buttons.phtml', array('idPrefix' => 'bottom_', 'list' => isset($list) ? $list : null)) ?>
+                        </div>
 
-					</form>
+                    </form>
 
-				<?php else: ?>
-					<p><?= $this->transEsc('You do not have any saved resources') ?></p>
-				<?php endif; ?>
+                <?php else: ?>
+                    <p><?= $this->transEsc('You do not have any saved resources') ?></p>
+                <?php endif; ?>
 
-			</div>
+            </div>
 
-			<div class="clear"></div>
+            <div class="clear"></div>
 
-		</div>
-		<!-- end: content -->
-	</div>
-	<div id="ie_clearing">
-		&nbsp;
-	</div>
+        </div>
+        <!-- end: content -->
+    </div>
+    <div id="ie_clearing">
+        &nbsp;
+    </div>
 </div>
 <!-- end: col3 (content) -->

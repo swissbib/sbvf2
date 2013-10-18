@@ -353,22 +353,21 @@ form[name="bulkActionForm"] .mail {
     display: inline-block;
 }
 
-#popupDetails {
-    padding-top: 40px;
-}
-
 #popupDetails .info {
     height: auto;
-
+    margin-top: 40px;
+    margin-bottom: 0px;
 }
 
 #popupDetails .status_info {
     height: auto;
+    margin-top: 40px;
     margin-bottom: 0px;
 }
 
 #popupDetails .status_error {
     height: auto;
+    margin-top: 40px;
     margin-bottom: 0px;
 }
 
