@@ -266,7 +266,7 @@ class Results extends VuFindSolrResults
 
 
                 //we don't throw spelling exceptions but we should
-                //todo: log it!
+                throw $e;
 
             }
 
