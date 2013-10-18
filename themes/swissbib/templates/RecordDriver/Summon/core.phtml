@@ -1,60 +1,68 @@
 <?php
-/** @var	Swissbib\RecordDriver\Summon	$resultItem  */
-/** @var	Swissbib\View\Helper\Record		$record  */
+/** @var    Swissbib\RecordDriver\Summon $resultItem */
+/** @var    Swissbib\View\Helper\Record $record */
 
-$resultItem     = $this->driver;
-$viewRecord     = $this->record($resultItem);
-$memorizeLink   = $this->escapeHtml($this->recordLink()->getActionUrl($this->driver, 'Save'));
+$resultItem = $this->driver;
+$viewRecord = $this->record($resultItem);
+$memorizeLink = $this->escapeHtml($this->recordLink()->getActionUrl($this->driver, 'Save'));
 
 // do *not* use Summon's thumbnails ...
-$thumbnail      = $this->escapeHtml($viewRecord->getThumbnail('small'));
-$thumbnailSrc   = $thumbnail ? $thumbnail : $this->url('cover-unavailable');
+$thumbnail = $this->escapeHtml($viewRecord->getThumbnail('small'));
+$thumbnailSrc = $thumbnail ? $thumbnail : $this->url('cover-unavailable');
 
-$TITLE      = $resultItem->getTitle();
-$AUTHOR     = $resultItem->getAuthor();
-$IMPRINT    = $resultItem->getImprint();
-$EDITION    = $resultItem->getEdition();
-$CONTAINER  = $resultItem->getContainerTitle();
+$TITLE = $resultItem->getTitle();
+$AUTHOR = $resultItem->getAuthor();
+$IMPRINT = $resultItem->getImprint();
+$EDITION = $resultItem->getEdition();
+$CONTAINER = $resultItem->getContainerTitle();
 if ($CONTAINER) {
-	$CONTAINER .= '. - ' .$resultItem->getContainerReference();
+    $CONTAINER .= '. - ' . $resultItem->getContainerReference();
 }
 ?>
 
 <!-- col 1 -->
 <div class="c25l center">
-	<a title="<?=$this->transEsc('memorizelistadd')?>" class="icon_notepad_add_link" href="<?=$memorizeLink?>">
+    <a title="<?= $this->transEsc('memorizelistadd') ?>" class="memorize" href="<?= $memorizeLink ?>">
+        <img src="/vufind/themes/swissbib/images/icon_notepad_add.gif"
+    </a>
+    <a class="preview" href="#">
+        <img class="dropshadow" src="<?= $thumbnailSrc ?>"/>
+    </a>
+    <!-- <a title="<?=$this->transEsc('memorizelistadd')?>" class="icon_notepad_add_link" href="<?=$memorizeLink?>">
 		<img src="<?=$thumbnailSrc?>" class="dropshadow"/>
-	</a>
+	</a> -->
 </div>
 
 <!-- col 2 -->
 <div class="c75l">
-	<h2><?=$this->escapeHtml($TITLE)?></h2>
-	<div class="details">
-		<!-- details -->
-		<?php if($AUTHOR): ?>
-			<h4><?=$this->transEsc('Author')?>:</h4>
-			<p><?=$this->escapeHtml($AUTHOR)?></p>
-		<?php endif; ?>
-		<?php if($IMPRINT): ?>
-			<h4><?=$this->transEsc('Publication')?>:</h4>
-			<p><?=$this->escapeHtml($IMPRINT)?></p>
-		<?php endif; ?>
-		<?php if($EDITION): ?>
-			<h4><?=$this->transEsc('Edition')?>:</h4>
-			<p><?=$this->escapeHtml($EDITION)?></p>
-		<?php endif; ?>
-		<?php if($CONTAINER): ?>
-			<h4><?=$this->transEsc('note_773')?>:</h4>
-			<p><?=$this->escapeHtml($CONTAINER)?></p>
-		<?php endif; ?>
-		<!-- format -->
-		<h4><?=$this->transEsc('Format')?>:</h4>
-		<p>
-			<?php foreach($resultItem->getFormats() as $format): ?>
-				<span class="icon_format_book"><?=$this->escapeHtml($format)?></span>
-			<?php endforeach; ?>
-		</p>
+    <h2><?= $this->escapeHtml($TITLE) ?></h2>
 
-	</div>
+    <div class="details">
+        <!-- details -->
+        <?php if ($AUTHOR): ?>
+            <h4><?= $this->transEsc('Author') ?>:</h4>
+            <p><?= $this->escapeHtml($AUTHOR) ?></p>
+        <?php endif; ?>
+        <?php if ($IMPRINT): ?>
+            <h4><?= $this->transEsc('Publication') ?>:</h4>
+            <p><?= $this->escapeHtml($IMPRINT) ?></p>
+        <?php endif; ?>
+        <?php if ($EDITION): ?>
+            <h4><?= $this->transEsc('Edition') ?>:</h4>
+            <p><?= $this->escapeHtml($EDITION) ?></p>
+        <?php endif; ?>
+        <?php if ($CONTAINER): ?>
+            <h4><?= $this->transEsc('note_773') ?>:</h4>
+            <p><?= $this->escapeHtml($CONTAINER) ?></p>
+        <?php endif; ?>
+        <!-- format -->
+        <h4><?= $this->transEsc('Format') ?>:</h4>
+
+        <p>
+            <?php foreach ($resultItem->getFormats() as $format): ?>
+                <span class="icon_format_book"><?= $this->escapeHtml($format) ?></span>
+            <?php endforeach; ?>
+        </p>
+
+    </div>
 </div>
