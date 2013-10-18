@@ -28,6 +28,16 @@ $urns = $this->driver->getURNs();
 
 ?>
 <!-- Tab-Inhalte gemaess TP detailstab -->
+
+<?php
+$series = $this->driver->getSeries();
+$recordLinks = $this->driver->getAllRecordLinks();
+if (!empty($series) or !empty($recordLinks)): ?>
+	<div class="print">
+		<h2><?= $this->transEsc('Details') ?></h2>
+	</div>
+<?php endif; ?>
+
 <?php if (!empty($isbns) or !empty($issns) or !empty($ismns) or !empty($dois) or !empty($urns)): ?>
 	<?php $contentDisplayed = true; ?>
 	<div class="details">
@@ -91,7 +101,7 @@ if (!empty($alttitle)): ?>
 <?php /* Display series section if at least one series exists. */ ?>
 <?php $series = $this->driver->getSeries();
 if (!empty($series)): ?>
-	<div class="details">
+	<div class="details print">
 		<h4><?= $this->transEsc('Series') ?>: </h4>
 		<?php foreach ($series as $field): ?>
 			<?php if (is_array($field)): ?>
@@ -116,7 +126,7 @@ if (!empty($series)): ?>
 <?php $recordLinks = $this->driver->getAllRecordLinks(); ?>
 <?php if (!empty($recordLinks)): ?>
 	<?php $contentDisplayed = true; ?>
-	<div class="details">
+	<div class="details print">
 		<h4><?= $this->transEsc('Related Items') ?></h4>
 
 		<p>
