@@ -19,6 +19,7 @@ $physicalDescriptions	= $record->getPhysicalDescriptions(false);
 $edition				= $record->getEdition();
 $summary				= trim(implode($record->getSummary()));
 $groupID				= $record->getGroup(true);
+$uniqueID				= $record->getUniqueID();
 
 $publicationDate		= $this->publicationDateMarc($record->getPublicationDates());
 $hostitems              = $record->getHostItemEntry();
@@ -33,9 +34,12 @@ $highlightedFulltext	= $record->getHighlightedFulltext();
 <?/* Common parts of recordDriver's core.phtml templates*/?>
 <!-- col -->
 <div class="c25l">
-	<a title="<?=$this->transEsc('memorizelistadd')?>" class="icon_notepad_add_link" href="<?=$memorizeLink?>">
-		<img src="<?=$thumbnailSrc?>" class="dropshadow"/>
-	</a>
+    <a title="<?= $this->transEsc('memorizelistadd') ?>" class="memorize" href="<?= $memorizeLink ?>">
+        <img src="/vufind/themes/swissbib/images/icon_notepad_add.gif"
+    </a>
+    <a class="preview" href="#">
+        <img class="dropshadow" src="<?= $thumbnailSrc ?>"/>
+    </a>
 </div>
 
 <!-- col -->
@@ -101,13 +105,22 @@ $highlightedFulltext	= $record->getHighlightedFulltext();
             <? endforeach; ?>
             <? // openURL deactivated, see file head ?>
             <? //if ($openUrl): ?>
-                <? //=$this->openUrl($openUrl)?><br/>
+                <? //=$this->openUrl($openUrl)?>
             <? //endif; ?>
         <?php endif; ?>
 
 		<?php if ($highlightedFulltext): ?>
-			<h4><?=$this->transEsc('fulltexthighlight')?>: </h4>
-			<p><?=$this->highlight($highlightedFulltext)?></p>
+			<div class="no-print">
+				<h4><?=$this->transEsc('fulltexthighlight')?>: </h4>
+				<p><?=$this->highlight($highlightedFulltext)?></p>
+			</div>
+		<?php endif; ?>
+
+		<?php if (!empty($uniqueID)): ?>
+			<div class="print">
+				<h4><?=$this->transEsc('Item_ID')?>:</h4>
+				<p><?=$uniqueID ?></p>
+			</div>
 		<?php endif; ?>
 
 	</div>

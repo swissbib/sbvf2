@@ -397,7 +397,7 @@ var swissbib = {
         });
 
         	// Print links
-        $(".print", ctx).click(function(){window.print();});
+        $("#pagefunction_print", ctx).click(function(){window.print();});
     },
 
 
