@@ -16,9 +16,9 @@ $this->headTitle($this->translate('Search History'));
 
             <?php if (!empty($this->saved) || !empty($this->unsaved)): ?>
 
-                <div id="popupDetails">
+                <span id="popupDetails">
                     <?= $this->flashmessages() ?>
-                </div>
+                </span>
 
                 <?php if (!empty($this->saved)): ?>
                     <h1><?= $this->transEsc('history_saved_searches') ?></h1>
