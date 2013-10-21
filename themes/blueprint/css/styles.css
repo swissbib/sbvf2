@@ -481,6 +481,11 @@ li.result blockquote {
 .groupCallnumber {
     margin-left: 18px;
 }
+.result .qrcodeHolder, .recordsubcontent  .qrcodeHolder {
+    border: 1px solid #cfcfcf;
+    position: absolute;
+    display: none;
+}
 
 /** Side facets */
 
@@ -524,6 +529,10 @@ dl.narrowList a {
     font-weight:bold;
     padding:0.2em 0.4em;
     background-color: #eee;
+}
+dd input[type="checkbox"] {
+    margin:0 4px 0 0;
+    vertical-align:text-bottom;
 }
 
 /* Icon Classes */
@@ -858,6 +867,12 @@ h3.list {
     padding:0 .5em .5em 20px;
     margin-right:1em;
 }
+.qrcodeLink {
+    background-image:url(../images/fugue/qrcode.png);
+    background-repeat:no-repeat;
+    padding:0 .5em .5em 20px;
+    display: block;
+}
 .software {
     background-image:url(../images/silk/disk_multiple.png);
     background-repeat:no-repeat;
@@ -959,11 +974,18 @@ div.recordsubcontent {
     padding:1em 1.5em 1em 1.5em;
 }
 .recordcover {
+    display: block;
     padding:3px;
     background-color:#eee;
     border:1px solid #cfcfcf;
-    margin-top: 1em;
+    margin: 1em auto 0;
     max-width: 120px;
+}
+
+div.record img.qrcode {
+    display: block;
+    margin: 1em auto 0;
+    border:1px solid #cfcfcf;
 }
 .holdsMessage {
     margin-top: 1em;
@@ -1188,6 +1210,15 @@ table.datagrid tr.oddrow {
     background-color: #DDDDDD;
 }
 
+.qrcodeHoldings {
+    float: right;
+    text-align: left;
+}
+
+.qrcodeHoldings a {
+    float: none;
+}
+
 /* Comments */
 
 ul.commentList {
@@ -1255,6 +1286,10 @@ p.citationText {
 .advSearchContent {
     /* Needed for IE7 compatibility: */
     width: 96%;
+}
+.advSearchContent div[class*="span-"] select {
+    display:block;
+    width:100%;
 }
 .groupSearchHolder {
     clear: both;

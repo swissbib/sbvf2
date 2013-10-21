@@ -69,9 +69,9 @@ $searchHandler = $results->getParams()->getSearchHandler()
 
             <?
 
-            if (!empty($showFRBR) && $showFRBR && strcmp($searchHandler, 'FRBR') == 0):
-                $lastSearchUrl = VuFind\Search\Memory::retrieve();
-                ?>
+                if ( !empty($showFRBR) && $showFRBR  && strcmp($searchHandler,'FRBR') == 0):
+                    $lastSearchUrl = $this->getextendedlastsearchlink()->getEscapedLinkOnly();
+             ?>
 
                 <a href="<?= $lastSearchUrl ?>" class="linkbutton icon_backto"
                    title="<?= $this->transEsc('navigate_back') ?>"><span><?= $this->transEsc('navigate_back') ?></span></a>
