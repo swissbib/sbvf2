@@ -749,14 +749,13 @@ TVI: 20100811
 
 /** Preview-Bild in Vollanzeige */
 .c25l .memorize img {
-    border-top: none 40px;
-    border-left: 10px;
+    position: absolute;
     z-index: 2;
 }
 
 .c25l .preview img {
-    position: absolute;
-    left: 60px;
+    position: relative;
+    left: 35px;
     max-width: 125px;
     z-index: 1;
 }
