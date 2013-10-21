@@ -23,8 +23,8 @@ if ($CONTAINER) {
 <!-- col 1 -->
 <div class="c25l center">
     <a title="<?= $this->transEsc('memorizelistadd') ?>" class="memorize" href="<?= $memorizeLink ?>">
-        <img src="/vufind/themes/swissbib/images/icon_notepad_add.gif"
-    </a>
+        <img src="<?= $this->basePath('themes/swissbib/images/icon_notepad_add.gif') ?>">
+    </a><!-- <img src="/vufind/themes/swissbib/images/icon_notepad_add.gif"> -->
     <a class="preview" href="#">
         <img class="dropshadow" src="<?= $thumbnailSrc ?>"/>
     </a>
@@ -34,7 +34,7 @@ if ($CONTAINER) {
 </div>
 
 <!-- col 2 -->
-<div class="c75l">
+<div class="c75r">
     <h2><?= $this->escapeHtml($TITLE) ?></h2>
 
     <div class="details">
