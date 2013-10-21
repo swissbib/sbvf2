@@ -233,15 +233,17 @@ class UrlQueryHelper
     /**
      * Add a facet to the parameters.
      *
-     * @param string $field Facet field
-     * @param string $value Facet value
+     * @param string $field    Facet field
+     * @param string $value    Facet value
+     * @param string $operator Facet type to add (AND, OR, NOT)
      *
      * @return string
      */
-    public function addFacet($field, $value)
+    public function addFacet($field, $value, $operator = 'AND')
     {
         // Facets are just a special case of filters:
-        return $this->addFilter($field . ':"' . $value . '"');
+        $prefix = ($operator == 'NOT') ? '-' : ($operator == 'OR' ? '~' : '');
+        return $this->addFilter($prefix . $field . ':"' . $value . '"');
     }
 
     /**
@@ -282,15 +284,23 @@ class UrlQueryHelper
     /**
      * Remove a facet from the parameters.
      *
-     * @param string $field  Facet field
-     * @param string $value  Facet value
-     * @param bool   $escape Should we escape the string for use in the view?
+     * @param string $field    Facet field
+     * @param string $value    Facet value
+     * @param bool   $escape   Should we escape the string for use in the view?
+     * @param string $operator Facet type to add (AND, OR, NOT)
      *
      * @return string
      */
-    public function removeFacet($field, $value, $escape = true)
+    public function removeFacet($field, $value, $escape = true, $operator = 'AND')
     {
         $params = $this->getParamArray();
+
+        // Account for operators:
+        if ($operator == 'NOT') {
+            $field = '-' . $field;
+        } else if ($operator == 'OR') {
+            $field = '~' . $field;
+        }
 
         // Remove the filter:
         $newFilter = array();
@@ -410,6 +420,37 @@ class UrlQueryHelper
         return $this->updateQueryString(
             'limit', $l, $this->options->getDefaultLimit(), $escape, true
         );
+    }
+
+    /**
+     * Return HTTP parameters to render the current page with a different set
+     * of search terms.
+     *
+     * @param string $lookfor New search terms
+     * @param bool   $escape  Should we escape the string for use in the view?
+     *
+     * @return string
+     */
+    public function setSearchTerms($lookfor, $escape = true)
+    {
+        // If we're currently dealing with an advanced query, turn it off so
+        // that it can be overridden:
+        if ($this->params->getSearchType() == 'advanced') {
+            $savedSuppressQuery = $this->suppressQuery;
+            $this->suppressQuery = true;
+        }
+
+        // Generate the URL:
+        $new = $this->updateQueryString(
+            $this->basicSearchParam, $lookfor, null, $escape, true
+        );
+
+        // Restore settings to their previous state:
+        if (isset($savedSuppressQuery)) {
+            $this->suppressQuery = $savedSuppressQuery;
+        }
+
+        return $new;
     }
 
     /**
