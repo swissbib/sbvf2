@@ -5,6 +5,7 @@
 
 $record = $this->driver;
 $viewRecord = $this->record($record);
+$theme = $this->configAccess()->Site->theme;
 
 //$authors	= $this->Authors($resultItem->getDeduplicatedAuthors());
 
@@ -35,8 +36,8 @@ $highlightedFulltext = $record->getHighlightedFulltext();
 <!-- col -->
 <div class="c25l">
     <a title="<?= $this->transEsc('memorizelistadd') ?>" class="memorize" href="<?= $memorizeLink ?>">
-        <img src="<?= $this->basePath('themes/swissbib/images/icon_notepad_add.gif') ?>">
-    </a><!-- <img src="/vufind/themes/swissbib/images/icon_notepad_add.gif"> -->
+        <img src="<?= $this->basePath('themes/' . urlencode($theme) . '/images/icon_notepad_add.gif') ?>">
+    </a>
     <a class="preview" href="#">
         <img class="dropshadow" src="<?= $thumbnailSrc ?>"/>
     </a>
