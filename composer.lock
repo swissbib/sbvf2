@@ -3,8 +3,103 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "83fbfd387d9ede9662af03b21e48c831",
+    "hash": "912400ee83b7a6b04d6e1ccc398e5ea4",
     "packages": [
+        {
+            "name": "aferrandini/phpqrcode",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/aferrandini/PHPQRCode.git",
+                "reference": "3c1c0454d43710ab5bbe19a51ad4cb41c22e3d46"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/aferrandini/PHPQRCode/zipball/3c1c0454d43710ab5bbe19a51ad4cb41c22e3d46",
+                "reference": "3c1c0454d43710ab5bbe19a51ad4cb41c22e3d46",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "PHPQRCode": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ariel Ferrandini",
+                    "email": "arielferrandini@gmail.com",
+                    "homepage": "http://www.ferrandini.com/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHPQRCode porting and changed for PHP 5.3 compatibility",
+            "homepage": "https://github.com/aferrandini/PHPQRCode",
+            "keywords": [
+                "barcode",
+                "php",
+                "qrcode"
+            ],
+            "time": "2013-07-08 09:39:08"
+        },
+        {
+            "name": "jasig/phpcas",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Jasig/phpCAS.git",
+                "reference": "673feb404d3c07869ed7e186128d70a8c85473d6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Jasig/phpCAS/zipball/673feb404d3c07869ed7e186128d70a8c85473d6",
+                "reference": "673feb404d3c07869ed7e186128d70a8c85473d6",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.0.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~3.7.10"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "source/"
+                ]
+            },
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Joachim Fritschi",
+                    "homepage": "https://wiki.jasig.org/display/~fritschi"
+                },
+                {
+                    "name": "Adam Franco",
+                    "homepage": "https://wiki.jasig.org/display/~adamfranco"
+                }
+            ],
+            "description": "Provides a simple API for authenticating users against a CAS server",
+            "homepage": "https://wiki.jasig.org/display/CASC/phpCAS",
+            "keywords": [
+                "cas",
+                "jasig"
+            ],
+            "support": {
+                "source": "https://github.com/Jasig/phpCAS/tree/master",
+                "issues": "https://github.com/Jasig/phpCAS/issues"
+            },
+            "time": "2013-10-01 20:06:01"
+        },
         {
             "name": "johnwohlers/sip2",
             "version": "dev-master",
@@ -91,19 +186,18 @@
         },
         {
             "name": "pear-pear.php.net/File_MARC",
-            "version": "0.7.1",
+            "version": "0.8.0",
             "dist": {
                 "type": "file",
-                "url": "http://pear.php.net/get/File_MARC-0.7.1.tgz",
+                "url": "http://pear.php.net/get/File_MARC-0.8.0.tgz",
                 "reference": null,
                 "shasum": null
             },
             "require": {
-                "pear-pear.php.net/structures_linkedlist": "*",
-                "php": ">=5.2.0.0"
+                "php": ">=5.3.0.0"
             },
             "replace": {
-                "pear-pear/file_marc": "== 0.7.1.0"
+                "pear-pear/file_marc": "== 0.8.0.0"
             },
             "type": "pear-library",
             "autoload": {
@@ -114,7 +208,7 @@
             "include-path": [
                 "/"
             ],
-            "description": "The standard for machine-readable cataloging (MARC) records is documented at http://loc.gov/marc/. This package enables you to read existing MARC records from a file, string, or (using the YAZ extension), from a Z39.50 source. You can also use this package to create new MARC records.\n\nThis package is based on the PHP MARC package, originally called &quot;php-marc&quot;, that is part of the Emilda Project (http://www.emilda.org).  Christoffer Landtman generously agreed to make the &quot;php-marc&quot; code available under the GNU LGPL so it could be used as the basis of this PEAR package."
+            "description": "The standard for machine-readable cataloging (MARC) records is documented at http://loc.gov/marc/. This package enables you to read existing MARC records from a file, string, or (using the YAZ extension), from a Z39.50 source. You can also use this package to create new MARC records.\n\nThis package is based on the PHP MARC package, originally called \"php-marc\", that is part of the Emilda Project (http://www.emilda.org).  Christoffer Landtman generously agreed to make the \"php-marc\" code available under the GNU LGPL so it could be used as the basis of this PEAR package."
         },
         {
             "name": "pear-pear.php.net/PEAR",
@@ -177,32 +271,6 @@
                 "/"
             ],
             "description": "Structures_Graph is a package for creating and manipulating graph datastructures. It allows building of directed\nand undirected graphs, with data and metadata stored in nodes. The library provides functions for graph traversing\nas well as for characteristic extraction from the graph topology."
-        },
-        {
-            "name": "pear-pear.php.net/Structures_LinkedList",
-            "version": "0.2.2",
-            "dist": {
-                "type": "file",
-                "url": "http://pear.php.net/get/Structures_LinkedList-0.2.2.tgz",
-                "reference": null,
-                "shasum": null
-            },
-            "require": {
-                "php": ">=5.0.0.0"
-            },
-            "replace": {
-                "pear-pear/structures_linkedlist": "== 0.2.2.0"
-            },
-            "type": "pear-library",
-            "autoload": {
-                "classmap": [
-                    ""
-                ]
-            },
-            "include-path": [
-                "/"
-            ],
-            "description": "A singly-linked list offers the ability to insert or delete\n nodes at any point within the list. A doubly-linked list also offers the\n ability to request previous nodes in the list."
         },
         {
             "name": "pear-pear.php.net/Validate",
@@ -290,12 +358,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/summon/Summon.php.git",
-                "reference": "e660100499afa047ba8d83c065df1c489fa1d87e"
+                "reference": "2acfaf80bdd6414dec17478418d7c213e220575d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/summon/Summon.php/zipball/e660100499afa047ba8d83c065df1c489fa1d87e",
-                "reference": "e660100499afa047ba8d83c065df1c489fa1d87e",
+                "url": "https://api.github.com/repos/summon/Summon.php/zipball/2acfaf80bdd6414dec17478418d7c213e220575d",
+                "reference": "2acfaf80bdd6414dec17478418d7c213e220575d",
                 "shasum": ""
             },
             "type": "library",
@@ -315,23 +383,24 @@
             ],
             "description": "Library for interacting with Serials Solutions' Summon API.",
             "support": {
-                "source": "https://github.com/summon/Summon.php/tree/master"
+                "source": "https://github.com/summon/Summon.php/tree/master",
+                "issues": "https://github.com/summon/Summon.php/issues"
             },
-            "time": "2013-05-22 14:23:13"
+            "time": "2013-09-26 19:09:03"
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.3.1",
+            "version": "v2.3.5",
             "target-dir": "Symfony/Component/Yaml",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "v2.3.1"
+                "reference": "6bb881b948368482e1abf1a75c08bcf88a1c5fc3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/v2.3.1",
-                "reference": "v2.3.1",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/6bb881b948368482e1abf1a75c08bcf88a1c5fc3",
+                "reference": "6bb881b948368482e1abf1a75c08bcf88a1c5fc3",
                 "shasum": ""
             },
             "require": {
@@ -364,21 +433,21 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2013-05-10 18:12:13"
+            "time": "2013-09-22 18:04:39"
         },
         {
             "name": "zendframework/zendframework",
-            "version": "2.2.1",
+            "version": "2.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zf2.git",
-                "reference": "release-2.2.1"
+                "reference": "5b03d868755c181fc9b5dc56c1f8c26e73ca0bed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://packages.zendframework.com/composer/zendframework-zendframework-2.2.1-release-2.2.1-8597ab.zip",
-                "reference": "2.2.1",
-                "shasum": "f8419ea13b7f3f1195b625fa789688b47efe8778"
+                "url": "https://packages.zendframework.com/composer/zendframework-zendframework-5b03d868755c181fc9b5dc56c1f8c26e73ca0bed-zip-8b1552.zip",
+                "reference": "2.2.4",
+                "shasum": "f12b12d23c937b8cbd246c6fa56c07fb1df34cb0"
             },
             "require": {
                 "php": ">=5.3.3"
@@ -420,6 +489,7 @@
                 "zendframework/zend-permissions-acl": "self.version",
                 "zendframework/zend-permissions-rbac": "self.version",
                 "zendframework/zend-progressbar": "self.version",
+                "zendframework/zend-resources": "self.version",
                 "zendframework/zend-serializer": "self.version",
                 "zendframework/zend-server": "self.version",
                 "zendframework/zend-servicemanager": "self.version",
@@ -439,7 +509,7 @@
                 "doctrine/annotations": ">=1.0",
                 "ircmaxell/random-lib": "dev-master",
                 "ircmaxell/security-lib": "dev-master",
-                "ocramius/proxy-manager": "0.3.*",
+                "ocramius/proxy-manager": "0.4.*",
                 "phpunit/phpunit": "3.7.*"
             },
             "suggest": {
@@ -451,7 +521,9 @@
                 "zendframework/zendservice-recaptcha": "ZendService\\ReCaptcha for rendering ReCaptchas in Zend\\Captcha and/or Zend\\Form"
             },
             "bin": [
-                "bin/classmap_generator.php"
+                "bin/classmap_generator.php",
+                "bin/pluginmap_generator.php",
+                "bin/templatemap_generator.php"
             ],
             "type": "library",
             "extra": {
@@ -462,8 +534,7 @@
             },
             "autoload": {
                 "psr-0": {
-                    "Zend\\": "library/",
-                    "ZendTest\\": "tests/"
+                    "Zend\\": "library/"
                 }
             },
             "license": [
@@ -476,10 +547,10 @@
                 "zf2"
             ],
             "support": {
-                "source": "https://github.com/zendframework/zf2/tree/release-2.2.1",
+                "source": "https://github.com/zendframework/zf2/tree/release-2.2.4",
                 "issues": "https://github.com/zendframework/zf2/issues"
             },
-            "time": "2013-06-12 20:13:34"
+            "time": "2013-08-26 15:09:04"
         },
         {
             "name": "zendframework/zendrest",
@@ -592,9 +663,11 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
+        "aferrandini/phpqrcode": 20,
         "johnwohlers/sip2": 20,
         "mobileesp/mdetect": 20,
-        "serialssolutions/summon": 20
+        "serialssolutions/summon": 20,
+        "jasig/phpcas": 20
     },
     "platform": [
 
