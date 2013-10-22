@@ -759,3 +759,9 @@ TVI: 20100811
     max-width: 125px;
     z-index: 1;
 }
+
+/** Preview-Bild in Trefferliste */
+.col-3 img {
+    position: relative;
+    max-width: 100px;
+}
