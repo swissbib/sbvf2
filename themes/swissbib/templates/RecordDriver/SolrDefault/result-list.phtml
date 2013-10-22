@@ -1,31 +1,10 @@
 <?php
 	/** @var	Swissbib\RecordDriver\SolrMarc	$resultItem  */
 	/** @var	VuFind\View\Helper\Root\Record		$viewRecord  */
-$resultItem		= $this->driver;
-$viewRecord		= $this->record($this->driver);
-$thumbnail		= $viewRecord->getThumbnail('small');
-
-
-
-if ($this->configAccess()->Content->setSmallIcons) {
-    $thumbnail		= $viewRecord->getThumbnail('small');
-
-    if ( $thumbnail) {
-        $thumbnailSrc = $thumbnail;
-    } else {
-
-        $path = $this->domainURL()->basePath();
-        $notAvailableImage = $this->configAccess()->Content->noCoverAvailableImage;
-        $thumbnailSrc	=  isset($notAvailableImage) ? $path . $notAvailableImage :  $this->url('cover-unavailable');
-
-    }
-}   else {
-
-    $path = $this->domainURL()->basePath();
-    $notAvailableImage = $this->configAccess()->Content->noCoverAvailableImage;
-    $thumbnailSrc	=  isset($notAvailableImage) ? $path . $notAvailableImage :  $this->url('cover-unavailable');
-
-}
+$resultItem		   = $this->driver;
+$viewRecord		   = $this->record($this->driver);
+$thumbnail		   = $viewRecord->getThumbnail('small');
+$thumbnailSrc      = $thumbnail ? $thumbnail : $this->url('cover-unavailable');
 $detailLink		   = $this->recordLink()->getUrl($resultItem);
 $title			   = $this->mainTitle($resultItem->getShortTitle());
 $titleStatement	   = $resultItem->getTitleStatement(true);
@@ -35,7 +14,7 @@ $edition		   = $resultItem->getEdition();
 $publicationDate   = $this->publicationDateMarc($resultItem->getPublicationDates());
 $hostitems         = $resultItem->getHostItemEntry();
 $groupID		   = $resultItem->getGroup(true);
-$uniqueID						= $resultItem->getUniqueID();
+$uniqueID          = $resultItem->getUniqueID();
 $showFRBR          = $this->configAccess()->Site->displayFrbr;
 $memorizeLink	   = $this->recordLink()->getActionUrl($this->driver, 'Save');
 
@@ -49,7 +28,7 @@ $memorizeLink	   = $this->recordLink()->getActionUrl($this->driver, 'Save');
 	</td>
     <!-- Column 3: Teaser-image / Thumbnail -->
 	<td class="col-3 right nodivider">
-		<a href="<?=$detailLink?>" title="<?=$this->escapeHtml($title)?>">
+		<a class="preview" href="<?=$detailLink?>" title="<?=$this->escapeHtml($title)?>">
             <? /** ---------------------------------------------------- */ ?>
             <? /** temporary fix params over here, @todo: fix in driver */ ?>
             <? if(is_array($title)) $title = implode(' ', $title); ?>
