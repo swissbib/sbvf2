@@ -221,7 +221,68 @@ class SolrMarc extends VuFindSolrMarc
 		}
 	}
 
+    /**
+     * Returns one of three things: a full URL to a thumbnail preview of the record
+     * if an image is available in an external system; an array of parameters to
+     * send to VuFind's internal cover generator if no fixed URL exists; or false
+     * if no thumbnail can be generated.
+     *
+     * extended from SolrDefault
+     *
+     * @param string $size Size of thumbnail (small, medium or large -- small is
+     * default).
+     *
+     * @return string|array|bool
+     */
+    public function getThumbnail($size = 'small')
+    {
+        if ($isbn = $this->getCleanISBN()) {
+            return array('isn' => $isbn, 'size' => $size);
+        }
 
+        elseif ($path = $this->getThumbnail_956_1()) {
+            return $path;
+        }
+
+        return false;
+    }
+
+    /**
+     * get thumbnail link from 956, case I (see wiki documentation)
+     *
+     * @return string
+     */
+    
+    public function getThumbnail_956_1() {
+        $field =  $this->get956();
+        if ($field['union'] === 'IDSBB' || $field['union'] === 'IDSLU' || $field['institution'] === 'E45') {
+            //if (filter_var($field['URL'], FILTER_VALIDATE_URL) === true) {
+                if ($field['description'] === 'Vorschau zum Bild') {
+                    return 'http://www.swissbib.ch/TouchPoint/ExternalServicesRedirect?imagePath='
+                            . $field['URL']
+                            . '&scale=0.75&reqServicename=ImageTransformer';
+                }
+            }
+        }
+
+    /**
+     * Get fully mapped field 956 (local links, ADAM objects)
+     *
+     * @return array
+     *
+     */
+    public function get956 () {
+            return $this->getMarcSubFieldMap(956, array(
+                'B'  => 'union',
+                'C'  => 'ADM',
+                'D'  => 'library',
+                'a'  => 'institution',
+                'u'  => 'URL',
+                'q'  => 'type',
+                'x'  => 'usage',
+                'y'  => 'description',
+            ));
+    }
 
 	/**
 	 * Get translated formats
