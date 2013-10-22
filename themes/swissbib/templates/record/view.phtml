@@ -12,7 +12,7 @@ if ($this->export()->recordSupportsFormat($this->driver, 'RDF')) {
     $this->headLink()->appendAlternate($this->recordLink()->getActionUrl($this->driver, 'RDF'), 'application/rdf+xml', 'RDF Representation');
 }
 
-$lastSearchUrl = VuFind\Search\Memory::retrieve();
+$lastSearchUrl = $this->getextendedlastsearchlink()->getEscapedLinkOnly();
 
 $this->headTitle($this->driver->getShortTitle());
 
