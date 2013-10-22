@@ -257,7 +257,7 @@ class SolrMarc extends VuFindSolrMarc
         $field =  $this->get956();
         if ($field['union'] === 'IDSBB' || $field['union'] === 'IDSLU' || $field['institution'] === 'E45') {
             //if (filter_var($field['URL'], FILTER_VALIDATE_URL) === true) {
-                if ($field['description'] === 'Vorschau zum Bild') {
+                if (preg_match('/Vorschau zum Bild/', $field['description'])) {
                     return 'http://www.swissbib.ch/TouchPoint/ExternalServicesRedirect?imagePath='
                             . $field['URL']
                             . '&scale=0.75&reqServicename=ImageTransformer';
