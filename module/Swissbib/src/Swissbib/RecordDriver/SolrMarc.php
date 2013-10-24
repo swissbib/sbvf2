@@ -261,9 +261,38 @@ class SolrMarc extends VuFindSolrMarc
                     return 'http://www.swissbib.ch/TouchPoint/ExternalServicesRedirect?imagePath='
                             . $field['URL']
                             . '&scale=0.75&reqServicename=ImageTransformer';
+                } elseif (preg_match('/Porträt/', $field['description'])) {
+                    return 'http://www.swissbib.ch/TouchPoint/ExternalServicesRedirect?imagePath='
+                    . $field['URL']
+                    . '&scale=0.75&reqServicename=ImageTransformer';
+                } elseif (preg_match('/Bild/', $field['description'])) {
+                    return 'http://www.swissbib.ch/TouchPoint/ExternalServicesRedirect?imagePath='
+                    . $field['URL']
+                    . '&scale=0.75&reqServicename=ImageTransformer';
                 }
-            }
         }
+        /*elseif ($field['union'] === 'SGBN') {
+            return 'http://www.swissbib.ch/TouchPoint/ExternalServicesRedirect?imagePath=http://aleph.sg.ch/adam/'
+            .
+            . '/'
+            . $field['filename']
+            . '&scale=0.75&reqServicename=ImageTransformer';
+        }
+        elseif ($field['union'] === 'BGR') {
+            return 'http://www.swissbib.ch/TouchPoint/ExternalServicesRedirect?imagePath=http://aleph.gr.ch/adam/'
+            .
+            . '/'
+            . $field['filename']
+            . '&scale=0.75&reqServicename=ImageTransformer';
+        }
+        elseif ($field['ADM'] === 'ZAD50') {
+            return 'http://www.swissbib.ch/TouchPoint/ExternalServicesRedirect?imagePath=http://opac.nebis.ch/thumb_zb/'
+            .
+            . '/'
+            . $field['filename']
+            . '&scale=0.75&reqServicename=ImageTransformer';
+        }*/
+    }
 
     /**
      * Get fully mapped field 956 (local links, ADAM objects)
@@ -278,6 +307,8 @@ class SolrMarc extends VuFindSolrMarc
                 'D'  => 'library',
                 'a'  => 'institution',
                 'u'  => 'URL',
+                'd' => 'directory',
+                'f' => 'filename',
                 'q'  => 'type',
                 'x'  => 'usage',
                 'y'  => 'description',
