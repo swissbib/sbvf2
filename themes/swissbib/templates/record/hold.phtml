@@ -101,18 +101,18 @@ $record	= $this->driver;
                             <input class="submit primary showMaskIcon" style="margin-left: 170px" type="submit" name="placeHold" value="<?=$this->transEsc('request_submit_text')?>"/>
                         </div>
                     </fieldset>
-                    <fieldset>
+           
+           <fieldset>
                         <div class="fieldbox">
                             <label class="label"><?=$this->transEsc('information')?>:</label>
                             <div style="margin-left: 170px">
-                            <ul class="list">
-                                <li>Bei Zeitschriften geben Sie bitte Jahrgang und Bandnummer an.</li>
-                                <li>Falls der gewünschte Abholort nicht aufgeführt ist, können Sie nicht ausgeliehene Medien
-                                    im Freihandbestand der entsprechenden Bibliothek selber holen.</li>
-                                <li>Bitte beachten Sie unsere <a target="_blank" href="http://www.ub.unibas.ch/ids-basel-bern/kosten-lieferfristen/">Tarife und Lieferfristen</a>.</li>
-                            </ul>
-                            </div>
-                        </div>
+                    <ul class="list">
+                    <li><?=$this->transEsc('hold_text1') ?></li>
+                    <li><?=$this->transEsc('hold_text2') ?></li>   
+                    <li><?=$this->transEsc('hold_text3') ?> <a target="_blank" href="<?=$this->url('http://www.ub.unibas.ch/ids-basel-bern/kosten-lieferfristen')?>"><?=$this->transEsc('hold_text4')?></a></li>
+                    </ul>              
+                     </div>
+                    </div>
                     </fieldset>
 				</form>
 			</div>
