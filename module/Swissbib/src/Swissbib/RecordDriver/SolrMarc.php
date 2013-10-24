@@ -256,14 +256,35 @@ class SolrMarc extends VuFindSolrMarc
     public function getThumbnail_956_1() {
         $field =  $this->get956();
         if ($field['union'] === 'IDSBB' || $field['union'] === 'IDSLU' || $field['institution'] === 'E45') {
-            //if (filter_var($field['URL'], FILTER_VALIDATE_URL) === true) {
-                if (preg_match('/Vorschau zum Bild/', $field['description'])) {
+                if (preg_match('/Vorschau zum Bild|Porträt|Bild/', $field['description'])) {
                     return 'http://www.swissbib.ch/TouchPoint/ExternalServicesRedirect?imagePath='
                             . $field['URL']
                             . '&scale=0.75&reqServicename=ImageTransformer';
                 }
-            }
         }
+        elseif ($field['union'] === 'SGBN') {
+            $dirpath = substr($field['directory'], 26);
+            return 'http://www.swissbib.ch/TouchPoint/ExternalServicesRedirect?imagePath=http://aleph.sg.ch/adam/'
+            . $dirpath . '/'
+            . $field['filename']
+            . '&scale=0.75&reqServicename=ImageTransformer';
+        }
+        elseif ($field['union'] === 'BGR') {
+            $dirpath = substr($field['directory'], 29);
+            return 'http://www.swissbib.ch/TouchPoint/ExternalServicesRedirect?imagePath=http://aleph.gr.ch/adam/'
+            . $dirpath . '/'
+            . $field['filename']
+            . '&scale=0.75&reqServicename=ImageTransformer';
+        }
+        elseif ($field['ADM'] === 'ZAD50') {
+            $dirpath = preg_replace('/^.*thumbnail/', '', $field['directory']);
+            $dirpath = empty($dirpath) ? $dirpath : substr($dirpath, 1) . '/';
+            return 'http://www.swissbib.ch/TouchPoint/ExternalServicesRedirect?imagePath=http://opac.nebis.ch/thumb_zb/'
+            . $dirpath
+            . $field['filename']
+            . '&scale=0.75&reqServicename=ImageTransformer';
+        }
+    }
 
     /**
      * Get fully mapped field 956 (local links, ADAM objects)
@@ -278,6 +299,8 @@ class SolrMarc extends VuFindSolrMarc
                 'D'  => 'library',
                 'a'  => 'institution',
                 'u'  => 'URL',
+                'd'  => 'directory',
+                'f'  => 'filename',
                 'q'  => 'type',
                 'x'  => 'usage',
                 'y'  => 'description',
