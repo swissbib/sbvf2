@@ -11,7 +11,7 @@ class MARCFormatter
         "NEBIS"  => "http://opac.nebis.ch/F/?local_base=EBI01&con_lng=GER&func=find-b&find_code=SYS&request=%s",
         "IDSBB"  => "http://aleph.unibas.ch/F/?local_base=DSV01&con_lng=GER&func=find-b&find_code=SYS&request=%s",
         "IDSUZH" => "https://biblio.unizh.ch/F/?local_base=UZH01&con_lng=GER&func=find-b&find_code=SYS&request=%s",
-        "IDSSG"  => "http://aleph.unisg.ch/F?local_base=HSB01&con_lng=GER&func=find-b&find_code=SYS&request=%s",
+        "IDSSG"  => "http://aleph.unisg.ch/F?local_base=HSB01&con_lng=GER&func=direct&doc_number=%s",
         "IDSSG2" => "http://aleph.unisg.ch/F?local_base=HSB02&con_lng=GER&func=find-b&find_code=SYS&request=%s",
         "SBT"    => "http://aleph.sbt.ti.ch/F?local_base=SBT01&con_lng=ITA&func=find-b&find_code=SYS&request=%s",
         "SNL"    => "http://opac.admin.ch/cgi-bin/gw/chameleon?lng=de&inst=consortium&search=KEYWORD&function=CARDSCR&t1=%s&u1=12101",
