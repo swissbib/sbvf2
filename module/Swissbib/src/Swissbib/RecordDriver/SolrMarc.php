@@ -242,13 +242,15 @@ class SolrMarc extends VuFindSolrMarc
 
         elseif ($path = $this->getThumbnail_956_1()) {
             return $path;
+        } elseif ($path = $this->getThumbnail_856_1()) {
+            return $path;
         }
 
         return false;
     }
 
     /**
-     * get thumbnail link from 956, case I (see wiki documentation)
+     * get thumbnail link from 956, cases I and II (see wiki documentation)
      *
      * @return string
      */
@@ -263,9 +265,10 @@ class SolrMarc extends VuFindSolrMarc
                 }
         }
         elseif ($field['union'] === 'SGBN') {
-            $dirpath = substr($field['directory'], 26);
+            $dirpath = preg_replace('/^.*sgb50/', '', $field['directory']);
+            $dirpath = empty($dirpath) ? $dirpath : substr($dirpath, 1) . '/';
             return 'http://www.swissbib.ch/TouchPoint/ExternalServicesRedirect?imagePath=http://aleph.sg.ch/adam/'
-            . $dirpath . '/'
+            . $dirpath
             . $field['filename']
             . '&scale=0.75&reqServicename=ImageTransformer';
         }
@@ -283,6 +286,28 @@ class SolrMarc extends VuFindSolrMarc
             . $dirpath
             . $field['filename']
             . '&scale=0.75&reqServicename=ImageTransformer';
+        }
+    }
+
+    /**
+     * get thumbnail link from 856 (see wiki documentation)
+     *
+     * @return string
+     */
+
+    public function getThumbnail_856_1()
+    {
+        $field = $this->get950();
+        if ($field['union'] === 'RERO' && $field['tag'] === '856') {
+            if (preg_match('/^.*v_bcu\/media\/images/', $field['sf_u'])) {
+                return $field['sf_u'];
+            }
+        } elseif ($field['union'] === 'CCSA' && $field['tag'] === '856') {
+            $URL_thumb = preg_replace('/hi-res.cgi/', 'get_thumb.cgi', $field['sf_u']);
+            return $URL_thumb;
+        } elseif ($field['union'] === 'CHARCH' && $field['tag'] === '856') {
+            $URL_thumb = preg_replace('SIZE=10', 'SIZE=30', $field['sf_u']);
+            return $URL_thumb;
         }
     }
 
@@ -307,7 +332,25 @@ class SolrMarc extends VuFindSolrMarc
             ));
     }
 
-	/**
+    /**
+     * Get partially mapped field 950 (Parking-field)
+     *
+     * @return array
+     *
+     */
+    public function get950()
+    {
+        return $this->getMarcSubFieldMap(950, array(
+            'B' => 'union',
+            'P' => 'tag',
+            'a' => 'sf_a',
+            'u' => 'sf_u',
+            'z' => 'sf_z',
+            '3' => "sf_3",
+        ));
+    }
+
+    /**
 	 * Get translated formats
 	 *
 	 * @return    String[]
