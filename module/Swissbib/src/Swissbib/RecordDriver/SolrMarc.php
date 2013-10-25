@@ -221,9 +221,136 @@ class SolrMarc extends VuFindSolrMarc
 		}
 	}
 
+    /**
+     * Returns one of three things: a full URL to a thumbnail preview of the record
+     * if an image is available in an external system; an array of parameters to
+     * send to VuFind's internal cover generator if no fixed URL exists; or false
+     * if no thumbnail can be generated.
+     *
+     * extended from SolrDefault
+     *
+     * @param string $size Size of thumbnail (small, medium or large -- small is
+     * default).
+     *
+     * @return string|array|bool
+     */
+    public function getThumbnail($size = 'small')
+    {
+        if ($isbn = $this->getCleanISBN()) {
+            return array('isn' => $isbn, 'size' => $size);
+        }
 
+        elseif ($path = $this->getThumbnail_956_1()) {
+            return $path;
+        } elseif ($path = $this->getThumbnail_856_1()) {
+            return $path;
+        }
 
-	/**
+        return false;
+    }
+
+    /**
+     * get thumbnail link from 956, cases I and II (see wiki documentation)
+     *
+     * @return string
+     */
+    
+    public function getThumbnail_956_1() {
+        $field =  $this->get956();
+        if ($field['union'] === 'IDSBB' || $field['union'] === 'IDSLU' || $field['institution'] === 'E45') {
+                if (preg_match('/Vorschau zum Bild|Porträt|Bild/', $field['description'])) {
+                    return 'http://www.swissbib.ch/TouchPoint/ExternalServicesRedirect?imagePath='
+                            . $field['URL']
+                            . '&scale=0.75&reqServicename=ImageTransformer';
+                }
+        }
+        elseif ($field['union'] === 'SGBN') {
+            $dirpath = preg_replace('/^.*sgb50/', '', $field['directory']);
+            $dirpath = empty($dirpath) ? $dirpath : substr($dirpath, 1) . '/';
+            return 'http://www.swissbib.ch/TouchPoint/ExternalServicesRedirect?imagePath=http://aleph.sg.ch/adam/'
+            . $dirpath
+            . $field['filename']
+            . '&scale=0.75&reqServicename=ImageTransformer';
+        }
+        elseif ($field['union'] === 'BGR') {
+            $dirpath = substr($field['directory'], 29);
+            return 'http://www.swissbib.ch/TouchPoint/ExternalServicesRedirect?imagePath=http://aleph.gr.ch/adam/'
+            . $dirpath . '/'
+            . $field['filename']
+            . '&scale=0.75&reqServicename=ImageTransformer';
+        }
+        elseif ($field['ADM'] === 'ZAD50') {
+            $dirpath = preg_replace('/^.*thumbnail/', '', $field['directory']);
+            $dirpath = empty($dirpath) ? $dirpath : substr($dirpath, 1) . '/';
+            return 'http://www.swissbib.ch/TouchPoint/ExternalServicesRedirect?imagePath=http://opac.nebis.ch/thumb_zb/'
+            . $dirpath
+            . $field['filename']
+            . '&scale=0.75&reqServicename=ImageTransformer';
+        }
+    }
+
+    /**
+     * get thumbnail link from 856 (see wiki documentation)
+     *
+     * @return string
+     */
+
+    public function getThumbnail_856_1()
+    {
+        $field = $this->get950();
+        if ($field['union'] === 'RERO' && $field['tag'] === '856') {
+            if (preg_match('/^.*v_bcu\/media\/images/', $field['sf_u'])) {
+                return $field['sf_u'];
+            }
+        } elseif ($field['union'] === 'CCSA' && $field['tag'] === '856') {
+            $URL_thumb = preg_replace('/hi-res.cgi/', 'get_thumb.cgi', $field['sf_u']);
+            return $URL_thumb;
+        } elseif ($field['union'] === 'CHARCH' && $field['tag'] === '856') {
+            $URL_thumb = preg_replace('SIZE=10', 'SIZE=30', $field['sf_u']);
+            return $URL_thumb;
+        }
+    }
+
+    /**
+     * Get fully mapped field 956 (local links, ADAM objects)
+     *
+     * @return array
+     *
+     */
+    public function get956 () {
+            return $this->getMarcSubFieldMap(956, array(
+                'B'  => 'union',
+                'C'  => 'ADM',
+                'D'  => 'library',
+                'a'  => 'institution',
+                'u'  => 'URL',
+                'd'  => 'directory',
+                'f'  => 'filename',
+                'q'  => 'type',
+                'x'  => 'usage',
+                'y'  => 'description',
+            ));
+    }
+
+    /**
+     * Get partially mapped field 950 (Parking-field)
+     *
+     * @return array
+     *
+     */
+    public function get950()
+    {
+        return $this->getMarcSubFieldMap(950, array(
+            'B' => 'union',
+            'P' => 'tag',
+            'a' => 'sf_a',
+            'u' => 'sf_u',
+            'z' => 'sf_z',
+            '3' => "sf_3",
+        ));
+    }
+
+    /**
 	 * Get translated formats
 	 *
 	 * @return    String[]
