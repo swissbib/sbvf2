@@ -1,4 +1,4 @@
-/*global getLightbox, path*/
+/*global getLightbox, path, vufindString*/
 
 /**
  * Initialize common functions and event handlers.
@@ -277,6 +277,25 @@ function extractSource(element)
     return x.length == 0 ? 'VuFind' : x;
 }
 
+// Advanced facets
+function updateOrFacets(url, op) {
+  window.location.assign(url);
+  var list = $(op).parents('dl');
+  var header = $(list).find('dt');
+  list.html(header[0].outerHTML+'<div class="info">'+vufindString.loading+'...</div>');
+}
+function setupOrFacets() {
+  var facets = $('.facetOR');
+  for(var i=0;i<facets.length;i++) {
+    var $facet = $(facets[i]);
+    if($facet.hasClass('applied')) {
+      $facet.prepend('<input type="checkbox" checked onChange="updateOrFacets($(this).parent().attr(\'href\'), this)"/>');
+    } else {
+      $facet.before('<input type="checkbox" onChange="updateOrFacets($(this).next(\'a\').attr(\'href\'), this)"/>');
+    }
+  }
+}
+
 $(document).ready(function(){
     // initialize autocomplete
     initAutocomplete();
@@ -329,6 +348,17 @@ $(document).ready(function(){
         var $dialog = getLightbox('Cart', 'Home', null, null, this.title, '', '', '', {viewCart:"1"});
         return false;
     });
+    
+    // handle QR code links
+    $('a.qrcodeLink').click(function() {
+        if ($(this).hasClass("active")) {
+            $(this).html(vufindString.qrcode_show).removeClass("active");
+        } else {
+            $(this).html(vufindString.qrcode_hide).addClass("active");
+        }
+        $(this).next('.qrcodeHolder').toggle();
+        return false;
+    });
 
     // Print
     var url = window.location.href;
@@ -340,4 +370,7 @@ $(document).ready(function(){
     //ContextHelp
     contextHelp.init();
     contextHelp.contextHelpSys.load();
+    
+    // Advanced facets
+    setupOrFacets();
 });

@@ -66,6 +66,11 @@ return array(
                     ? $config->GoogleAnalytics->apiKey : false;
                 return new \VuFind\View\Helper\Root\GoogleAnalytics($key);
             },
+            'getlastsearchlink' => function ($sm) {
+                return new \VuFind\View\Helper\Root\GetLastSearchLink(
+                    $sm->getServiceLocator()->get('VuFind\Search\Memory')
+                );
+            },
             'historylabel' => function ($sm) {
                 $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
                 $config = isset($config->SearchHistoryLabels)
@@ -78,6 +83,9 @@ return array(
                 return new \VuFind\View\Helper\Root\Ils(
                     $sm->getServiceLocator()->get('VuFind\ILSConnection')
                 );
+            },
+            'jstranslations' => function($sm) {
+                return new \VuFind\View\Helper\Root\JsTranslations($sm->get('transesc'));
             },
             'proxyurl' => function ($sm) {
                 return new \VuFind\View\Helper\Root\ProxyUrl(
@@ -160,7 +168,6 @@ return array(
             'browse' => 'VuFind\View\Helper\Root\Browse',
             'context' => 'VuFind\View\Helper\Root\Context',
             'currentpath' => 'VuFind\View\Helper\Root\CurrentPath',
-            'getlastsearchlink' => 'VuFind\View\Helper\Root\GetLastSearchLink',
             'highlight' => 'VuFind\View\Helper\Root\Highlight',
             'jqueryvalidation' => 'VuFind\View\Helper\Root\JqueryValidation',
             'printms' => 'VuFind\View\Helper\Root\Printms',
