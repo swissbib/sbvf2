@@ -1,0 +1,59 @@
+<?php
+
+$isLoggedIn	= !!$this->auth()->isLoggedIn();
+
+// works only for single location (here Basel Bern)
+$locationItem = $this->configAccess()->Site->library_locations;
+
+$singleLocation = explode("#",$locationItem);
+$locations[$singleLocation[0]] =  $singleLocation[1];
+
+foreach($locations as $locationKey => $locationLabel) {
+$locationMenuItem = array(
+    'label'	=> $locationLabel,
+    'route'	=> 'accountWithLocation',
+    'class'	=> '',
+    'params'=> array(
+        'location'	=> $locationKey
+    )
+);
+}
+?>
+
+<div id="navigation">
+    <h3 class="hidden">Hauptnavigation</h3>
+    <ul>
+        <li class="nav_home">
+            <a href="<?=$this->url('search-home');?>">Home</a>
+        </li>
+        <li>
+            <a href="<?=$this->url('myresearch-home');?>"><?= $this->transEsc('menu.swissbib') ?></a>
+            <ul class="subnavigation">
+                <li>
+                    <a href="<?=$this->url('search-history')?>"><?=$this->transEsc('history_saved_searches')?></a>
+                </li>
+                <li>
+                    <a href="<?=$this->url('myresearch-favorite-institutions')?>"><?= $this->transEsc('menu.mylibraries') ?></a>
+                </li>
+                <li>
+                    <a href="<?=$this->url('myresearch-favorites');?>"><?=$this->transEsc('memorizelist')?></a>
+                </li>
+                <li>
+                    <a href="<?=$this->url('myresearch-settings');?>"><?=$this->transEsc('My_Search_Settings')?></a>
+                </li>
+                <li>
+                    <a href="<?=$this->url($locationMenuItem['route'], (isset($locationMenuItem['params'])?$locationMenuItem['params']:array()));?>" title="<?=$this->transEsc($locationMenuItem['label'])?>"><?=$this->transEsc($locationMenuItem['label'])?></a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="<?=$this->url('help-page',array('topic'=>'About'));?>"><?= $this->transEsc('menu.service.information') ?></a>
+        </li>
+        <li>
+            <a title="Feedback" href="javascript:void(0)" style="cursor:not-allowed;"><?= $this->transEsc('menu.feedback') ?></a>
+        </li>
+        <li class="nav_help">
+            <a href="<?=$this->url('help-page')?>"><?=$this->transEsc('helppage')?></a>
+        </li>
+    </ul>
+</div>
