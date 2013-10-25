@@ -4,26 +4,26 @@ if (!isset($active)) {
 }
 
 $staticItems = array(
+    'history'	=> array(
+        'route'	=> 'search-history',
+        'label'	=> 'history_saved_searches',
+        'class'	=> ''
+    ),
+    'libraries'	=> array(
+        'route'	=> 'myresearch-favorite-institutions',
+        'label'	=> 'menu.mylibraries',
+        'class'	=> ''
+    ),
+    'favorites'	=> array(
+        'route'	=> 'myresearch-favorites',
+        'label'	=> 'memorizelists',
+        'class'	=> ''
+    ),
     'settings' => array(
         'route'	=> 'myresearch-settings',
         'label'	=> 'My_Search_Settings',
 		'class'	=> ''
     ),
-    'favorites'	=> array(
-		'route'	=> 'myresearch-favorites',
-		'label'	=> 'memorizelists',
-		'class'	=> ''
-	),
-	'history'	=> array(
-		'route'	=> 'search-history',
-		'label'	=> 'history_saved_searches',
-		'class'	=> ''
-	),
-    'libraries'	=> array(
-        'route'	=> 'myresearch-favorite-institutions',
-        'label'	=> 'menu.mylibraries',
-        'class'	=> ''
-    )
 );
 
 if( isset($staticItems[$active]) ) {
