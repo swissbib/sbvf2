@@ -38,13 +38,41 @@ class Module implements Autoloadable, Configurable, Initializable, Consolable
 	 */
 	public function getAutoloaderConfig()
 	{
-		return array(
-			'Zend\Loader\StandardAutoloader' => array(
-				'namespaces' => array(
-					__NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
-				),
-			),
-		);
+
+        //we want to use the classmap mechanism if we are not in development mode
+        if (strcmp(APPLICATION_ENV,'development') != 0) {
+            preg_match('/.*?module/',__DIR__,$moduleMatches);
+            preg_match('/(.*?)module/',__DIR__,$matches);
+
+            return array(
+                'Zend\Loader\ClassMapAutoloader' => array(
+                    __NAMESPACE__ => __DIR__ . '/src/autoload_classmap.php',
+                    'VuFind' => $matches[0] . '/VuFind/src/autoload_classmap.php',
+                    'VuFindSearch' => $matches[0] . '/VuFindSearch/src/autoload_classmap.php',
+                    'VuFindTheme' => $matches[0] . '/VuFindTheme/src/autoload_classmap.php',
+                    'Zend' => $matches[1] . 'vendor/zendframework/zendframework/library/Zend/autoload_classmap.php'
+                ),
+
+                'Zend\Loader\StandardAutoloader' => array(
+                    'namespaces' => array(
+                        __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
+                    ),
+                ),
+            );
+
+
+        } else {
+
+            return array(
+                'Zend\Loader\StandardAutoloader' => array(
+                    'namespaces' => array(
+                        __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
+                    ),
+                ),
+            );
+
+        }
+
 	}
 
 
