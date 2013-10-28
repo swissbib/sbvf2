@@ -35,10 +35,6 @@ $this->render('myresearch/sidebar/wrap.phtml', array(
         <!-- begin: content -->
         <div id="content">
 
-			<span id="popupDetails">
-				<?= $this->flashmessages() ?>
-			</span>
-
             <div>
                 <?php if (isset($list)): ?>
                     <div id="breadcrumb">
@@ -108,11 +104,11 @@ $this->render('myresearch/sidebar/wrap.phtml', array(
                                 <?= $this->paginationControl($this->results->getPaginator(), 'Sliding', 'search/pagination.phtml', array('results' => $this->results)) ?>
                             </div>
                         </div>
-
+                        <?= $this->flashmessages() ?>
                         <table class="data">
                             <colgroup>
                                 <col width="3%"/>
-                                <col width="10%"/>
+                                <col width="3%"/>
                                 <col width="7%"/>
                                 <col width="*"/>
                                 <col width="13%"/>
