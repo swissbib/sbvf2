@@ -12,3 +12,6 @@
 ## Example
 	cli/tab40import.sh <NETWORK> <LOCALE> <SOURCE>
 	cli/tab40import.sh idsbb de path/to/tab40.xxx
+
+## Notes
+ * run the script for all four locales even if terms are the same (as in IDSBB)
