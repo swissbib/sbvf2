@@ -222,6 +222,49 @@ class SolrMarc extends VuFindSolrMarc
 	}
 
     /**
+     * getURL from specific sources
+     * for display in regional views
+     */
+
+    public function getURLs() {
+        $theme = $this->mainConfig->Site->theme;
+        if ($theme != 'swissbibmulti') {
+            return parent::getURLs();
+        }
+        else
+        $retval = array();
+        $fieldsToCheck = array(
+            '950' => array('B', 'P', 'u', 'z'),   // Standard URL
+            //'956' => array('u', 'y')    // linked table of contents
+        );
+        foreach ($fieldsToCheck as $field => $subfields) {
+            $urls = $this->marcRecord->getFields($field);
+            if ($urls) {
+                foreach ($urls as $url) {
+                    // what are tags and source code?
+                    $origtag = $url->getSubfield('P')->getData();
+                    $source  = $url->getSubfield('B')->getData();
+                    if (preg_match('/856/', $origtag) && preg_match('/IDSBB|SNL/i', $source)) {
+                        $address = $url->getSubfield('u');
+                        $desc    = $url->getSubfield('z');
+                        if ($address) {
+                            $address = $address->getData();
+                        if ($desc) {
+                            $desc = $desc->getData();
+                        }
+                        elseif (!$desc) {
+                            $desc = $address;
+                        }
+                        $retVal[] = array('url' => $address, 'desc' => $desc);
+                        }
+                    }
+                }
+            }
+            return $retVal;
+        }
+    }
+
+    /**
      * Returns one of three things: a full URL to a thumbnail preview of the record
      * if an image is available in an external system; an array of parameters to
      * send to VuFind's internal cover generator if no fixed URL exists; or false
