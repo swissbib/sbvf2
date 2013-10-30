@@ -780,3 +780,17 @@ TVI: 20100811
     font-weight: bold;
     color: #c77405;
 }
+
+
+/** lightbox header green */
+.ui-dialog .ui-state-default .ui-icon,
+.ui-dialog .ui-state-hover .ui-icon {
+	background-image: url(ui-lightness/images/ui-icons_222222_256x240.png);
+}
+
+.ui-dialog .ui-widget-header .ui-state-hover {
+	border: 1px solid #ccc;
+	background: #eee;
+	font-weight: bold;
+	color: #222;
+}
