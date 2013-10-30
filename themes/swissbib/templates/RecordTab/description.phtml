@@ -179,11 +179,12 @@ $awards       = $resultItem->getAwards();
 $citenotes    = $resultItem->getCitationNotes();
 $orignotes    = $resultItem->getOriginalVersionNotes();
 $copynotes    = $resultItem->getCopyNotes();
+$system       = $resultItem->getSystemDetails();
 ?>
 <?php if (!empty($notes) or !empty($diss) or !empty($bib) or
           !empty($access) or !empty($credits) or !empty($awards) or
           !empty($citenotes) or !empty($orignotes) or !empty($copynotes) or
-          !empty($origtitle) or !empty($perfomer)): ?>
+          !empty($origtitle) or !empty($perfomer) or !empty($system)): ?>
 	<?php $contentDisplayed = true; ?>
 	<div class="details">
 		<?php /* Display general notes (field 500) */ ?>
@@ -276,6 +277,15 @@ $copynotes    = $resultItem->getCopyNotes();
                 <?php endforeach; ?>
             </p>
         <?php endif; ?>
+        <? /* Display system information note (field 538) */ ?>
+        <? if (!empty($system)): ?>
+            <h4><?=$this->transEsc('Format')?>: </h4>
+            <p>
+                <? foreach ($system as $field): ?>
+                    <?=$this->escapeHtml($field)?><br/>
+                <? endforeach; ?>
+            </p>
+        <? endif; ?>
 		<?php /* Display award notes (field 586) */ ?>
 		<?php if (!empty($awards)): ?>
 			<h4><?= $this->transEsc('Awards') ?>: </h4>
