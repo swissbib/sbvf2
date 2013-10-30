@@ -111,7 +111,7 @@
 }
 
 #advSearchForm .dateSlider {
-    margin-top: 5px;
+    margin: 15px 5px 5px;
     width: 450px;
     background-repeat: repeat-x;
 }
@@ -764,4 +764,24 @@ TVI: 20100811
 .col-3 img {
     position: relative;
     max-width: 100px;
+}
+
+/** Slider green */
+.ui-widget-header {
+    border: 1px solid #1D9E0A;
+    background: #1D9E0A url(../images/bg_button_primary.gif) 50% 50% repeat-x;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.ui-state-hover,
+.ui-widget-content .ui-state-hover,
+.ui-widget-header .ui-state-hover,
+.ui-state-focus,
+.ui-widget-content .ui-state-focus,
+.ui-widget-header .ui-state-focus {
+    border: 1px solid #D4F2CE;
+    background: #D4F2CE url(../images/bg_navigation.gif) 50% 50% repeat-x;
+    font-weight: bold;
+    color: #c77405;
 }
