@@ -14,6 +14,8 @@ $thumbnail = $viewRecord->getThumbnail('large');
 $thumbnailSrc = $thumbnail ? $thumbnail : $this->url('cover-unavailable');
 
 $titleStatement = $record->getTitleStatement(true);
+$shortTitle     = $titleStatement['title'];
+$subtitle       = $titleStatement['title_remainder'] ? $titleStatement['title_remainder'] : implode('. ', $titleStatement['parts_name']);
 $secondaryAuthors = $record->getSecondaryAuthors(true);
 $publishers = $record->getPublishers(true);
 $physicalDescriptions = $record->getPhysicalDescriptions(false);
@@ -45,10 +47,12 @@ $highlightedFulltext = $record->getHighlightedFulltext();
 
 <!-- col -->
 <div class="c75r">
-    <h2><?= $this->escapeHtml($record->getShortTitle()) ?></h2>
-    <?php if (isset($titleStatement['title_remainder'])): ?>
-        <p><?= $this->escapeHtml($titleStatement['title_remainder']) ?></p>
-    <?php endif ?>
+    <!-- title section -->
+    <h2><?= $this->escapeHtml($shortTitle) ?></h2>
+    <? if (isset($subtitle)): ?>
+        <p><?= $this->escapeHtml($subtitle) ?></p>
+    <? endif ?>
+
     <!-- details -->
     <div class="details">
 
