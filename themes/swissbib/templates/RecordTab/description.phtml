@@ -1,4 +1,4 @@
-<?
+<?php
 // Set page title.
 //$this->headTitle($this->translate('Description') . ': ' . $this->driver->getBreadcrumb());
 
@@ -29,145 +29,145 @@ $urns = $this->driver->getURNs();
 ?>
 <!-- Tab-Inhalte gemaess TP detailstab -->
 
-<?
+<?php
 $series = $this->driver->getSeries();
 $recordLinks = $this->driver->getAllRecordLinks();
 if (!empty($series) or !empty($recordLinks)): ?>
 	<div class="print">
 		<h2><?= $this->transEsc('Details') ?></h2>
 	</div>
-<? endif; ?>
+<?php endif; ?>
 
-<? if (!empty($isbns) or !empty($issns) or !empty($ismns) or !empty($dois) or !empty($urns)): ?>
-	<? $contentDisplayed = true; ?>
+<?php if (!empty($isbns) or !empty($issns) or !empty($ismns) or !empty($dois) or !empty($urns)): ?>
+	<?php $contentDisplayed = true; ?>
 	<div class="details">
-		<? if (!empty($isbns)): ?>
+		<?php if (!empty($isbns)): ?>
 			<h4><?= $this->transEsc('ISBN') ?>: </h4>
 			<p>
-				<? foreach ($isbns as $field): ?>
+				<?php foreach ($isbns as $field): ?>
 					<?= $this->escapeHtml($field) ?><br/>
-				<? endforeach; ?>
+				<?php endforeach; ?>
 			</p>
-		<? endif; ?>
-		<? if (!empty($issns)): ?>
+		<?php endif; ?>
+		<?php if (!empty($issns)): ?>
 			<h4><?= $this->transEsc('ISSN') ?>: </h4>
 			<p>
-				<? foreach ($issns as $field): ?>
+				<?php foreach ($issns as $field): ?>
 					<?= $this->escapeHtml($field) ?><br/>
-				<? endforeach; ?>
+				<?php endforeach; ?>
 			</p>
-		<? endif; ?>
-		<? if (!empty($ismns)): ?>
+		<?php endif; ?>
+		<?php if (!empty($ismns)): ?>
 			<h4><?= $this->transEsc('ISMN') ?>: </h4>
 			<p>
-				<? foreach ($ismns as $field): ?>
+				<?php foreach ($ismns as $field): ?>
 					<?= $this->escapeHtml($field) ?><br/>
-				<? endforeach; ?>
+				<?php endforeach; ?>
 			</p>
-		<? endif; ?>
-		<? if (!empty($dois)): ?>
+		<?php endif; ?>
+		<?php if (!empty($dois)): ?>
 			<h4><?= $this->transEsc('DOI') ?>: </h4>
 			<p>
-				<? foreach ($dois as $field): ?>
+				<?php foreach ($dois as $field): ?>
 					<?= $this->escapeHtml($field) ?><br/>
-				<? endforeach; ?>
+				<?php endforeach; ?>
 			</p>
-		<? endif; ?>
-		<? if (!empty($urns)): ?>
+		<?php endif; ?>
+		<?php if (!empty($urns)): ?>
 			<h4><?= $this->transEsc('URN') ?>: </h4>
 			<p>
-				<? foreach ($urns as $field): ?>
+				<?php foreach ($urns as $field): ?>
 					<?= $this->escapeHtml($field) ?><br/>
-				<? endforeach; ?>
+				<?php endforeach; ?>
 			</p>
-		<? endif; ?>
+		<?php endif; ?>
 	</div>
-<? endif; ?>
+<?php endif; ?>
 
-<? /* Display alternative title */ ?>
-<? $alttitle = $this->driver->getAltTitle();
+<?php /* Display alternative title */ ?>
+<?php $alttitle = $this->driver->getAltTitle();
 if (!empty($alttitle)): ?>
 	<div class="details">
 		<h4><?= $this->transEsc('Other_Title') ?></h4>
 
 		<p>
-			<? foreach ($alttitle as $field): ?>
+			<?php foreach ($alttitle as $field): ?>
 				<?= $this->escapeHtml($field) ?><br/>
-			<? endforeach; ?>
+			<?php endforeach; ?>
 		</p>
 	</div>
-<? endif; ?>
+<?php endif; ?>
 
-<? /* Display series section if at least one series exists. */ ?>
-<? $series = $this->driver->getSeries();
+<?php /* Display series section if at least one series exists. */ ?>
+<?php $series = $this->driver->getSeries();
 if (!empty($series)): ?>
 	<div class="details print">
 		<h4><?= $this->transEsc('Series') ?>: </h4>
-		<? foreach ($series as $field): ?>
-			<? if (is_array($field)): ?>
-				<? if (!empty($field['name'])): ?>
+		<?php foreach ($series as $field): ?>
+			<?php if (is_array($field)): ?>
+				<?php if (!empty($field['name'])): ?>
 					<p><?= $this->escapeHtml($field['name']) ?>
-						<? if (!empty($field['number'])): ?>
+						<?php if (!empty($field['number'])): ?>
 							<?= $this->escapeHtml($field['number']) ?>
-						<? endif; ?>
+						<?php endif; ?>
 						<br/>
 					</p>
-				<? endif; ?>
-			<? else: ?>
+				<?php endif; ?>
+			<?php else: ?>
 				<p>
 					<?= $this->escapeHtml($field) ?> <br/>
 				</p>
-			<? endif; ?>
-		<? endforeach; ?>
+			<?php endif; ?>
+		<?php endforeach; ?>
 	</div>
-<? endif; ?>
+<?php endif; ?>
 
-<? /* Display and link to related items (field configured in config_base.ini -> marc_links) */ ?>
-<? $recordLinks = $this->driver->getAllRecordLinks(); ?>
-<? if (!empty($recordLinks)): ?>
-	<? $contentDisplayed = true; ?>
+<?php /* Display and link to related items (field configured in config_base.ini -> marc_links) */ ?>
+<?php $recordLinks = $this->driver->getAllRecordLinks(); ?>
+<?php if (!empty($recordLinks)): ?>
+	<?php $contentDisplayed = true; ?>
 	<div class="details print">
 		<h4><?= $this->transEsc('Related Items') ?></h4>
 
 		<p>
-			<? foreach ($recordLinks as $recordLink): ?>
+			<?php foreach ($recordLinks as $recordLink): ?>
 				<?= $this->transEsc($recordLink['title']) ?>:
 				<a href="<?= $this->recordLink()->related($recordLink['link']) ?>"><?= $this->escapeHtml($recordLink['value']) ?></a>
 				<br/>
-			<? endforeach; ?>
+			<?php endforeach; ?>
 		</p>
 	</div>
-<? endif; ?>
+<?php endif; ?>
 
-<? /* This section is only valid when the above links do not exist */ ?>
-<? $nextTitles = $this->driver->getNewerTitles();
+<?php /* This section is only valid when the above links do not exist */ ?>
+<?php $nextTitles = $this->driver->getNewerTitles();
 $prevTitles = $this->driver->getPreviousTitles(); ?>
-<? if (!empty($nextTitles) or !empty($prevTitles)): ?>
+<?php if (!empty($nextTitles) or !empty($prevTitles)): ?>
 	<div class="details">
-		<? if (!empty($nextTitles)): ?>
+		<?php if (!empty($nextTitles)): ?>
 			<h4><?= $this->transEsc('New Title') ?>: </h4>
 			<p>
-				<? foreach ($nextTitles as $field): ?>
+				<?php foreach ($nextTitles as $field): ?>
 					<a href="<?= $this->record($this->driver)->getLink('title', $field) ?>"><?= $this->escapeHtml($field) ?></a>
 					<br/>
-				<? endforeach; ?>
+				<?php endforeach; ?>
 			</p>
-		<? endif; ?>
-		<? if (!empty($prevTitles)): ?>
+		<?php endif; ?>
+		<?php if (!empty($prevTitles)): ?>
 			<h4><?= $this->transEsc('Previous Title') ?>: </h4>
 			<p>
-				<? foreach ($prevTitles as $field): ?>
+				<?php foreach ($prevTitles as $field): ?>
 					<a href="<?= $this->record($this->driver)->getLink('title', $field) ?>"><?= $this->escapeHtml($field) ?></a>
 					<br/>
-				<? endforeach; ?>
+				<?php endforeach; ?>
 			</p>
-		<? endif; ?>
+		<?php endif; ?>
 	</div>
-<? endif; ?>
+<?php endif; ?>
 
-<? /* div-box for all notes */ ?>
+<?php /* div-box for all notes */ ?>
 
-<?
+<?php
 $notes        = $resultItem->getGeneralNotes();
 $diss         = $resultItem->getDissertationNotes();
 $bib          = $resultItem->getBibliographyNotes();
@@ -181,102 +181,102 @@ $orignotes    = $resultItem->getOriginalVersionNotes();
 $copynotes    = $resultItem->getCopyNotes();
 $system       = $resultItem->getSystemDetails();
 ?>
-<? if (!empty($notes) or !empty($diss) or !empty($bib) or
+<?php if (!empty($notes) or !empty($diss) or !empty($bib) or
           !empty($access) or !empty($credits) or !empty($awards) or
           !empty($citenotes) or !empty($orignotes) or !empty($copynotes) or
           !empty($origtitle) or !empty($perfomer) or !empty($system)): ?>
-	<? $contentDisplayed = true; ?>
+	<?php $contentDisplayed = true; ?>
 	<div class="details">
-		<? /* Display general notes (field 500) */ ?>
-		<? if (!empty($notes)): ?>
+		<?php /* Display general notes (field 500) */ ?>
+		<?php if (!empty($notes)): ?>
 			<h4><?= $this->transEsc('Item Description') ?>: </h4>
 			<p>
-				<? foreach ($notes as $field): ?>
+				<?php foreach ($notes as $field): ?>
 					<?= $this->escapeHtml($field) ?><br/>
-				<? endforeach; ?>
+				<?php endforeach; ?>
 			</p>
-		<? endif; ?>
-		<? /* Display dissertation notes (field 502) */ ?>
-		<? if (!empty($diss)): ?>
+		<?php endif; ?>
+		<?php /* Display dissertation notes (field 502) */ ?>
+		<?php if (!empty($diss)): ?>
 			<h4><?= $this->transEsc('Dissertation_Note') ?>: </h4>
 			<p>
-				<? foreach ($diss as $field): ?>
+				<?php foreach ($diss as $field): ?>
 					<?= $this->escapeHtml($field) ?><br/>
-				<? endforeach; ?>
+				<?php endforeach; ?>
 			</p>
-		<? endif; ?>
-		<? /* Display bibliography notes (field 504) */ ?>
-		<? if (!empty($bib)): ?>
+		<?php endif; ?>
+		<?php /* Display bibliography notes (field 504) */ ?>
+		<?php if (!empty($bib)): ?>
 			<h4><?= $this->transEsc('Bibliography') ?>: </h4>
 			<p>
-				<? foreach ($bib as $field): ?>
+				<?php foreach ($bib as $field): ?>
 					<?= $this->escapeHtml($field) ?><br/>
-				<? endforeach; ?>
+				<?php endforeach; ?>
 			</p>
-		<? endif; ?>
-		<? /* Display access restriction notes (field 506) */ ?>
-		<? if (!empty($access)): ?>
+		<?php endif; ?>
+		<?php /* Display access restriction notes (field 506) */ ?>
+		<?php if (!empty($access)): ?>
 			<h4><?= $this->transEsc('Access') ?>: </h4>
 			<p>
-				<? foreach ($access as $field): ?>
+				<?php foreach ($access as $field): ?>
 					<?= $this->escapeHtml($field) ?><br/>
-				<? endforeach; ?>
+				<?php endforeach; ?>
 			</p>
-		<? endif; ?>
-		<? /* Display production credit notes (field 508) */ ?>
-		<? if (!empty($credits)): ?>
+		<?php endif; ?>
+		<?php /* Display production credit notes (field 508) */ ?>
+		<?php if (!empty($credits)): ?>
 			<h4><?= $this->transEsc('Production Credits') ?>: </h4>
 			<p>
-				<? foreach ($credits as $field): ?>
+				<?php foreach ($credits as $field): ?>
 					<?= $this->escapeHtml($field) ?><br/>
-				<? endforeach; ?>
+				<?php endforeach; ?>
 			</p>
-		<? endif; ?>
-        <? /* Display original title (field 509) */ ?>
-        <? if (!empty($origtitle)): ?>
+		<?php endif; ?>
+        <?php /* Display original title (field 509) */ ?>
+        <?php if (!empty($origtitle)): ?>
             <h4><?= $this->transEsc('Original_Title') ?>: </h4>
             <p>
-                <? foreach ($origtitle as $field): ?>
+                <?php foreach ($origtitle as $field): ?>
                     <?= $this->escapeHtml($field) ?><br/>
-                <? endforeach; ?>
+                <?php endforeach; ?>
             </p>
-        <? endif; ?>
-		<? /* Display citation / reference note (field 510) */ ?>
-        <? if (!empty($citenotes)): ?>
+        <?php endif; ?>
+		<?php /* Display citation / reference note (field 510) */ ?>
+        <?php if (!empty($citenotes)): ?>
             <h4><?= $this->transEsc('Citation_Note') ?>: </h4>
             <p>
-                <? foreach ($citenotes as $field): ?>
+                <?php foreach ($citenotes as $field): ?>
                     <?= $this->escapeHtml($field) ?><br />
-                <? endforeach; ?>
+                <?php endforeach; ?>
             </p>
-        <? endif; ?>
-        <? /* Display participant / performers note */ ?>
-        <? if (!empty($perfomer)): ?>
+        <?php endif; ?>
+        <?php /* Display participant / performers note */ ?>
+        <?php if (!empty($perfomer)): ?>
             <h4><?= $this->transEsc('Performer') ?>: </h4>
             <p>
-                <? foreach ($perfomer as $field): ?>
+                <?php foreach ($perfomer as $field): ?>
                     <?= $this->escapeHtml($field) ?><br />
-                <? endforeach; ?>
+                <?php endforeach; ?>
             </p>
-        <? endif; ?>
-        <? /* Display original version note (field 534) */ ?>
-        <? if (!empty($orignotes)): ?>
+        <?php endif; ?>
+        <?php /* Display original version note (field 534) */ ?>
+        <?php if (!empty($orignotes)): ?>
             <h4><?= $this->transEsc('Original_Version_Note') ?>: </h4>
             <p>
-                <? foreach ($orignotes as $field): ?>
+                <?php foreach ($orignotes as $field): ?>
                     <?= $this->escapeHtml($field) ?><br />
-                <? endforeach; ?>
+                <?php endforeach; ?>
             </p>
-        <? endif; ?>
-		<? /* Display copy and version identification note (fields 562 or 590) */ ?>
-        <? if (!empty($copynotes)): ?>
+        <?php endif; ?>
+		<?php /* Display copy and version identification note (fields 562 or 590) */ ?>
+        <?php if (!empty($copynotes)): ?>
             <h4><?= $this->transEsc('Copy_Note') ?>: </h4>
             <p>
-                <? foreach ($copynotes as $field): ?>
+                <?php foreach ($copynotes as $field): ?>
                     <?= $this->escapeHtml($field) ?><br />
-                <? endforeach; ?>
+                <?php endforeach; ?>
             </p>
-        <? endif; ?>
+        <?php endif; ?>
         <? /* Display system information note (field 538) */ ?>
         <? if (!empty($system)): ?>
             <h4><?=$this->transEsc('Format')?>: </h4>
@@ -286,40 +286,65 @@ $system       = $resultItem->getSystemDetails();
                 <? endforeach; ?>
             </p>
         <? endif; ?>
-		<? /* Display award notes (field 586) */ ?>
-		<? if (!empty($awards)): ?>
+		<?php /* Display award notes (field 586) */ ?>
+		<?php if (!empty($awards)): ?>
 			<h4><?= $this->transEsc('Awards') ?>: </h4>
 			<p>
-				<? foreach ($awards as $field): ?>
+				<?php foreach ($awards as $field): ?>
 					<?= $this->escapeHtml($field) ?><br />
-				<? endforeach; ?>
+				<?php endforeach; ?>
 			</p>
-		<? endif; ?>
+		<?php endif; ?>
 	</div>
-<? endif; ?>
+<?php endif; ?>
 
 
-<?
+<?php
 /** ==Subject Headings== */
 ?>
-<? if (sizeof($subjectVocabularies)): ?>
+<?php if (sizeof($subjectVocabularies)): ?>
 	<div class="subjectVocabularies">
 		<h4><?= $this->transEsc('Subjects') ?>: </h4>
-		<? foreach($subjectVocabularies as $vocabulary => $fieldsData): ?>
+		<?php foreach($subjectVocabularies as $vocabulary => $fieldsData): ?>
 			<h5 class="vocabularyTitle"><?=$this->transEsc('vocabulary.' . $vocabulary, array(), $vocabulary)?></h5>
 			<ul class="vocabularyList vocabulary<?=ucfirst($vocabulary)?>">
-				<? foreach($fieldsData as $fieldIndex => $fieldData): ?>
-					<? foreach($fieldData as $fieldValues): ?>
-						<?
+				<?php foreach($fieldsData as $fieldIndex => $fieldData): ?>
+					<?php foreach($fieldData as $fieldValues): ?>
+						<?php
 //								// Optional: Filter out numeric fields directly here in template
 //							$fieldValues = array_filter($fieldValues, function($value) {
 //																			return !is_numeric($value);
 //																		});
 						?>
 						<li class="type<?=$fieldIndex?>"><?=$this->escapeHtml(implode(' > ', $fieldValues))?></li>
-					<? endforeach; ?>
-				<? endforeach; ?>
+					<?php endforeach; ?>
+				<?php endforeach; ?>
 			</ul>
-		<? endforeach; ?>
+		<?php endforeach; ?>
 	</div>
-<? endif; ?>
+<?php endif; ?>
+
+
+<?php
+/** ================= Tags ====================== */
+/** @var \VuFind\Db\Row\Tags[]  $tagList */
+$tagList = $resultItem->getTags();
+?>
+<h4><?=$this->transEsc('Tags')?>:</h4>
+<p id="tagList">
+	<?php if (sizeof($tagList) > 0): ?>
+		<?php
+			$tagElements = array();
+			foreach ($tagList as $tag) {
+				$tagElements[] = '<a href="' . $this->url('tag-home') . '?lookfor=' . urlencode($tag->tag) . '">'
+									. $this->escapeHtml($tag->tag)
+									. '</a>'
+									. ' (' . $this->escapeHtml($tag->cnt) . ')';
+			}
+			echo implode(', ', $tagElements);
+		?>
+	<?php else: ?>
+		<?= $this->transEsc('No Tags') ?>, <?= $this->transEsc('Be the first to tag this record') ?>!
+	<?php endif; ?>
+</p>
+<p><a href="<?=$this->recordLink()->getActionUrl($resultItem, 'AddTag')?>" class="tool add tagRecord controller<?=$viewRecord->getController()?>" title="<?=$this->transEsc('Add Tag')?>" id="tagRecord"><?=$this->transEsc('Add Tag')?></a></p>
