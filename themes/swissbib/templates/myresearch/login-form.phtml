@@ -23,8 +23,8 @@ $sessionInitiator = $account->getSessionInitiator($this->serverUrl($this->url('m
     <? if (!$sessionInitiator): // display default login form if no login URL provided ?>
         <form method="post" action="<?= $this->url('myresearch-home') ?>" name="loginForm" id="loginForm">
             <?= $this->auth()->getLoginFields() ?>
-            <input class="push-2 button" type="submit" name="processLogin" value="<?= $this->transEsc('Login') ?>"/>
-
+            <input class="push-2 submit primary" type="submit" name="processLogin" value="<?= $this->transEsc('Login') ?>"/>
+            <input class="close reset" type="button" name="close" value="<?= $this->transEsc('Cancel') ?>" />
             <div class="clear"></div>
         </form>
         <?= $initScript ?>
