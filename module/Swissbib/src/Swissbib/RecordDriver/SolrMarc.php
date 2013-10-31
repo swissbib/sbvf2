@@ -221,48 +221,140 @@ class SolrMarc extends VuFindSolrMarc
 		}
 	}
 
-    /**
-     * getURL from specific sources
-     * for display in regional views
-     */
 
-    public function getURLs() {
-        $theme = $this->mainConfig->Site->theme;
-        if ($theme != 'swissbibmulti') {
-            return parent::getURLs();
-        }
-        else
-        $retval = array();
+
+
+    /**
+     * Return an array of associative URL arrays with one or more of the following
+     * keys:
+     *
+     * <li>
+     *   <ul>desc: URL description text to display (optional)</ul>
+     *   <ul>url: fully-formed URL (required if 'route' is absent)</ul>
+     *   <ul>route: VuFind route to build URL with (required if 'url' is absent)</ul>
+     *   <ul>routeParams: Parameters for route (optional)</ul>
+     *   <ul>queryString: Query params to append after building route (optional)</ul>
+     * </li>
+     *
+     * @return array
+     */
+    public function getURLs()
+    {
+        $retVal = array();
+
+        // Which fields/subfields should we check for URLs?
         $fieldsToCheck = array(
-            '950' => array('B', 'P', 'u', 'z'),   // Standard URL
-            //'956' => array('u', 'y')    // linked table of contents
+            '856' => array('u', '3'),   // Standard URL
+            '956' => array('u', 'y'),   // Standard URL
+            //'555' => array('a')         // Cumulative index/finding aids
         );
+
         foreach ($fieldsToCheck as $field => $subfields) {
             $urls = $this->marcRecord->getFields($field);
             if ($urls) {
                 foreach ($urls as $url) {
-                    // what are tags and source code?
-                    $origtag = $url->getSubfield('P')->getData();
-                    $source  = $url->getSubfield('B')->getData();
-                    if (preg_match('/856/', $origtag) && preg_match('/IDSBB|SNL/i', $source)) {
-                        $address = $url->getSubfield('u');
-                        $desc    = $url->getSubfield('z');
-                        if ($address) {
-                            $address = $address->getData();
-                        if ($desc) {
-                            $desc = $desc->getData();
+                    // Is there an address in the current field?
+                    $address = $url->getSubfield('u');
+                    if ($address) {
+                        $address = $address->getData();
+
+                        $tSubField = end($subfields);
+
+                        $descSubField = $url->getSubfield($tSubField);
+
+                        $desc = $address;
+                        if ($descSubField) {
+                            $desc = $descSubField->getData();
                         }
-                        elseif (!$desc) {
-                            $desc = $address;
-                        }
+                        // Is there a description?  If not, just use the URL itself.
+
                         $retVal[] = array('url' => $address, 'desc' => $desc);
-                        }
                     }
                 }
             }
-            return $retVal;
         }
+
+        return $retVal;
     }
+
+
+    /*
+     *
+     */
+    public function getLocalValues($unions = array(),
+                                   $localtags = array(),
+                                   $indicators = array(),
+                                   $subfields = array()) {
+
+
+        $retValues = array();
+
+        $localValues = $this->marcRecord->getFields('950');
+        if ($localValues) {
+            foreach ($localValues as $localValue) {
+                // what are tags and source code?
+
+                $union = $localValue->getSubfield('B')->getData();
+                //limited to specific networks?
+                if (sizeof($unions) > 0 && !in_array($union,$unions)) {
+                        continue;
+                }
+
+                $tLocalTagInSubField = $localValue->getSubfield('P');
+                $tLocalTagValue = $tLocalTagInSubField->getData();
+                //not the requested localTag?
+                if (sizeof($localtags) > 0  && !in_array($tLocalTagValue,$localtags)) {
+                    continue;
+                }
+
+
+                //any Indicator rules?
+                if (sizeof($indicators) > 0) {
+                    for ($i = 0; $i <= 1; $i++) {
+                        $t = $localValue->getSubfield('E')->getData();
+                        $indicator = substr($t,$i,1);
+                        if ($indicator !== $indicators[$i]) {
+
+                            continue 2;
+                        }
+                    }
+                }
+
+                $tlocalTagReturn = array();
+                $tSubfields = array();
+                $tlocalTagReturn['localtag'] = $tLocalTagValue;
+                $tlocalTagReturn['union'] = $union;
+
+                if (sizeof($subfields) > 0) {
+
+                    foreach($subfields as $subfield) {
+
+                        $tLocalValueSubField = $localValue->getSubField($subfield);
+                        //is there a value for the requested subfield?
+                        if (!empty ($tLocalValueSubField)) {
+                            $tCode = $tLocalValueSubField->getCode();
+                            $tSubfields[$tCode] = $tLocalValueSubField->getData();
+                        }
+                    }
+
+                }else {
+                    foreach($localValue->getSubFields() as $subfield) {
+
+                        $tCode = $subfield->getCode();
+                        $tSubfields[$tCode] = $subfield->getData();
+                    }
+                }
+
+                $tlocalTagReturn['subfields'] = $tSubfields;
+                $retValues[] = $tlocalTagReturn;
+
+            }
+        }
+        return $retValues;
+    }
+
+
+
 
     /**
      * Returns one of three things: a full URL to a thumbnail preview of the record
