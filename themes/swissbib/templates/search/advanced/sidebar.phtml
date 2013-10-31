@@ -26,20 +26,34 @@ $advSearch = $this->searchOptions($this->searchClassId)->getAdvancedSearchAction
 	<?php endif; ?>
 
 	<!-- begin: subnavigation -->
-	<h3><?=$this->transEsc('Search')?></h3>
+	<h3>Suche</h3>
 	<div class="subnavigation">
 		<ul>
 			<li class="selected">
                 <a href="<?=$this->url($advSearch)?>" title="<?=$this->transEsc('Advanced Search')?>" id="search_extended"><?=$this->transEsc('Advanced Search')?></a>
 			</li>
-            <li>
-                <a href="<?=$this->url('search-history')?>"><?=$this->transEsc('history_saved_searches')?></a>
-            </li>
 			<li>
                 <a href="<?=$this->url('myresearch-settings');?>"><?=$this->transEsc('My_Search_Settings')?></a>
+			</li>
+			<li>
+                <a href="<?=$this->url('search-history')?>"><?=$this->transEsc('history_saved_searches')?></a>
 			</li>
 		</ul>
 	</div>
 	<!-- end: subnavigation -->
+
+	<!-- begin: subnavigation 
+	<h3><?=$this->transEsc("Search Tips")?></h3>
+	<div class="subnavigation">
+		<ul>
+			<li>
+				<a href="<?=$this->url('help-home')?>?topic=searchadv"><?=$this->transEsc("Help with Advanced Search")?></a>
+			</li>
+			<li>
+				<a href="<?=$this->url('help-home')?>?topic=search"><?=$this->transEsc("Help with Search Operators")?></a>
+			</li>
+		</ul>
+	</div>
+	 end: subnavigation -->
 
 </div>
