@@ -24,8 +24,9 @@ function getLightbox(module, action, id, lookfor, message, followupModule, follo
 			modal: true,
 			autoOpen: false,
 			closeOnEscape: true,
-			width: 600,
+			width: "auto",
 			height: "auto",
+			position: { my: "center", at: "center", of: window },
 			close: function () {
 				// check if the dialog was successful, if so, load the followup action
 				if (__dialogHandle.processFollowup && __dialogHandle.followupModule
@@ -51,10 +52,14 @@ function getLightbox(module, action, id, lookfor, message, followupModule, follo
 }
 
 function registerCloseButton() {
-	jQuery("#modalDialog .close").click(function(event){
+	__dialogHandle.dialog.find("input.close").click(function(event){
 		event.preventDefault();
-		jQuery("#modalDialog").dialog("close");
+		hideLightbox();
 	});
+}
+
+function repositionDialog() {
+	__dialogHandle.dialog.dialog("option", "position", { my: "center", at: "center", of: window });
 }
 
 /**
@@ -77,5 +82,6 @@ function lightboxDocumentReady() {
 	registerAjaxBulkExport();
 	registerAjaxBulkDelete();
 	registerCloseButton();
+	repositionDialog();
 	$('.mainFocus').focus();
 }
