@@ -4,7 +4,7 @@
 
 ?>
 
-<h1 class="hideinlightbox"><?= $this->transEsc('Export Favorites') ?></h1>
+<h1><?= $this->transEsc('Email Record') ?></h1>
 
 <?=$this->flashmessages()?>
 <form class="search data" action="<?=$this->url('cart-email')?>" method="post"  name="bulkEmail">
@@ -34,5 +34,6 @@
 	</fieldset>
 	<fieldset class="actions">
 		<input class="submit primary" type="submit" name="submit" value="<?= $this->transEsc('Send') ?>"/>
+		<input class="close reset" type="button" name="close" value="<?= $this->transEsc('Cancel') ?>" />
 	</fieldset>
 </form>

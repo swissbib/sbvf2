@@ -24,7 +24,7 @@
 }
 
 #loginForm input[type=submit] {
-    margin-left: 250px;
+    margin-left: 111px;
 }
 
 #loginForm label.invalid {
@@ -782,7 +782,12 @@ TVI: 20100811
 }
 
 
-/** lightbox header green */
+/** lightbox */
+.ui-dialog {
+	min-width: 400px;
+	min-height: 250px;
+}
+
 .ui-dialog .ui-state-default .ui-icon,
 .ui-dialog .ui-state-hover .ui-icon {
 	background-image: url(ui-lightness/images/ui-icons_222222_256x240.png);
@@ -793,4 +798,17 @@ TVI: 20100811
 	background: #eee;
 	font-weight: bold;
 	color: #222;
+}
+
+input.close {
+	display: none;
+}
+
+.ui-dialog input.close {
+	display: block;
+}
+
+.ui-dialog form {
+	text-align: left;
+	margin: 0 20px;
 }
