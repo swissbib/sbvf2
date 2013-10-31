@@ -14,6 +14,8 @@ $thumbnail = $viewRecord->getThumbnail('large');
 $thumbnailSrc = $thumbnail ? $thumbnail : $this->url('cover-unavailable');
 
 $titleStatement = $record->getTitleStatement(true);
+$shortTitle     = $titleStatement['title'];
+$subtitle       = $titleStatement['title_remainder'] ? $titleStatement['title_remainder'] : implode('. ', $titleStatement['parts_name']);
 $secondaryAuthors = $record->getSecondaryAuthors(true);
 $publishers = $record->getPublishers(true);
 $physicalDescriptions = $record->getPhysicalDescriptions(false);
@@ -27,7 +29,50 @@ $hostitems = $record->getHostItemEntry();
 // prepared to activate openURL-display in solr-Tab, openURL switched of @todo analyse later
 //$openUrl				= $record->openURLActive('record') ? $record->getOpenURL() : false;
 //$urls                   = ($openUrl && $record->replaceURLsWithOpenURL()) ? array() : $viewRecord->getLinkDetails();
-$urls = $viewRecord->getLinkDetails();
+
+
+/*
+todo: erste Implementierung gezielt links generieren zu lassen (GH)
+zufrieden bin ich damit noch nicht richtig - eventuell kann man noch gezielter konfigurieren, welche links man einsetzen möchte
+aktueller Status:
+1) $viewRecord->getExtendedLinkDetails()
+-> sucht nach allen links lokal (Tag 950) sowie 856 und 956 des bibliographischen Satzes
+2) $urls = $viewRecord->getExtendedLinkDetails($params,false);
+sucht gezielt nach links in den lokalen 950 Tags. Folgende Einschränkungen sind möglich
+$allParams = array('unions' => array(), 'localtags'  => array(), 'indicators' => array(), 'subfields' => array());
+unions -> Verbunde
+localtags -> gezielt nach localtags abfragen
+indicators -> Einschraenkung auf bestimmte Indikatoren
+subfields -> Einschraenkung nach subfields
+Die Methode verwendet die allgemeine Methode getLocalValues, die auch für das Auslesen anderen lokaler tags als fuer links verwendet werden kann
+erweitertes Beispiel:
+    $unions = array('IDSBB','SNL');
+    $localtags = array('956','856);
+    indicators = array('7','-')
+    subfields = array('a','b','C')
+    $params = compact('unions','localtags','indicators','subfields');
+
+man muss noch schauen, ob diese Form der Implementierung fuer die anderen use cases ausreichend und sinnvoll ist
+
+*/
+$currentView = $this->configAccess()->Site->theme;
+if (strcmp(strtolower($currentView),'swissbibmulti') != 0) {
+
+    $urls = $viewRecord->getExtendedLinkDetails();
+} else {
+    $unions = array('IDSBB','SNL');
+    $localtags = array('956');
+    $params = compact('unions','localtags');
+
+    //only local values for Basel / Bern
+    $urls = $viewRecord->getExtendedLinkDetails($params,false);
+
+}
+
+
+
+
+
 $memorizeLink = $this->recordLink()->getActionUrl($record, 'Save');
 $highlightedFulltext = $record->getHighlightedFulltext();
 
@@ -45,10 +90,12 @@ $highlightedFulltext = $record->getHighlightedFulltext();
 
 <!-- col -->
 <div class="c75r">
-    <h2><?= $this->escapeHtml($record->getShortTitle()) ?></h2>
-    <?php if (isset($titleStatement['title_remainder'])): ?>
-        <p><?= $this->escapeHtml($titleStatement['title_remainder']) ?></p>
-    <?php endif ?>
+    <!-- title section -->
+    <h2><?= $this->escapeHtml($shortTitle) ?></h2>
+    <? if (isset($subtitle)): ?>
+        <p><?= $this->escapeHtml($subtitle) ?></p>
+    <? endif ?>
+
     <!-- details -->
     <div class="details">
 
