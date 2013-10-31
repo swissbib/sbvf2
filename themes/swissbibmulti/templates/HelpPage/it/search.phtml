@@ -1,78 +1,78 @@
 <h1>Ricerca</h1>
 
-<h3>Combinare</h3>
+<h3>Combinare più termini</h3>
 
 <table>
     <tbody>
     <tr>
         <td>AND / OR / NOT</td>
         <td><i>art* OR kunst*</i></td>
-        <td>The operators must be written in capital letters, default is AND</td>
+        <td>Gli operatori devono essere scritti in caratteri maiuscoli, l'operator preimpostato è AND.<br/>Per le ricerche più complessi vedi <a href="<?=$this->url('HelpPage/Advanced')?>">Guida - Ricerca avanzata</a>.</td>
     </tr>
     </tbody>
 </table>
 
 
-<h3>Phrase search, using quotation marks</h3>
+<h3>Ricerca per frase o locuzione tramite virgolette</h3>
 
 <table>
     <tbody>
     <tr>
         <td><i>"street art"</i></td>
-        <td>The words must be adjacent.</td>
+        <td>I termini devono apparire nello stesso identico ordine.</td>
         </tr>
     
     <tr>
         <td><i>"street art"~5</i></td>
-        <td>Both terms must be present within 5 words.</td>
+        <td>Entrambi i termini devono essere presenti entro un intervallo di 5 parole.</td>
            </tr>
     <tr>
         <td><i>"Sackville-West"</i></td>
-        <td>Also use quotation marks for double names and other hyphenated words.</td>
+        <td>Usa le virgolette anche per le parole composte.</td>
     </tr>
     <tr>
         <td><i>"PZB E 62 2:6"</i></td>
-        <td>In basic search, use quotation marks to search for call numbers.</td>
+        <td>Nella ricerca semplice, usa le virgolette anche per cercare determinate segnature.</td>
     </tr>
     
     </tbody>
 </table>
 
 
-<h3>Truncation</h3>
+<h3>Segni di troncamento</h3>
 <table>
     <tbody>
     <tr>
         <td>*</td>
-        <td>replaces any number of letters</td>
+        <td>sostituisce un numero qualsiasi di caratteri</td>
         <td><i>cultur*</i></td>
-        <td>culture, cultura, cultural, culturally etc.</td>
+        <td>culture, cultura, cultural, culturally ecc.</td>
     </tr>
 
     <tr>
         <td rowspan="2">?</td>
-        <td rowspan="2">replaces exactly one letter</td>
+        <td rowspan="2">sostituisce un singolo carattere</td>
         <td><i>wom?n</i></td>
-        <td>woman, women etc. **</td>
+        <td>woman, women ecc. **</td>
     </tr>
     <tr>
         <td><i>Lind??ist</i></td>
-        <td>Lindquist, Lindkvist, Lindqvist etc. **</td>
+        <td>Lindquist, Lindkvist, Lindqvist ecc. **</td>
     </tr>
 
 
     <tr>
         <td>~</td>
-        <td>fuzzy search</td>
+        <td>ricerca approssimativa</td>
         <td><i>Copenhagen~</i></td>
-        <td>Copenhagen, København, Kopenhagen etc. **</td>
+        <td>Copenhagen, København, Kopenhagen ecc. **</td>
     </tr>
     
       <tr>
         <td>[ ]</td>
-        <td>range search</td>
+        <td>ricerca di un intervallo</td>
         <td><i>weather [2010 TO 2013]</i></td>
-        <td>instead of <i>weather (2010 OR 2011 OR 2012 OR 2013)</i> **</td>
+        <td>invece di <i>weather (2010 OR 2011 OR 2012 OR 2013)</i> **</td>
     </tr>
     
     </tbody>
@@ -83,15 +83,15 @@
 </p>
 
 
-<h2>Trovato troppo?</h2>
-<p>Use the facets in the left hand column and/or the <a href="<?=$this->url('search-advanced')?>">advanced search</a>.</p>
+<h2>Hai troppi risultati?</h2>
+<p>Usa i filtri nella colonna a sinistra e/o la <a href="<?=$this->url('search-advanced')?>">ricerca avanzata</a>.</p>
 
-<h2>Non trovato bastante?</h2>
+<h2>Non hai trovato abbastanza?</h2>
 <ul class="list">
-    <li>Clicking on <i>Articles & more</i> will repeat your search in <a href="http://www.serialssolutions.com/en/services/summon/content" target="_blank">Summon</a>.</li>
-    <li><a href="http://www.swissbib.ch" target="_blank">swissbib.ch</a> metacatalog of Swiss university libraries and the Swiss National Library</li>
-    <li>Contact the information desk / interlibrary loan of <a href="http://www.swissbib.ch/libraries/index.html" target="_blank">your library</a>.</li>
+    <li>Cliccando su <i>Articoli & più</i> puoi ripetere la tua ricerca in <a href="http://www.serialssolutions.com/en/services/summon/content" target="_blank">Summon</a>.</li>
+    <li><a href="http://www.swissbib.ch" target="_blank">swissbib.ch</a> metacatalogo delle biblioteche universitarie svizzere e della Biblioteca nazionale svizzera</li>
+    <li>Contatta il servizio informazione della <a href="http://www.swissbib.ch/libraries/index.html" target="_blank">tua biblioteca</a>.</li>
 </ul>
 
 <h2>Non sai dove cominciare?</h2>
-<p>Try a null search (a search with no text in the searchbox), then use the facets to filter the results.</p>
+<p>Clicca su <i>Cerca</i> lasciando vuota la maschera di ricerca e in seguito usa i filtri per restringere i risultati.</p>
