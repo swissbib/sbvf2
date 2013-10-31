@@ -274,10 +274,101 @@ class SolrMarc extends VuFindSolrMarc
     }
 
 
+    /**
+     * Return an array of associative URL arrays with one or more of the following
+     * keys:
+     *
+     * <li>
+     *   <ul>desc: URL description text to display (optional)</ul>
+     *   <ul>url: fully-formed URL (required if 'route' is absent)</ul>
+     *   <ul>route: VuFind route to build URL with (required if 'url' is absent)</ul>
+     *   <ul>routeParams: Parameters for route (optional)</ul>
+     *   <ul>queryString: Query params to append after building route (optional)</ul>
+     * </li>
+     * the URLs consider restrictions by unions and tags defined by the client of this functionality
+     * @return array
+     */
+    public function getExtendedURLs($globalunions = array(),
+                                    $tags = array())
+    {
+
+        $retVal = array();
+
+        // Which fields/subfields should we check for URLs?
+        $fieldsToCheck = array(
+            '856' => array('u', '3'), // Standard URL
+            '956' => array('u', 'y','B'), // Standard URL
+            //'555' => array('a')         // Cumulative index/finding aids
+        );
+
+        $tFieldsToCheck = array();
+        if (!empty($tags)) {
+            foreach($tags as $tag) {
+                if (strcmp($tag,'856') == 0) {
+                    $tFieldsToCheck['856'] = array('u','3');
+                } elseif (strcmp($tag,'956') == 0) {
+                    $tFieldsToCheck['956'] = array('u','y','B');
+                }
+            }
+        }
+
+        if (!empty($tFieldsToCheck)) {
+            $fieldsToCheck = $tFieldsToCheck;
+        }
+
+
+
+        foreach ($fieldsToCheck as $field => $subfields) {
+            $urls = $this->marcRecord->getFields($field);
+            if ($urls) {
+                foreach ($urls as $url) {
+                    // Is there an address in the current field?
+                    $address = $url->getSubfield('u');
+                    if ($address) {
+                        $address = $address->getData();
+
+                        $tagDataField = $url->getTag();
+
+                        if (strcmp($tagDataField,'856') == 0) {
+
+                            $descSubField = $url->getSubField('3');
+
+                        } else {
+                            //it has to be 956 -> now we could have a union restriction
+
+                            $union = $url->getSubfield('B')->getData();
+                            //limited to specific networks?
+                            if (sizeof($globalunions) > 0 && !in_array($union, $globalunions)) {
+                                continue;
+                            }
+
+
+                            $descSubField = $url->getSubField('y');
+
+                        }
+
+                        $desc = $address;
+                        if ($descSubField) {
+                            $desc = $descSubField->getData();
+                        }
+                        // Is there a description?  If not, just use the URL itself.
+
+                        $retVal[] = array('url' => $address, 'desc' => $desc);
+                    }
+                }
+            }
+        }
+
+        return $retVal;
+    }
+
+
+
+
     /*
      *
      */
-    public function getLocalValues($unions = array(),
+    public function getLocalValues($localunions = array(),
                                    $localtags = array(),
                                    $indicators = array(),
                                    $subfields = array())
@@ -293,7 +384,7 @@ class SolrMarc extends VuFindSolrMarc
 
                 $union = $localValue->getSubfield('B')->getData();
                 //limited to specific networks?
-                if (sizeof($unions) > 0 && !in_array($union, $unions)) {
+                if (sizeof($localunions) > 0 && !in_array($union, $localunions)) {
                     continue;
                 }
 
@@ -320,7 +411,7 @@ class SolrMarc extends VuFindSolrMarc
                 $tlocalTagReturn = array();
                 $tSubfields = array();
                 $tlocalTagReturn['localtag'] = $tLocalTagValue;
-                $tlocalTagReturn['union'] = $union;
+                $tlocalTagReturn['localunion'] = $union;
 
                 if (sizeof($subfields) > 0) {
 
