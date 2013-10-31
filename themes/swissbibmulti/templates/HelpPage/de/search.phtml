@@ -5,12 +5,25 @@
 <table>
     <tbody>
     <tr>
-        <td>AND / OR / NOT</td>
-        <td><i>art* OR kunst*</i></td>
-        <td>Die Operatoren müssen in Grossbuchstaben geschrieben werden, Default ist AND.<br/>Für komplexe Suchen siehe <a href="<?=$this->url('HelpPage/Advanced')?>">Hilfe - Erweiterte Suche</a>.</td>
+     <tr>
+        <td><i>street art</i></td>
+        <td>Beide Begriffe müssen vorkommen.</td>
     </tr>
-   
-    </tbody>
+ 
+         <td><i>art* OR kunst*</i></td>
+        <td>Einer der beiden Begriffe muss vorkommen.</td>
+    </tr>
+    
+              <tr>
+        <td><i>art NOT street</i></td>
+        <td><i>art</i> muss vorkommen, <i>street</i> soll nicht vorkommen.</td>
+    </tr>
+ 
+    <tr>
+        <td>Komplexere Kombinationen</td>
+        <td>Siehe <a href="<?=$this->url('HelpPage/Advanced')?>">Hilfe - Erweiterte Suche</a>.</td>
+    </tr>
+      </tbody>
 </table>
 
 
