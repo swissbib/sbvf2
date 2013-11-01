@@ -63,7 +63,7 @@ if (strcmp(strtolower($currentView),'swissbibmulti') != 0) {
 
 } else {
     $localunions = array('IDSBB','SNL');
-    $localtags = array('956');
+    $localtags = array('856');
     $localRestrictions = compact('localunions','localtags');
 
     $globalunions = array('IDSBB','SNL');
@@ -150,7 +150,6 @@ $highlightedFulltext = $record->getHighlightedFulltext();
             <p><?= $this->escapeHtml($edition) ?></p>
         <?php endif; ?>
 
-        <? /*if (!empty($urls) || $openUrl): */ ?>
         <? if ($urls): ?>
             <h4><?= $this->transEsc('Online Access') ?>: </h4>
             <? foreach ($urls as $current): ?>
@@ -159,10 +158,6 @@ $highlightedFulltext = $record->getHighlightedFulltext();
                        target="_blank"><?= $this->escapeHtml($current['desc']) ?></a><br/>
                 </p>
             <? endforeach; ?>
-            <? // openURL deactivated, see file head ?>
-            <? //if ($openUrl): ?>
-            <? //=$this->openUrl($openUrl)?>
-            <? //endif; ?>
         <?php endif; ?>
 
         <?php if ($highlightedFulltext): ?>
