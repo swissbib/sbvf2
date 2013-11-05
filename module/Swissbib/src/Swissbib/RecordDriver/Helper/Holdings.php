@@ -592,6 +592,8 @@ class Holdings
 
 		if ($this->isAlephNetwork($networkCode)) {
 			if ($this->isRestfulNetwork($networkCode)) {
+                // no backlink for Restful enabled networks, either actions are possible, or nothing
+                unset($holding['backlink']);
 				$idls		= $this->bibCodeHelper->getBibCode($holding['network']);
 				$resourceId	= $idls . $holding['bibsysnumber'];
 				$itemsCount	= $this->getIlsDriver()->getHoldingItemCount($resourceId, $holding['institution']);
