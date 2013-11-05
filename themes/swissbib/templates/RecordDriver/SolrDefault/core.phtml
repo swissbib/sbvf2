@@ -14,7 +14,7 @@ $thumbnail = $viewRecord->getThumbnail('large');
 $thumbnailSrc = $thumbnail ? $thumbnail : $this->url('cover-unavailable');
 
 $titleStatement = $record->getTitleStatement(true);
-$shortTitle     = $titleStatement['title'];
+$shortTitle     = $record->getShortTitle();
 $subtitle       = $titleStatement['title_remainder'] ? $titleStatement['title_remainder'] : implode('. ', $titleStatement['parts_name']);
 $secondaryAuthors = $record->getSecondaryAuthors(true);
 $publishers = $record->getPublishers(true);
