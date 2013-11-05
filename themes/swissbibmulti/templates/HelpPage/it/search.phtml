@@ -5,9 +5,24 @@
 <table>
     <tbody>
     <tr>
-        <td>AND / OR / NOT</td>
-        <td><i>art* OR kunst*</i></td>
-        <td>Gli operatori devono essere scritti in caratteri maiuscoli, l'operator preimpostato è AND.<br/>Per le ricerche più complessi vedi <a href="<?=$this->url('help-page', array('topic' => 'Advanced'))?>">Guida - Ricerca avanzata</a>.</td>
+        <td><i>joyce ulysses</i></td>
+        <td>Entrambi i termini sono presenti</td>
+    </tr>
+      <tr>
+        <td><i>joyce AND ulysses</i></td>
+        <td>Entrambi i termini sono presenti nello stesso campo</td>
+    </tr>  
+    <tr>
+        <td><i>joyce OR ulysses</i></td>
+        <td>Uno dei termini é presente</td>
+    </tr>  
+    <tr>
+        <td><i>joyce NOT ulysses</i></td>
+        <td><i>joyce</i> é presente, ma no <i>ulysses</i></td>
+    </tr>
+    <tr>
+        <td>Per le ricerche più complessi</td>
+        <td>Vedi <a href="<?=$this->url('help-page', array('topic' => 'Advanced'))?>">Guida - Ricerca avanzata</a>.</td>
     </tr>
     </tbody>
 </table>
@@ -27,12 +42,12 @@
         <td>Entrambi i termini devono essere presenti entro un intervallo di 5 parole.</td>
            </tr>
     <tr>
-        <td><i>"Sackville-West"</i></td>
-        <td>Usa le virgolette anche per le parole composte.</td>
+        <td><i>"978-386-56619-6-8"</i></td>
+        <td>Nella ricerca semplice, usa le virgolette per ISBN, ISSN ecc.</td>
     </tr>
     <tr>
         <td><i>"PZB E 62 2:6"</i></td>
-        <td>Nella ricerca semplice, usa le virgolette anche per cercare determinate segnature.</td>
+        <td>Nella ricerca semplice, usa le virgolette per determinate segnature.</td>
     </tr>
     
     </tbody>
@@ -43,11 +58,17 @@
 <table>
     <tbody>
     <tr>
-        <td>*</td>
-        <td>sostituisce un numero qualsiasi<br/>di caratteri</td>
+        <td rowspan="2">*</td>
+        <td rowspan="2">sostituisce un numero qualsiasi<br/>di caratteri</td>
         <td><i>cultur*</i></td>
         <td>culture, cultura, cultural, culturally ecc.</td>
     </tr>
+     <tr>
+        <td><i>Fr*ib*urg</i></td>
+        <td>Fribourg, Freiburg etc.</td>
+    </tr>
+
+
 
     <tr>
         <td rowspan="2">?</td>
@@ -64,9 +85,9 @@
     <tr>
         <td>~</td>
         <td>ricerca approssimativa</td>
-        <td><i>Copenhagen~</i></td>
-        <td>Copenhagen, København, Kopenhagen ecc. **</td>
-    </tr>
+        <td><i>Tschaikowski~</i></td>
+        <td>Tschaikowski, Tchaïkovski, Čajkovskij ecc. **</td>
+         </tr>
     
       <tr>
         <td>[ ]</td>
@@ -92,6 +113,3 @@
     <li><a href="http://www.swissbib.ch" target="_blank">swissbib.ch</a> metacatalogo delle biblioteche universitarie svizzere e della Biblioteca nazionale svizzera</li>
     <li>Contatta il servizio informazione della <a href="http://www.swissbib.ch/libraries/index.html" target="_blank">tua biblioteca</a>.</li>
 </ul>
-
-<h2>Non sai dove cominciare?</h2>
-<p>Clicca su <i>Cerca</i> lasciando vuota la maschera di ricerca e in seguito usa i filtri per restringere i risultati.</p>
