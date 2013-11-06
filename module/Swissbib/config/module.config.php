@@ -517,7 +517,8 @@ return array(
 			),
 			'recordtab' => array(
 				'invokables' => array(
-					'articledetails' => 'Swissbib\RecordTab\ArticleDetails'
+					'articledetails' => 'Swissbib\RecordTab\ArticleDetails',
+					'description' => 'Swissbib\RecordTab\Description'
 				)
 			),
 		)
