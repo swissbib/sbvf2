@@ -61,7 +61,7 @@ $showLists = (!empty($this->nonContainingLists) || (empty($this->containingLists
                                             <option value="<?= $list['id'] ?>"<?php if ($list['id'] == $this->userList()->lastUsed()): ?> selected="selected"<?php endif; ?>><?= $this->escapeHtml($list['title']) ?></option>
                                         <?php endforeach; ?>
                                     <?php else: ?>
-                                        <option value=""><?= $this->transEsc('mymemorizelists') ?></option>
+                                        <option value=""><?= $this->transEsc('memorizenewlist') ?></option>
                                     <?php endif; ?>
                                 </select>
                             </div>
