@@ -481,19 +481,13 @@ a#tagRecord {
     cursor: pointer;
 }
 
-.qrCodePopup img {
-    margin-top: 70px;
-}
-
 .qrCodePopup .infotext {
-    position: absolute;
     top: 0;
     color: #AAAAAA;
     padding: 5px;
 }
 
 .qrCodePopup .datatext {
-    position: absolute;
     bottom: 0;
     padding: 5px;
 }

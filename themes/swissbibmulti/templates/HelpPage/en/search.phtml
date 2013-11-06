@@ -5,9 +5,24 @@
 <table>
     <tbody>
     <tr>
-        <td>AND / OR / NOT</td>
-        <td><i>art* OR kunst*</i></td>
-        <td>The operators must be written in capital letters, default is AND.<br/>For complex searches see <a href="<?=$this->url('help-page', array('topic' => 'Advanced'))?>">Help - Advanced search</a>.</td>
+        <td><i>joyce ulysses</i></td>
+        <td>Both terms are present</td>
+    </tr>
+      <tr>
+        <td><i>joyce AND ulysses</i></td>
+        <td>Both terms are present in the same field</td>
+    </tr>  
+    <tr>
+        <td><i>joyce OR ulysses</i></td>
+        <td>One of the terms is present</td>
+    </tr>  
+    <tr>
+        <td><i>joyce NOT ulysses</i></td>
+        <td><i>joyce</i> is present, but not <i>ulysses</i> nicht</td>
+    </tr>
+    <tr>
+        <td>More complex searches</td>
+        <td>See <a href="<?=$this->url('help-page', array('topic' => 'Advanced'))?>">Help - Advanced search</a>.</td>
     </tr>
     </tbody>
 </table>
@@ -27,12 +42,12 @@
         <td>Both terms must be present within 5 words.</td>
            </tr>
     <tr>
-        <td><i>"Sackville-West"</i></td>
-        <td>Also use quotation marks for double names and other hyphenated words.</td>
+        <td><i>"978-386-56619-6-8"</i></td>
+        <td>In basic search, use quotation marks for ISBN, ISSN etc.</td>
     </tr>
     <tr>
         <td><i>"PZB E 62 2:6"</i></td>
-        <td>In basic search, use quotation marks to search for call numbers.</td>
+        <td>In basic search, use quotation marks for call numbers.</td>
     </tr>
     
     </tbody>
@@ -43,11 +58,17 @@
 <table>
     <tbody>
     <tr>
-        <td>*</td>
-        <td>replaces any number of letters</td>
+        <td rowspan="2">*</td>
+        <td rowspan="2">replaces any number of letters</td>
         <td><i>cultur*</i></td>
         <td>culture, cultura, cultural, culturally etc.</td>
     </tr>
+    <tr>
+        <td><i>Fr*ib*urg</i></td>
+        <td>Fribourg, Freiburg etc.</td>
+    </tr>
+
+
 
     <tr>
         <td rowspan="2">?</td>
@@ -55,18 +76,17 @@
         <td><i>wom?n</i></td>
         <td>woman, women etc. **</td>
     </tr>
-    <tr>
+      <tr>
         <td><i>Lind??ist</i></td>
-        <td>Lindquist, Lindkvist, Lindqvist etc. **</td>
+        <td>Lindquist, Lindkvist, Lindqvist ecc. **</td>
     </tr>
-
 
     <tr>
         <td>~</td>
         <td>fuzzy search</td>
-        <td><i>Copenhagen~</i></td>
-        <td>Copenhagen, København, Kopenhagen etc. **</td>
-    </tr>
+        <td><i>Tschaikowski~</i></td>
+        <td>Tschaikowski, Tchaïkovski, Čajkovskij etc. **</td> 
+        </tr>
     
       <tr>
         <td>[ ]</td>
@@ -82,6 +102,8 @@
 <p> ** only for <i>Books & more</i>
 </p>
 
+<h2>Repeat or save search</h2>
+         <p><a href="<?=$this->url('search-history')?>">My swissbib - Saved searches</a></p>
 
 <h2>Found too much?</h2>
 <p>Use the facets in the left hand column and/or the <a href="<?=$this->url('search-advanced')?>">advanced search</a>.</p>
@@ -92,6 +114,3 @@
     <li><a href="http://www.swissbib.ch" target="_blank">swissbib.ch</a> metacatalog of Swiss university libraries and the Swiss National Library</li>
     <li>Contact the information desk / interlibrary loan of <a href="http://www.swissbib.ch/libraries/index.html" target="_blank">your library</a>.</li>
 </ul>
-
-<h2>Don't know where to start?</h2>
-<p>Try a null search (a search with no text in the searchbox), then use the facets to filter the results.</p>
