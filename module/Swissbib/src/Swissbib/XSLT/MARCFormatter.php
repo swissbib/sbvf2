@@ -30,10 +30,11 @@ class MARCFormatter
     /**
      * @var array
      */
-    protected static $trimVTLS = array(
-        "CCSA",
-        "SNL",
-        "ALEX"
+    protected static $trimPrefixes = array(
+        "vtls",
+        "on",
+        "ocn",
+        "ocm"
     );
 
 
@@ -47,17 +48,17 @@ class MARCFormatter
         $domNode = $domArray[0];
         if ($domNode->parentNode->getAttribute('tag') != '035') return $domNode; //return before trying to find institution
 
-        $nodeValue = trim($domNode->textContent);
+        $nodeValue = preg_replace('/\s+/', '', $domNode->textContent);
         $institution = self::getInstitutionFromNodeText($nodeValue);
 
         if ($domNode->getAttribute('code') != 'a' || empty($institution)) {
             return $domNode;
         } else {
-            if (in_array($institution,self::$trimVTLS)) $nodeValue = str_replace('vtls', '',$nodeValue);
             $request = substr($nodeValue, strlen($institution) + 2);
+            $request = str_replace(self::$trimPrefixes, '', $request);
             $url = str_replace('%s', $request, self::$institutionURLs[$institution]);
 
-            return '<a href="' . $url . '" target="_blank">' . htmlentities($nodeValue) . '</a>';
+            return '<a href="' . $url . '" target="_blank">' . htmlentities('(' . $institution . ')' . $request) . '</a>';
         }
     }
 
