@@ -16,7 +16,7 @@ class Options extends VFSummonOptions
     public function __construct(\VuFind\Config\PluginManager $configLoader)
     {
         parent::__construct($configLoader);
-        $searchSettings = $configLoader->get('searches'); //get options from searches.ini
+        $searchSettings = $configLoader->get('Summon');
         if (isset($searchSettings->General->default_limit)) {
             $this->defaultLimit = $searchSettings->General->default_limit;
         }
@@ -34,7 +34,12 @@ class Options extends VFSummonOptions
      */
     public function setDefaultLimit($limit)
     {
-        $this->defaultLimit = intval($limit);
+        $maxLimit = max($this->getLimitOptions());
+        if ($limit > $maxLimit) {
+            $this->defaultLimit = $maxLimit;
+        } else {
+            $this->defaultLimit = intval($limit);
+        }
     }
 
 }
