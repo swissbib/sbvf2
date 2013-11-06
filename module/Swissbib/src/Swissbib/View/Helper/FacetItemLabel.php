@@ -31,7 +31,8 @@ class FacetItemLabel extends AbstractHelper
 	 * @var    Array
 	 */
 	protected $customTranslations = array(
-		'institution' => 'institution'
+		'institution' => 'institution',
+        'union'       => 'union',
 	);
 
 
