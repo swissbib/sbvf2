@@ -47,9 +47,9 @@ class Record extends VuFindRecord
     public function getLocalValues( $params = array()) {
 
 
-        $allParams = array('unions' => array(), 'localtags'  => array(), 'indicators' => array(), 'subfields' => array());
+        $allParams = array('localunions' => array(), 'localtags'  => array(), 'indicators' => array(), 'subfields' => array());
         $diffarray =  array_merge(array_diff_key($allParams, $params),$params);
-        $diffArrayInCorrectOrder = array('unions' => $diffarray['unions'],'localtags' => $diffarray['localtags'], 'indicators' => $diffarray['indicators'], 'subfields' => $diffarray['subfields']);
+        $diffArrayInCorrectOrder = array('localunions' => $diffarray['localunions'],'localtags' => $diffarray['localtags'], 'indicators' => $diffarray['indicators'], 'subfields' => $diffarray['subfields']);
 
         return  $this->driver->tryMethod('getLocalValues',$diffArrayInCorrectOrder);
 
@@ -83,7 +83,7 @@ class Record extends VuFindRecord
      *
      * @return array
      */
-    public function getExtendedLinkDetails($localRestrictions = array(), $useAll = true)
+    public function getExtendedLinkDetails($localRestrictions = array(), $globalRestrictions = array())
     {
         // See if there are any links available:
 
@@ -116,9 +116,19 @@ class Record extends VuFindRecord
 
         }
 
-        if ($useAll) {
+        if (empty($globalRestrictions)) {
+            //fetch 'all' the links you can find in 856 / 956
             $urls = $this->driver->tryMethod('getURLs');
             $collectedLinks = array_merge($collectedLinks,$urls);
+        } else {
+
+            $allParamsGlobalTags = array('globalunions' => array(), 'tags'  => array());
+            $diffarray =  array_merge(array_diff_key($allParamsGlobalTags, $globalRestrictions),$globalRestrictions);
+            $diffArrayInCorrectOrder = array('globalunions' => $diffarray['globalunions'],'tags' => $diffarray['tags']);
+
+            $urls =  $this->driver->tryMethod('getExtendedURLs',$diffArrayInCorrectOrder);
+            $collectedLinks = array_merge($collectedLinks,$urls);
+
         }
 
 

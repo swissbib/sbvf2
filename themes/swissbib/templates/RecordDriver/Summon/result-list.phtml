@@ -21,8 +21,7 @@ $TITLE          = $this->escapeHtml($this->removeHighlight($resultItem->getShort
 $AUTHOR         = $this->highlight($resultItem->getAuthor());
 $edition        = $resultItem->getEdition();
 $publicationDate= $this->publicationDateSummon($resultItem->getPublicationDates());
-
-$CONTAINER      = $resultItem->getContainerTitle();
+$CONTAINER      = $this->highlight($this->transEsc($resultItem->getContainerTitle()));
 if ($CONTAINER) {
     $CONTAINER .= '. - ' .$resultItem->getContainerReference();
 }
@@ -52,7 +51,7 @@ if ($CONTAINER) {
 		<?php if($CONTAINER): ?>
 			<div class="meta">
 				<h6><?=$this->transEsc('note_773')?>:</h6>
-				<span><?=$this->escapeHtml($CONTAINER)?></span>
+				<span><?=$CONTAINER?></span>
 			</div>
 		<?php endif; ?>
 		<div class="meta">
