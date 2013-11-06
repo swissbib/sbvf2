@@ -14,7 +14,7 @@ $thumbnail = $viewRecord->getThumbnail('large');
 $thumbnailSrc = $thumbnail ? $thumbnail : $this->url('cover-unavailable');
 
 $titleStatement = $record->getTitleStatement(true);
-$shortTitle     = $titleStatement['title'];
+$shortTitle     = $record->getShortTitle();
 $subtitle       = $titleStatement['title_remainder'] ? $titleStatement['title_remainder'] : implode('. ', $titleStatement['parts_name']);
 $secondaryAuthors = $record->getSecondaryAuthors(true);
 $publishers = $record->getPublishers(true);
@@ -59,13 +59,19 @@ $currentView = $this->configAccess()->Site->theme;
 if (strcmp(strtolower($currentView),'swissbibmulti') != 0) {
 
     $urls = $viewRecord->getExtendedLinkDetails();
-} else {
-    $unions = array('IDSBB','SNL');
-    $localtags = array('956');
-    $params = compact('unions','localtags');
 
-    //only local values for Basel / Bern
-    $urls = $viewRecord->getExtendedLinkDetails($params,false);
+
+} else {
+    $localunions = array('IDSBB','SNL', 'RETROS');
+    $localtags = array('856');
+    $localRestrictions = compact('localunions','localtags');
+
+    $globalunions = array('IDSBB','SNL');
+    $tags = array('956');
+    $globalRestrictions = compact('globalunions','tags');
+
+
+    $urls = $viewRecord->getExtendedLinkDetails($localRestrictions,$globalRestrictions);
 
 }
 
@@ -144,7 +150,6 @@ $highlightedFulltext = $record->getHighlightedFulltext();
             <p><?= $this->escapeHtml($edition) ?></p>
         <?php endif; ?>
 
-        <? /*if (!empty($urls) || $openUrl): */ ?>
         <? if ($urls): ?>
             <h4><?= $this->transEsc('Online Access') ?>: </h4>
             <? foreach ($urls as $current): ?>
@@ -153,10 +158,6 @@ $highlightedFulltext = $record->getHighlightedFulltext();
                        target="_blank"><?= $this->escapeHtml($current['desc']) ?></a><br/>
                 </p>
             <? endforeach; ?>
-            <? // openURL deactivated, see file head ?>
-            <? //if ($openUrl): ?>
-            <? //=$this->openUrl($openUrl)?>
-            <? //endif; ?>
         <?php endif; ?>
 
         <?php if ($highlightedFulltext): ?>
