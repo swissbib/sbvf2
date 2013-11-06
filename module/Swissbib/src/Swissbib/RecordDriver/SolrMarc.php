@@ -82,6 +82,16 @@ class SolrMarc extends VuFindSolrMarc
         '9' => 'unknownNumber'
     );
 
+    /**
+     * @var    Array    List of all Elements of the description, to figure out whether to show tab or not
+     */
+    protected $partsOfDescription = array(
+        'ISBNs', 'ISSNs', 'ISMNs', 'DOIs', 'URNs', 'AllSubjectVocabularies',
+        'Series', 'AltTitle', 'NewerTitles', 'PreviousTitles',
+        'GeneralNotes', 'DissertationNotes', 'BibliographyNotes', 'AccessRestrictions',
+        'ProductionCredits', 'OriginalTitle', 'PerformerNote', 'Awards', 'CitationNotes',
+        'OriginalVersionNotes', 'CopyNotes', 'SystemDetails'
+    );
 
     /**
      * Wrapper for getOpenURL()
@@ -1825,4 +1835,22 @@ class SolrMarc extends VuFindSolrMarc
 
         return parent::getHierarchyPositionsInParents();
     }
+
+
+    /**
+     * @return bool
+     */
+    public function hasDescription() {
+        foreach ($this->partsOfDescription as $descriptionElement) {
+            $method = 'get' . $descriptionElement;
+            if (method_exists($this, $method)) {
+                $result = $this->$method();
+                if (!empty($result)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 }
