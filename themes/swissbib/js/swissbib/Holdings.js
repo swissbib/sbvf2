@@ -152,11 +152,10 @@ swissbib.Holdings = {
 		popup.html('');
 
 		var dialog = popup.dialog({
-			height: 600,
+			height: "auto",
+			width: "auto",
 			minHeight: 500,
 			maxHeight: 700,
-			width: 900,
-			title: dialogTitle || 'Holdings',
 			resizable: false
 		});
 
@@ -234,8 +233,6 @@ swissbib.Holdings = {
 		$('.datatext', win).html(text);
 
 		win.dialog({
-			height: 450,
-			width: 450,
 			modal: false,
 			resizable: false
 		});
