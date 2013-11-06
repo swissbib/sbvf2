@@ -5,6 +5,7 @@
 $resultItem = $this->driver;
 $viewRecord = $this->record($resultItem);
 $memorizeLink = $this->escapeHtml($this->recordLink()->getActionUrl($this->driver, 'Save'));
+$theme = $this->configAccess()->Site->theme;
 
 // do *not* use Summon's thumbnails ...
 $thumbnail = $this->escapeHtml($viewRecord->getThumbnail('small'));
@@ -23,14 +24,11 @@ if ($CONTAINER) {
 <!-- col 1 -->
 <div class="c25l center">
     <a title="<?= $this->transEsc('memorizelistadd') ?>" class="memorize" href="<?= $memorizeLink ?>">
-        <img src="<?= $this->basePath('themes/swissbib/images/icon_notepad_add.gif') ?>">
-    </a><!-- <img src="/vufind/themes/swissbib/images/icon_notepad_add.gif"> -->
+        <img src="<?= $this->basePath('themes/' . urlencode($theme) . '/images/icon_notepad_add.gif') ?>">
+    </a>
     <a class="preview" href="#">
         <img class="dropshadow" src="<?= $thumbnailSrc ?>"/>
     </a>
-    <!-- <a title="<?=$this->transEsc('memorizelistadd')?>" class="icon_notepad_add_link" href="<?=$memorizeLink?>">
-		<img src="<?=$thumbnailSrc?>" class="dropshadow"/>
-	</a> -->
 </div>
 
 <!-- col 2 -->

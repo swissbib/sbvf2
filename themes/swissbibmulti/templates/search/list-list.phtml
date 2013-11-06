@@ -1,0 +1,41 @@
+<table class="data">
+	<colgroup>
+		<col width="1%" />
+		<col width="1%" />
+		<col width="10%" />
+		<col width="*" />
+		<col width="11%" />
+		<col width="1%" />
+	</colgroup>
+	<caption class="hidden">
+        <?=$this->transEsc('Library Catalog Search Result')?>
+	</caption>
+
+	<thead class="hidden">
+		<tr>
+		<?  if (isset($activeTabConfig) && $activeTabConfig['searchClassId'] === 'Summon') { ?>
+			<th colspan="6">&#160;</th>
+		<? } else { ?>
+			<th class="col-1"><?=$this->transEsc('Number')?></th>
+			<th class="col-2"><?=$this->transEsc('memorizelist')?></th>
+			<th class="col-3"><?=$this->transEsc('Cover Image')?></th>
+			<th class="col-4"><?=$this->transEsc('Description')?></th>
+			<th class="col-5"><?=$this->transEsc('Library')?></th>
+			<th class="col-6"><?=$this->transEsc('information')?></th>
+		<? } ?>
+		</tr>
+	</thead>
+	<tbody>
+
+	<?php
+	$this->startIndex	= $this->results->getStartRecord();
+
+	foreach ($this->results->getResults() as $index => $result) {
+		$this->recordIndex = $this->startIndex + $index;
+		echo $this->record($result)->getSearchResult('list');
+	}
+
+	?>
+
+	</tbody>
+</table>
