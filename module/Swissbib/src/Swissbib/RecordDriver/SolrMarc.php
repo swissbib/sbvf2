@@ -705,7 +705,7 @@ class SolrMarc extends VuFindSolrMarc
      */
     public function getMostSpecificFormat()
     {
-        $formatsRaw = $this->getFormatsRaw();
+        $formatsRaw = $this->fields["format_str_mv"];
         natsort($formatsRaw);
         $formatsRaw = array_values(array_reverse($formatsRaw));
 
