@@ -336,10 +336,18 @@ class Bootstrapper
 
 			if ($userLimit) {
 				/** @var Options $searchOptions */
-				$searchOptions =  $serviceLocator->get('Swissbib\SearchResultsPluginManager')->get('Solr')->getOptions();
+				$searchOptions =  $serviceLocator->get('Swissbib\SearchResultsPluginManager')->get($this->getActiveTab())->getOptions();
 
 				$searchOptions->setDefaultLimit($userLimit);
 			}
+		}
+	}
+
+	protected function getActiveTab() {
+		if (strpos($this->application->getRequest()->getRequestUri(), '/Summon/') !== false) {
+			return 'Summon';
+		} else {
+			return 'Solr';
 		}
 	}
 }
