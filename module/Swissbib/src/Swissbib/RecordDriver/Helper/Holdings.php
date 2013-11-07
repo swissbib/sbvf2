@@ -702,6 +702,10 @@ class Holdings
 			$allowedActions['photocopyRequestLink'] = $this->getPhotoCopyRequestLink($host, $item);
 		}
 
+        if ($allowedActions['bookingRequest']) {
+            $allowedActions['bookingRequestLink'] = $this->getBookingRequestLink($host, $item);
+        }
+
 		return $allowedActions;
 	}
 
@@ -729,9 +733,29 @@ class Holdings
 		return 'http://' . $host . '/F/?' . http_build_query($queryParams);
 	}
 
+    /**
+     * Get link for external booking request
+     *
+     * @param       $host
+     * @param array $item
+     *
+     * @return string
+     */
+
+    protected function getBookingRequestLink($host, array $item)
+    {
+        $queryParams = array(
+            'func'               => 'booking-req-form-itm',
+            'adm_library'        => $item['adm_code'],
+            'adm_doc_number'     => $item['localid'],
+            'adm_item_sequence'  => $item['sequencenumber'],
+        );
+
+        return 'http://' . $host . '/F/?' . http_build_query($queryParams);
+    }
 
 
-	/**
+    /**
 	 * Check whether user is logged in
 	 *
 	 * @return    Boolean

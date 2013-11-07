@@ -27,7 +27,6 @@
     </tbody>
 </table>
 
-
 <h3>Ricerca per frase o locuzione tramite virgolette</h3>
 
 <table>
@@ -36,30 +35,27 @@
         <td><i>"street art"</i></td>
         <td>I termini devono apparire nello stesso identico ordine.</td>
         </tr>
-    
     <tr>
         <td><i>"street art"~5</i></td>
         <td>Entrambi i termini devono essere presenti entro un intervallo di 5 parole.</td>
            </tr>
     <tr>
         <td><i>"978-386-56619-6-8"</i></td>
-        <td>Nella ricerca semplice, usa le virgolette per ISBN, ISSN ecc.</td>
+        <td>ISBN, ISSN ecc.</td>
     </tr>
     <tr>
         <td><i>"PZB E 62 2:6"</i></td>
-        <td>Nella ricerca semplice, usa le virgolette per determinate segnature.</td>
+        <td>Segnature</td>
     </tr>
-    
     </tbody>
 </table>
-
 
 <h3>Segni di troncamento</h3>
 <table>
     <tbody>
     <tr>
-        <td rowspan="2">*</td>
-        <td rowspan="2">sostituisce un numero qualsiasi<br/>di caratteri</td>
+        <td rowspan="3">*</td>
+        <td rowspan="3">sostituisce un numero qualsiasi<br/>di caratteri</td>
         <td><i>cultur*</i></td>
         <td>culture, cultura, cultural, culturally ecc.</td>
     </tr>
@@ -67,51 +63,45 @@
         <td><i>Fr*ib*urg</i></td>
         <td>Fribourg, Freiburg etc.</td>
     </tr>
-
-
-
+         <tr>
+        <td></td>
+        <td>Anche per <i>Articoli & più</i></td>
+    </tr>
     <tr>
         <td rowspan="2">?</td>
         <td rowspan="2">sostituisce un singolo carattere</td>
         <td><i>wom?n</i></td>
-        <td>woman, women ecc. **</td>
+        <td>woman, women ecc.</td>
     </tr>
     <tr>
         <td><i>Lind??ist</i></td>
-        <td>Lindquist, Lindkvist, Lindqvist ecc. **</td>
+        <td>Lindquist, Lindkvist, Lindqvist ecc.</td>
     </tr>
-
-
     <tr>
         <td>~</td>
         <td>ricerca approssimativa</td>
         <td><i>Tschaikowski~</i></td>
-        <td>Tschaikowski, Tchaïkovski, Čajkovskij ecc. **</td>
+        <td>Tschaikowski, Tchaïkovski, Čajkovskij ecc.</td>
          </tr>
-    
       <tr>
         <td>[ ]</td>
         <td>ricerca di un intervallo</td>
         <td><i>weather [2010 TO 2013]</i></td>
-        <td>invece di <i>weather (2010 OR 2011 OR 2012 OR 2013)</i> **</td>
+        <td>invece di <i>weather (2010 OR 2011 OR 2012 OR 2013)</i></td>
     </tr>
-    
     </tbody>
 </table>
 
 
-<p> ** solo per <i>Libri & più</i>
-</p>
+<h2>Affinare la ricerca</h2>
+<p>Usa i filtri nella colonna a sinistra dall'elenco dei risultati.</p>
 
 <h2>Ripeti o salva la ricerca</h2>
        <p><a href="<?=$this->url('search-history')?>">My swissbib - Ricerche salvate</a></p>
-
-<h2>Hai troppi risultati?</h2>
-<p>Usa i filtri nella colonna a sinistra e/o la <a href="<?=$this->url('search-advanced')?>">ricerca avanzata</a>.</p>
 
 <h2>Non hai trovato abbastanza?</h2>
 <ul class="list">
     <li>Cliccando su <i>Articoli & più</i> puoi ripetere la tua ricerca in <a href="http://www.serialssolutions.com/en/services/summon/content" target="_blank">Summon</a>.</li>
     <li><a href="http://www.swissbib.ch" target="_blank">swissbib.ch</a> metacatalogo delle biblioteche universitarie svizzere e della Biblioteca nazionale svizzera</li>
-    <li>Contatta il servizio informazione della <a href="http://www.swissbib.ch/libraries/index.html" target="_blank">tua biblioteca</a>.</li>
+    <li>Contatta il servizio informazione della <a href="http://www.swissbib.ch/libraries/placelist.html" target="_blank">tua biblioteca</a>.</li>
 </ul>
