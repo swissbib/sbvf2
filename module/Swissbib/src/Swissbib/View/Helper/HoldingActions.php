@@ -62,8 +62,9 @@ class HoldingActions extends AbstractTranslatorHelper
 			}
 			if ($item['userActions']['bookingRequest']) {
 				$actions['booking'] = array(
-					'label' => $this->translate('hold_booking'),
-					'href'  => 'javascript:alert(\'Not implemented yet\')'
+					'label'  => $this->translate('hold_booking'),
+                    'href'   => $item['userActions']['bookingRequestLink'],
+                    'target' => '_blank',
 				);
 			}
 		} elseif (isset($item['holdLink'])) {
