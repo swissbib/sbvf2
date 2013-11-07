@@ -1,4 +1,4 @@
-<h1>Chercher</h1>
+<h1>Rechercher</h1>
 
 <h3>Combiner</h3>
 
@@ -27,7 +27,6 @@
     </tbody>
 </table>
 
-
 <h3>Phrase search, using quotation marks</h3>
 
 <table>
@@ -43,18 +42,17 @@
            </tr>
     <tr>
             <td><i>"978-386-56619-6-8"</i></td>
-        <td>In basic search, use quotation marks for ISBN, ISSN etc.</td>
+        <td>ISBN, ISSN etc.</td>
     </tr>
     <tr>
         <td><i>"PZB E 62 2:6"</i></td>
-        <td>In basic search, use quotation marks to search for call numbers.</td>
+        <td>Call numbers</td>
     </tr>
-    
     </tbody>
 </table>
 
-
 <h3>Truncation</h3>
+
 <table>
     <tbody>
     <tr>
@@ -67,8 +65,6 @@
         <td><i>Fr*ib*urg</i></td>
         <td>Fribourg, Freiburg etc.</td>
     </tr>
-
-
     <tr>
         <td rowspan="2">?</td>
         <td rowspan="2">replaces exactly one letter</td>
@@ -79,37 +75,33 @@
         <td><i>Lind??ist</i></td>
         <td>Lindquist, Lindkvist, Lindqvist ecc. **</td>
     </tr>   
-
     <tr>
         <td>~</td>
         <td>fuzzy search</td>
        <td><i>Tschaikowski~</i></td>
         <td>Tschaikowski, Tchaïkovski, Čajkovskij etc. **</td>
     </tr>
-    
       <tr>
         <td>[ ]</td>
         <td>range search</td>
         <td><i>weather [2010 TO 2013]</i></td>
         <td>instead of <i>weather (2010 OR 2011 OR 2012 OR 2013)</i> **</td>
     </tr>
-    
     </tbody>
 </table>
-
 
 <p> ** seulement pour <i>Livres & plus</i>
 </p>
 
+<h2>Affiner la recherche</h2>
+p>Use the facets in the left hand column of your result list.</p>
+
 <h2>Répéter ou bien sauvegarder la recherche</h2>
          <p><a href="<?=$this->url('search-history')?>">My swissbib - Recherches sauvegadées</a></p>
-
-<h2>Trouvé trop de titres?</h2>
-<p>Use the facets in the left hand column and/or the <a href="<?=$this->url('search-advanced')?>">advanced search</a>.</p>
 
 <h2>Pas trouvé assez de titres?</h2>
 <ul class="list">
     <li>Clicking on <i>Articles & more</i> will repeat your search in <a href="http://www.serialssolutions.com/en/services/summon/content" target="_blank">Summon</a>.</li>
     <li><a href="http://www.swissbib.ch" target="_blank">swissbib.ch</a> metacatalog of Swiss university libraries and the Swiss National Library</li>
-    <li>Contact the information desk / interlibrary loan of <a href="http://www.swissbib.ch/libraries/index.html" target="_blank">your library</a>.</li>
+    <li>Contact the information desk / interlibrary loan of <a href="http://www.swissbib.ch/libraries/placelist.html" target="_blank">your library</a>.</li>
 </ul>
