@@ -138,12 +138,7 @@ $highlightedFulltext = $record->getHighlightedFulltext();
         <?php endif; ?>
 
         <h4><?= $this->transEsc('Format') ?>:</h4>
-
-        <p>
-            <?php foreach ($record->getFormats() as $format): ?>
-                <span class="icon_format_book"><?= $this->escapeHtml($format) ?></span>
-            <?php endforeach; ?>
-        </p>
+        <p><?=$viewRecord->getFormatList()?></p>
 
         <?php if ($edition): ?>
             <h4><?= $this->transEsc('Edition') ?>:</h4>
