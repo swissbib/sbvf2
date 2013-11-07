@@ -63,6 +63,11 @@ class SolrMarc extends VuFindSolrMarc
     protected $useOpenUrlFormats = false;
 
     /**
+     * @var    Boolean
+     */
+    protected $useMostSpecificFormat = false;
+
+    /**
      * @var    Array    Used also for field 100        _ means repeatable
      */
     protected $personFieldMap = array(
@@ -224,6 +229,8 @@ class SolrMarc extends VuFindSolrMarc
     {
         if ($this->useOpenUrlFormats) {
             return $this->getFormatsOpenUrl();
+        }  else if ($this->useMostSpecificFormat) {
+            return $this->getMostSpecificFormat();
         } else {
             return $this->getFormatsTranslated();
         }
@@ -689,6 +696,20 @@ class SolrMarc extends VuFindSolrMarc
     public function getFormatsRaw()
     {
         return parent::getFormats();
+    }
+
+
+    /**
+     * Returns as array to use same template with foreach as normally
+     * @return array
+     */
+    public function getMostSpecificFormat()
+    {
+        $formatsRaw = $this->fields["format_str_mv"];
+        natsort($formatsRaw);
+        $formatsRaw = array_values(array_reverse($formatsRaw));
+
+        return array($formatsRaw[0]);
     }
 
 
@@ -1566,7 +1587,7 @@ class SolrMarc extends VuFindSolrMarc
      *
      * @return    ServiceLocatorInterface
      */
-    protected function getServiceLocator()
+    public function getServiceLocator()
     {
         return $this->hierarchyDriverManager->getServiceLocator();
     }
@@ -1834,6 +1855,22 @@ class SolrMarc extends VuFindSolrMarc
         }
 
         return parent::getHierarchyPositionsInParents();
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function getUseMostSpecificFormat() {
+        return $this->useMostSpecificFormat;
+    }
+
+
+    /**
+     * @param boolean
+     */
+    public function setUseMostSpecificFormat($useMostSpecificFormat) {
+        $this->useMostSpecificFormat = (boolean) $useMostSpecificFormat;
     }
 
 
