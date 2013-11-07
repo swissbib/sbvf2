@@ -1,5 +1,4 @@
-<h1>Login, Il mio swissbib</h1>
-<h2>Login</h2>
+<h1>Login</h1>
 
 <p>If you have a a valid library card for any one of the following partner libraries, log in as usual:</p>
 <ul class="list">
@@ -10,6 +9,8 @@
 <li>St. Galler Bibliotheksnetz</li>
 </ul>
 
+<h3>Non hai un conto?</h3>
+<p><a href="http://aleph.unibas.ch/F/?func=bor-new-0&CON_LNG=ENG" target="_blank">Crea un nuovo conto</a></p>
 
 <h3>Perché il login?</h3>
 <p>Per effettuare dei prestiti, per definire le tue biblioteche preferite, per recuperare liste o ricerche che hai salvato, per modificare le impostazioni.</p>
@@ -17,13 +18,13 @@
 <h3>Hai dimenticato la password?</h3>
 <p>Contatta la <a href="http://www.swissbib.ch/libraries/placelist.html" target="_blank">tua biblioteca</a>.</p>
 
-<h3>Non hai un conto?</h3>
-<p><a href="http://aleph.unibas.ch/F/?func=bor-new-0&CON_LNG=ENG" target="_blank">Crea un nuovo conto</a></p>
+<h3>Profilo</h3>
+<p><a href="http://aleph.unibas.ch/F/?func=LOGIN-PAGE" target="_blank">Cambia password, indirizzo ecc.</a></p>
 
 <h3>Perché il logout?</h3>
 <p>Se stai usando un computer pubblico, effetua il logout per evitare che qualcun altro utilizzi il tuo conto.</p>
 
-<h2>Il mio swissbib</h2>
+<h1>Il mio swissbib</h1>
 <h3>Ricerche salvate</h3>
 <p>Se non hai effettuato il login, le tue ricerche saranno salvate fino a quando non chiudi il browser. Puoi ripetere una ricerch oppure, dopo il login, salvarla a tempo indeterminato.</p>
 
@@ -32,8 +33,13 @@
         src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_favorit.gif') ?>" alt="Aggiungi alle mie preferite"> nel catalogo.</p>
 
 <h3>Liste</h3>
-<p><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_notepad_add.gif') ?>" alt="Aggiungi a una lista"> Dopo il login puoi salvare dei titoli nelle tue liste.  <br/>Attenzione: se crei una nuova lista mentre stai salvando un titolo dovrai cliccare due volte su <i>Salva</i>.</p>
-            
+<ul class="list">
+<li><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_notepad_add.gif') ?>" alt="Aggiungi a una lista"> Dopo il login puoi salvare dei titoli nelle tue liste.</li>
+<li>Se crei una nuova lista mentre stai salvando un titolo dovrai cliccare due volte su <i>Salva</i>.</li>
+<li>Pubblico = Lista visibile per tutti che conoscono l'URL</li>
+<li>Personale = Lista visibile solo a te</li>
+</ul>
+        
 <h3>Impostazioni</h3>
 <p>Lingua dell'interfaccia del catalogo, numero di titoli per pagina</p>
 
