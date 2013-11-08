@@ -97,14 +97,16 @@
 <p>Usa i filtri nella colonna a sinistra dall'elenco dei risultati oppure la <i>Ricerca avanzata</i>.</p>
 
 <h3>Ripeti o salva la ricerca</h3>
-       <p><a href="<?=$this->url('search-history')?>">My swissbib - Ricerche salvate</a></p>
+             <ul class="list">
+          <li><a href="<?=$this->url('search-history')?>">My swissbib - Ricerche salvate</a></li>
+         <li>Cliccando su <i>Articoli & più</i> puoi ripetere la tua ricerca in <a href="http://www.serialssolutions.com/en/services/summon/content" target="_blank">Summon</a>.</li>
+  	</ul>
 
 <h3>Essere notificato quando nuovi documenti corrispondono alla tua ricerca</h3>
 <p><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_pagefunctions_rss.gif') ?>" alt="Feed RSS"> Subscribe to feed</p> 
 
-<h2>Articoli &amp; più</h2>
+<h3>Articoli &amp; più</h3>
 <ul class="list">
-         <li>Cliccando su <i>Articoli & più</i> puoi ripetere la tua ricerca in <a href="http://www.serialssolutions.com/en/services/summon/content" target="_blank">Summon</a>.</li>
-  	<li><i>get it</i> = link per visionare il testo integrale</li>
+      	<li><i>get it</i> = link per visionare il testo integrale</li>
 	<li><img src="<?= $this->basePath('themes/swissbib/images/sfx.gif') ?>" alt="SFX Services"> = link per visionare il testo integrale e/o accedere ad altri servizi sfx (ordinare un articolo, verificare la localizzazione del documento in Svizzera).</li>
 </ul>

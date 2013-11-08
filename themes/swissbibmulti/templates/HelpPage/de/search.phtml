@@ -101,14 +101,16 @@
 <p>Benutzen Sie die Facetten in der linken Spalte Ihrer Trefferliste oder die <i>Erweiterte Suche</i>.</p>
 
 <h3>Suche wiederholen oder speichern</h3>
-       <p><a href="<?=$this->url('search-history')?>">My swissbib - Gespeicherte Suchen</a></p>
+       <ul class="list">
+    <li>Klick auf <i>Artikel &amp; mehr</i> führt Ihre Suche im Bestand von <a href="http://www.serialssolutions.com/en/services/summon/content" target="_blank">Summon</a> aus.</li>
+	<li><a href="<?=$this->url('search-history')?>">My swissbib - Gespeicherte Suchen</a></li>
+	  </ul>
 
 <h3>Neue Einträge zu Ihrer Suche per Feed gemeldet bekommen</h3>
 <p><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_pagefunctions_rss.gif') ?>" alt="Neue Einträge zu dieser Suche per Feed gemeldet bekommen"> Feed abonnieren</p>       
        
-<h2>Artikel &amp; mehr</h2>
+<h3>Artikel &amp; mehr</h3>
 <ul class="list">
-    <li>Klick auf <i>Artikel &amp; mehr</i> führt Ihre Suche im Bestand von <a href="http://www.serialssolutions.com/en/services/summon/content" target="_blank">Summon</a> aus.</li>
-	<li><i>get it</i> = Link zum Volltext</li>
+   	<li><i>get it</i> = Link zum Volltext</li>
 	<li><img src="<?= $this->basePath('themes/swissbib/images/sfx.gif') ?>" alt="Link zu SFX Services"> = Link zum Volltext, Artikelbestellung, Bestandesnachweis Schweiz</li>
   </ul>
