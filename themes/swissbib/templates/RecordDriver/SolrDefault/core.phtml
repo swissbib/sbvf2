@@ -13,16 +13,17 @@ $theme = $this->configAccess()->Site->theme;
 $thumbnail = $viewRecord->getThumbnail('large');
 $thumbnailSrc = $thumbnail ? $thumbnail : $this->url('cover-unavailable');
 
-$titleStatement = $record->getTitleStatement(true);
-$shortTitle     = $record->getShortTitle();
-$subtitle       = $titleStatement['title_remainder'] ? $titleStatement['title_remainder'] : implode('. ', $titleStatement['parts_name']);
-$secondaryAuthors = $record->getSecondaryAuthors(true);
-$publishers = $record->getPublishers(true);
+$titleStatement       = $record->getTitleStatement(true);
+$shortTitle           = $record->getShortTitle();
+$parts_name           = is_array($titleStatement['parts_name']) ? implode('. ', $titleStatement['parts_name']) : $titleStatement['parts_name'];
+$subtitle             = $titleStatement['title_remainder'] ? $titleStatement['title_remainder'] : $parts_name;
+$secondaryAuthors     = $record->getSecondaryAuthors(true);
+$publishers           = $record->getPublishers(true);
 $physicalDescriptions = $record->getPhysicalDescriptions(false);
-$edition = $record->getEdition();
-$summary = trim(implode($record->getSummary()));
-$groupID = $record->getGroup(true);
-$uniqueID = $record->getUniqueID();
+$edition              = $record->getEdition();
+$summary              = trim(implode($record->getSummary()));
+$groupID              = $record->getGroup(true);
+$uniqueID             = $record->getUniqueID();
 
 $publicationDate = $this->publicationDateMarc($record->getPublicationDates());
 $hostitems = $record->getHostItemEntry();
