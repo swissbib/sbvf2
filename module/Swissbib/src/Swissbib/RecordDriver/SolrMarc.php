@@ -1231,7 +1231,7 @@ class SolrMarc extends VuFindSolrMarc
                 $string = '';
 
                 if (isset($publication['place'])) {
-                    $string = $publication['place'] . '; ';
+                    $string = $publication['place'] . ': ';
                 }
                 if (isset($publication['name'])) {
                     $string .= $publication['name'];
