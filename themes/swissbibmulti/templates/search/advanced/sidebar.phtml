@@ -1,0 +1,62 @@
+<?php
+$advSearch = $this->searchOptions($this->searchClassId)->getAdvancedSearchAction();
+?>
+<div id="sidebar">
+
+    <?php if( !empty($searchFilters) ): ?>
+        <div class="filterList">
+            <h3><?=$this->transEsc("adv_search_filters")?>
+                <br/><span>(<?=$this->transEsc("adv_search_select_all")?> <input type="checkbox"
+                                                                                 checked="checked"
+                                                                                 onclick="filterAll(this, 'advSearchForm');"/>)</span>
+            </h3>
+            <?php foreach($searchFilters as $field => $data): ?>
+                <div>
+                    <h4><?=$this->transEsc($field)?></h4>
+                    <ul>
+                        <?php foreach($data as $value): ?>
+                            <li><input type="checkbox" checked="checked" name="filter[]"
+                                       value='<?=$this->escapeHtml($value['field'])?>:"<?=$this->escapeHtml($value['value'])?>"'/> <?=$this->escapeHtml($value['displayText'])?>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+
+    <!-- begin: subnavigation -->
+    <!-- Box Hilfe und Einstellungen -->
+    <h3><?=$this->transEsc('Search')?></h3>
+    <div class="subnavigation">
+        <ul>
+            <li class="selected">
+                <a href="<?=$this->url($advSearch)?>" title="<?=$this->transEsc('Advanced Search')?>" id="search_extended"><?=$this->transEsc('Advanced Search')?></a>
+            </li>
+            <li>
+                <a href="<?=$this->url('search-history')?>"><?=$this->transEsc('history_saved_searches')?></a>
+            </li>
+            <li>
+                <a href="<?=$this->url('myresearch-settings');?>"><?=$this->transEsc('My_Search_Settings')?></a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Box mit weiteren Katalogen -->
+    <h3><?=$this->transEsc('other_catalogs')?></h3>
+    <div class="subnavigation">
+        <ul>
+            <li>
+                <a href="http://www.swissbib.ch" target="_blank" title="swissbib.ch">swissbib: Schweizerischer Metakatalog</a>
+            </li>
+            <li>
+                <a href="http://aleph.unibas.ch/F" target="_blank" title="ALEPH-Katalog">ALEPH-Katalog IDS Basel Bern</a>
+            </li>
+            <li>
+                <a href="http://aleph.unibas.ch/F/?func=option-update-lng&file_name=find-b&p_con_lng=GER&local_base=dsv05" target="_blank" title="Verbundkatalog HAN für Handschriften, Archive und Nachlässe">Verbundkatalog HAN</a>
+            </li>
+        </ul>
+    </div>
+    <!-- end: subnavigation -->
+
+</div>
