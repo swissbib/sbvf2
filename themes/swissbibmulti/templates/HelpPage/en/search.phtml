@@ -88,7 +88,8 @@
         </tr>
       <tr>
         <td>[ ]</td>
-        <td>range search</td>
+        <td>range search</td>themes/swissbibmulti/templates/HelpPage/de/save.phtml
+
         <td><i>weather [2010 TO 2013]</i></td>
         <td>instead of <i>weather (2010 OR 2011 OR 2012 OR 2013)</i></td>
     </tr>
@@ -101,15 +102,18 @@
 <p>Use the facets in the left hand column of your result list or <i>Advanced search</i>.</p>
 
 <h3>Repeat or save search</h3>
-         <p><a href="<?=$this->url('search-history')?>">My swissbib - Saved searches</a></p>
-
+<ul class="list">
+             <li>Clicking on <i>Articles & more</i> will repeat your search in <a href="http://www.serialssolutions.com/en/services/summon/content" target="_blank">Summon</a>.</li> 
+                <li><a href="<?=$this->url('search-history')?>">My swissbib - Saved searches</a></li> 
+</ul>         
+        
 <h3>Feed notification about new titles that match your search</h3>
 <p><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_pagefunctions_rss.gif') ?>" alt="get feed of new items matching this search"> Subscribe to feed</p>       
          
-<h2>Articles &amp; more</h2>
+<h3>Articles &amp; more</h3>
 <ul class="list">
-        <li>Clicking on <i>Articles & more</i> will repeat your search in <a href="http://www.serialssolutions.com/en/services/summon/content" target="_blank">Summon</a>.</li> 
-	<li><i>get it</i> = link per visionare il testo integrale</li>
-	<li><img src="<?= $this->basePath('themes/swissbib/images/sfx.gif') ?>" alt="SFX Services"> = link per visionare il testo integrale e/o accedere ad altri servizi sfx (ordinare un articolo, verificare la localizzazione del documento in Svizzera).</li>
+      	<li><i>get it</i> = link to full text</li>
+	<li><img src="<?= $this->basePath('themes/swissbib/images/sfx.gif') ?>" alt="SFX Services"> = link to full text and/or other sfx services</li>
 </ul>         
          
+      
