@@ -1,0 +1,14 @@
+<? // This is a text-only email template; do not include HTML! ?>
+<?=$this->translate('This email was sent from')?>: <?=$this->from?>
+
+------------------------------------------------------------
+  <?=$this->translate('Library Catalog Search Result')?>
+
+  <?=$this->translate('email_link')?>: <?=$this->msgUrl?>
+
+------------------------------------------------------------
+<? if (!empty($this->message)): ?>
+<?=$this->translate("Message From Sender")?>:
+<?=$this->message?>
+
+<? endif; ?>

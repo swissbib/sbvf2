@@ -806,3 +806,10 @@ input.close {
 	text-align: left;
 	margin: 0 20px;
 }
+
+/** Bild rechtsbündig (Inhaltsseite) */
+img.small.right {
+    border: medium none;
+    float: right;
+    margin: 0 13px 13px 0;
+}
