@@ -1,8 +1,8 @@
-# How to Display Template Filenames during Development
+## How to Display Template Filenames during Development
 
 During development, it is possible to include hidden comments
 into the source code of HTML/XML pages which show the beginning and
-the end of all the templates used to genarate the HTML/XML page.
+the end of all the templates used to generate the HTML/XML page.
 
 ## How it works
 
