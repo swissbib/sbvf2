@@ -46,7 +46,7 @@ $sessionInitiator = $account->getSessionInitiator($this->serverUrl($this->url('m
         ?>
 
 
-        <h2>Bitte wählen Sie die für Sie zutreffende Login Variante aus</h2>
+        <h2><?= $this->transEsc('login.choose.option') ?></h2>
         <p>&nbsp;</p>
 
 
@@ -105,106 +105,52 @@ $sessionInitiator = $account->getSessionInitiator($this->serverUrl($this->url('m
             //-->
         </script>
 
-
-        <table style="width: 70%">
-
-
-            <thead>
-            <tr>
-                <th><span>SWITCHaai Federation</span></th>
-
-                <th class="right">
-                    <span class="info rollover right">
-
-                    <ul class="infolist">
-                        <li><a href="#">more about SWITCHaai Federation</a></li>
-                    </ul>
-	                </span>
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-
-            <tr>
-
-                <td colspan="2">
-                    <script type="text/javascript"
-                            src="https://wayf.switch.ch/SWITCHaai/WAYF/embedded-wayf.js"></script>
-
-                </td>
-
-            </tr>
-
-            </tbody>
-        </table>
-
-
         <noscript>
-
-            <!--
-            Fallback to Shibboleth DS session initiator for non-JavaScript users
-            You should set the value of the target GET parameter to an URL-encoded
-            absolute URL that points to a Shibboleth protected web page where the user
-            is logged in into your application.
-            -->
-            <table style="width: 70%">
-
-                <caption>Javascript is not enabled for your web browser. Please use the link to the external selection
-                    box
-                </caption>
-                <thead>
-                <tr>
-                    <th>SWITCHaai Federation</th>
-                </tr>
-                </thead>
-                <tbody>
-
-                <tr>
-
-                    <td>
-                        <a href="<?= $this->escapeHtml($sessionInitiator) ?>"><?= $this->transEsc("Institutional Login with external WAYF - non Java Script") ?></a>
-
-                    </td>
-
-                </tr>
-
-                </tbody>
-            </table>
-
+            <div class="status_error">
+                <?= $this->transEsc('login.error.no.js') ?>
+            </div>
         </noscript>
 
-        <p>&nbsp;</p>
 
-        <table style="width: 70%">
+        <table class="data">
+            <colgroup>
+                <col width="60%">
+                <col width="5%">
+                <col width="35%">
+            </colgroup>
 
             <thead>
             <tr>
-                <th>
-                    <span>Guest Login</span>
-                </th>
-                <th class="right">
-                    <span class="info rollover right">
-
-                    <ul class="infolist">
-                        <li><a href="#">more about Guest login</a></li>
-                    </ul>
-	                </span>
-                </th>
+                <td><h3><?= $this->transEsc('login.aai') ?></h3></td>
+                <td class="nodivider right">&nbsp;</td>
+                <td><h3><?= $this->transEsc('login.guest') ?></h3></td>
             </tr>
             </thead>
             <tbody>
 
             <tr>
 
-                <td colspan="2">
+                <td>
+                    <p>
+                        <script type="text/javascript"
+                                src="https://wayf.switch.ch/SWITCHaai/WAYF/embedded-wayf.js"></script>
+                    <noscript>
+                        <a href="<?= $this->escapeHtml($sessionInitiator) ?>"><?= $this->transEsc("Institutional Login with external WAYF - non Java Script") ?></a>
+                    </noscript>
+                    </p>
 
-                    <!--
-                    with http and https endpoints
-                    <input type="button" onclick="window.location = 'https://aai.guest-login.ch/idp/profile/SAML2/Unsolicited/SSO?providerId=https%3A%2F%2Ftestvf.swissbib.ch%2Fshibboleth&target=https%3A%2F%2Ftestvf.swissbib.ch%2FMyResearch%2FHome&shire=https%3A%2F%2Ftestvf.swissbib.ch%2FShibboleth.sso%2FSAML2%2FPOST'" value="Guest Login"/>
-                    -->
+                </td>
+                <td class="nodivider right">&nbsp;</td>
+                <td>
+                    <p>
+                        <!--
+                     with http and https endpoints
+                     <input type="button" onclick="window.location = 'https://aai.guest-login.ch/idp/profile/SAML2/Unsolicited/SSO?providerId=https%3A%2F%2Ftestvf.swissbib.ch%2Fshibboleth&target=https%3A%2F%2Ftestvf.swissbib.ch%2FMyResearch%2FHome&shire=https%3A%2F%2Ftestvf.swissbib.ch%2FShibboleth.sso%2FSAML2%2FPOST'" value="Guest Login"/>
+                     -->
 
-                    <input type="button" onclick="window.location = '<?= $encodedGuestURL ?>'" value="Guest Login"/>
-
+                        <input type="button" onclick="window.location = '<?= $encodedGuestURL ?>'"
+                               value="<?= $this->transEsc('login.guest') ?>"/>
+                    </p>
                 </td>
 
             </tr>
@@ -212,8 +158,22 @@ $sessionInitiator = $account->getSessionInitiator($this->serverUrl($this->url('m
             </tbody>
         </table>
 
+        <div class="status information">
+            <p>
+                <?= $this->transEsc('logininfo.line.1') ?>
+            </p>
+            <ul class="list">
+                <li><?= $this->transEsc('logininfo.li.1') ?></li>
+                <li><?= $this->transEsc('logininfo.li.2') ?></li>
+            </ul>
+            <p><?= $this->transEsc('logininfo.line.2') ?></p>
 
+            <p><?= $this->transEsc('logininfo.line.3') ?></p>
 
+            <h3><?= $this->transEsc('logininfo.title.1') ?></h3>
+
+            <p><?= $this->transEsc('logininfo.line.4') ?></p>
+        </div>
 
     <? endif; ?>
 <?php endif; ?>
