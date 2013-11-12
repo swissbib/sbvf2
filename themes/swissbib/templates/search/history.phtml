@@ -16,12 +16,11 @@ $this->headTitle($this->translate('Search History'));
 
             <?php if (!empty($this->saved) || !empty($this->unsaved)): ?>
 
-                <span id="popupDetails">
-                    <?= $this->flashmessages() ?>
-                </span>
-
                 <?php if (!empty($this->saved)): ?>
                     <h1><?= $this->transEsc('history_saved_searches') ?></h1>
+
+                    <?= $this->flashmessages() ?>
+
                     <?= $this->context()->renderInContext('search/history-table.phtml', array('showSaved' => true)); ?>
                 <?php endif; ?>
 
