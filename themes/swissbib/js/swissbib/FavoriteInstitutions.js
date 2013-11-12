@@ -93,11 +93,52 @@ swissbib.FavoriteInstitutions = {
 	 * @returns {Object[]}
 	 */
 	getMatchingItems: function(term) {
-		var matcher = new RegExp( $.ui.autocomplete.escapeRegex(term), "i" );
 
-		return $.grep(this.autocompleteValues, function(value) {
-			return matcher.test(value.label) || matcher.test(value.value);
-		});
+        //remove the trailing blank
+        if (term.charAt(term.length -1) == " ") {
+            term = term.substr(0,term.length -1);
+        }
+
+        var splittedTerms = term.split(" ");
+        var aRegexes = new Array();
+        for(var x=0; x < splittedTerms.length; x++) {
+            var splittedTerm = splittedTerms[x];
+            aRegexes.push(new RegExp(splittedTerm,"gi"));
+        }
+
+
+        var responseItems = new Array();
+
+        for (var iItems = 0;iItems <  this.autocompleteValues.length; iItems++){
+
+            var allTermsInLine = true;
+            var tName = this.autocompleteValues[iItems].label;
+
+
+            for (var xx= 0; xx < aRegexes.length; xx++) {
+                if (!aRegexes[xx].test(tName)) {
+                    allTermsInLine = false;
+
+                    break;
+                }
+            }
+
+            //return $.grep(this.autocompleteValues, function(value) {
+            //    return matcher.test(value.label) || matcher.test(value.value);
+            //});
+
+
+            if  (allTermsInLine) {
+                for(var x=0; x < splittedTerms.length; x++)
+                {
+                    var splittedTerm = splittedTerms[x];
+                    tName = tName.replace(new RegExp(   "(?![^&;]+;)(?!<[^<>]*)(" + splittedTerm.replace(/([\^\$\(\)\[\]\{\}\*\.\+\?\|\\])/gi, "\\$1") + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<strong>$1</strong>");
+                }
+                responseItems.push({label:tName, value:this.autocompleteValues[iItems].value});
+            }
+        }
+
+        return responseItems;
 	},
 
 
