@@ -222,7 +222,6 @@ swissbib.Holdings = {
 
 		popup.load(url, function(){
 			that.setupItemsPopup(dialog);
-			that.centerPopup(dialog);
 		});
 	},
 
