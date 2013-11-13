@@ -1547,8 +1547,8 @@ span.icon_format_photograph, span.icon_format_photograph_e,
 span.icon_format_recording, span.icon_format_recording_e,
 span.icon_format_score, span.icon_format_score_e,
 span.icon_format_software  {
-	background-position:left -1px;
-	line-height:15px;
+    background-position: left 1px;
+    line-height:15px;
 	padding-bottom:5px;
 }
 

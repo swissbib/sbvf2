@@ -47,8 +47,8 @@ class TemplateFilenameFilter extends AbstractFilter implements ServiceLocatorAwa
 		$fileProperty->setAccessible(true);
 		$templateFilename = $fileProperty->getValue($phpRenderer);
 
-			// Don't wrap export stuff
-		if (stristr($templateFilename, 'export-') !== false) {
+		// Don't wrap export stuff
+		if ( (stristr($templateFilename, 'export-') !== false) || (stristr($templateFilename, '/email/') !== false) ) {
 			return $content;
 		}
 
