@@ -1,3 +1,8 @@
-<p>
-    <a href="<?=$this->url('help-page', array('topic'=> 'myswissbib'))?>"><?=$this->transEsc('Help')?></a>
-</p>
+<h3><?= $this->transEsc('Help') ?></h3>
+<div class="subnavigation">
+    <ul>
+        <li>
+            <a href="<?= $this->url('help-page', array('topic' => 'myswissbib')) ?>"><?= $this->transEsc('helppage.myswissbib') ?></a>
+        </li>
+    </ul>
+</div>

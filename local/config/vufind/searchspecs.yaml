@@ -11,7 +11,8 @@ AllFields:
     - title_sub^200
     - title_old^200
     - title_new^200
-    - authorfull^750              # all authors (personal and corporate entries)
+    - author^750                  # all entries main name forms
+    - author_additional^100       # all entries additional fields
     - series^200
     - journals^200
     - topic^500                   # all verbal topics, i.e. 6xx
@@ -45,8 +46,10 @@ AllFields:
         - [and, 250]
       title_new:
         - [and, 200]
-    authorfull:
+    author:
       - [and, 750]
+    author_additional:
+      - [and, 100]
     series:
       - [and, 50]
     journals:
@@ -65,12 +68,18 @@ AllFields:
 
 Author:
   DismaxFields:
-    - authorfull^100
+    - author^100
+    - author_additional^20
   QueryFields:
-    authorfull:
+    author:
       - [onephrase, 350]
       - [and, 200]
       - [or, 100]
+    author_additional:
+      - [onephrase, 50]
+      - [and, 50]
+      - [or, 20]
+
 
 ISN:
   DismaxFields:
