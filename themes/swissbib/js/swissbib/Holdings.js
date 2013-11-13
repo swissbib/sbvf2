@@ -154,9 +154,7 @@ swissbib.Holdings = {
 		var dialog = popup.dialog({
 			height: "auto",
 			width: "auto",
-			minHeight: 500,
-			maxHeight: 700,
-			resizable: false
+			minHeight: 500
 		});
 
 		popup.mask("Loading...");
@@ -164,6 +162,16 @@ swissbib.Holdings = {
 		dialog.load(contentUrl, function(responseText, responseStatus, response){
 			that.setupItemsPopup(dialog);
 		});
+	},
+
+
+
+	/**
+	 *
+	 * @param {Object} dialog
+	 */
+	centerPopup: function(dialog) {
+		dialog.dialog("option", "position", { my: "center", at: "center", of: window });
 	},
 
 
@@ -197,6 +205,7 @@ swissbib.Holdings = {
 				}
 			});
 		});
+		that.centerPopup(dialog);
 	},
 
 
@@ -213,6 +222,7 @@ swissbib.Holdings = {
 
 		popup.load(url, function(){
 			that.setupItemsPopup(dialog);
+			that.centerPopup(dialog);
 		});
 	},
 
