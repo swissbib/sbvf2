@@ -63,7 +63,7 @@ $this->render('myresearch/sidebar/wrap.phtml', array(
 
                     </div>
                 <?php else: ?>
-                    <div id="breadcrumb">
+                    <div id="breadcrumb" class="no-print">
                         <ul>
                             <li class="selected">
                                 <a class="notepad" href="#"><?= $this->transEsc("mymemorizelists") ?></a>
@@ -75,7 +75,7 @@ $this->render('myresearch/sidebar/wrap.phtml', array(
 
                 <?php if ($recordTotal > 0): ?>
 
-                    <div class="floatbox">
+                    <div class="floatbox no-print">
                         <div class="floatleft">
                             <p><?= $this->transEsc("Showing") ?>
                                 <strong><?= $this->escapeHtml($this->results->getStartRecord()) ?></strong> -
@@ -120,7 +120,7 @@ $this->render('myresearch/sidebar/wrap.phtml', array(
                                     <?= $this->transEsc("mymemorizelists") ?>
                                 <?php endif ?>
                             </caption>
-                            <thead class="hidden">
+                            <thead class="hidden no-print">
                             <tr>
                                 <th>Nummer</th>
                                 <th>Verwalten</th>
@@ -137,7 +137,7 @@ $this->render('myresearch/sidebar/wrap.phtml', array(
                             </tbody>
                         </table>
 
-                        <div class="floatbox">
+                        <div class="floatbox no-print">
                             <?= $this->context($this)->renderInContext('myresearch/bulk-action-buttons.phtml', array('idPrefix' => 'bottom_', 'list' => isset($list) ? $list : null)) ?>
                         </div>
 
