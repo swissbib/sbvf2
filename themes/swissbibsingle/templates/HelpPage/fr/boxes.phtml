@@ -1,0 +1,69 @@
+<h2 style="padding-top:30px;">Intégrer le masque de recherche swissbib dans d'autres services</h2>
+<p>Le masque de recherche présenté ici peut être intégré dans votre page internet et permettre ainsi un accès direct à
+    swissbib. Les paramètres de recherche du masque peuvent être personnalisés: filtres, format de document,
+    bibliothèque, réseau de bibliothèques.</p>
+<p>Le masque de recherche peut être téléchargé <a href="#">ici</a>.<p>
+<h3>Exemple avec filtre intégré pour la recherche de cartes géographiques</h3>
+<!-- Start: swissbib search box with format filter-->
+<!-- change background color -->
+<div style="background: #32CD0F  bottom no-repeat; width: 430px; height:80px;">
+    <script type="text/javascript">
+        function search_swissbib() {
+            var basic_url = "https://test.swissbib.ch/Search/Results";
+            <!-- change swissbib language and swissbib appearance -->
+            var first_fix_part = "?lng=de&sort=relevance&lookfor=";
+            var search_value = encodeURIComponent(document.getElementById('INPUT_SWISSBIB_SEARCH').value);
+            <!-- change the media filter argument by replacing MP01* -->
+            <!-- change the media filter to a library-filter by replacing "format" by "institution" and then apply the swissbib library code -->
+            var filter_restriction = "";
+            if (document.getElementById("filterMaps").checked) {
+                filter_restriction = '&filter[]=format%3A%22MP01*%22';
+            }
+            var query_parameter = first_fix_part + search_value + filter_restriction;
+            var search_all_url = basic_url + query_parameter;
+            window.open(search_all_url);
+            return false;
+        }
+    </script>
+    <!-- change background color of the icon -->
+    <div
+        style="margin:5px 0 0 15px; background: #32CD0F  url(https://test.swissbib.ch/themes/swissbib/images/logo_swissbib.png) no-repeat; height: 55px; padding-left:130px;">
+        <form style="padding:10px 0 0 40px; " onsubmit="return search_swissbib();">
+            <fieldset style="margin: 0; padding: 0; border: none;">
+                <input style="display:block;float:left;width:230px;" name="SEARCH_ALL" id="INPUT_SWISSBIB_SEARCH"
+                       type="text"/>
+                <input style="height:25px; width:80px;  margin-top:5px; display:block;float:left;" type="submit"
+                       value="Suchen"/>
+
+                <!--if you don't want the checkbox checked leave the option "checked" empty -->
+                <input id="filterMaps" style="margin:5px 0 0 10px; padding-left:10px; display:block; float:left;"
+                       type="checkbox" value="Search" checked="checked"/>
+                <!-- change color of filter label and label text-->
+                <label
+                    style="margin-top:5px; color:#2F333C;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.1538em;margin:0 10px 0 0;"
+                    for=filtermaps>&nbsp;nur Kartenmaterial</label>
+            </fieldset>
+        </form>
+    </div>
+</div>
+<!-- End: swissbib search box-->
+
+<p style="padding-top:30px;">Sie können einige Elemente verändern, um</p>
+<ul class="list">
+    <li>eine graue Oberfläche zu bekommen:
+        <ul>
+            <li>Ersetzen Sie "#32CD0F" durch "#8D919D"</li>
+        </ul>
+    </li>
+    <li>die Suche anders zu gestalten:
+        <ul>
+            <li>Anpassen des Filters von &raquo;Material&laquo; auf &raquo;Bibliothek&laquo;. Hierzu passen Sie die
+                "filter_restriction" an und zwar von &raquo;format&laquo; zu &raquo;institution&laquo; </li>
+            <li>Sowohl &raquo;Material&laquo; als auch &raquo;Bibliothek&laquo; sind codiert. Die Grobkategorien
+                für &raquo;Material&laquo; finden Sie im <a
+                    href="http://www.swissbib.org/wiki/index.php?title=Filtering">swissbib wiki</a> und die Codes
+                der &raquo;Bibliotheken&laquo; unter <a href="https://www.swissbib.ch/libraries" target="_blank">https://www.swissbib.ch/libraries</a>.
+            </li>
+        </ul>
+    </li>
+</ul>
