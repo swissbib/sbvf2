@@ -57,6 +57,7 @@ return array(
 //		'common.js'
 		'blueprint/commonFromBluePrint.js',
 		'blueprint/lightbox.js',
+		'blueprint/bulk_actions.js',
 
 		//'blueprint/record.js',
     ),
