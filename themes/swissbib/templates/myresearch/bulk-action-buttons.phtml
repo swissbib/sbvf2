@@ -10,7 +10,7 @@
     <? $exportOptions = $this->export()->getBulkOptions(); if (count($exportOptions) > 0): ?>
         <input type="submit" class="linkbutton submit" name="export" value="<?=$this->transEsc('Export')?>" title="<?=$this->transEsc('export_selected')?>"/>
     <? endif; ?>
-    <input type="submit" class="linkbutton submit" name="print" value="<?=$this->transEsc('Print')?>" title="<?=$this->transEsc('print_selected')?>"/>
+    <input type="button" class="linkbutton submit" name="print" value="<?=$this->transEsc('Print')?>" title="<?=$this->transEsc('print_selected')?>"/>
     <? if ($this->cart()->isActive()): ?>
         <input id="<?=$this->idPrefix?>updateCart" type="submit" class="linkbutton submit" name="add" value="<?=$this->transEsc('Add to Book Bag')?>"/>
     <? endif; ?>
