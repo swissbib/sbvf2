@@ -418,11 +418,12 @@ var swissbib = {
      * @param    {Object}    event
      */
     onBulkExportFormatClick: function (event) {
+        var driver = this.getIdSelectedTab()==='tab_summon' ? 'Summon' : 'VuFind';
         var baseUrl = event.target.href,
             idArgs = [],
             fullUrl,
             ids = $('#content a.singleLink').map(function () {
-                return 'VuFind|' + this.href.split('/').pop()
+                return driver + '|' + this.href.split('/').pop()
             }).get();
 
         event.preventDefault();
