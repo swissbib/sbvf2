@@ -1,8 +1,9 @@
 <?php
 
-$dateRangeName  = isset($this->dateRangeName) ? $this->dateRangeName : 'publishDate';
-$counter        = 0;
-$facetGroups    = array();
+$dateRangeName = isset($this->dateRangeName) ? $this->dateRangeName : 'publishDate';
+$counter = 0;
+$facetGroups = array();
+$favoriteLanguages = array('ger', 'German', 'eng', 'English', 'fre', 'French', 'ita', 'Italian');
 
 foreach ($this->facetList as $field => $list) {
     $groupIndex = (int)floor($counter++ / 2);
@@ -30,13 +31,12 @@ if (isset($this->dateRangeLimit)) {
 
     <div class="searchoption_toggler_refine">
         <?php foreach ($facetGroups as $facetGroup): ?>
-            <div class="fieldbox">
-
-                <?php foreach ($facetGroup as $facet): ?>
+            <?php foreach ($facetGroup as $facet): ?>
+                <div class="fieldbox">
                     <?php $fieldKey = str_replace(' ', '', $facet['field']); ?>
 
                     <label for="limit_<?= $this->escapeHtml($fieldKey) ?>" class="label"><?= $this->transEsc($facet['list']['label']) ?></label>
-                    <select id="limit_<?= $this->escapeHtml($fieldKey) ?>" name="filter[]" class="select multiple" multiple="multiple">
+                    <select id="limit_<?= $this->escapeHtml($fieldKey) ?>" name="filter[]" class="select multiple large" multiple="multiple">
 
                         <?php
                         // Sort the current facet list alphabetically; we'll use this data
@@ -57,19 +57,33 @@ if (isset($this->dateRangeLimit)) {
                         natcasesort($sorted);
                         ?>
 
+                        <?php if (strtolower($facet['field'])===strtolower("language")) : ?>
+                            <?php foreach ($sorted as $index => $display): ?>
+                                <?php $value = $facet['list']['list'][$index]; ?>
+                                <? if (in_array($value['value'],$favoriteLanguages)) : ?>
+                                    <option value='<?= $this->escapeHtml($facet['field'] . ':"' . $value['value'] . '"') ?>' <?= (isset($value['selected']) && $value['selected']) ? ' selected="selected"' : '' ?> title="<?= $this->escapeHtml($display) ?>">
+                                        <?= $this->escapeHtml($display) ?>
+                                    </option>
+                                <? endif; ?>
+                            <?php endforeach; ?>
+                            <optgroup label="<?= $this->transEsc('all_languages') ?>">
+                        <?php endif; ?>
+
                         <?php foreach ($sorted as $index => $display): /* Render options of current facet's selector */ ?>
                             <?php $value = $facet['list']['list'][$index]; ?>
-                            <option value='<?= $this->escapeHtml($facet['field'] . ':"' . $value['value'] . '"') ?>' <?= (isset($value['selected']) && $value['selected']) ? ' selected="selected"' : '' ?>>
+                            <option value='<?= $this->escapeHtml($facet['field'] . ':"' . $value['value'] . '"') ?>' <?= (isset($value['selected']) && $value['selected']) ? ' selected="selected"' : '' ?> title="<?= $this->escapeHtml($display) ?>">
                                 <?= $this->escapeHtml($display) ?>
                             </option>
                         <?php endforeach; ?>
 
+                        <?php if ($facet['field']==="language") : ?>
+                            </optgroup>
+                        <?php endif; ?>
+
                     </select>
-                <?php endforeach; ?>
-
-            </div>
+                </div>
+            <?php endforeach; ?>
         <?php endforeach; ?>
-
 
         <?= $this->render('search/advanced/limit'); ?>
 
