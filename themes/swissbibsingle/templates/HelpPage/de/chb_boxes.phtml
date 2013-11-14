@@ -1,0 +1,68 @@
+<h2 style="padding-top:30px;">Suchbox zum Einbinden von swissbib in anderen Diensten</h2>
+<p>Die hier angebotene Box können Sie in Ihre Webpage einbauen und so einen Zugang auf swissbib von Ihrer Webpage
+    anbieten. Die Suchparameter der Box sind konfigurierbar.</p>
+<p>Unter diesem <a href="#">Link</a> kann die Suchbox heruntergeladen werden.<p>
+<h3>Hier als Beispiel mit einem eingebauten Filter für Kartenmaterial</h3>
+<!-- Start: swissbib search box with format filter-->
+<!-- change background color -->
+<div style="background: #32CD0F  bottom no-repeat; width: 430px; height:80px;">
+    <script type="text/javascript">
+        function search_swissbib() {
+            var basic_url = "https://test.swissbib.ch/Search/Results";
+            <!-- change swissbib language and swissbib appearance -->
+            var first_fix_part = "?lng=de&sort=relevance&lookfor=";
+            var search_value = encodeURIComponent(document.getElementById('INPUT_SWISSBIB_SEARCH').value);
+            <!-- change the media filter argument by replacing MP01* -->
+            <!-- change the media filter to a library-filter by replacing "format" by "institution" and then apply the swissbib library code -->
+            var filter_restriction = "";
+            if (document.getElementById("filterMaps").checked) {
+                filter_restriction = '&filter[]=format%3A%22MP01*%22';
+            }
+            var query_parameter = first_fix_part + search_value + filter_restriction;
+            var search_all_url = basic_url + query_parameter;
+            window.open(search_all_url);
+            return false;
+        }
+    </script>
+    <!-- change background color of the icon -->
+    <div
+        style="margin:5px 0 0 15px; background: #32CD0F  url(https://test.swissbib.ch/themes/swissbib/images/logo_swissbib.png) no-repeat; height: 55px; padding-left:130px;">
+        <form style="padding:10px 0 0 40px; " onsubmit="return search_swissbib();">
+            <fieldset style="margin: 0; padding: 0; border: none;">
+                <input style="display:block;float:left;width:230px;" name="SEARCH_ALL" id="INPUT_SWISSBIB_SEARCH"
+                       type="text"/>
+                <input style="height:25px; width:80px;  margin-top:5px; display:block;float:left;" type="submit"
+                       value="Suchen"/>
+
+                <!--if you don't want the checkbox checked leave the option "checked" empty -->
+                <input id="filterMaps" style="margin:5px 0 0 10px; padding-left:10px; display:block; float:left;"
+                       type="checkbox" value="Search" checked="checked"/>
+                <!-- change color of filter label and label text-->
+                <label
+                    style="margin-top:5px; color:#2F333C;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.1538em;margin:0 10px 0 0;"
+                    for=filtermaps>&nbsp;nur Kartenmaterial</label>
+            </fieldset>
+        </form>
+    </div>
+</div>
+<!-- End: swissbib search box-->
+
+<p style="padding-top:30px;">Sie können einige Elemente verändern, um</p>
+<ul class="list">
+    <li>eine graue Oberfläche zu bekommen:
+        <ul>
+            <li>Ersetzen Sie "#32CD0F" durch "#8D919D"</li>
+        </ul>
+    </li>
+    <li>die Suche anders zu gestalten:
+        <ul>
+            <li>Anpassen des Filters von &raquo;Material&laquo; auf &raquo;Bibliothek&laquo;. Hierzu passen Sie die
+                "filter_restriction" an und zwar von &raquo;format&laquo; zu &raquo;institution&laquo; </li>
+            <li>Sowohl &raquo;Material&laquo; als auch &raquo;Bibliothek&laquo; sind codiert. Die Grobkategorien
+                für &raquo;Material&laquo; finden Sie im <a
+                    href="http://www.swissbib.org/wiki/index.php?title=Filtering">swissbib wiki</a> und die Codes
+                der &raquo;Bibliotheken&laquo; unter <a href="https://www.swissbib.ch/libraries" target="_blank">https://www.swissbib.ch/libraries</a>.
+            </li>
+        </ul>
+    </li>
+</ul>
