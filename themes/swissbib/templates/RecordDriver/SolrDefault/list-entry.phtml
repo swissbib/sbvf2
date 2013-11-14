@@ -17,6 +17,7 @@ $title = $this->driver->getTitle();
 $listTitle		= empty($title) ? $this->transEsc('Title not available') : $title;
 	$description	= $this->driver->getSummary();
 	$isEditAllowed	= (isset($list) && $list->editAllowed($this->user)) || (!isset($list) && $this->user);
+	$publicationDate   = $this->publicationDateMarc($this->driver->getPublicationDates());
 
 ?>
 <tr>
@@ -89,12 +90,26 @@ $listTitle		= empty($title) ? $this->transEsc('Title not available') : $title;
 			<h6><?= $this->transEsc('Author') ?></h6>
 			<span><?=$this->driver->getTitleStatement()?></span>
 		</div>
+
+		<? if (!empty($publicationDate)): ?>
+			<div class="print">
+				<h6><?=$this->transEsc('Year')?>:</h6>
+				<span><?=$this->escapeHtml($publicationDate)?></span>
+			</div>
+		<? endif; ?>
+
 		<!-- format -->
 		<div class="format">
 			<h6 class="icon_format_book">Buch</h6>
 		</div>
+
+		<? if (!empty($id)): ?>
+			<div class="print">
+				<h6><?=$this->transEsc('Item_ID')?>:</h6> <span><?=$id ?> </span>
+			</div>
+		<? endif; ?>
 	</td>
-	<td class="right">
+	<td class="col-5 right">
 		<?php if ($isEditAllowed): ?>
 			<?php
 				$editLink	= $this->url('myresearch-edit') . '?id=' . urlencode($id) . '&amp;source=' . urlencode($source) . (!is_null($list_id)?'&amp;list_id=' . urlencode($list_id) : '');
