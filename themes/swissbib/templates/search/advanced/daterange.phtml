@@ -1,13 +1,22 @@
+<?php
+    // @todo Don't use $_SERVER
+
+$lastSearch = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER']: '';
+parse_str(parse_url($lastSearch, PHP_URL_QUERY), $lastSearch);
+
+$dateRangeLimit[0] = isset($lastSearch['publishDatefrom']) ? intval($lastSearch['publishDatefrom']) : $startYear;
+$dateRangeLimit[1] = isset($lastSearch['publishDateto']) ? intval($lastSearch['publishDateto']) : intval(date('Y')) + 1;
+?>
 <div class="fieldbox">
     <label class="label"><?= $this->transEsc('adv_search_year') ?></label>
     <div class="vertical yearSliderBox">
         <input type="hidden" name="daterange[]" value="<?= $this->escapeHtml($this->name) ?>"/>
 
         <label for="date_range_from"><?= $this->transEsc('date_from') ?>:</label>
-        <input type="text" size="4" maxlength="4" class="yearbox text" name="<?= $this->escapeHtml($this->name) ?>from" id="<?= $this->escapeHtml($this->name) ?>from" value="<?= $this->escapeHtml($this->dateRangeLimit[0]) ?>"/>
+        <input type="text" size="4" maxlength="4" class="yearbox text" name="<?= $this->escapeHtml($this->name) ?>from" id="<?= $this->escapeHtml($this->name) ?>from" value="<?= $this->escapeHtml($dateRangeLimit[0]) ?>"/>
 
         <label for="date_range_to"><?= $this->transEsc('date_to') ?>:</label>
-        <input type="text" size="4" maxlength="4" class="yearbox text" name="<?= $this->escapeHtml($this->name) ?>to" id="<?= $this->escapeHtml($this->name) ?>to" value="<?= $this->escapeHtml($this->dateRangeLimit[1]) ?>"/>
+        <input type="text" size="4" maxlength="4" class="yearbox text" name="<?= $this->escapeHtml($this->name) ?>to" id="<?= $this->escapeHtml($this->name) ?>to" value="<?= $this->escapeHtml($dateRangeLimit[1]) ?>"/>
 
         <br/>
         <div id="<?= $this->escapeHtml($this->name) ?>Slider" class="dateSlider"></div>
