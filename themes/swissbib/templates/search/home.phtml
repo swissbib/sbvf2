@@ -27,8 +27,10 @@
                         <?=$this->translate('start.teaser.left.chb')?>
 						<ul class="actions">
 							<li class="right">
-								<a href="<?=$this->url('help-page',array('topic'=>'About'));?>" class="linkbutton primary icon_goto_primary" title="<?=$this->transEsc('more')?>"><span><?=$this->transEsc('start.teaser.more')?></span></a>
-							</li>
+                                <a href="<?= $this->url('help-page', array('topic' => 'chb_about')); ?>"
+                                   class="linkbutton primary icon_goto_primary"
+                                   title="<?= $this->transEsc('more') ?>"><span><?= $this->transEsc('start.teaser.more') ?></span></a>
+                            </li>
 						</ul>
 					</div>
 				</div>
@@ -38,8 +40,10 @@
                         <?=$this->translate('start.teaser.right.chb')?>
 						<ul class="actions">
 							<li class="right">
-								<a href="<?=$this->url('help-page')?>" class="linkbutton primary icon_goto_primary" title="<?=$this->transEsc('more')?>"><span><?=$this->transEsc('start.teaser.more')?></span></a>
-							</li>
+                                <a href="<?= $this->url('help-page', array('topic' => 'chb_3steps')); ?>"
+                                   class="linkbutton primary icon_goto_primary"
+                                   title="<?= $this->transEsc('more') ?>"><span><?= $this->transEsc('start.teaser.more') ?></span></a>
+                            </li>
 						</ul>
 					</div>
 				</div>
