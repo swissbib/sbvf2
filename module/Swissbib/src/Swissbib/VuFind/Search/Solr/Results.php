@@ -75,6 +75,8 @@ class Results extends VuFindSolrResults
 	 * @param	ParamBag	$backendParams
 	 * @return	ParamBag
 	 */
+    //todo: this function was moved to the params type - could be deleted?
+    //at the moment no time for testing - to be done later (GH)
 	protected function addUserInstitutions(ParamBag $backendParams)
 	{
 		/** @var Manager $favoritesManger */
@@ -87,7 +89,7 @@ class Results extends VuFindSolrResults
 			$backendParams->set("facet", "true");
 
 			foreach ($favoriteInstitutions as $institutionCode) {
-				$backendParams->add("facet.query", "institution:" . $institutionCode);
+				//$backendParams->add("facet.query", "institution:" . $institutionCode);
 				$backendParams->add("bq", "institution:" . $institutionCode . "^5000");
 			}
 		}
