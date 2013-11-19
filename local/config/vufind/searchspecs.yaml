@@ -5,6 +5,7 @@
 # These searches use Dismax when possible:
 
 AllFields:
+  DismaxHandler: edismax
   DismaxFields:
     - title_short^1000            # main title, i.e. 245 $a
     - title_alt^200
