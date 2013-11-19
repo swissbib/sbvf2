@@ -85,7 +85,7 @@ class Params extends VuFindSolrParams
 
             foreach ($favoriteInstitutions as $institutionCode) {
                 $backendParams->add("facet.query", "institution:" . $institutionCode);
-                $backendParams->add("bq", "institution:" . $institutionCode . "^5000");
+                //$backendParams->add("bq", "institution:" . $institutionCode . "^5000");
             }
         }
 
