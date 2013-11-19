@@ -210,7 +210,7 @@ class Importer implements ServiceLocatorAwareInterface
 
 		foreach ($data as $group) {
 			if (isset($group['group'])) {
-				$key = strtolower($group['group']['code']);
+				$key = $group['group']['code'];
 				foreach ($group['group']['label'] as $locale => $label) {
 					$translations[$locale][$key] = $label;
 				}
@@ -254,15 +254,15 @@ class Importer implements ServiceLocatorAwareInterface
 
 		foreach ($data as $group) {
 				// Add group in order of appearance for sorting
-			$relations['groups'][] = strtolower($group['group']['code']);
+			$relations['groups'][] = $group['group']['code'];
 
 				// Add a mapping to a group for each institution
 			foreach ($group['institutions'] as $institution) {
 					// Build a sort key but prevent duplications when invalid position values are provided
 				$sortKey                  = $institution['position'] . '_' . $institution['id'];
 				$institutionRaw[$sortKey] = array(
-					'institution' => strtolower($institution['bib_code']),
-					'group'       => strtolower($group['group']['code'])
+					'institution' => $institution['bib_code'],
+					'group'       => $group['group']['code']
 				);
 			}
 		}
@@ -308,7 +308,7 @@ class Importer implements ServiceLocatorAwareInterface
 		foreach ($data as $group) {
 			foreach ($group['institutions'] as $institution) {
 				if ($institution['favorite']) {
-					$institutionCode	= strtolower($institution['bib_code']);
+					$institutionCode	= $institution['bib_code'];
 
 					$favorites[$institutionCode] = trim('(' . $institution['bib_code'] . ') '
 															. $institution['address']['address']
@@ -355,7 +355,7 @@ class Importer implements ServiceLocatorAwareInterface
 			if (isset($group['institutions']) && is_array($group['institutions'])) {
 				foreach ($group['institutions'] as $institution) {
 					foreach ($institution[$fieldName] as $locale => $label) {
-						$key                         = strtolower($institution[$fieldKey]);
+						$key                         = $institution[$fieldKey];
 						$translations[$locale][$key] = $label;
 					}
 				}

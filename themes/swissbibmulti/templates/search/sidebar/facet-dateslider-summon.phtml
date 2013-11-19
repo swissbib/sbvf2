@@ -6,8 +6,8 @@ if ( $results->getResultTotal() > 0  ) {
     // @todo Don't use $_GET parameters directly
     $viewRecord      = $this->record();
     $startYear       = 1980;
-    $publishDateFrom = isset($_GET['publishDatefrom']) ? intval($_GET['publishDatefrom']) : $startYear;
-    $publishDateTo   = isset($_GET['publishDateto'])   ? intval($_GET['publishDateto'])   : intval(date('Y')) + 1;
+    $publishDateFrom = isset($_GET['PublicationDatefrom']) ? intval($_GET['PublicationDatefrom']) : $startYear;
+    $publishDateTo   = isset($_GET['PublicationDateto'])   ? intval($_GET['PublicationDateto'])   : intval(date('Y')) + 1;
     $this->headScript()->appendFile('pubdate_slider.js');
 ?>
 <script language="javascript">

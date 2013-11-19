@@ -813,3 +813,9 @@ img.small.right {
     float: right;
     margin: 0 13px 13px 0;
 }
+
+/** Korrektur Advanced Search Dropdown-option */
+option {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1em;
+}
