@@ -1,0 +1,452 @@
+<h2>Hilfethemen</h2>
+<ul class="list">
+    <li><a href="#prefs">Anmeldung - wie und wozu?</a></li>
+    <li><a href="#search">Wie suche ich in swissbib?</a></li>
+    <li><a href="#refine">Ergebnisse sortieren und filtern</a></li>
+    <li><a href="#output">Suchen und Treffer speichern</a></li>
+    <li><a href="#fullview">Vollanzeige</a></li>
+    <li><a href="#lists">Literaturverwaltung und Merklisten</a></li>
+    <li><a href="#favs">Favoriten - wozu?</a></li>
+    <li><a href="#request">Wie kann ich bestellen?</a></li>
+</ul>
+
+<h2><a name="prefs"></a>Anmeldung - wie und wozu?</h2>
+<img class="large" src="<?= $this->basePath('themes/swissbibsingle/images/Help/de/login.png') ?>" alt="Anmeldung">
+<p>Wir empfehlen Ihnen, sich vor Ihrer ersten Suche anzumelden.</p>
+<ol class="list">
+    <li>Universitäts- und Hochschulangehörige verwenden hierzu <strong>switch AAI</strong>.</li>
+    <li>Haben Sie kein switch AAI-Konto, können Sie sich ein swissbib-Konto erstellen.</li>
+</ol>
+<h3>Was sind die Vorteile, wenn ich mich anmelde?</h3>
+<ol class="list">
+    <li>Sie können die Sprache der Oberfläche sowie die maximale Anzahl angezeigter Treffer vordefinieren und die
+        Sucheinstellungen unter <em>My swissbib</em> dauerhaft speichern.
+    <li>Sie können Ihre bevorzugten Bibliotheken dauerhaft als Favoriten festlegen.</li>
+    <li>In der Suchhistorie können Sie bis zu 50 getätigte Suchen dauerhaft speichern und bei einer späteren Sitzung
+        wieder darauf zugreifen.
+    </li>
+    <li>Durch Tags (Schlagwörter) und personalisierte Merklisten können Sie Dokumente nach eigenen Vorlieben dauerhaft
+        bezeichnen und gruppieren.
+    </li>
+    <li>Zu jedem Titel können Sie eine Rezension (Review) verfassen, die für alle swissbib-Benutzer einsehbar ist.</li>
+</ol>
+<div class="example"><strong>Achtung:</strong> Die Anmeldung in swissbib gilt nur für die Suche. Für das Bestellen oder
+    Reservieren von Dokumenten müssen Sie Sich bei der besitzenden Bibliothek anmelden.
+</div>
+
+
+<h2><a name="search"></a>Wie suche ich in swissbib?</h2>
+<h3>Einfache Suche</h3>
+<img class="large" src="<?= $this->basePath('themes/swissbibsingle/images/Help/de/s-search.png') ?>"
+     alt="einfache Suche"/>
+<p>Der <strong>schnellste Weg</strong> zu Ergebnissen führt über die einfache Suche auf der Startseite von swissbib. Sie
+    geben Ihre Suchbegriffe im Suchschlitz ein: thematische Begriffe, den Namen eines Autors, einen Begriff aus einem
+    Titel, einen Druckort, einen Verlagsnamen etc. Swissbib sucht die von Ihnen eingegebenen Begriffe <strong>in allen
+        Feldern</strong>, ggf. auch in Abstracts und Inhaltsverzeichnissen.</p>
+<p>Die einfache Suche in swissbib kann beim Internet-Explorer und bei Firefox sogar in die <strong>Suchbox</strong>
+    integriert werden.</p>
+
+<p>Einfache Suchen ergeben oft sehr viele Treffer. Auf der Startseite können Sie Ihre Suche aber bereits
+    verschiedentlich <strong>verfeinern</strong>. Rechts vom Suchschlitz ist eine Einschränkung auf einen bestimmten
+    <strong>Bibliotheksverbund</strong> möglich – ansonsten wird in allen Katalogen der Schweizer Universitäten,
+    Fachhochschulen und der Schweizerischen Nationalbibliothek gesucht.</p>
+<p>Darüber hinaus stehen bei der Eingabe Ihrer Suchbegriffe folgende Optionen zur Verfügung:</p>
+
+<ul class="list">
+    <li><strong>Suche nach einer Phrase/Wortgruppe</strong>: Wenn Sie nach Begriffen in einer bestimmten Reihenfolge
+        suchen, setzen Sie Anführungszeichen am Anfang und am Ende Ihrer Phrase.<br/>&nbsp;
+        <table>
+            <colgroup>
+                <col width="40%">
+                <col width="*">
+            </colgroup>
+            <thead>
+            <tr>
+                <th style="font-size: 1.0em;">Eine Suche nach ...</th>
+                <th style="font-size: 1.0em;">... ergibt folgende Ergebnisse</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td style="font-size: 1.0em;"><a
+                        href="http://www.swissbib.ch/TouchPoint/start.do?Language=de&View=nose&Query=-1=%22banken+und+ihre+schweiz%22"
+                        target="_blank">Banken und ihre Schweiz</a></td>
+                <td style="font-size: 1.0em;">ca. 200 Treffer, bei denen die Begriffe „Banken“, „und“, „ihre“ sowie
+                    „Schweiz“ vorkommen
+                </td>
+            </tr>
+            <tr>
+                <td style="font-size: 1.0em;"><a
+                        href="http://www.swissbib.ch/TouchPoint/start.do?Language=de&View=nose&Query=-1=%22\%22banken+und+ihre+schweiz\%22%22"
+                        target="_blank"><strong>„</strong>Banken und ihre Schweiz<strong>“</strong></a></td>
+                <td style="font-size: 1.0em;">nur 1 Treffer: Peter Hablützel/Paschen von Flotow, Die Banken und ihre
+                    Schweiz, Zürich 2010
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </li>
+    <li>Trunkierung/Platzhalter: Bestimmte Sonderzeichen ermöglichen die Suche nach Begriffen mit unterschiedlichen
+        Schreibweisen oder Endungen.<br/>&nbsp;
+        <table>
+            <thead>
+            <tr>
+                <th style="font-size: 1.0em;">Zeichen</th>
+                <th style="font-size: 1.0em;">Beschreibung</th>
+                <th style="font-size: 1.0em;">Eine Suche nach ...</th>
+                <th style="font-size: 1.0em;">... ergibt folgende Ergebnisse</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th style="font-size: 1.0em;" rowspan="2">*</th>
+                <td style="font-size: 1.0em;" rowspan="2">ersetzt beliebig viele Zeichen</td>
+                <td style="font-size: 1.0em;">cultur*</td>
+                <td style="font-size: 1.0em;">culture, cultural, culturally etc.</td>
+            </tr>
+            <tr>
+                <td style="font-size: 1.0em;">Fr*ib*urg</td>
+                <td style="font-size: 1.0em;">Fribourg, Freiburg</td>
+            </tr>
+            <tr>
+                <th style="font-size: 1.0em;" rowspan="2">?</th>
+                <td style="font-size: 1.0em;" rowspan="2">ersetzt ein einzelnes Zeichen</td>
+                <td style="font-size: 1.0em;">wom?n</td>
+                <td style="font-size: 1.0em;">woman, women</td>
+            </tr>
+            <tr>
+                <td style="font-size: 1.0em;">Lind??ist</td>
+                <td style="font-size: 1.0em;">Lindkvist, Lindquist, Lindqvist</td>
+            </tr>
+            </tbody>
+        </table>
+    </li>
+</ul>
+
+
+<h3>Erweiterte Suche</h3>
+<img class="large" src="<?= $this->basePath('themes/swissbibsingle/images/Help/de/ex-search.png') ?>"
+     alt="erweiterte Suche"/>
+<p>Wenn Sie <strong>gezielt nach ganz bestimmten Angaben</strong> suchen möchten wie beispielsweise nach dem Namen des
+    Autors, Begriffen aus dem Titel, ISBN bzw. ISSN, Jahr, Thema, Format oder Sprache, dann empfiehlt sich der Einstieg
+    über die erweiterte Suche.</p>
+<div class="example"><strong>Achtung:</strong> In swissbib können Sie <strong>nicht nach einer bestimmten
+        Signatur</strong> suchen, da die Signatursysteme von den über 700 in swissbib abfragbaren Bibliotheken nicht
+    eindeutig genug sind.
+</div><br/>&nbsp;
+
+<p>Der Vorteil der erweiterten Suche ist, dass <strong>mehrere Suchfelder</strong> miteinander
+    <strong>kombiniert</strong> werden können. Die Operatoren „UND“, „ODER“ und „NICHT“ erlauben Ihnen, Suchbegriffe
+    zusammenzuführen, auszuweiten bzw. auszuschliessen.</p>
+<p>Diese Operatoren können innerhalb eines einzigen Suchfeldes nur begrenzt verwendet werden, weshalb es sich hier
+    empfiehlt, die Suchkriterien auf mehrere Felder zu verteilen.</p>
+
+<p><strong>Phrasensuche</strong>, <strong>Platzhalter</strong> oder <strong>Trunkierung</strong>, wie sie in der
+    einfachen Suche möglich sind, funktionieren hier ebenfalls.</p>
+
+<div class="example"><em><strong>Beispiel</strong>: <br/>Suche nach einem Buch in deutscher Sprache, in dessen Titel der
+        Begriff Hund* (''Hund', 'Hunde', 'Hunden' etc.) vorkommt und dessen Autorenname 'Eigner' enthält.</em></div>
+<table>
+    <tbody>
+    <tr>
+        <td><a href="<?= $this->basePath('themes/swissbibsingle/images/Help/de/big/extended_01.png') ?>" rel="help-1"
+               title="Suche nach Eigner und Hund mit Sucheinschränkungen"><img class="magnify"
+                                                                               src="<?= $this->basePath('themes/swissbibsingle/images/Help/de/extended-search.png') ?>"
+                                                                               alt="Suche nach Eigner und Hund mit Sucheinschränkungen"/></a>
+        </td>
+        <td><a href="<?= $this->basePath('themes/swissbibsingle/images/Help/de/big/extended_02.png') ?>" rel="help-1"
+               title="Resultat zu Eigner und Hund mit Sucheinschränkungen"><img class="magnify"
+                                                                                src="<?= $this->basePath('themes/swissbibsingle/images/Help/de/extended-result.png') ?>"
+                                                                                alt="Resultat zu Eigner und Hund mit Sucheinschränkungen"/></a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<h3>Auf bereits ausgeführte Suchanfragen zugreifen</h3>
+<p>Sie können jederzeit zu einer bereits ausgeführten Suche zurückkommen, indem Sie sich unter <em>My swissbib</em> die
+    <em>Suchhistorie</em> anzeigen lassen. Um diese Suche zu verfeinern bzw. einzugrenzen, können Sie die Suchargumente
+    problemlos <em>in die Suche übernehmen</em>. Sie gelangen so zur <em>Erweiterten Suche</em> und können dort
+    beliebige weitere Suchargumente hinzufügen.</p>
+
+<div class="example"><em><strong>Beispiel</strong>: <br/>Eine erste Suche wurde mit den Begriffen 'Pharmakologie' und
+        'Deutschland' durchgeführt. Diese Suche wird in der Suchhistorie wieder übernommen und mit dem Begriff
+        'Toxikologie' verfeinert.</em></div>
+<table>
+    <tbody>
+    <tr>
+        <td><a href="<?= $this->basePath('themes/swissbibsingle/images/Help/de/big/search_history_01.png') ?>"
+               rel="help-2" title="Gehe zur Suchhistory und wähle Pharmakologie Deutschland"><img class="magnify"
+                                                                                                  src="<?= $this->basePath('themes/swissbibsingle/images/Help/de/search_history_select.png') ?>"
+                                                                                                  alt="Gehe zur Suchhistory und wähle Pharmakologie Deutschland"/></a>
+        </td>
+        <td><a href="<?= $this->basePath('themes/swissbibsingle/images/Help/de/big/search_history_02.png') ?>"
+               rel="help-2" title="In der erweiterten Suche ist der Eintrag aus der History zugeschaltet"><img
+                    class="magnify"
+                    src="<?= $this->basePath('themes/swissbibsingle/images/Help/de/search_history_search.png') ?>"
+                    alt="In der erweiterten Suche ist der Eintrag aus der History zugeschaltet"/></a></td>
+    </tr>
+    </tbody>
+</table>
+
+<h2><a name="refine"></a>Ergebnisse sortieren und filtern</h2>
+
+<div class="floatbox">
+    <a href="<?= $this->basePath('themes/swissbibsingle/images/Help/de/big/result_general.png') ?>" class="help"><img
+            class="image magnify"
+            src="<?= $this->basePath('themes/swissbibsingle/images/Help/de/result_general.png') ?>" alt="Trefferliste"/></a>
+
+    <p>Die Ergebnisse jeder Suche erscheinen als <strong>Trefferliste</strong>. Die <strong>Reihenfolge</strong> der
+        Treffer können Sie mit dem Menu <em>Sortieren nach</em> beeinflussen, nämlich nach Relevanz, Jahr, Autorenname
+        oder Titel. Falls Sie mehr Treffer auf einer Seite angezeigt haben möchten, können Sie die maximale Anzahl der
+        Treffer und das Format der Liste (lang/kurz) verändern.</p>
+
+    <p>Auf der linken Seite der Trefferliste stehen Ihnen <strong>Filter</strong> zur Verfügung, mit denen Sie Ihre
+        Ergebnisse <strong>beliebig eingrenzen</strong> können. Neben den schon bei der Suche verfügbaren
+        Eingrenzungskriterien (Bibliotheksverbund, Autor, Format, Sprache, Jahr), haben Sie hier zudem die Möglichkeit,
+        den <strong>Inhalt</strong> der gesuchten Medien feiner nach einer bestimmten Person, einem Ort, einer
+        Publikationsform oder einer bestimmten Zeitspanne einzugrenzen</p>
+
+    <p>Wenn Sie <strong>mehrere Filter</strong> anklicken, bildet sich aus diesen eine <strong>Schnittmenge</strong>.
+        Filter können jederzeit im oberen Teil der Spalte anhand des Löschsymbols wieder einzeln entfernt werden.</p>
+</div>
+<p>Bei gewissen Titeln erscheint ein Link zu Weitere Ausgaben und Formaten. Dieser bietet Ihnen eine Liste von Titeln,
+    die <strong>Ähnlichkeiten</strong> mit dem angeklickten Dokument aufweisen, sei es z.B., weil es sich um
+    verschiedene Auflagen eines Werkes handelt oder weil ein Dokument in mehreren Formaten zugänglich ist (Druckschrift,
+    elektronische Ressource, Film, Ton etc.). Dies ist dann hilfreich, wenn zum Beispiel die gewünschte Ausgabe in Ihrer
+    Bibliothek nicht vorhanden oder bereits ausgeliehen ist.</p>
+<div class="example"><strong>Achtung:</strong> Unter den weiteren Ausgaben und Formaten können sich Dokumente befinden,
+    die mit dem ausgewählten Titel eigentlich identisch sind. Das Zusammenführen von identischen Titeln funktioniert in
+    einigen Fällen noch nicht zufriedenstellend, vor allem bei Zeitschriften: <a
+        href="http://www.swissbib.ch/TouchPoint/start.do?Language=de&Query=9860=%22058834664%22" target="_blank">Beispiel
+        hier in neuem Fenster.</a></div><br/>&nbsp;
+
+<table>
+    <tbody>
+    <tr>
+        <td><em><strong>Beispiel</strong>: <br/> Suche nach &raquo;Biochemistry&laquo;, dann Eingrenzung der
+                Trefferliste anhand der Suchfilter Format (&raquo;Tagungsband&laquo;), Jahr (seit 2005) und inhaltliches
+                Thema (&raquo;Immunology&laquo;).</em></td>
+        <td><em><strong>Beispiel</strong>: <br/>Suche nach 'Frisch' in der einfachen Suche. Der Autor-Filter erlaubt
+                Ihnen, alle von Max Frisch geschriebenen Titel anzuzeigen. Der Inhalt-Filter (Person) ergibt eine
+                Trefferliste von Dokumenten über Max Frisch.</em></td>
+    </tr>
+    <tr>
+        <td><a class="help"
+               href="<?= $this->basePath('themes/swissbibsingle/images/Help/de/big/filter_selected.png') ?>"
+               title="Suche nach Biochemistry und Einschränkung nach Format, Jahr und Inhalt."><img
+                    style="max-width:340px" class="magnify"
+                    src="<?= $this->basePath('themes/swissbibsingle/images/Help/de/filter_selected.png') ?>"
+                    alt="Suche nach Biochemistry und Einschränkung nach Format, Jahr und Inhalt."/></a></td>
+        <td><a class="help"
+               href="<?= $this->basePath('themes/swissbibsingle/images/Help/de/big/filter_autor-person.png') ?>"
+               title="Zeigt den Unterschied zwischen den Filtern Autor und Inhalt:Person."><img style="max-width:340px"
+                                                                                                class="magnify"
+                                                                                                src="<?= $this->basePath('themes/swissbibsingle/images/Help/de/filter_autor-person.png') ?>"
+                                                                                                alt="Zeigt den Unterschied zwischen den Filtern Autor und Inhalt:Person."/></a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<h2><a name="output"></a>Suchen und Treffer speichern</h2>
+
+<div class="floatbox">
+    <img class="image"
+         src="<?= $this->basePath('themes/swissbibsingle/images/Help/de/pageactions_save-send-print.png') ?>"
+         alt="Seitenfunktion: Suchen-Speichern-Drucken"/>
+
+    <p>Auf der Trefferliste, der Vollanzeige und der Merkliste finden Sie in der oberen rechten Ecke eine
+        Funktionsleiste, dort können Sie Ihre Ergebnisse lokal oder bei Online-Diensten <strong>speichern</strong> sowie
+        <strong>per Mail weiterleiten</strong> oder <strong>ausdrucken</strong>.</p>
+
+    <p>Wir empfehlen Ihnen, wenn immer möglich die Druck-Funktion von swissbib anstatt jene Ihres Browsers zu verwenden.<br/>&nbsp;
+    </p>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>Icon</th>
+        <th>Beschreibung</th>
+        <th>Anzeige</th>
+        <th>Funktionalität</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><img src="<?= $this->basePath('themes/swissbib/images/icon_pagefunctions_rss.gif') ?>" alt="RSS"/></td>
+        <td>RSS Feed</td>
+        <td>Trefferliste</td>
+        <td>Liefert neue Resultate für die von Ihnen durchgeführte Suche, sobald neue passende Dokumente zu swissbib
+            hinzukommen
+        </td>
+    </tr>
+    <tr>
+        <th rowspan="2"><img src="<?= $this->basePath('themes/swissbib/images/icon_pagefunctions_perma.gif') ?>"
+                             alt="Permalink"/></th>
+        <td rowspan="2">Speichen Sie eine stabile URL</td>
+        <td>Trefferliste</td>
+        <td>Hier speichern Sie Ihre Suche zur späteren Ausführung</td>
+    </tr>
+    <tr>
+        <td>Einzeltrefferanzeige</td>
+        <td>Hier speichern Sie den jeweiligen Einzeltreffer</td>
+    </tr>
+    <tr>
+        <th><img src="<?= $this->basePath('themes/swissbib/images/icon_pagefunctions_print.gif') ?>" alt="Drucken"/>
+        </th>
+        <td>Drucken</td>
+        <td>Trefferliste<br/>Merkliste<br/>Einzeltreffer</td>
+        <td>Drucken Sie die bibliographischen Angaben</td>
+    </tr>
+    <tr>
+        <th><img src="<?= $this->basePath('themes/swissbib/images/icon_pagefunctions_send.gif') ?>" alt="Senden"/></th>
+        <td>Senden</td>
+        <td>Trefferliste<br/>Merkliste<br/>Einzeltreffer</td>
+        <td>Senden Sie die bibliographischen Angaben</td>
+    </tr>
+    <tr>
+        <th><img src="<?= $this->basePath('themes/swissbib/images/icon_pagefunctions_save.gif') ?>" alt="Speichern"/>
+        </th>
+        <td>Speichern</td>
+        <td>Trefferliste<br/>Merkliste<br/>Einzeltreffer</td>
+        <td>Speichern Sie die bibliographischen Angaben</td>
+    </tr>
+    </tbody>
+</table>
+
+<h2><a name="fullview"></a>Vollanzeige</h2>
+
+<div class="floatbox">
+    <a href="<?= $this->basePath('themes/swissbibsingle/images/Help/de/big/fullview_bigger-area.png') ?>"
+       class="help"><img class="image magnify"
+                         src="<?= $this->basePath('themes/swissbibsingle/images/Help/de/fullview_area.png') ?>"
+                         alt="Vollanzeige"/></a>
+
+    <p>Das Klicken auf den gewünschten Titel führt Sie zur Vollanzeige, wo die <strong>bibliographischen
+            Angaben</strong> sichtbar sind. Zudem finden Sie hier Links zu verknüpften <strong>elektronischen
+            Ressourcen</strong> (Abstract, Inhaltsverzeichnis, Onlinezugriffe etc.), allerdings ohne Bezug auf Ihre
+        tatsächlichen Zugriffsrechte.</p>
+</div>
+
+<p>Im unteren Bereich der Vollanzeige sehen Sie Registerkarten mit folgenden Optionen:</p>
+<ul class="list">
+    <li>Informationen zu den besitzenden <em>Bibliotheken</em> sowie dem Standort und der Verfügbarkeit des Dokuments
+    </li>
+    <li>Weitere <em>Details</em> zum angezeigten Titel</li>
+    <li><em>Reviews</em> (Rezensionen) schreiben und veröffentlichen (nur nach Anmeldung)</li>
+    <li>Eigene <em>Tags</em> (Schlagwörter) vergeben (nur nach Anmeldung)</li>
+    <li>Anzeige der Katalogaufnahme mit Angaben der verschiedenen <em>Felder</em> (für Bibliothekare)</li>
+</ul>
+
+<div class="floatbox">
+    <a href="<?= $this->basePath('themes/swissbibsingle/images/Help/de/big/fullview_bigger-area.png') ?>"
+       class="help"><img class="image magnify"
+                         src="<?= $this->basePath('themes/swissbibsingle/images/Help/de/fullview_hierarchy.png') ?>"
+                         alt="Vollanzeige"/></a>
+
+    <p>Bei Bänden von Reihen oder mehrbändigen Werken können Sie im linken Bereich der Vollanzeige auf die Aufnahme des
+        <em>übergeordneten Titels</em> oder der einzelnen Bände zugreifen.</p>
+</div>
+
+<h2><a name="lists"></a>Literaturverwaltung und Merklisten</h2>
+
+<p>Für die Sammlung von Trefferlisten bzw. einzelnen Titeln und die Verwaltung einer personalisierten Bibliographie
+    können Sie in swissbib Listen und Einzeltreffer direkt in die Literaturverwaltungsprogramme <a
+        href="http://www.zotero.org/" target="_blank">Zotero</a> oder <a href="http://www.citavi.com/" target="_blank">Citavi</a>
+    importieren.</p>
+
+<p>Alternativ können Sie durch Anklicken des Listensymbols <img
+        src="<?= $this->basePath('themes/swissbibsingle/images/icon_notepad_add.gif') ?>" alt="Favorit hinzufügen"/>
+    gewählte Titel in einer Merkliste sichern. Nach Anmeldung in swissbib ist es möglich, mehr als eine <strong>Merkliste</strong>
+    zu erstellen, diese auch zu benennen und dauerhaft zu speichern.</p>
+
+<p>Bitte benutzen Sie den „Back Button“ Ihres Internet-Browsers, um von der Merkliste zur Trefferliste
+    zurückzukommen.</p>
+
+<div class="example"><em><strong>Beispiel</strong>: <br/>Unter </em>My swissbib<em> wurde eine personalisierte Merkliste
+        mit dem Namen „Ferrovia CH“ angelegt und gespeichert. Nach einer einfachen Suche nach den Begriffen 'ferrovia
+        svizzera' werden drei Treffer in die Merkliste aufgenommen. Diese kann jederzeit angezeigt und weiter bearbeitet
+        werden.</em></div>
+<table>
+    <tbody>
+    <tr>
+        <td><a href="<?= $this->basePath('themes/swissbibsingle/images/Help/de/big/list_01.png') ?>" rel="help-3"
+               title="Eine neue Merkliste wird erstellt"><img class="magnify"
+                                                              src="<?= $this->basePath('themes/swissbibsingle/images/Help/de/list-create.png') ?>"
+                                                              alt="Eine neue Merkliste wird erstellt"/></a></td>
+        <td><a href="<?= $this->basePath('themes/swissbibsingle/images/Help/de/big/list_02.png') ?>" rel="help-3"
+               title="Auf der Trefferliste oder der Vollanzeige können Treffer für die Merkliste ausgewählt werden"><img
+                    class="magnify" src="<?= $this->basePath('themes/swissbibsingle/images/Help/de/list-select.png') ?>"
+                    alt="Auf der Trefferliste oder der Vollanzeige können Treffer für die Merkliste ausgewählt werden"/></a>
+        </td>
+    </tr>
+    <tr>
+        <td><a href="<?= $this->basePath('themes/swissbibsingle/images/Help/de/big/list_03.png') ?>" rel="help-3"
+               title="Die gängigsten Wege zur Merkliste."><img class="magnify"
+                                                               src="<?= $this->basePath('themes/swissbibsingle/images/Help/de/list-to-list.png') ?>"
+                                                               alt="Die gängigsten Wege zur Merkliste"/></a></td>
+        <td><a href="<?= $this->basePath('themes/swissbibsingle/images/Help/de/big/list_04.png') ?>" rel="help-3"
+               title="Ein Ausschnitt aus der Merkliste 'Ferrovia CH'."><img class="magnify"
+                                                                            src="<?= $this->basePath('themes/swissbibsingle/images/Help/de/list-mylist.png') ?>"
+                                                                            alt="Ein Ausschnitt aus der Merkliste 'Ferrovia CH'"/></a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<h2><a name="favs"></a>Favoriten – wie und wozu?</h2>
+
+<p>In swissbib sind die Bestände von über 700 Bibliotheken zusammengefasst. Ab der ersten Suche auf der Startseite
+    besteht die Möglichkeit, Ihre Suche auf einen bestimmten Bibliotheksverbund einzugrenzen.</p>
+<p>Möchten Sie nur in bestimmten Bibliotheken suchen (Bsp. geographisch nahe Institutionen oder spezialisierte
+    Fachbibliotheken), können Sie in jeder Titel-Vollanzeige <strong>Favoriten-Bibliotheken</strong> selber definieren.
+    Hierfür klicken Sie auf das entsprechende <strong>Herzsymbol</strong> <img
+        src="<?= $this->basePath('themes/swissbib/images/icon_miniaction_favorite_add.gif') ?>" alt="add favourite"/> in
+    der Liste der besitzenden Bibliotheken. Durch die Anmeldung in swissbib kann diese Einstellung dauerhaft gespeichert
+    werden.</p>
+
+<h3>Was sind die Vorteile?</h3>
+<ul class="list">
+    <li>Sie können die Suchergebnisse nach Ihren Favoriten filtern.</li>
+    <li>In der Trefferliste werden die Werke, die in einer Ihrer Favoriten-Bibliotheken vorhanden sind, prominenter
+        platziert und hervorgehoben.
+    </li>
+    <li>In der Vollanzeige erscheinen Ihre Favoriten immer an erster Stelle egal aus welchem Verbund sie stammen.</li>
+</ul>
+
+
+<h2><a name="request"></a>Wie komme ich zum Dokument?<br/>Wie kann ich bestellen bzw. reservieren?</h2>
+
+<p>Sie haben ein Buch, eine Zeitschrift, einen Artikel, eine CD/DVD, Musiknoten, ein Bild, eine Datenbank o.ä. gefunden
+    und möchten jetzt wissen, wie Sie Zugang dazu erhalten.</p>
+<div class="floatbox">
+    <img class="image" src="<?= $this->basePath('themes/swissbibsingle/images/Help/de/to-the-library-tab.png') ?>"
+         alt="Zum Bibliothekstab springen"/>
+
+    <p>In der <strong>Trefferliste</strong> erhalten Sie bereits eine Auflistung derjenigen Bibliotheken, in denen der
+        gesuchte Titel vorhanden ist, indem Sie mit der Maus über das Fragezeichen rechts vom Titel fahren.</p>
+</div>
+
+
+<div class="floatbox">
+    <a href="<?= $this->basePath('themes/swissbibsingle/images/Help/de/big/library-tab-information.png') ?>"
+       class="help"><img class="image magnify"
+                         src="<?= $this->basePath('themes/swissbibsingle/images/Help/de/library-tab-information.png') ?>"
+                         alt="Der Tab Bibliotheken"/></a>
+
+    <p>Weitere relevante Informationen erhalten Sie in der <strong>Vollanzeige</strong> unter der Registerkarte
+        Bibliotheken.</p>
+
+    <p>Durch Klicken auf <img src="<?= $this->basePath('themes/swissbibsingle/images/Help/de/ex_info.png') ?>"
+                              alt="Informationen zum Bestand"/>, erfahren Sie an welchem Standort (Bsp. Freihandbereich,
+        Magazin) und unter welcher Signatur das Dokument zu finden ist, sowie ob es ausleihbar und momentan verfügbar
+        ist <img src="<?= $this->basePath('themes/swissbib/images/avail_ok.gif') ?>" alt="Available"/> (Ausleihstatus
+        und Bibliotheksinformation).</p>
+
+    <p>Mit dem Link <img src="<?= $this->basePath('themes/swissbibsingle/images/Help/de/ex_order.png') ?>"
+                         alt="zum Bestand"/> werden Sie zum Katalog der besitzenden Institution weitergeleitet, um dort
+        die Bestellung zu tätigen. Dafür müssen Sie sich im lokalen System identifizieren, unabhängig davon, ob Sie
+        schon in swissbib angemeldet sind oder nicht.</p>
+</div>
