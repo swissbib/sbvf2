@@ -24,6 +24,8 @@ AllFields:
     - ctrlnum^1000
     - institution^200             # sublibrary codes for librarians who know it
     - publishDate
+    - isbn
+    - issn
   DismaxParams:
     - [pf, 'title_short^1000']
     - [ps, '2']
