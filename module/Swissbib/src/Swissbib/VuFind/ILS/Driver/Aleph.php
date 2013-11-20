@@ -674,28 +674,4 @@ class Aleph extends VuFindDriver
         }
     }
 
-    /**
-     * Add values to an HTTP query string.
-     *
-     * @todo remove function from own module driver as soon as urlencoding of values is implemented in VuFind
-     *       see https://github.com/vufind-org/vufind/pull/51
-     *
-     * @param string $url    URL so far
-     * @param array  $params Parameters to add
-     *
-     * @return string
-     */
-    protected function appendQueryString($url, $params)
-    {
-        $sep = (strpos($url, "?") === false)?'?':'&';
-        if ($params != null) {
-            foreach ($params as $key => $value) {
-                $url.= $sep . $key . "=" . urlencode($value);
-                $sep = "&";
-            }
-        }
-        return $url;
-    }
-
-
 }

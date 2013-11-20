@@ -70,6 +70,7 @@ AllFields:
       - [or, ~]
 
 Author:
+  DismaxHandler: edismax
   DismaxFields:
     - author^100
     - author_additional^20
@@ -109,6 +110,7 @@ ISN:
       - [or, ~]
 
 Subject:
+  DismaxHandler: edismax
   DismaxFields:
     - topic^150
   QueryFields:
@@ -133,6 +135,7 @@ WLC:
     - localcode_txt_mv
 
 Title:
+  DismaxHandler: edismax
   DismaxFields:
     - title_short^1000            # main title, i.e. 245 $a
     - title_alt^200
@@ -166,6 +169,7 @@ Title:
       - [and , ~]
 
 Series:
+  DismaxHandler: edismax
   DismaxFields:
     - series^100
   QueryFields:
