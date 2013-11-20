@@ -6,38 +6,38 @@
     <tbody>
     <tr>
         <td><i>joyce ulysses</i></td>
-        <td>Both terms are present</td>
+        <td>Les deux termes sont utilisés</td>
     </tr>
       <tr>
         <td><i>joyce AND ulysses</i></td>
-        <td>Both terms are present in the same field</td>
+        <td>Les deux termes sont utilisés dans le même champs</td>
     </tr>  
     <tr>
         <td><i>joyce OR ulysses</i></td>
-        <td>One of the terms is present</td>
+        <td>Un seul des deux termes est utilisé</td>
     </tr>  
     <tr>
         <td><i>joyce NOT ulysses</i></td>
-        <td><i>joyce</i> is present, but not <i>ulysses</i> nicht</td>
+        <td><i>joyce</i> est utilisé, mais pas<i>ulysses</i></td>
     </tr>
     <tr>
-        <td>More complex searches</td>
-        <td>See <a href="<?=$this->url('help-page', array('topic' => 'Advanced'))?>">Help - Advanced search</a>.</td>
+        <td>Recherches plus complexes</td>
+        <td>Voir <a href="<?=$this->url('help-page', array('topic' => 'Advanced'))?>">Aide - Recherche avancée</a>.</td>
     </tr>
     </tbody>
 </table>
 
-<h3>Phrase search, using quotation marks</h3>
+<h3>Recherche avec guillemets</h3>
 
 <table>
     <tbody>
     <tr>
         <td><i>"street art"</i></td>
-        <td>The words must be adjacent.</td>
+        <td>Les deux mots doivent se placer directement l'un après l'autre.</td>
         </tr>
     <tr>
         <td><i>"street art"~5</i></td>
-        <td>Both terms must be present within 5 words.</td>
+        <td>Les deux mots doivent apparaître en l'espace de 5 mots.</td>
            </tr>
     <tr>
             <td><i>"978-386-56619-6-8"</i></td>
@@ -45,18 +45,18 @@
     </tr>
     <tr>
         <td><i>"PZB E 62 2:6"</i></td>
-        <td>Call numbers</td>
+        <td>Cote</td>
     </tr>
     </tbody>
 </table>
 
-<h3>Truncation</h3>
+<h3>Truncature</h3>
 
 <table>
     <tbody>
     <tr>
         <td rowspan="3">*</td>
-        <td rowspan="3">replaces any number of letters</td>
+        <td rowspan="3">remplace un nombre illimité de caractères</td>
         <td><i>cultur*</i></td>
         <td>culture, cultura, cultural, culturally etc.</td>
     </tr>
@@ -70,7 +70,7 @@
     </tr>
     <tr>
         <td rowspan="2">?</td>
-        <td rowspan="2">replaces exactly one letter</td>
+        <td rowspan="2">remplace exactement un caractère</td>
         <td><i>wom?n</i></td>
         <td>woman, women etc.</td>
     </tr>
@@ -80,22 +80,22 @@
     </tr>   
     <tr>
         <td>~</td>
-        <td>fuzzy search</td>
+        <td>si vous ignorez l'orthographe exacte</td>
        <td><i>Tschaikowski~</i></td>
         <td>Tschaikowski, Tchaïkovski, Čajkovskij etc.</td>
     </tr>
-        </tbody>
+    </tbody>
 </table>
 
  
 <h2>Liste des résultats</h2>
 <h3>Affiner la recherche</h3>
-<p>Utilisez les facettes dans la colonne a gauche de vos résultats ou bien la <i>Recherche avancée</i>.</p>
+<p>Utilisez les facettes proposées dans la colonne de gauche de vos résultats ou la <i>Recherche avancée</i>.</p>
 
-<h3>Répéter ou bien sauvegarder la recherche</h3>
+<h3>Répéter ou sauvegarder la recherche</h3>
 <ul class="list">
-                <li>Clicking on <i>Articles & more</i> will repeat your search in <a href="http://www.serialssolutions.com/en/services/summon/content" target="_blank">Summon</a>.</li> 
-                <li><a href="<?=$this->url('search-history')?>">My swissbib - Recherches sauvegadées</a></li> 
+                <li>Clic sur <i>Articles & plus</i> relance la recherche dans le catalogue de <a href="http://www.serialssolutions.com/en/services/summon/content" target="_blank">Summon</a>.</li> 
+                <li><a href="<?=$this->url('search-history')?>">My swissbib - Recherches sauvegardées</a></li> 
 </ul>         
         
 <h3>Feed notification about new titles that match your search</h3>
