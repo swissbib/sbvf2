@@ -1007,7 +1007,7 @@ class SolrMarc extends VuFindSolrMarc
         $institutions = array();
 
         if (isset($this->fields['institution']) && is_array($this->fields['institution'])) {
-            $institutions = array_map('strtolower', $this->fields['institution']);
+            $institutions = $this->fields['institution'];
         }
 
         return $institutions;
