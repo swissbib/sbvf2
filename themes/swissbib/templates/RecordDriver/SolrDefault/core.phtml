@@ -17,7 +17,8 @@ $titleStatement       = $record->getTitleStatement(true);
 $shortTitle           = $record->getShortTitle();
 $parts_name           = is_array($titleStatement['parts_name']) ? implode('. ', $titleStatement['parts_name']) : $titleStatement['parts_name'];
 $subtitle             = $titleStatement['title_remainder'] ? $titleStatement['title_remainder'] : $parts_name;
-$secondaryAuthors     = $record->getSecondaryAuthors(true);
+$responsible          = isset($titleStatement['statement_responsibility']) ? $titleStatement['statement_responsibility'] : $record->getPrimaryAuthor(true);
+$responsible          = isset($responsible) && !empty($responsible) ? $responsible : implode('; ', $record->getSecondaryAuthors(true));
 $publishers           = $record->getPublishers(true);
 $physicalDescriptions = $record->getPhysicalDescriptions(false);
 $edition              = $record->getEdition();
@@ -106,15 +107,9 @@ $highlightedFulltext = $record->getHighlightedFulltext();
     <!-- details -->
     <div class="details">
 
-        <?php if (isset($titleStatement['statement_responsibility']) || $secondaryAuthors): ?>
+        <?php if ($responsible): ?>
             <h4><?= $this->transEsc('Author') ?>:</h4>
-            <?php if (isset($titleStatement['statement_responsibility'])): ?>
-                <p><?= $this->escapeHtml($titleStatement['statement_responsibility']) ?></p>
-            <?php else: ?>
-                <p>
-                    <?= $this->escapeHtml(implode('; ', $secondaryAuthors)) ?>
-                </p>
-            <?php endif; ?>
+                <p><?=$this->escapeHtml($responsible)?></p>
         <?php endif; ?>
 
         <? if ($hostitems): ?>
