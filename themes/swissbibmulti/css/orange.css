@@ -34,14 +34,14 @@
 
 /* default */
 #logo a {
-	background-image:url('img/logo_swissbib_beta-bern_basel.png');
-	background-position: 0 0;
+	background-image:url('img/logo_swissbib_bern-basel.gif');
+	background-position: 15px 15px;
 }
 
 /* home */
 .template_home #logo a {
-	background-image:url('img/logo_swissbib_beta-bern_basel_home.png');
-	background-position: 0 0;
+	background-image:url('img/logo_swissbib_bern-basel_home.gif');
+	background-position: 30px 75px;
 
 }
 
