@@ -8,21 +8,22 @@
         <td><i>joyce ulysses</i></td>
         <td>Beide Begriffe kommen vor</td>
     </tr>
-      <tr>
+    <tr>
         <td><i>joyce AND ulysses</i></td>
         <td>Beide Begriffe kommen im selben Feld vor</td>
-    </tr>  
+    </tr>
     <tr>
         <td><i>joyce OR ulysses</i></td>
         <td>Einer der beiden Begriffe kommt vor</td>
-    </tr>  
+    </tr>
     <tr>
         <td><i>joyce NOT ulysses</i></td>
         <td><i>joyce</i> kommt vor, nicht aber <i>ulysses</i></td>
     </tr>
     <tr>
         <td>Komplexere Kombinationen</td>
-        <td>Siehe <a href="<?=$this->url('help-page', array('topic' => 'Advanced'))?>">Hilfe - Erweiterte Suche</a>.</td>
+        <td>Siehe <a href="<?= $this->url('help-page', array('topic' => 'Advanced')) ?>">Hilfe - Erweiterte Suche</a>.
+        </td>
     </tr>
     </tbody>
 </table>
@@ -65,8 +66,8 @@
         <td><i>Fr*ib*urg</i></td>
         <td>Fribourg, Freiburg etc.</td>
     </tr>
-        <tr>
-        <td> </td>
+    <tr>
+        <td></td>
         <td>Auch für <i>Artikel & mehr</i></td>
     </tr>
 
@@ -76,7 +77,7 @@
         <td><i>wom?n</i></td>
         <td>woman, women etc.</td>
     </tr>
-      <tr>
+    <tr>
         <td><i>Lind??ist</i></td>
         <td>Lindquist, Lindkvist, Lindqvist ecc.</td>
     </tr>
@@ -86,7 +87,7 @@
         <td><i>Tschaikowski~</i></td>
         <td>Tschaikowski, Tchaïkovski, Čajkovskij etc.</td>
     </tr>
-      </tbody>
+    </tbody>
 </table>
 
 
@@ -95,13 +96,16 @@
 <p>Benutzen Sie die Facetten in der linken Spalte Ihrer Trefferliste oder die <i>Erweiterte Suche</i>.</p>
 
 <h3>Suche wiederholen oder speichern</h3>
-       <ul class="list">
-    <li>Klick auf <i>Artikel &amp; mehr</i> führt Ihre Suche im Bestand von <a href="http://www.serialssolutions.com/en/services/summon/content" target="_blank">Summon</a> aus.</li>
-	<li><a href="<?=$this->url('search-history')?>">My swissbib - Gespeicherte Suchen</a></li>
-	  </ul>
+<ul class="list">
+    <li>Klick auf <i>Artikel &amp; mehr</i> führt Ihre Suche im Bestand von <a
+            href="http://www.serialssolutions.com/en/services/summon/content" target="_blank">Summon</a> aus.
+    </li>
+    <li><a href="<?= $this->url('search-history') ?>">My swissbib - Gespeicherte Suchen</a></li>
+</ul>
 
 <h3>Neue Einträge zu Ihrer Suche per Feed gemeldet bekommen</h3>
-<p><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_pagefunctions_rss.gif') ?>" alt="Neue Einträge zu dieser Suche per Feed gemeldet bekommen"> Feed abonnieren</p>       
+<p><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_pagefunctions_rss.gif') ?>"
+        alt="Neue Einträge zu dieser Suche per Feed gemeldet bekommen"> Feed abonnieren</p>
 
 <h2>Link zum Volltext</h2>
 <h3>Bücher &amp; mehr</h3>
@@ -109,6 +113,10 @@
 
 <h3>Artikel &amp; mehr</h3>
 <ul class="list">
-   	<li><img src="<?= $this->basePath('themes/swissbibmulti/images/HelpPage/getit.png') ?>" alt="Link zum  Volltext"> = Link zum Volltext</li>
-	<li><img src="<?= $this->basePath('themes/swissbib/images/sfx.gif') ?>" alt="Link zu SFX Services"> = Link zum Volltext, Artikelbestellung, Bestandesnachweis Schweiz</li>
-  </ul>
+    <li><img src="<?= $this->basePath('themes/swissbibmulti/images/HelpPage/getit.png') ?>" alt="Link zum  Volltext"> =
+        Link zum Volltext
+    </li>
+    <li><img src="<?= $this->basePath('themes/swissbib/images/sfx.gif') ?>" alt="Link zu SFX Services"> = Link zum
+        Volltext, Artikelbestellung, Bestandesnachweis Schweiz
+    </li>
+</ul>
