@@ -40,12 +40,12 @@ function deparam(url) {
 }
 
 function moreFacets(id) {
-  $('.narrowGroupHidden_'+id).removeClass('hidden');
-  $('#more'+id).addClass('hidden');
+  $('.'+id).removeClass('hidden');
+  $('#more-'+id).addClass('hidden');
 }
 function lessFacets(id) {
-  $('.narrowGroupHidden_'+id).addClass('hidden');
-  $('#more'+id).removeClass('hidden');
+  $('.'+id).addClass('hidden');
+  $('#more-'+id).removeClass('hidden');
 }
 
 // Advanced facets
@@ -100,21 +100,29 @@ $(document).ready(function() {
     });
 
   // Search autocomplete
+  var autoCompleteRequest, autoCompleteTimer;
   $('.autocomplete').typeahead({
+    minLength:3,
     source:function(query, process) {
-      var searcher = extractClassParams($('.autocomplete').attr('class'));
-      $.ajax({
-        url: path + '/AJAX/JSON',
-        data: {method:'getACSuggestions',type:$('#searchForm_type').val(),searcher:searcher['searcher'],q:query},
-        dataType:'json',
-        success: function(json) {
-          if (json.status == 'OK' && json.data.length > 0) {
-            process(json.data);
-          } else {
-            process([]);
+      clearTimeout(autoCompleteTimer);
+      if(autoCompleteRequest) {
+        autoCompleteRequest.abort();
+      }
+      var searcher = extractClassParams('.autocomplete');
+      autoCompleteTimer = setTimeout(function() {
+        autoCompleteRequest = $.ajax({
+          url: path + '/AJAX/JSON',
+          data: {method:'getACSuggestions',type:$('#searchForm_type').val(),searcher:searcher['searcher'],q:query},
+          dataType:'json',
+          success: function(json) {
+            if (json.status == 'OK' && json.data.length > 0) {
+              process(json.data);
+            } else {
+              process([]);
+            }
           }
-        }
-      });
+        });
+      }, 600); // Delay request submission
     }
   });
 
@@ -140,6 +148,9 @@ $(document).ready(function() {
     $("link[media='print']").attr("media", "all");
     window.print();
   }
+    
+  // Collapsing facets
+  $('.sidebar .nav-header').click(function(){$(this).parent().toggleClass('open');});
   
   // Advanced facets
   setupOrFacets();

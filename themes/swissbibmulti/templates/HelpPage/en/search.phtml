@@ -8,21 +8,21 @@
         <td><i>joyce ulysses</i></td>
         <td>Both terms are present</td>
     </tr>
-      <tr>
+    <tr>
         <td><i>joyce AND ulysses</i></td>
         <td>Both terms are present in the same field</td>
-    </tr>  
+    </tr>
     <tr>
         <td><i>joyce OR ulysses</i></td>
         <td>One of the terms is present</td>
-    </tr>  
+    </tr>
     <tr>
         <td><i>joyce NOT ulysses</i></td>
-        <td><i>joyce</i> is present, but not <i>ulysses</i> nicht</td>
+        <td><i>joyce</i> is present, but not <i>ulysses</i></td>
     </tr>
     <tr>
         <td>More complex searches</td>
-        <td>See <a href="<?=$this->url('help-page', array('topic' => 'Advanced'))?>">Help - Advanced search</a>.</td>
+        <td>See <a href="<?= $this->url('help-page', array('topic' => 'Advanced')) ?>">Help - Advanced search</a>.</td>
     </tr>
     </tbody>
 </table>
@@ -34,12 +34,12 @@
     <tr>
         <td><i>"street art"</i></td>
         <td>The words must be adjacent.</td>
-        </tr>
-    
+    </tr>
+
     <tr>
         <td><i>"street art"~5</i></td>
         <td>Both terms must be present within 5 words.</td>
-           </tr>
+    </tr>
     <tr>
         <td><i>"978-386-56619-6-8"</i></td>
         <td>ISBN, ISSN etc.</td>
@@ -48,7 +48,7 @@
         <td><i>"PZB E 62 2:6"</i></td>
         <td>Call numbers</td>
     </tr>
-    
+
     </tbody>
 </table>
 
@@ -66,8 +66,8 @@
         <td><i>Fr*ib*urg</i></td>
         <td>Fribourg, Freiburg etc.</td>
     </tr>
-     <tr>
-        <td> </td>
+    <tr>
+        <td></td>
         <td>Also for <i>Articles & more</i></td>
     </tr>
     <tr>
@@ -76,7 +76,7 @@
         <td><i>wom?n</i></td>
         <td>woman, women etc.</td>
     </tr>
-      <tr>
+    <tr>
         <td><i>Lind??ist</i></td>
         <td>Lindquist, Lindkvist, Lindqvist ecc.</td>
     </tr>
@@ -84,9 +84,9 @@
         <td>~</td>
         <td>fuzzy search</td>
         <td><i>Tschaikowski~</i></td>
-        <td>Tschaikowski, Tchaïkovski, Čajkovskij etc.</td> 
-        </tr>
-          </tbody>
+        <td>Tschaikowski, Tchaïkovski, Čajkovskij etc.</td>
+    </tr>
+    </tbody>
 </table>
 
 <h2>Results</h2>
@@ -96,17 +96,22 @@
 
 <h3>Repeat or save search</h3>
 <ul class="list">
-             <li>Clicking on <i>Articles & more</i> will repeat your search in <a href="http://www.serialssolutions.com/en/services/summon/content" target="_blank">Summon</a>.</li> 
-                <li><a href="<?=$this->url('search-history')?>">My swissbib - Saved searches</a></li> 
-</ul>         
-        
+    <li>Clicking on <i>Articles & more</i> will repeat your search in <a
+            href="http://www.serialssolutions.com/en/services/summon/content" target="_blank">Summon</a>.
+    </li>
+    <li><a href="<?= $this->url('search-history') ?>">My swissbib - Saved searches</a></li>
+</ul>
+
 <h3>Feed notification about new titles that match your search</h3>
-<p><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_pagefunctions_rss.gif') ?>" alt="get feed of new items matching this search"> Subscribe to feed</p>       
-         
+<p><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_pagefunctions_rss.gif') ?>"
+        alt="get feed of new items matching this search"> Subscribe to feed</p>
+
 <h3>Articles &amp; more</h3>
 <ul class="list">
-      	<li><i>get it</i> = link to full text</li>
-	<li><img src="<?= $this->basePath('themes/swissbib/images/sfx.gif') ?>" alt="SFX Services"> = link to full text and/or other sfx services</li>
+    <li><i>get it</i> = link to full text</li>
+    <li><img src="<?= $this->basePath('themes/swissbib/images/sfx.gif') ?>" alt="SFX Services"> = link to full text
+        and/or other sfx services
+    </li>
 </ul>         
          
       

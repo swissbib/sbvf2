@@ -64,6 +64,7 @@ class QueryBuilder extends VFBuilder {
         }, $this->disMaxSearchFields );
         //this search field isn't defined in searchspec
         $this->disMaxSearchFields[] = "hierarchy_parent_id";
+        $this->disMaxSearchFields[] = "id";
 
 
 
@@ -91,12 +92,9 @@ class QueryBuilder extends VFBuilder {
 
         }
 
-        if (preg_match('/:/', $input)) {
-            $alreadyPrepared = $input;
-        }
-
-        $alreadyPrepared = str_replace('-', ' ', $alreadyPrepared);
-
+        //$alreadyPrepared = str_replace('-', ' ', $alreadyPrepared);
+        //$alreadyPrepared = str_replace(array("-","="), ' ', $alreadyPrepared);
+        $alreadyPrepared = str_replace(array("="), ' ', $alreadyPrepared);
         return $alreadyPrepared;
 
     }

@@ -337,17 +337,17 @@ class Holdings
 	 */
 	protected function initNetworks()
 	{
-		$networkNames = array('aleph', 'virtua');
+		$networkNames = array('Aleph', 'Virtua');
 
 		foreach ($networkNames as $networkName) {
-			$configName = ucfirst(strtolower($networkName)) . 'Networks';
+			$configName = ucfirst($networkName) . 'Networks';
 
 			/** @var Config $networkConfigs */
 			$networkConfigs = $this->configHoldings->get($configName);
 
 			foreach ($networkConfigs as $networkCode => $networkConfig) {
 				list($domain, $library) = explode(',', $networkConfig, 2);
-				$networkCode	= strtolower($networkCode);
+				$networkCode	= strtoupper($networkCode);
 
 				$this->networks[$networkCode] = array(
 					'domain'  => $domain,
@@ -419,8 +419,6 @@ class Holdings
 	 */
 	protected function isRestfulNetwork($networkCode)
 	{
-		$networkCode = strtolower($networkCode);
-
 		return isset($this->configHoldings->Restful->{$networkCode});
 	}
 
@@ -480,7 +478,7 @@ class Holdings
 		}
 
 		if (!isset($extendingOptions['institutionUrl']) || $extendingOptions['institutionUrl']) {
-			$bibInfoLink = $this->getBibInfoLink(strtolower($item['institution']));
+			$bibInfoLink = $this->getBibInfoLink($item['institution']);
 			$item['institutionUrl'] = $bibInfoLink['url'];
 		}
 
@@ -498,7 +496,7 @@ class Holdings
 	 */
 	protected function extendItemIlsActions(array $item, SolrMarc $recordDriver = null, array $extendingOptions = array())
 	{
-		$networkCode	= isset($item['network']) ? strtolower($item['network']) : '';
+		$networkCode	= isset($item['network']) ? $item['network'] : '';
 
 			// Only add links for supported networks
 		if ($this->isAlephNetwork($networkCode)) {
@@ -571,7 +569,7 @@ class Holdings
 			$holding['backlink'] = $this->getBackLink($holding['network'], strtoupper($holding['institution']), $holding);
 //		}
 
-		$bibInfoLink = $this->getBibInfoLink(strtolower($holding['institution']));
+		$bibInfoLink = $this->getBibInfoLink($holding['institution']);
 		$holding['institutionUrl'] = $bibInfoLink['url'];
 
 		return $holding;
@@ -658,6 +656,7 @@ class Holdings
 
 			// Has informations with translation?
 		if (isset($item['location_code']) && isset($item['institution_chb']) && isset($item['network'])) {
+            // @todo keep strtolower or fix in tab40.sync
 			$labelKey	= strtolower($item['institution_chb'] . '_' . $item['location_code']);
 			$textDomain	= 'location-' . strtolower($item['network']);
 			$translated	= $this->translator->translate($labelKey, $textDomain);
@@ -787,9 +786,9 @@ class Holdings
 	 */
 	protected function isAlephNetwork($network)
 	{
-		$network	= strtolower($network);
+		//$network	= strtolower($network);
 
-		return isset($this->networks[$network]) ? $this->networks[$network]['type'] === 'aleph' : false;
+		return isset($this->networks[$network]) ? $this->networks[$network]['type'] === 'Aleph' : false;
 	}
 
 
@@ -1128,12 +1127,12 @@ class Holdings
 	{
 		$data            = array();
 		$fields          = $this->holdings ? $this->holdings->getFields($fieldName) : false;
-		$institutionCode = strtolower($institutionCode);
+		$institutionCode = $institutionCode;
 
 		if (is_array($fields)) {
 			foreach ($fields as $index => $field) {
 				$item        = $this->extractFieldData($field, $mapping);
-				$institution = strtolower($item['institution_chb']);
+				$institution = $item['institution_chb'];
 
 				if ($institution === $institutionCode) {
 					$data[] = $item;
@@ -1164,8 +1163,8 @@ class Holdings
 		if (is_array($fields)) {
 			foreach ($fields as $index => $field) {
 				$item        = $this->extractFieldData($field, $mapping);
-				$networkCode = strtolower($item['network']);
-				$institution = strtolower($item['institution_chb']);
+				$networkCode = $item['network'];
+				$institution = $item['institution_chb'];
 				$groupCode   = $this->getGroup($institution);
 
 					// Prevent display of untranslated and ungrouped institutions
@@ -1180,7 +1179,7 @@ class Holdings
 				// Make sure group is present
 				if (!isset($data[$groupCode])) {
 					$data[$groupCode] = array(
-						'label'        => strtolower($groupCode),
+						'label'        => $groupCode,
 						'networkCode'  => $networkCode,
 						'institutions' => array()
 					);
@@ -1189,7 +1188,7 @@ class Holdings
 				// Make sure institution is present
 				if (!isset($data[$groupCode]['institutions'][$institution])) {
 					$data[$groupCode]['institutions'][$institution] = array(
-						'label' 		=> strtolower($institution),
+						'label' 		=> $institution,
 						'bibinfolink'	=> $this->getBibInfoLink($institution)
 					);
 				}

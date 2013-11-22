@@ -5,6 +5,7 @@
 # These searches use Dismax when possible:
 
 AllFields:
+  DismaxHandler: edismax
   DismaxFields:
     - title_short^1000            # main title, i.e. 245 $a
     - title_alt^200
@@ -23,6 +24,9 @@ AllFields:
     - ctrlnum^1000
     - institution^200             # sublibrary codes for librarians who know it
     - publishDate
+    - isbn
+    - issn
+    - id
   DismaxParams:
     - [pf, 'title_short^1000']
     - [ps, '2']
@@ -67,6 +71,7 @@ AllFields:
       - [or, ~]
 
 Author:
+  DismaxHandler: edismax
   DismaxFields:
     - author^100
     - author_additional^20
@@ -106,19 +111,23 @@ ISN:
       - [or, ~]
 
 Subject:
+  DismaxHandler: edismax
   DismaxFields:
     - topic^150
   QueryFields:
     topic:
       - [onephrase, 350]
+  DismaxParams:
+    - [bf, 'recip(abs(ms(NOW/DAY,freshness)),3.16e-10,100,100)']
 
 JournalTitle:
   DismaxFields:
     - journals
   QueryFields:
     journals:
-      - [onephrase, 100]
-
+    - [onephrase, 100]
+  DismaxParams:
+    - [bf, 'recip(abs(ms(NOW/DAY,freshness)),3.16e-10,100,100)']
 
 FRBR:
   QueryFields:
@@ -130,6 +139,7 @@ WLC:
     - localcode_txt_mv
 
 Title:
+  DismaxHandler: edismax
   DismaxFields:
     - title_short^1000            # main title, i.e. 245 $a
     - title_alt^200
@@ -161,8 +171,11 @@ Title:
     journals:
       - [onephrase, 50]
       - [and , ~]
+  DismaxParams:
+    - [bf, 'recip(abs(ms(NOW/DAY,freshness)),3.16e-10,100,100)']
 
 Series:
+  DismaxHandler: edismax
   DismaxFields:
     - series^100
   QueryFields:
@@ -170,6 +183,8 @@ Series:
       - [onephrase, 500]
       - [and, 200]
       - [or, 100]
+  DismaxParams:
+    - [bf, 'recip(abs(ms(NOW/DAY,freshness)),3.16e-10,100,100)']
 
 # These are advanced searches that never use Dismax:
 id:

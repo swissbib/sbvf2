@@ -8,21 +8,34 @@
         <td><i>joyce ulysses</i></td>
         <td>Les deux termes sont utilisés</td>
     </tr>
-      <tr>
+    <tr>
         <td><i>joyce AND ulysses</i></td>
         <td>Les deux termes sont utilisés dans le même champs</td>
+<<<<<<< HEAD
     </tr>  
     <tr>
         <td><i>joyce OR ulysses</i></td>
         <td>Un seul des deux termes est utilisé</td>
     </tr>  
+=======
+    </tr>
+    <tr>
+        <td><i>joyce OR ulysses</i></td>
+        <td>Un seul des deux termes est utilisé</td>
+    </tr>
+>>>>>>> upstream/development
     <tr>
         <td><i>joyce NOT ulysses</i></td>
         <td><i>joyce</i> est utilisé, mais pas<i>ulysses</i></td>
     </tr>
     <tr>
         <td>Recherches plus complexes</td>
+<<<<<<< HEAD
         <td>Voir <a href="<?=$this->url('help-page', array('topic' => 'Advanced'))?>">Aide - Recherche avancée</a>.</td>
+=======
+        <td>Voir <a href="<?= $this->url('help-page', array('topic' => 'Advanced')) ?>">Aide - Recherche avancée</a>.
+        </td>
+>>>>>>> upstream/development
     </tr>
     </tbody>
 </table>
@@ -34,13 +47,21 @@
     <tr>
         <td><i>"street art"</i></td>
         <td>Les deux mots doivent se placer directement l'un après l'autre.</td>
+<<<<<<< HEAD
         </tr>
     <tr>
         <td><i>"street art"~5</i></td>
         <td>Les deux mots doivent apparaître en l'espace de 5 mots.</td>
            </tr>
+=======
+    </tr>
     <tr>
-            <td><i>"978-386-56619-6-8"</i></td>
+        <td><i>"street art"~5</i></td>
+        <td>Les deux mots doivent apparaître en l'espace de 5 mots.</td>
+    </tr>
+>>>>>>> upstream/development
+    <tr>
+        <td><i>"978-386-56619-6-8"</i></td>
         <td>ISBN, ISSN etc.</td>
     </tr>
     <tr>
@@ -65,7 +86,7 @@
         <td>Fribourg, Freiburg etc.</td>
     </tr>
     <tr>
-        <td> </td>
+        <td></td>
         <td>Aussi pour <i>Articles & plus</i></td>
     </tr>
     <tr>
@@ -74,26 +95,31 @@
         <td><i>wom?n</i></td>
         <td>woman, women etc.</td>
     </tr>
-      <tr>
+    <tr>
         <td><i>Lind??ist</i></td>
         <td>Lindquist, Lindkvist, Lindqvist ecc.</td>
-    </tr>   
+    </tr>
     <tr>
         <td>~</td>
         <td>si vous ignorez l'orthographe exacte</td>
+<<<<<<< HEAD
        <td><i>Tschaikowski~</i></td>
+=======
+        <td><i>Tschaikowski~</i></td>
+>>>>>>> upstream/development
         <td>Tschaikowski, Tchaïkovski, Čajkovskij etc.</td>
     </tr>
     </tbody>
 </table>
 
- 
+
 <h2>Liste des résultats</h2>
 <h3>Affiner la recherche</h3>
 <p>Utilisez les facettes proposées dans la colonne de gauche de vos résultats ou la <i>Recherche avancée</i>.</p>
 
 <h3>Répéter ou sauvegarder la recherche</h3>
 <ul class="list">
+<<<<<<< HEAD
                 <li>Clic sur <i>Articles & plus</i> relance la recherche dans le catalogue de <a href="http://www.serialssolutions.com/en/services/summon/content" target="_blank">Summon</a>.</li> 
                 <li><a href="<?=$this->url('search-history')?>">My swissbib - Recherches sauvegardées</a></li> 
 </ul>         
@@ -101,8 +127,22 @@
 <h3>Feed notification about new titles that match your search</h3>
 <p><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_pagefunctions_rss.gif') ?>" alt="get feed of new items matching this search"> Subscribe to feed</p>       
          
+=======
+    <li>Clic sur <i>Articles & plus</i> relance la recherche dans le catalogue de <a
+            href="http://www.serialssolutions.com/en/services/summon/content" target="_blank">Summon</a>.
+    </li>
+    <li><a href="<?= $this->url('search-history') ?>">My swissbib - Recherches sauvegardées</a></li>
+</ul>
+
+<h3>Feed pour des nouveaux titres concernant votre recherche</h3>
+<p><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_pagefunctions_rss.gif') ?>"
+        alt="get feed of new items matching this search"> Subscribe to feed</p>
+
+>>>>>>> upstream/development
 <h3>Articles &amp; plus</h3>
 <ul class="list">
-      	<li><i>get it</i> = link to full text</li>
-	<li><img src="<?= $this->basePath('themes/swissbib/images/sfx.gif') ?>" alt="SFX Services"> = link to full text and/or other sfx services</li>
+    <li><i>get it</i> = link to full text</li>
+    <li><img src="<?= $this->basePath('themes/swissbib/images/sfx.gif') ?>" alt="SFX Services"> = link to full text
+        and/or other sfx services
+    </li>
 </ul>     
