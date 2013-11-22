@@ -21,7 +21,7 @@
 			//$isNonMissingRecord	= is_a($holding, 'VuFind\\RecordDriver\\SolrDefault') && !is_a($holding, 'VuFind\\RecordDriver\\Missing');
 			$safeId 		= preg_replace('/[^a-zA-Z0-9]/', '', $holding->getUniqueId());
 			$balanceInfo	= $ilsDetails['balance'] ? '<span class="balanceInfo">' . $this->transEsc('Due Date') . ': ' . $ilsDetails['balance'] . '</a>' : '';
-            $institution    = strtolower($ilsDetails['institution']);
+            $institution    = $ilsDetails['institution'];
             $position       = $ilsDetails['position'] === '1' ? '' : $ilsDetails['position'] -1;
         ?>
     <tr>
