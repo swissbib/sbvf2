@@ -399,11 +399,18 @@ class SolrMarc extends VuFindSolrMarc
             foreach ($localValues as $localValue) {
                 // what are tags and source code?
 
+                $ts = $localValue->getSubfield('B');
+                if (empty($ts)) continue;
+
                 $union = $localValue->getSubfield('B')->getData();
                 //limited to specific networks?
                 if (sizeof($localunions) > 0 && !in_array($union, $localunions)) {
                     continue;
                 }
+
+
+                $ts = $localValue->getSubfield('P');
+                if (empty($ts)) continue;
 
                 $tLocalTagInSubField = $localValue->getSubfield('P');
                 $tLocalTagValue = $tLocalTagInSubField->getData();
@@ -416,6 +423,10 @@ class SolrMarc extends VuFindSolrMarc
                 //any Indicator rules?
                 if (sizeof($indicators) > 0) {
                     for ($i = 0; $i <= 1; $i++) {
+
+                        $ts = $localValue->getSubfield('E');
+                        if (empty($ts)) continue 2;
+
                         $t = $localValue->getSubfield('E')->getData();
                         $indicator = substr($t, $i, 1);
                         if ($indicator !== $indicators[$i]) {
