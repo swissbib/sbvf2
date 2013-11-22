@@ -30,11 +30,14 @@ if( isset($staticItems[$active]) ) {
 	$staticItems[$active]['class'] = 'selected';
 }
 
+
 $locationItems	= array();
+$activeLocation	= !isset($staticItems[$active]) && isset($this->location) ? $this->location : '';
 
 $tlocationItems = $this->configAccess()->Site->library_locations;
 //explode on null value creates an one item array...
-$tlocationItems = !isset($tlocationItems) ? explode("##",$tlocationItems): array();
+//ok - use empty instead of isset (PHP loves the buggy keywords....)
+$tlocationItems = !empty($tlocationItems) ? explode("##",$tlocationItems): array();
 
 $locations = array();
 
@@ -44,6 +47,7 @@ foreach ($tlocationItems as $location) {
     $locations[$singleLocation[0]] =  $singleLocation[1];
 
 };
+
 
 
 $locationSubItems = array(
