@@ -71,13 +71,15 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 	 */
 	public function __construct(Config $config,ZendLogger $logger, Request $request )
 	{
-		$this->config = $config;
-        $this->logger	= $logger;
+		$this->config   = $config;
+        $this->logger   = $logger;
+        $trustedProxies = explode(',', $this->config->get('TrustedProxy')->get('loadbalancer'));
 
-			// Populate client info properties from request
+		// Populate client info properties from request
 		$RemoteAddress	= new RemoteAddress();
-        $RemoteAddress->setUseProxy(true); // @todo make this configurable
-		$ipAddress		= $RemoteAddress->getIpAddress();
+        $RemoteAddress->setUseProxy(true);
+        $RemoteAddress->setTrustedProxies($trustedProxies);
+        $ipAddress		= $RemoteAddress->getIpAddress();
 		$this->clientIp	= array(
 			'IPv4'	=> $ipAddress,			// i.e.: aaa.bbb.ccc.ddd - standard dotted format
 		);
@@ -87,11 +89,9 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 
         //todo: make it configurable in case you want logging of headers
 
-        foreach ($_SERVER as $key => $value) {
-
-            $this->logger->debug("_SERVER_KEY: " . " . $key => " . $value);
-
-        }
+        //foreach ($_SERVER as $key => $value) {
+        //    $this->logger->debug("_SERVER_KEY: " . " . $key => " . $value);
+        //}
 
         //foreach($request->getHeaders() as $header) {
 
