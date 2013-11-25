@@ -347,8 +347,6 @@ class Holdings
 
 			foreach ($networkConfigs as $networkCode => $networkConfig) {
 				list($domain, $library) = explode(',', $networkConfig, 2);
-				//$networkCode	= strtoupper($networkCode);
-                $networkCode	= strtolower($networkCode);
 
 				$this->networks[$networkCode] = array(
 					'domain'  => $domain,
@@ -787,8 +785,6 @@ class Holdings
 	 */
 	protected function isAlephNetwork($network)
 	{
-		//$network	= strtolower($network);
-
 		return isset($this->networks[$network]) ? $this->networks[$network]['type'] === 'Aleph' : false;
 	}
 
@@ -811,7 +807,6 @@ class Holdings
 
 		$method      = false;
 		$data        = array();
-		$networkCode = strtolower($networkCode);
 
 		if (isset($this->configHoldings->Backlink->{$networkCode})) { // Has the network its own backlink type
 			$method = 'getBackLink' . ucfirst($networkCode);
