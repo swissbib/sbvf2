@@ -45,6 +45,9 @@ the appropriate key under the [TargetsProxy] section.
     patterns_ip  = 130.92.*.*
     patterns_url = bern.swissbib.ch,testbern.swissbib.ch
 
+    [TrustedProxy]
+    loadbalancer = 131.152.226.251,131.152.226.241,131.152.226.242
+
 ### IP patterns
 A comma separated list of IP match patterns. The following types patterns are supported:
 
@@ -55,6 +58,11 @@ A comma separated list of IP match patterns. The following types patterns are su
 
 ### URL patterns
 A comma separated list of virtual hostnames in the caller's URL.
+
+### TrustedProxy
+A comma separated list of IPs that can be trusted as proxy. Here, the IP of a load balancer
+can be added. Zend frameworks tests against this list,
+see /zendframework/library/Zend/Http/PhpEnvironment/RemoteAddress.php->getIpAddressFromProxy()
 
 ### Match condition logic
 There are two conditions, patterns_ip and patterns_url. Both are optional, one is
