@@ -347,7 +347,8 @@ class Holdings
 
 			foreach ($networkConfigs as $networkCode => $networkConfig) {
 				list($domain, $library) = explode(',', $networkConfig, 2);
-				$networkCode	= strtoupper($networkCode);
+				//$networkCode	= strtoupper($networkCode);
+                $networkCode	= strtolower($networkCode);
 
 				$this->networks[$networkCode] = array(
 					'domain'  => $domain,
