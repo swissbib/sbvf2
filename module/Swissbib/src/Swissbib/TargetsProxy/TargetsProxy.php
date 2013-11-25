@@ -11,6 +11,7 @@ use Zend\Http\PhpEnvironment\RemoteAddress;
 use Zend\Http\PhpEnvironment\Request;
 
 use Swissbib\TargetsProxy\IpMatcher;
+use Zend\Log\Logger as ZendLogger;
 
 /**
  * Targets proxy
@@ -59,6 +60,8 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 	 */
 	protected $targetApiId = false;
 
+    protected $logger;
+
 
 
 	/**
@@ -66,9 +69,10 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 	 *
 	 * @param	Config	$config
 	 */
-	public function __construct(Config $config)
+	public function __construct(Config $config,ZendLogger $logger, Request $request )
 	{
 		$this->config = $config;
+        $this->logger	= $logger;
 
 			// Populate client info properties from request
 		$RemoteAddress	= new RemoteAddress();
@@ -79,6 +83,23 @@ class TargetsProxy implements ServiceLocatorAwareInterface
 		);
 		$Request	= new Request();
 		$this->clientUri= $Request->getUri();
+
+
+        //todo: make it configurable in case you want logging of headers
+
+        foreach ($_SERVER as $key => $value) {
+
+            $this->logger->debug("_SERVER_KEY: " . " . $key => " . $value);
+
+        }
+
+        //foreach($request->getHeaders() as $header) {
+
+            //now log the headers -> todo: read the manual rlated to ZF2 headers (there are different header types...)
+
+
+        //}
+
 	}
 
 	/**

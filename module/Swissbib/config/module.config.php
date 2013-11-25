@@ -248,7 +248,7 @@ return array(
 			'Swissbib\TargetsProxy\TargetsProxy' => function ($sm) {
 				$config        = $sm->get('VuFind\Config')->get('TargetsProxy');
 
-				return new TargetsProxy($config);
+				return new TargetsProxy($config,$sm->get('Swissbib\Logger'), $sm->get('Request'));
 			},
 			'Swissbib\TargetsProxy\IpMatcher' => function ($sm) {
 				return new IpMatcher();
