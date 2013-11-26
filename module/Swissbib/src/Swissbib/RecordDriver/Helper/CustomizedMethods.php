@@ -143,7 +143,7 @@ abstract class CustomizedMethods
 	 * @param	String		$delimiter
 	 * @return	String[]
 	 */
-	protected function getConfigList($configKey, $toLower = true, $trim = true, $delimiter = ',')
+	protected function getConfigList($configKey, $trim = true, $delimiter = ',')
 	{
 		$data = array();
 
@@ -151,9 +151,6 @@ abstract class CustomizedMethods
 			$configValue = $this->config->get($configKey);
 			$data		= explode($delimiter, $configValue);
 
-			if ($toLower) {
-				$data = array_map('strtolower', $data);
-			}
 			if ($trim) {
 				$data = array_map('trim', $data);
 			}
