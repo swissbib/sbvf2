@@ -123,7 +123,7 @@ abstract class EbooksOnDemandBase extends CustomizedMethods
 	protected function isYearInRange($institutionCode, $year)
 	{
 		$year			= intval($year);
-		$customConfigKey= strtolower($institutionCode) . '_range';
+		$customConfigKey= $institutionCode . '_range';
 
 		if ($this->hasConfigValue($customConfigKey)) {
 			$range = $this->config->get($customConfigKey);
@@ -160,7 +160,7 @@ abstract class EbooksOnDemandBase extends CustomizedMethods
 	 */
 	protected function isSupportedInstitution($institutionCode)
 	{
-		$configKey	= strtolower($institutionCode) . '_link';
+		$configKey	= $institutionCode . '_link';
 
 		return $this->hasConfigValue($configKey);
 	}
@@ -177,7 +177,7 @@ abstract class EbooksOnDemandBase extends CustomizedMethods
 	 */
 	protected function isSupportedFormat($institutionCode, array $itemFormats)
 	{
-		$customConfigKey= strtolower($institutionCode) . '_formats';
+		$customConfigKey = $institutionCode . '_formats';
 
 		if (sizeof($itemFormats) === 0) {
 			return false;
@@ -263,6 +263,6 @@ abstract class EbooksOnDemandBase extends CustomizedMethods
 	 */
 	protected function getLinkPattern($institutionCode)
 	{
-		return $this->getConfigValue(strtolower($institutionCode) . '_link');
+		return $this->getConfigValue($institutionCode) . '_link';
 	}
 }

@@ -155,7 +155,6 @@ abstract class CustomizedMethods
 				$data = array_map('trim', $data);
 			}
 		}
-
 		return $data;
 	}
 }

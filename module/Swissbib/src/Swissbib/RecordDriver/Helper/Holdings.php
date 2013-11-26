@@ -473,7 +473,7 @@ class Holdings
 		if (!isset($extendingOptions['backlink']) || $extendingOptions['backlink']) {
             // @todo dies ist ein dreckiger Hack, um die Exemplardarstellung für E-Books aus dem ERM korrekt zu halten
             // sollte auf Ebene der Daten gelöst werden
-            if (isset($item['holding_url']) && $item['network'] === 'IDSBB') {
+            if (!empty($item['holding_url']) && $item['network'] === 'IDSBB') {
                 $item['network'] = 'SSERM';
             }
 			if (isset($item['network']) && !$this->isRestfulNetwork($item['network'])) {
