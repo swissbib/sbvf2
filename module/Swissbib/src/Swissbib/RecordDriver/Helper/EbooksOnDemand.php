@@ -25,7 +25,7 @@ class EbooksOnDemand extends EbooksOnDemandBase
 
 	protected function isValidForLinkA100(array $item, SolrMarc $recordDriver, Holdings $holdingsHelper)
 	{
-		$institutionCode	= strtolower($item['institution']);
+		$institutionCode	= $item['institution'];
 		list(,$publishYear) = $recordDriver->getPublicationDates();
 		$itemFormats		= $recordDriver->getFormatsRaw();
 
@@ -137,7 +137,7 @@ class EbooksOnDemand extends EbooksOnDemandBase
 
     protected function isValidForLinkAX5(array $item, SolrMarc $recordDriver, Holdings $holdingsHelper)
     {
-        $institutionCode	= strtolower($item['institution']);
+        $institutionCode	= $item['institution'];
         list(,$publishYear) = $recordDriver->getPublicationDates();
         $itemFormats		= $recordDriver->getFormatsRaw();
 
