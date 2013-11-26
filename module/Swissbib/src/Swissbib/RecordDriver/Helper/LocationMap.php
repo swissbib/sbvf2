@@ -33,7 +33,7 @@ class LocationMap extends LocationMapBase
 		$isItemAvailable      = true; // Implement availability check with holdings helper
 		$hasSignature         = isset($item['signature']) && !empty($item['signature']) && $item['signature'] !== '-';
 		$accessibleConfigKey  = $item['institution'] . '_codes';
-		$isAccessible         = isset($item['location_code']) && $this->isValueInConfigList($accessibleConfigKey, strtolower($item['location_code']));
+		$isAccessible         = isset($item['location_code']) && $this->isValueInConfigList($accessibleConfigKey, $item['location_code']);
 		$circulatingConfigKey = $item['institution'] . '_status';
 		$isCirculating		  = true;
 
@@ -56,7 +56,7 @@ class LocationMap extends LocationMapBase
 	 */
 	protected function buildLocationMapLinkA100(array $item, HoldingsHelper $holdingsHelper)
 	{
-		$mapLinkPattern  = $this->config->get('a100');
+		$mapLinkPattern  = $this->config->get('A100');
 
 		return $this->buildSimpleLocationMapLink($mapLinkPattern, $item['signature']);
 	}
@@ -87,7 +87,7 @@ class LocationMap extends LocationMapBase
 	 */
 	protected function buildLocationMapLinkB500(array $item, HoldingsHelper $holdingsHelper)
 	{
-		$mapLinkPattern  = $this->config->get('b500');
+		$mapLinkPattern  = $this->config->get('B500');
 
 		return $this->buildSimpleLocationMapLink($mapLinkPattern, $item['signature']);
 	}
@@ -120,7 +120,7 @@ class LocationMap extends LocationMapBase
 	 */
 	protected function buildLocationMapLinkHSG(array $item, HoldingsHelper $holdingsHelper)
 	{
-		$mapLinkPattern  = $this->config->get('hsg');
+		$mapLinkPattern  = $this->config->get('HSG');
         $hsg_param = $item['location_code'] . ' ' . $item['signature'];
 
         return $this->buildSimpleLocationMapLink($mapLinkPattern, $hsg_param);
