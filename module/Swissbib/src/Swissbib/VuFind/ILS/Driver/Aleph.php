@@ -600,8 +600,6 @@ class Aleph extends VuFindDriver
 		$fineResponseItems	= $this->getMyFinesResponse($user['id']);
 		$fines				= array();
 		$dataMap         = array(
-			'title'			=> 'z13-title',
-			'barcode'		=> 'z30-barcode',
 			'sum'			=> 'z31-sum',
 			'date'			=> 'z31-date',
 			'type'			=> 'z31-type',
@@ -620,9 +618,9 @@ class Aleph extends VuFindDriver
 			$factor	= $itemData['credittype'] === 'Debit' ? -1 : 1;
 
 			$itemData['amount'] 	= $factor * $sum;
-			$itemData['checkout'] 	= $this->parseDate($itemData['checkout']);
+            $itemData['checkout']   = DateTime::createFromFormat('Ymd', $itemData['checkout'])->format('d.m.Y');
 			$itemData['id'] 		= false; // (string)$this->barcodeToID($itemData['barcode']);
-			$itemData['institution']= strtolower($fineResponseItem->{'z30-sub-library-code'});
+			$itemData['institution']= (string) $fineResponseItem->{'z30-sub-library-code'};
 
 			$sortKey	= $itemData['sequence'];
 
@@ -652,7 +650,7 @@ class Aleph extends VuFindDriver
      * @param string $date Date to parse
      *
      * @return string
-     */
+
     public function parseDate($date)
     {
         if ($date == null || $date == "") {
@@ -673,5 +671,5 @@ class Aleph extends VuFindDriver
             throw new \Exception("Invalid date: $date");
         }
     }
-
+*/
 }
