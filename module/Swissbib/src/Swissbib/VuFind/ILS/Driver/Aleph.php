@@ -485,9 +485,9 @@ class Aleph extends VuFindDriver
 			$itemData['id']			= ($history) ? null : $this->barcodeToID($itemData['barcode']);
 			$itemData['item_id']	= substr(strrchr($group[0], "/"), 1);
 			$itemData['reqnum']		= $itemData['doc-number'] . $itemData['item-sequence'] . $itemData['sequence'];
-			$itemData['loandate']	= $this->parseDate($itemData['loaned']);
-			$itemData['duedate']	= $this->parseDate($itemData['due']);
-			$itemData['returned']	= $this->parseDate($itemData['return']);
+            $itemData['loandate']  = DateTime::createFromFormat('Ymd', $itemData['loaned'])->format('d.m.Y');
+            $itemData['duedate']    = DateTime::createFromFormat('Ymd', $itemData['due'])->format('d.m.Y');
+            $itemData['returned']   = DateTime::createFromFormat('Ymd', $itemData['return'])->format('d.m.Y');
 			$itemData['renewable']	= $renewable;
 
 			$transactionsData[] = $itemData;
@@ -617,9 +617,9 @@ class Aleph extends VuFindDriver
 			$sum	= (float)preg_replace('/[\(\)]/', '', $itemData['sum']);
 			$factor	= $itemData['credittype'] === 'Debit' ? -1 : 1;
 
+            $itemData['title']      = (string) $fineResponseItem->{'z13'}->{'z13-title'};
 			$itemData['amount'] 	= $factor * $sum;
             $itemData['checkout']   = DateTime::createFromFormat('Ymd', $itemData['checkout'])->format('d.m.Y');
-			$itemData['id'] 		= false; // (string)$this->barcodeToID($itemData['barcode']);
 			$itemData['institution']= (string) $fineResponseItem->{'z30-sub-library-code'};
 
 			$sortKey	= $itemData['sequence'];
