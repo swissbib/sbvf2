@@ -248,7 +248,7 @@ class Holdings
             if ($this->hasHoldings()) {
                 $structure852 = $this->getStructuredHoldingsStructure(852);
 			}
-            $holdingStructure = array_merge($structure949, $structure852);
+            $holdingStructure = array_merge_recursive($structure852, $structure949);
 
 			$this->holdingStructure	= $this->sortHoldings($holdingStructure);
 		}
