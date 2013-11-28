@@ -46,6 +46,10 @@ class Importer implements ServiceLocatorAwareInterface
 	 */
 	protected $languageCache;
 
+	/**
+	 * @var bool
+	 */
+	protected $downloadAllInstitutions = false;
 
 
 	/**
@@ -77,6 +81,7 @@ class Importer implements ServiceLocatorAwareInterface
 
 		try {
 			$importData = $this->getData();
+			$this->downloadAndStoreAllInstitutionData(); //libadmin_all.json
 
 			$this->result->addSuccess('Data fetched from libadmin');
 		} catch (Exceptions\Exception $e) {
@@ -381,6 +386,17 @@ class Importer implements ServiceLocatorAwareInterface
 
 
 	/**
+	 * @return void
+	 */
+	protected function downloadAndStoreAllInstitutionData() {
+		$this->downloadAllInstitutions = true;
+		$this->getData();
+		$this->downloadAllInstitutions = false;
+	}
+
+
+
+	/**
 	 * Download data from server
 	 *
 	 * @return    String
@@ -432,7 +448,8 @@ class Importer implements ServiceLocatorAwareInterface
 	protected function storeDownloadedData($responseBody)
 	{
 		if ($this->cacheDir && is_writable($this->cacheDir)) {
-			$cacheFile = $this->cacheDir . '/libadmin.json';
+			$fileName = $this->downloadAllInstitutions ? 'libadmin_all.json' : 'libadmin.json';
+			$cacheFile = $this->cacheDir . '/' . $fileName;
 
 			return file_put_contents($cacheFile, $responseBody) !== false;
 		}
@@ -480,6 +497,7 @@ class Importer implements ServiceLocatorAwareInterface
 	protected function getApiEndpointUrl()
 	{
 		$apiUrl = $this->config->host . '/' . $this->config->api . '/' . $this->config->path;
+		if ($this->downloadAllInstitutions) $apiUrl .= '?option[all]=true';
 
 		if (!filter_var($apiUrl, FILTER_VALIDATE_URL)) {
 			throw new Exceptions\Fetch('Invalid api url, please check config in Libadmin.ini. Current url "' . $apiUrl . '"');
