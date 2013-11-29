@@ -44,6 +44,9 @@ $holdings	= $this->extractFavoriteInstitutionsForHoldings($holdings);
 			<? endif; ?>
 
 			<h3 class="toggler persist <?= $expandedOrCollapsedClass ?>" id="holding-group-<?=$groupCode?>">
+                <? if (is_array($group['label'])): ?>
+                    <? $group['label'] = implode('', array_unique($group['label'])); ?>
+                <? endif; ?>
 				<span><?=$this->zendTranslate($group['label'], 'group')?></span>
 			</h3>
 			<div class="holding-group-<?=$groupCode?>">
