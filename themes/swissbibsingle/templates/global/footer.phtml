@@ -1,4 +1,7 @@
-<div class="footer buildnum"><?=$this->getVersion()?></div>
+
+<div class="footer buildnum">
+    <?=$this->getVersion() . "&nbsp; &nbsp;" . $this->configAccess()->Site->hostnameForTest ?>
+</div>
 
 <!-- Alle verfügbaren colorbox-Definitionen inkl. derjenigen der Hilfeseiten -->
 <script type="text/javascript">
