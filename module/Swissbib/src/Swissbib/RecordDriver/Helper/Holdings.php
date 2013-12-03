@@ -820,7 +820,7 @@ class Holdings
 			);
 		} else { // no custom type
 			if (isset($this->networks[$networkCode])) { // is network even configured?
-				$networkType= strtolower($this->networks[$networkCode]['type']);
+				$networkType= strtoupper($this->networks[$networkCode]['type']);
 				$method 	= 'getBackLink' . ucfirst($networkType);
 
 				// Has the network type (aleph, virtua, etc) a general link?
@@ -1128,7 +1128,6 @@ class Holdings
 	{
 		$data            = array();
 		$fields          = $this->holdings ? $this->holdings->getFields($fieldName) : false;
-		$institutionCode = $institutionCode;
 
 		if (is_array($fields)) {
 			foreach ($fields as $index => $field) {
