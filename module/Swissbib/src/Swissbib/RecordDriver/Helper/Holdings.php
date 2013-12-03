@@ -242,13 +242,22 @@ class Holdings
             $structure852 = array();
 			$holdingStructure = array();
 
+
 			if ($this->hasItems()) {
-				$structure949 = $this->getStructuredHoldingsStructure(949);
+				//$structure949 = $this->getStructuredHoldingsStructure(949);
+                $holdingStructure = $this->getStructuredHoldingsStructure(949, $holdingStructure);
             }
             if ($this->hasHoldings()) {
-                $structure852 = $this->getStructuredHoldingsStructure(852);
+                //$structure852 = $this->getStructuredHoldingsStructure(852);
+                $holdingStructure = $this->getStructuredHoldingsStructure(852, $holdingStructure);
 			}
-            $holdingStructure = array_merge_recursive($structure852, $structure949);
+            //using this method imposes problems in the context of institutions with holdings and items at the same time
+            //the final data structure $this->holdingsStructure doubles entries in the array (for example label) which causes problems e.g. in conjunction
+            //with the translation mechanism
+            //and such datastructure is simply a mess
+            //example id:299403270 (SNL)
+
+            //$holdingStructure = array_merge_recursive($structure852, $structure949);
 
 			$this->holdingStructure	= $this->sortHoldings($holdingStructure);
 		}
@@ -1151,9 +1160,9 @@ class Holdings
 	 * @param	Integer		$fieldName
 	 * @return	Array[]
 	 */
-	protected function getStructuredHoldingsStructure($fieldName)
+	protected function getStructuredHoldingsStructure($fieldName, $data = array())
 	{
-		$data    = array();
+		//$data    = array();
 		$fields  = $this->holdings ? $this->holdings->getFields($fieldName) : false;
 		$mapping = array(
 			'B' => 'network',
