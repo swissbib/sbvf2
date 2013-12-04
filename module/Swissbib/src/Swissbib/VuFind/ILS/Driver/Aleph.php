@@ -482,15 +482,27 @@ class Aleph extends VuFindDriver
 			$renewable	= (string)$transactionsResponseItem->attributes()->renew === 'Y';
 
 				// Add special data
-			$itemData['id']			= ($history) ? null : $this->barcodeToID($itemData['barcode']);
-			$itemData['item_id']	= substr(strrchr($group[0], "/"), 1);
-			$itemData['reqnum']		= $itemData['doc-number'] . $itemData['item-sequence'] . $itemData['sequence'];
-            $itemData['loandate']  = DateTime::createFromFormat('Ymd', $itemData['loaned'])->format('d.m.Y');
-            $itemData['duedate']    = DateTime::createFromFormat('Ymd', $itemData['due'])->format('d.m.Y');
-            $itemData['returned']   = DateTime::createFromFormat('Ymd', $itemData['return'])->format('d.m.Y');
-			$itemData['renewable']	= $renewable;
+            try {
+                $itemData['id']			= ($history) ? null : $this->barcodeToID($itemData['barcode']);
+                $itemData['item_id']	= substr(strrchr($group[0], "/"), 1);
+                $itemData['reqnum']		= $itemData['doc-number'] . $itemData['item-sequence'] . $itemData['sequence'];
+                $itemData['loandate']  = DateTime::createFromFormat('Ymd', $itemData['loaned'])->format('d.m.Y');
+                $itemData['duedate']    = DateTime::createFromFormat('Ymd', $itemData['due'])->format('d.m.Y');
+                $itemData['returned']   = DateTime::createFromFormat('Ymd', $itemData['return'])->format('d.m.Y');
+                $itemData['renewable']	= $renewable;
 
-			$transactionsData[] = $itemData;
+                $transactionsData[] = $itemData;
+            } catch (\Exception $ex) {
+
+
+                $this->logger->err(
+                    "error while trying to fetch loaned item from ILS system", array(
+                        'barcode' => $itemData['barcode'], 'doc-number' => $itemData['doc-number'],
+                        'item-sequence' => $itemData['item-sequence'], 'callnum' => $itemData['callnum']
+                    )
+                );
+
+            }
 		}
 
 		return $transactionsData;

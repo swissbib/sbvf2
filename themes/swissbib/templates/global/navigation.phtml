@@ -14,10 +14,10 @@ $isLoggedIn = !!$this->auth()->isLoggedIn();
             <a href="<?= $this->url('myresearch-home'); ?>"><?= $this->transEsc('menu.swissbib') ?></a>
             <ul class="subnavigation">
                 <li>
-                    <a href="<?= $this->url('search-history') ?>"><?= $this->transEsc('history_saved_searches') ?></a>
+                    <a href="<?= $this->url('myresearch-favorite-institutions') ?>"><?= $this->transEsc('menu.mylibraries') ?></a>
                 </li>
                 <li>
-                    <a href="<?= $this->url('myresearch-favorite-institutions') ?>"><?= $this->transEsc('menu.mylibraries') ?></a>
+                    <a href="<?= $this->url('search-history') ?>"><?= $this->transEsc('history_saved_searches') ?></a>
                 </li>
                 <li>
                     <a href="<?= $this->url('myresearch-favorites'); ?>"><?= $this->transEsc('memorizelist') ?></a>
