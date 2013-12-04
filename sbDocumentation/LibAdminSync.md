@@ -60,6 +60,9 @@ Results in this request URL:
 
 	http://libadmin.swissbib.unibas.ch/api/vufind/green.json
 
+	#In Additiion this gets automatically called. it generates the libadmin_all.json to have all institution information available
+	http://libadmin.swissbib.unibas.ch/api/vufind/green.json?option[all]=true
+
 ## Examples
 
 Start sync manualy and show all messages
