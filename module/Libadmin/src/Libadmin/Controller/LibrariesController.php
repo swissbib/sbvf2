@@ -18,9 +18,10 @@ class LibrariesController extends AbstractActionController
         $institutionLoader  = new InstitutionLoader();
         $viewModel          = new ViewModel();
 
-        $viewModel->setTerminal(true);
-        $viewModel->setTemplate('libraries/layout');
+        $viewModel->setTemplate('libraries/content');
         $viewModel->groupedInstitutions = $institutionLoader->getGroupedInstitutions();
+
+        $this->layout()->setVariable('pageClass', 'template_page');
 
         return $viewModel;
     }

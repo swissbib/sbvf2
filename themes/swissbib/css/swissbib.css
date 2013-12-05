@@ -670,6 +670,49 @@ TVI: 20100811
     margin-left: 20px;
 }
 
+/** ------------ Libraries ------------  */
+
+#content.libraries .clear {
+    clear: both;
+}
+
+#content.libraries p {
+    margin-bottom: 0;
+}
+
+#content.libraries #logo h1 {
+    display: none;
+}
+
+#content.libraries #logo h2.hidden {
+    display: block;
+    visibility: visible;
+    position: relative;
+    width: auto;
+    height: auto;
+    left: 0;
+    line-height: normal;
+    font-size: 2em;
+}
+
+#content.libraries .navigation {
+    margin: 25px 0 20px 0;
+}
+
+#content.libraries .navigation li {
+    float: left;
+    font-size: 1.4em;
+    margin-bottom: 5px;
+}
+
+#content.libraries .institution {
+    margin: 15px 0;
+}
+
+#content.libraries .group h2 {
+    border-bottom: 1px solid #494E59;
+}
+
 /* -------------------------------------------------------------------------------------
  AUTOCOMPLETE
  ======================================================================================*/
