@@ -3,7 +3,6 @@ namespace Swissbib\View\Helper;
 
 use VuFind\View\Helper\Root\Record as VuFindRecord;
 
-
 /**
  * Build record links
  * Override related method to support ctrlnum type
@@ -24,23 +23,40 @@ class Record extends VuFindRecord
 
     }
 
-
-
+    /**
+     * @param $urlArray
+     * @return array
+     *
+     * Default: when $urlArray contains multiple links with the same URL,
+     * only the first will be kept.
+     *
+     * If you prefer to display all links, define this value in config.ini:
+     * [Record]
+     * create_multiple_856_links = true
+     *
+     */
     private function createUniqueLinks($urlArray) {
+
+        $config = $this->driver->getServiceLocator()->get('VuFind\Config')->get('config');
+        if ( $config ) {
+            $config = $config->get('Record');
+            if ( $config ) {
+                $config = $config->get('create_multiple_856_links');
+                if ( $config ) {
+                    return $urlArray;
+                }
+            }
+        }
 
         $uniqueURLs = array();
         $collectedArrays = array();
 
         foreach ($urlArray as $url) {
-
             if (!array_key_exists($url['url'],$uniqueURLs)) {
-
                 $uniqueURLs[$url['url']] = "";
                 $collectedArrays[] = $url;
             }
-
         }
-
 
         return $collectedArrays;
     }
