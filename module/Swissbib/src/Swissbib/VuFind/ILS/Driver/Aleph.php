@@ -472,14 +472,19 @@ class Aleph extends VuFindDriver
 			'return'		=> 'z36-returned-date',
 			'renewals'		=> 'z36-no-renewal',
 			'library'		=> 'z30-sub-library',
-			'callnum'		=> 'z30-call-no'
+			'callnum'		=> 'z30-call-no',
+			'renew_info'    => 'renew-info'
 		);
 		$transactionsData	= array();
 
 		foreach ($transactionsResponseItems as $transactionsResponseItem) {
 			$itemData	= $this->extractResponseData($transactionsResponseItem, $dataMap);
 			$group   	= $transactionsResponseItem->xpath('@href');
-			$renewable	= (string)$transactionsResponseItem->attributes()->renew === 'Y';
+
+			// Bug in Aleph 21.01.1: xpath(@renew) at this position will always be 'Y'.
+			// (Calling the URL in @href would deliver the correct value.
+			// This is a quick workaround.)
+			$renewable = ( stripos($itemData['renew_info'],'Renewal is not allowed') === false ) ? true : false;
 
 				// Add special data
             try {
