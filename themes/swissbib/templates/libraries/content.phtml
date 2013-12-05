@@ -11,7 +11,7 @@
                     for ($i = 0; $i < $arrayLength; $i++): ?>
                         <li class="color">
                             <a href="#nav_<?= $i ?>" class="color"><?= $this->groupedInstitutions[$i]['group']['label'][$this->layout()->userLang] ?></a>
-                						<span><? if($i!==$arrayLength-1) echo '&Iota;&nbsp;'; ?></span>
+                            <span><? if($i!==$arrayLength-1) echo '&Iota;&nbsp;'; ?></span>
                         </li>
                     <? endfor; ?>
                 </ul>
