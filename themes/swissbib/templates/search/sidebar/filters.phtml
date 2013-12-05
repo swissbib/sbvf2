@@ -1,49 +1,49 @@
 <?php
 
-	$filters	= $this->params->getFilterList();
-	/** @var	Vufind\Search\Base\Results	$results  */
-	$results	= $this->results;
-	/** @var	VuFind\Search\UrlQueryHelper	$urlQuery  */
-	$urlQuery	= $results->getUrlQuery();
-	$tabName = $this->transEsc('tab.' .$activeTabKey );
+$filters    = $this->params->getFilterList();
+/** @var    Vufind\Search\Base\Results $results */
+$results    = $this->results;
+/** @var    VuFind\Search\UrlQueryHelper $urlQuery */
+$urlQuery   = $results->getUrlQuery();
+$tabName    = $this->transEsc('tab.' . $activeTabKey);
 
 ?>
 
 <div class="print">
-	<h3><?=$this->transEsc('Your_Search')?>: <span><?=$tabName . ", " . $results->getResultTotal() . " " . $this->transEsc('history_results')?> </span></h3>
+    <h3><?= $this->transEsc('Your_Search') ?>: <span><?= $tabName . ", " . $results->getResultTotal() . " " . $this->transEsc('history_results') ?> </span></h3>
 </div>
 
-<h3><?=$this->transEsc('Your_Search')?></h3>
+<h3><?= $this->transEsc('Your_Search') ?></h3>
 <div class="filters">
-	<p>
-		<span><?=$this->transEsc('All_Fields')?> = </span> <br/>
-		<cite><?=$this->escapeHtml($this->params->getDisplayQuery())?></cite>
-	</p>
+    <p>
+        <span><?= $this->transEsc('All_Fields') ?> = </span> <br/>
+        <cite><?= $this->escapeHtml($this->params->getDisplayQuery()) ?></cite>
+    </p>
 
-	<?php if( sizeof($filters) ): ?>
-		<h4 class="filters_indicator"><span><?=$tabName ?></span></h4>
-		<?php foreach($filters as $filterTypeLabel => $filterValues): ?>
-			<?php
-				$firstItem	= reset($filterValues);
-				$filterType	= $firstItem['field'];
-			?>
-			<!-- filter -->
-			<div class="filter" id="filter_<?=$filterType?>">
-				<h5><?=$this->transEsc($filterTypeLabel)?></h5>
-				<ul>
-					<?php foreach($filterValues as $filter): ?>
-						<?php
-							$removalUrl = $urlQuery->removeFacet($filter['field'], $filter['value']);
-							$filterLabel= $this->zendTranslate($filter['displayText'], $filter['field']); // Try to translate for custom text domain
-						?>
-						<li>
-							<a href="<?=$removalUrl?>" title="<?=$this->transEsc('Remove Filters')?>: <?=$this->transEsc($filterLabel)?>" class="filter_remove"><?=$this->transEsc($filterLabel)?></a>
-						</li>
-					<?php endforeach; ?>
-				</ul>
-			</div>
-		<?php endforeach; ?>
+    <?php if (sizeof($filters)): ?>
+        <h4 class="filters_indicator"><span><?= $tabName ?></span></h4>
+        <?php foreach ($filters as $filterTypeLabel => $filterValues): ?>
+            <?php
+            $firstItem = reset($filterValues);
+            $filterType = $firstItem['field'];
+            ?>
+            <!-- filter -->
+            <div class="filter" id="filter_<?= $filterType ?>">
+                <h5><?= $this->transEsc($filterTypeLabel) ?></h5>
+                <ul>
+                    <?php foreach ($filterValues as $filter): ?>
+                        <?php
+                        $removalUrl = $urlQuery->removeFacet($filter['field'], $filter['value']);
+                        $filterLabel = $this->zendTranslate($filter['displayText'], $filter['field']); // Try to translate for custom text domain
+                        ?>
+                        <li>
+                            <a href="<?= $removalUrl ?>" title="<?= $this->transEsc('Remove Filters') ?>: <?= $this->transEsc($filterLabel) ?>" class="filter_remove"><?= $this->transEsc($filterLabel) ?></a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endforeach; ?>
 
-	<?php endif; ?>
+    <?php endif; ?>
 
 </div>
