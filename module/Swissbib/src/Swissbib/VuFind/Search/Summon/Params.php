@@ -33,7 +33,6 @@ class Params extends VFSummonParams
      * Set up filters based on VuFind settings.
      *
      * @param ParamBag $params     Parameter collection to update
-     * @param array    $filterList Filter settings
      *
      * @return void
      */
@@ -90,5 +89,13 @@ class Params extends VFSummonParams
     }
 
 
+
+    /**
+     * @return string
+     */
+    public function getTypeLabel()
+    {
+        return $this->getServiceLocator()->get('Swissbib\TypeLabelMappingHelper')->getLabel($this);
+    }
 
 }

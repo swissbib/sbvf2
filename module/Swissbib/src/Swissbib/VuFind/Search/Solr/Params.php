@@ -68,6 +68,16 @@ class Params extends VuFindSolrParams
 
 
     /**
+     * @return string
+     */
+    public function getTypeLabel()
+    {
+        return $this->getServiceLocator()->get('Swissbib\TypeLabelMappingHelper')->getLabel($this);
+    }
+
+
+
+    /**
      * Add user institutions as facet queries to backend params
      *
      * @param    ParamBag $backendParams
