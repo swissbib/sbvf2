@@ -115,10 +115,9 @@ class Aleph extends VuFindDriver
 	 * @param    String        $group             Group id
 	 * @return    Array        List with flags for actions
 	 */
-	public function getAllowedActionsForItem($patronId, $id, $group)
+	public function getAllowedActionsForItem($patronId, $id, $group, $bib)
 	{
-		list($bib, $sys_no) = $this->parseId($id);
-		$resource = $bib . $sys_no;
+		$resource = $bib . $id;
 		$xml      = $this->doRestDLFRequest(
 			array('patron', $patronId, 'record', $resource, 'items', $group)
 		);
