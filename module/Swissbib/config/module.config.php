@@ -25,6 +25,7 @@ use Swissbib\Favorites\Manager;
 use Swissbib\View\Helper\ExtractFavoriteInstitutionsForHoldings;
 use Swissbib\View\Helper\IsFavoriteInstitution;
 use Swissbib\VuFind\Search\Helper\ExtendedSolrFactoryHelper;
+use Swissbib\VuFind\Search\Helper\TypeLabelMappingHelper;
 use Swissbib\View\Helper\QrCode as QrCodeViewHelper;
 use Swissbib\Highlight\SolrConfigurator as HighlightSolrConfigurator;
 use Swissbib\VuFind\Hierarchy\TreeDataSource\Solr as TreeDataSourceSolr;
@@ -309,6 +310,9 @@ return array(
                     $extendedTargets = explode(',', $config->extendedTargets);
 
                     return new ExtendedSolrFactoryHelper($extendedTargets);
+                },
+            'Swissbib\TypeLabelMappingHelper'       => function () {
+                    return new TypeLabelMappingHelper();
                 },
             'Swissbib\Highlight\SolrConfigurator'      => function ($sm) {
                     $config = $sm->get('Vufind\Config')->get('config')->Highlight;

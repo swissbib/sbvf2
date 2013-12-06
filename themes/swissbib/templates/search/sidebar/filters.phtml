@@ -1,11 +1,12 @@
 <?php
 
-$filters    = $this->params->getFilterList();
+$filters        = $this->params->getFilterList();
 /** @var    Vufind\Search\Base\Results $results */
-$results    = $this->results;
+$results        = $this->results;
 /** @var    VuFind\Search\UrlQueryHelper $urlQuery */
-$urlQuery   = $results->getUrlQuery();
-$tabName    = $this->transEsc('tab.' . $activeTabKey);
+$urlQuery       = $results->getUrlQuery();
+$tabName        = $this->transEsc('tab.' . $activeTabKey);
+$typeLabel      = $this->params->getTypeLabel();
 
 ?>
 
@@ -16,7 +17,7 @@ $tabName    = $this->transEsc('tab.' . $activeTabKey);
 <h3><?= $this->transEsc('Your_Search') ?></h3>
 <div class="filters">
     <p>
-        <span><?= $this->transEsc('All_Fields') ?> = </span> <br/>
+        <span><?= $this->transEsc($typeLabel) ?> = </span> <br/>
         <cite><?= $this->escapeHtml($this->params->getDisplayQuery()) ?></cite>
     </p>
 

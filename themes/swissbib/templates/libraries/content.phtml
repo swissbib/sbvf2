@@ -1,27 +1,42 @@
-<?= $this->render('global/logo') ?>
+<div id="col3" class="content">
+    <div id="col3_content" class="clearfix">
+        <!-- begin: content -->
+        <div id="content" class="libraries">
 
-<div class="navigation">
-    <ul>
-        <? $arrayLength = count($this->groupedInstitutions);
-           for($i=0; $i < $arrayLength; $i++): ?>
-            <li class="color">
-                <a href="#nav_<?= $i?>" class="color"><?= $this->groupedInstitutions[$i]['group']['label'][$this->layout()->userLang]?></a>
-                <span><? if($i!==$arrayLength-1) echo '&Iota;&nbsp;'; ?></span>
-            </li>
-        <? endfor; ?>
-    </ul>
-    <div class="clear"></div>
+            <?= $this->render('global/logo') ?>
+
+            <div class="navigation">
+                <ul>
+                    <? $arrayLength = count($this->groupedInstitutions);
+                    for ($i = 0; $i < $arrayLength; $i++): ?>
+                        <li class="color">
+                            <a href="#nav_<?= $i ?>" class="color"><?= $this->groupedInstitutions[$i]['group']['label'][$this->layout()->userLang] ?></a>
+                            <span><? if($i!==$arrayLength-1) echo '&Iota;&nbsp;'; ?></span>
+                        </li>
+                    <? endfor; ?>
+                </ul>
+                <div class="clear"></div>
+            </div>
+            <div class="all_groups">
+                <? $i = 0; ?>
+                <? foreach ($this->groupedInstitutions as $institutionGroup): ?>
+                    <?=
+                    $this->render(
+                        'libraries/group',
+                        array(
+                             'group'        => $institutionGroup['group'],
+                             'institutions' => $institutionGroup['institutions'],
+                             'nr'           => $i++
+                        )
+                    ) ?>
+                <? endforeach; ?>
+            </div>
+
+        </div>
+        <!-- end: content -->
+    </div>
+    <div id="ie_clearing">
+        &nbsp;
+    </div>
 </div>
-<div class="all_groups">
-    <? $i=0; ?>
-    <? foreach($this->groupedInstitutions as $institutionGroup): ?>
-        <?= $this->render(
-            'libraries/group',
-            array(
-                 'group'        => $institutionGroup['group'],
-                 'institutions' => $institutionGroup['institutions'],
-                 'nr'           => $i++
-            )
-        ) ?>
-    <? endforeach; ?>
-</div>
+<!-- end: col3 (content) -->

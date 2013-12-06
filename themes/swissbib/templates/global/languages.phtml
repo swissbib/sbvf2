@@ -13,15 +13,12 @@ $languages = array();
 
 $hostInfo = "";
 
-if ($_SERVER["VUFIND_ENV"] == "development") {
 
-    $displayHostName = $this->configAccess()->Site->displayHostName ;
-    $displayHostName =  !empty($displayHostName) && ($displayHostName == "true"  ||  $displayHostName == "1") ? "1" : 0;
+$displayTestSystem = $this->configAccess()->Site->displayTestSystem ;
+$displayTestSystem =  !empty($displayTestSystem) && ($displayTestSystem == "true"  ||  $displayTestSystem == "1") ? "1" : 0;
 
-    if ($displayHostName) {
-        $hostname = $this->configAccess()->Site->hostnameForTest;
-        $hostInfo =  '<li class="error">' . $hostname . '</li>';
-    }
+if ($displayTestSystem) {
+    $hostInfo =  '<li class="error">Testsystem!!</li>';
 }
 
 

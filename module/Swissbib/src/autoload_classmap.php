@@ -73,6 +73,7 @@ return array(
   'Swissbib\VuFind\Search\Options\PluginFactory'                => __DIR__ . '/Swissbib/VuFind/Search/Options/PluginFactory.php',
   'Swissbib\VuFind\Search\Options\PluginManager'                => __DIR__ . '/Swissbib/VuFind/Search/Options/PluginManager.php',
   'Swissbib\VuFind\Search\Helper\ExtendedSolrFactoryHelper'     => __DIR__ . '/Swissbib/VuFind/Search/Helper/ExtendedSolrFactoryHelper.php',
+  'Swissbib\VuFind\Search\Helper\TypeLabelMappingHelper'        => __DIR__ . '/Swissbib/VuFind/Search/Helper/TypeLabelMappingHelper.php',
   'Swissbib\Vufind\Search\Summon\Results'                       => __DIR__ . '/Swissbib/VuFind/Search/Summon/Results.php',
   'Swissbib\Vufind\Search\Summon\Options'                       => __DIR__ . '/Swissbib/VuFind/Search/Summon/Options.php',
   'Swissbib\VuFind\Search\Summon\Params'                        => __DIR__ . '/Swissbib/VuFind/Search/Summon/Params.php',

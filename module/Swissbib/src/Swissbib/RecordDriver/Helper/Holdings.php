@@ -52,6 +52,7 @@ class Holdings
 		'b' => 'institution',
 		'C' => 'adm_code',
 		'c'	=> 'location_code',
+        'D' => 'bib_library',
 		'E' => 'bibsysnumber',
         'F' => 'institution_chb',
         'j' => 'signature',
@@ -705,9 +706,10 @@ class Holdings
 		$patron    = $this->getPatron();
 
 		$itemId  = $item['bibsysnumber'] . $item['sequencenumber'];
+        $bib     = $item['bib_library'];
 		$groupId = $this->buildItemId($item);
 
-		$allowedActions = $ilsDriver->getAllowedActionsForItem($patron['id'], $itemId, $groupId);
+		$allowedActions = $ilsDriver->getAllowedActionsForItem($patron['id'], $itemId, $groupId, $bib);
 		$host           = $ilsDriver->host; // @todo make dev port dynamic
 
 		if ($allowedActions['photocopyRequest']) {
@@ -726,7 +728,6 @@ class Holdings
 	/**
 	 * Get link for external photocopy request
 	 *
-	 * @todo    refactor
 	 * @param    String        $host
 	 * @param    Array         $item
 	 * @return    String
@@ -739,7 +740,7 @@ class Holdings
 			'adm_doc_number' => $item['localid'],
 			'item_sequence'  => $item['sequencenumber'],
 			'bib_doc_num'    => $item['bibsysnumber'],
-			'bib_library'    => 'DSV01'
+			'bib_library'    => $item['bib_library'],
 		);
 
 		return 'http://' . $host . '/F/?' . http_build_query($queryParams);

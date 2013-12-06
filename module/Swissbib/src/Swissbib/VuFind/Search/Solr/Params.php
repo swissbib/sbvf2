@@ -10,16 +10,17 @@ use VuFindSearch\ParamBag;
 class Params extends VuFindSolrParams
 {
 
-	/**
-	 * Override to prevent problems with namespace
-	 * See implementation of parent for details
-	 *
-	 * @return	String
-	 */
-	public function getSearchClassId()
-	{
-		return 'Solr';
-	}
+    /**
+     * Override to prevent problems with namespace
+     * See implementation of parent for details
+     *
+     * @return    String
+     */
+    public function getSearchClassId()
+    {
+        return 'Solr';
+    }
+
 
 
     /**
@@ -27,7 +28,6 @@ class Params extends VuFindSolrParams
      *
      * @return ParamBag
      */
-
     public function getBackendParameters()
     {
         $backendParams = parent::getBackendParameters();
@@ -44,6 +44,9 @@ class Params extends VuFindSolrParams
 
 
 
+    /**
+     * @return ParamBag
+     */
     public function getSpellcheckBackendParameters()
     {
         $backendParams = parent::getBackendParameters();
@@ -57,7 +60,6 @@ class Params extends VuFindSolrParams
         $backendParams->add("swissbibspellcheck", "true");
 
 
-
         //$backendParams = $this->addUserInstitutions($backendParams);
 
         return $backendParams;
@@ -65,19 +67,29 @@ class Params extends VuFindSolrParams
 
 
 
+    /**
+     * @return string
+     */
+    public function getTypeLabel()
+    {
+        return $this->getServiceLocator()->get('Swissbib\TypeLabelMappingHelper')->getLabel($this);
+    }
+
+
 
     /**
      * Add user institutions as facet queries to backend params
      *
-     * @param	ParamBag	$backendParams
-     * @return	ParamBag
+     * @param    ParamBag $backendParams
+     *
+     * @return    ParamBag
      */
     protected function addUserInstitutions(ParamBag $backendParams)
     {
         /** @var Manager $favoritesManger */
-        $favoritesManger		= $this->getServiceLocator()->get('Swissbib\FavoriteInstitutions\Manager');
+        $favoritesManger = $this->getServiceLocator()->get('Swissbib\FavoriteInstitutions\Manager');
         /** @var String[] $favoriteInstitutions */
-        $favoriteInstitutions	= $favoritesManger->getUserInstitutions();
+        $favoriteInstitutions = $favoritesManger->getUserInstitutions();
 
         if (sizeof($favoriteInstitutions > 0)) {
             //facet parameter has to be true in case it's false
@@ -91,7 +103,5 @@ class Params extends VuFindSolrParams
 
         return $backendParams;
     }
-
-
 
 }
