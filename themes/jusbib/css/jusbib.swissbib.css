@@ -1,0 +1,22 @@
+/* --- NOSE AG Design Intelligence --------------------------------------------------- */
+/* --- CSS Framework: Loads all style sheets ----------------------------------------- */
+/* --- swissbib  --------------------------------------------------------------------- */
+
+/*<![CDATA[*/
+/*
+@import url(yaml/core/slim_base.css);
+@import url(css/screen/basemod.css);
+@import url(css/screen/global.css);
+@import url(css/screen/content.css);
+@import url(css/patches/patch_safari.css);
+@import url(css/patches/patch_opera.css);
+@import url(css/screen/content.additional.css);
+@import url(css/print/print.css);
+@import url(css/themes/blue/blue.css);
+*/
+
+@import url(blue.css);
+@import url(jusbib.css);
+
+
+/*]]>*/

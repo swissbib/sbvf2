@@ -1,0 +1,185 @@
+@charset "UTF-8";
+/* --- NOSE AG Design Intelligence --------------------------------------------------- */
+/* --- CSS Framework: theme definitions ---------------------------------------------- */
+/* --- swissbib  --------------------------------------------------------------------- */
+
+@media all {
+/* Dark Blue Backgrounds (Link Hover, etc.) */
+#sidebar .subnavigation ul li.selected a,
+#sidebar .subnavigation ul li a:hover, #sidebar .subnavigation ul li.selected ul li a:hover,
+#sidebar .subnavigation ul li.action a:hover,  #sidebar .subnavigation ul li.selected ul li.action a:hover,
+.filters ul li a:hover, .facet ul li a:hover, .facet_more a:hover, a.color:hover { background-color:#0279aa; }
+a.color { color:#0279aa; }
+
+/* Light Blue Backgrounds */
+#meta ul li a, .ac_over, .dropdown ul li a:hover { background-color:#cceefa; }
+
+/* Header-Background Overrides */
+#header {
+	border-bottom:1px solid #838280;
+    /*background: rgb(18,175,239) !important */
+    background: rgb(18,175,239) !important
+	/*background-image:url(../../swissbib/images/bg_header.gif); */
+}
+
+
+/*.template_home #header { background-image:url(../../swissbib/images/bg_header-home.gif); } */
+.template_home #header { background: rgb(18,175,239) !important }
+#logo, #logo a { background-color:transparent; }
+input.primary { background-color:#02bdf2; }
+
+/* --- BASEMOD.CSS Overrides --------------------------------------------------------- */
+/*.template_home #header { background-image:url(../../swissbib/images/bg_header-home.gif); } */
+.template_home #header { background: rgb(18,175,239) !important }
+#search { background-image:url(../images/bg_search.gif); }
+#col1 { background-image:url(../images/bg_sidebar.gif); }
+#col1_content { background-image:url(../images/bg_sidebar_end.gif); }
+#col3 { background-image:url(../images/bg_content.gif); }
+#col3_content { background-image:url(../images/bg_content_end.gif); }
+#logo a { background-image:url(../../swissbib/images/logo_swissbib.gif); }
+#navigation { background-image:url(../images/bg_navigation.gif); }
+#content { background-image:url(../images/bg_content_inlay.gif); }
+.template_home #logo a { background-image:url(../../swissbib/images/logo_swissbib-home.gif); }
+.template_home #main { background-image:url(../images/bg_main.gif); }
+.template_page #main { background-image:url(../images/bg_main.gif); }
+
+/* --- CONTENT.CSS Overrides --------------------------------------------------------- */
+#navigation ul li { background-image:url(../images/divider_navigation.gif); }
+#navigation ul li.nav_home a { background-image:url(../images/icon_nav_home.gif); }
+#navigation ul li.nav_home a:hover { background-image:url(../images/icon_nav_home-hover.gif); }
+#navigation ul li.nav_help a { background-image:url(../images/icon_nav_help.gif); }
+#navigation ul li.nav_help a:hover { background-image:url(../images/icon_nav_help-hover.gif); }
+#navigation .subnavigation { background-image:url(../images/bg_subnavigation.png); }
+
+#service ul li { background-image:url(../images/divider_navigation.gif); }
+#service ul li.nav_account a { background-image:url(../images/icon_nav_account.gif); }
+#service ul li.nav_account a:hover { background-image:url(../images/icon_nav_account-hover.gif); }
+#service ul li.nav_logout a { background-image:url(../images/icon_nav_logout.gif); }
+#service ul li.nav_logout a:hover { background-image:url(../images/icon_nav_logout-hover.gif); }
+#service ul li.nav_login a { background-image:url(../images/icon_nav_login.gif); }
+#service ul li.nav_login a:hover { background-image:url(../images/icon_nav_login-hover.gif); }
+
+#search .dropdown h3 { background-image:url(../images/icon_dropdown_primary.gif); }
+#sidebar .subnavigation { background-image:url(../images/divider_line.gif); }
+
+.template_page #sidebar .subnavigation ul { background-image:url(../images/divider_line.gif); }
+.filters { background-image:url(../images/divider_line.gif); }
+.filters ul li a.filter_remove { background-image:url(../images/icon_remove.gif); }
+.facets { background-image:url(../images/divider_line.gif); }
+.facet h5.expanded { background-image:url(../images/icon_facet-expanded.gif); }
+.facet h5.collapsed { background-image:url(../images/icon_facet-collapsed.gif); }
+
+#breadcrumb ul li { background-image:url(../images/divider_breadcrumb.gif); }
+#breadcrumb ul li a.notepad { background-image:url(../images/icon_breadcrumb_notepad.gif); }
+
+#pagefunctions ul li a { background-image:url(../images/bg_button-light.gif); }
+#pagefunctions #pagefunction_rss a { background-image:url(../images/icon_pagefunctions_rss.gif); }
+#pagefunctions #pagefunction_print a { background-image:url(../images/icon_pagefunctions_print.gif); }
+#pagefunctions #pagefunction_send a { background-image:url(../images/icon_pagefunctions_send.gif); }
+#pagefunctions #pagefunction_save a { background-image:url(../images/icon_pagefunctions_save.gif); }
+
+.tabs ul.ui-tabs-nav { background-image:url(../images/bg_tabs.gif); }
+.tabs ul.ui-tabs-nav li { background-image:url(../images/divider_tab.gif); }
+.tabs ul.ui-tabs-nav li.ui-tabs-selected { background-image:url(../images/divider_tab-active.gif); }
+
+#notepad { background-image:url(../images/bg_clipboard.gif); }
+#notepad h3 { background-image:url(../images/icon_notepad.gif); }
+#notepad .linkbutton { background-image:url(../images/bg_button-light.gif); }
+
+.paging .paging_first { background-image:url(../images/icon_paging_first.gif); }
+.paging .paging_back { background-image:url(../images/icon_paging_back.gif); }
+.paging .paging_forward { background-image:url(../images/icon_paging_forward.gif); }
+.paging .paging_last { background-image:url(../images/icon_paging_last.gif); }
+.paging .paging_pages { background-image:url(../images/icon_paging_pages-left.gif); }
+.paging .paging_pages ul { background-image:url(../images/icon_paging_pages-right.gif); }
+
+.tools .linkbutton { background-image:url(../images/bg_button-light.gif); }
+
+
+/* --- GLOBAL.CSS Overrides ---------------------------------------------------------- */
+a.externallink { background-image:url(../images/icon_link-external.gif); }
+
+ul.list li { background-image:url(../images/bg_list.gif); }
+ul.listing li { background-image:url(../images/bg_listing.gif); }
+
+img.dropshadow { background-image:url(../images/bg_dropshadow.gif); }
+
+input.submit, input.reset { background-image:url(../images/bg_button.gif); }
+input.primary {background-image:url(../images/bg_button_primary.gif);}
+
+.button { background-image:url(../images/bg_button.gif); }
+.linkbutton { background-image:url(../images/bg_button.gif); }
+.linkbutton.primary { background-image:url(../images/bg_button_primary.gif); }
+
+.dropdown h3 { background-image:url(../images/icon_dropdown.gif); }
+
+.ui-slider { background-image:url(../images/bg_slider.gif); }
+.ui-slider .ui-slider-handle { background-image:url(../images/icon_slider_handle.png); }
+
+.info { background-image:url(../images/icon_info.gif);}
+#info_overlay #info_arrow { background-image:url(../images/bg_info-arrow.gif); }
+
+.expanded { background-image:url(../images/icon_toggler-expanded.gif); }
+.collapsed { background-image:url(../images/icon_toggler-collapsed.gif); }
+
+.icon_goto span { background-image:url(../images/icon_goto.gif); }
+.icon_goto_primary span { background-image:url(../images/icon_goto_primary.gif); }
+.icon_backto span { background-image:url(../images/icon_backto.gif); }
+.icon_add span { background-image:url(../images/icon_add.gif); }
+.icon_show span { background-image:url(../images/icon_show.gif); }
+.icon_favorit span { background-image:url(../images/icon_favorit.gif); }
+.icon_favorit_remove span { background-image:url(../images/icon_favorit_remove.gif); }
+.icon_favorit_library { background-image:url(../images/icon_favorit_library.gif); }
+.icon_delete span { background-image:url(../images/icon_delete.gif); }
+.icon_link_primary span { background-image:url(../images/icon_link_primary.gif); }
+.icon_notepad_add { background-image:url(../images/icon_notepad_add.gif); }
+.icon_notepad_remove { background-image:url(../images/icon_notepad_remove.gif); }
+.icon_notepad_add_link { background-image:url(../images/icon_notepad_add.gif); }
+.icon_notepad { background-image:url(../images/icon_notepad.gif); }
+ul.miniactions li.miniaction_link a { background-image:url(../images/icon_miniaction_link.gif); }
+ul.miniactions li.miniaction_favorite_add a { background-image:url(../images/icon_miniaction_favorite_add.gif); }
+ul.miniactions li.miniaction_favorite_remove a { background-image:url(../images/icon_miniaction_favorite_remove.gif);}
+
+.icon_lending_online { background-image:url(../images/icon_lending_online.gif); }
+.icon_lending_onplace { background-image:url(../images/icon_lending_onplace.gif); }
+.icon_lending_notavailable { background-image:url(../images/icon_lending_notavailable.gif); }
+
+.icon_format_book { background-image:url(../images/icon_format_book.gif); }
+.icon_format_book_e { background-image:url(../images/icon_format_book_e.gif); }
+.icon_format_article { background-image:url(../images/icon_format_article.gif); }
+.icon_format_article_e { background-image:url(../images/icon_format_article_e.gif); }
+.icon_format_archive { background-image:url(../images/icon_format_archive.gif); }
+.icon_format_archive_e { background-image:url(../images/icon_format_archive_e.gif); }
+.icon_format_film { background-image:url(../images/icon_format_film.gif); }
+.icon_format_film_e { background-image:url(../images/icon_format_film_e.gif); }
+.icon_format_magazine { background-image:url(../images/icon_format_magazine.gif); }
+.icon_format_magazine_e { background-image:url(../images/icon_format_magazine_e.gif); }
+.icon_format_map { background-image:url(../images/icon_format_map.gif); }
+.icon_format_map_e { background-image:url(../images/icon_format_map_e.gif); }
+.icon_format_microfilm { background-image:url(../images/icon_format_microfilm.gif); }
+.icon_format_music { background-image:url(../images/icon_format_music.gif); }
+.icon_format_music_e { background-image:url(../images/icon_format_music_e.gif); }
+.icon_format_newspaper { background-image:url(../images/icon_format_newspaper.gif); }
+.icon_format_newspaper_e { background-image:url(../images/icon_format_newspaper_e.gif); }
+.icon_format_object { background-image:url(../images/icon_format_object.gif); }
+.icon_format_online-resource { background-image:url(../images/icon_format_online-resource.gif); }
+.icon_format_photograph { background-image:url(../images/icon_format_photograph.gif); }
+.icon_format_photograph_e { background-image:url(../images/icon_format_photograph_e.gif); }
+.icon_format_recording { background-image:url(../images/icon_format_recording.gif); }
+.icon_format_recording_e { background-image:url(../images/icon_format_recording_e.gif); }
+.icon_format_score { background-image:url(../images/icon_format_score.gif); }
+.icon_format_score_e { background-image:url(../images/icon_format_score_e.gif); }
+.icon_format_software { background-image:url(../images/icon_format_software.gif); }
+
+.rating_1 { background-image:url(../images/icon_rating_01.gif); }
+.rating_2 { background-image:url(../images/icon_rating_02.gif); }
+.rating_3 { background-image:url(../images/icon_rating_03.gif); }
+.rating_4 { background-image:url(../images/icon_rating_04.gif); }
+.rating_5 { background-image:url(../images/icon_rating_05.gif); }
+
+#infoWindow #infoWindowInner {
+    background-image:url(../images/bg_rollover.gif) !important;
+}
+
+
+}

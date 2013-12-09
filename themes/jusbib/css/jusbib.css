@@ -1,0 +1,35 @@
+@charset "UTF-8";
+/* --- Projekt swissbib --------------------------------------------------- */
+/* --- CSS Framework: theme Zuerich definitions ---------------------------------------------- */
+/*---- vers. 01 GH: 20100617 -------*/
+
+
+
+/* Logo jusbib */
+#logo a {
+    height:55px;
+    padding-bottom: 13px;
+    background-image:url("../images/logo_jusbib.png");
+}
+
+.template_home #logo a {
+    height:120px;
+    padding-bottom: 28px;
+    background-image:url("../images/logo_jusbib-home.png");
+}
+
+/* Header-Background Overrides */
+#header {
+    background: rgb(58,113,138) !important
+    /*background-image:url(img/bg_header.gif); */
+}
+.template_home #header { background: rgb(58,113,138) !important }
+.template_home #header { background: rgb(58,113,138) !important }
+
+#search input.simple_search_large {
+    width:370px;
+}
+
+#pagefunctions #pagefunction_link a {
+    background-image: url("../images/icon_pagefunctions_perma.gif");
+}
