@@ -33,3 +33,25 @@
 #pagefunctions #pagefunction_link a {
     background-image: url("../images/icon_pagefunctions_perma.gif");
 }
+
+/** Slider blue */
+.ui-widget-header {
+    border: 1px solid #3A718A;
+    background: #3A718A url(../images/bg_button_primary.gif) 50% 50% repeat-x;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+#publishDateSlider a.ui-state-hover {
+    border: 1px solid #CCEFFA;
+    background: #CCEFFA url(../images/bg_navigation.gif) 50% 50% repeat-x;
+    font-weight: bold;
+    color: #c77405;
+}
+
+/*
+Bibliotheksinfo-Link mit Fragezeichen
+*/
+.bibinfo {
+    background-image: url(../images/icon_info.gif);
+}
