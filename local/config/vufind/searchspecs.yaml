@@ -138,6 +138,10 @@ WLC:
   DismaxFields:
     - localcode_txt_mv
 
+WNEL:
+  DismaxFields:
+    - itemnote_txt_mv
+
 Title:
   DismaxHandler: edismax
   DismaxFields:
