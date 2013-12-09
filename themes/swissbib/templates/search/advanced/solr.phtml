@@ -23,7 +23,29 @@ if (isset($this->dateRangeLimit)) {
     $this->headScript()->appendFile('pubdate_slider.js');
 }
 
-?>
+/**
+ * recursive function is necessary to print tree!
+ * @param $classification
+ * @param $translator
+ */
+function renderTreeItem($classification,&$translator) {
+    $entry = $classification['entry'];
+    ?>
+    <ul>
+        <li>
+            <ins>&nbsp;</ins>
+            <input type="hidden" value="navDrsys:&quot;<?=$entry['queryValue']?>&quot;">
+            <a> <?=$entry['value']?> <?=$translator->translate($entry['value'])?> ( <?=$entry['count']?> Treffer)</a>
+            <? if (count($classification['children']) > 0) {
+                foreach ($classification['children'] as $child) {
+                    renderTreeItem($child,$translator);
+                }
+            }
+            ?>
+        </li>
+    </ul>
+<?}?>
+
 
 <fieldset>
     <h3 class="toggler persist collapsed" id="searchoption_toggler_refine">
@@ -33,6 +55,7 @@ if (isset($this->dateRangeLimit)) {
     <div class="searchoption_toggler_refine">
         <?php foreach ($facetGroups as $facetGroup): ?>
             <?php foreach ($facetGroup as $facet): ?>
+                <?php if($facet['field']==='navDrsys') continue; ?>
                 <div class="fieldbox">
                     <?php $fieldKey = str_replace(' ', '', $facet['field']); ?>
 
@@ -99,6 +122,22 @@ if (isset($this->dateRangeLimit)) {
             );
         }
         ?>
+
+        <? if (!empty($this->classificationTree)) : ?>
+            <div class="fieldbox">
+                <label class="label"><?=$this->transEsc("Related Topics") ?></label>
+                <div id="classification-tree" class="jstree jstree-default">
+                    <ul>
+                        <li>
+                            <ins>&nbsp;</ins>
+                            <a><?=$this->transEsc('Subjects')?></a>
+                            <? foreach($this->classificationTree as $classification){ renderTreeItem($classification,$this->translator); } ?>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        <? endif; ?>
+
 
     </div>
 </fieldset>

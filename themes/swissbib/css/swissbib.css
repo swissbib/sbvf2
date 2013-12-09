@@ -133,6 +133,40 @@
     height: auto;
 }
 
+/** ------------ adv. search: classification tree ------------  */
+#classification-tree {
+    float: left;
+}
+
+#classification-tree.jstree-default .jstree-clicked {
+    background: none;
+    border: 1px solid #FFF;
+    padding: 0 2px 0 1px;
+}
+
+#classification-tree.jstree-default li.selected > a {
+    background: #0279AA;
+    color: #FFF;
+    border: 1px solid #0279AA;
+    padding: 0 2px 0 1px;
+}
+
+#classification-tree.jstree-default > ul > li.selected > a { /* root node */
+    background: none;
+    color: #000;
+    border: 1px solid #FFF;
+    padding: 0 2px 0 1px;
+}
+
+#classification-tree.jstree-default li a:hover {
+    background: #12AFEF;
+    border: 1px solid #12AFEF;
+    padding: 0 2px 0 1px;
+    cursor: pointer;
+}
+
+
+
 /** ------------ facets ------------  */
 div.facets fieldset#publishDateSlider {
     margin: 5px 0 0 5px !important;;

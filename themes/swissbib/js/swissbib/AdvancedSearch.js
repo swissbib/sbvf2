@@ -15,10 +15,29 @@ swissbib.AdvancedSearch = {
 	init: function() {
 		if( this.isInAdvancedSearch() ) {
 			this.initFromSearchDetails();
+            this.initJsTree();
+
 
 			$("#addGroupLink").removeClass("offscreen");
 		}
 	},
+
+    /**
+     * @return void
+     */
+    initJsTree: function() {
+        jQuery("#classification-tree").jstree({
+            "plugins" : [ "themes", "html_data", "ui" ],
+            "themes" : {
+                "url": path + '/themes/blueprint/js/jsTree/themes/vufind/style.css',
+                "icons": false
+            }
+        })
+            .bind("select_node.jstree", function (event, data) {
+                data.rslt.obj.toggleClass("selected");
+                data.rslt.obj.hasClass("selected") ? data.rslt.obj.children("input").attr("name","filter[]") : data.rslt.obj.children("input").removeAttr("name");
+            });
+    },
 
 
 

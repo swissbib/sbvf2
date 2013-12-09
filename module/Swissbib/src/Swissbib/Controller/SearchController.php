@@ -11,6 +11,7 @@ use VuFind\Controller\SearchController as VuFindSearchController;
 use VuFind\Search\Results\PluginManager as VuFindSearchResultsPluginManager;
 
 use Swissbib\VuFind\Search\Results\PluginManager as SwissbibSearchResultsPluginManager;
+use Swissbib\Hierarchy\SimpleTreeGenerator;
 
 /**
  * @package       Swissbib
@@ -106,6 +107,19 @@ class SearchController extends VuFindSearchController
 
 		$viewModel->setVariable('allTabsConfig', $allTabsConfig);
 		$viewModel->setVariable('activeTabKey', $activeTabKey);
+
+
+        $mainConfig						= $this->getServiceLocator()->get('Vufind\Config')->get('config');
+        $isCatTreeElementConfigured     = $mainConfig->Site->displayCatTreeElement;
+        $isCatTreeElementConfigured =  !empty($isCatTreeElementConfigured) && ($isCatTreeElementConfigured == "true"  ||  $isCatTreeElementConfigured == "1") ? "1" : 0;
+
+        if ($isCatTreeElementConfigured) {
+            $treeGenerator                  = new SimpleTreeGenerator($viewModel->facetList['navDrsys']['list']);
+            $viewModel->classificationTree  = $treeGenerator->getTree();
+            $viewModel->translator          = $this->getServiceLocator()->get('VuFind\Translator');
+        }
+
+
 
 		return $viewModel;
 	}
