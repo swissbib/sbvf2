@@ -263,6 +263,6 @@ abstract class EbooksOnDemandBase extends CustomizedMethods
 	 */
 	protected function getLinkPattern($institutionCode)
 	{
-		return $this->getConfigValue($institutionCode) . '_link';
+		return $this->getConfigValue($institutionCode . '_link') ;
 	}
 }
