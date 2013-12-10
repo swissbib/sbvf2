@@ -260,3 +260,24 @@ ctrlnum:
   QueryFields:
     ctrlnum:
       - [ctrlnum, ~]
+
+Autosuggest:
+  DismaxHandler: dismax
+  DismaxFields:
+    - title_short
+    - author
+    - author_additional
+  QueryFields:
+    title_short:
+      - [onephrase, 350]
+      - [and, 200]
+      - [or, 100]
+    author:
+      - [onephrase, 350]
+      - [and, 200]
+      - [or, 100]
+    author_additional:
+      - [onephrase, 50]
+      - [and, 50]
+      - [or, 20]
+

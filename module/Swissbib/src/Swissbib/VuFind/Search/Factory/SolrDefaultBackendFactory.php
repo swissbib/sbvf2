@@ -151,7 +151,7 @@ class SolrDefaultBackendFactory extends VuFindSolrDefaultBackendFactory
      *
      * @return QueryBuilder
      */
-    protected function createQueryBuilder()
+/*    protected function createQueryBuilder()
     {
         $specs   = $this->loadSpecs();
         $builder = new QueryBuilder($specs);
@@ -168,7 +168,7 @@ class SolrDefaultBackendFactory extends VuFindSolrDefaultBackendFactory
         return $builder;
     }
 
-
+*/
 
 
 }

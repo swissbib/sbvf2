@@ -445,6 +445,16 @@ return array(
                     'shibboleth' => 'Swissbib\VuFind\Auth\Shibboleth',
                 ),
             ),
+            'autocomplete' => array(
+                'factories' => array(
+                    'solr' => function ($sm) {
+                            return new \Swissbib\VuFind\Autocomplete\Solr (
+                                $sm->getServiceLocator()->get('VuFind\SearchResultsPluginManager')
+                            );
+                        }
+                )
+            ),
+
 
             'recorddriver'             => array(
                 'factories' => array(
