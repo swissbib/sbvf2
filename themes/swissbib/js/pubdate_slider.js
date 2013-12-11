@@ -36,6 +36,10 @@ function makePublishDateSlider(prefix) {
         slide: function(event, ui) {
             $('#' + prefix + 'from').val(ui.values[0]);
             $('#' + prefix + 'to').val(ui.values[1]);
+        },
+        change: function(event, ui) {
+            $('#' + prefix + 'from').attr('name',prefix + 'from'); //activate Slider, when changed
+            $('#' + prefix + 'to').attr('name',prefix + 'to');
         }
     });
     // initialize the slider with the original values
@@ -55,5 +59,7 @@ $(document).ready(function(){
         var myId = $(this).attr('id');
         var prefix = myId.substr(0, myId.length - 6);
         makePublishDateSlider(prefix);
+        $('#' + prefix + 'from').attr('name',''); //deactivate Slider in search
+        $('#' + prefix + 'to').attr('name','');
     });
 });

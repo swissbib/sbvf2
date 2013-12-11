@@ -1,17 +1,13 @@
 <?php
-/** @var	Swissbib\RecordDriver\Summon	        $resultItem  */
-/** @var	Swissbib\View\Helper\Record		        $viewRecord  */
-
 if ( $results->getResultTotal() > 0  ) {
-    // @todo Don't use $_GET parameters directly
-    $viewRecord      = $this->record();
-    $startYear       = 1980;
-    $publishDateFrom = isset($_GET['PublicationDatefrom']) ? intval($_GET['PublicationDatefrom']) : $startYear;
-    $publishDateTo   = isset($_GET['PublicationDateto'])   ? intval($_GET['PublicationDateto'])   : intval(date('Y')) + 1;
+    $viewRecord         = $this->record();
+    $dateRange          = $params->getDateRange();
+    $publishDateFrom    = $dateRange['from'];
+    $publishDateTo      = $dateRange['to'];
     $this->headScript()->appendFile('pubdate_slider.js');
 ?>
 <script language="javascript">
-    setPublishDateSliderMin(<?= $startYear ?>)
+    setPublishDateSliderMin(<?=$dateRange['min'] ?>)
 </script>
 <div id="facet_pubdate_slider" class="facet">
     <h5 id="facet_toggler_publishdate" onclick="$('#publishDateForceHeight').toggleClass('publishDateForceHeight')"
@@ -19,24 +15,24 @@ if ( $results->getResultTotal() > 0  ) {
 
     <form action="" name="publishDateFilter" id="publishDateFilter">
         <?php /* Pass on other filter criteria via hidden fields, remove last publishDate */ ?>
-        <?= $results->getUrlQuery()->asHiddenFields(array('filter' => "/publishDate:.*/")) ?>
-        <input type="hidden" name="daterange[]" value="publishDate"/>
+        <?= $results->getUrlQuery()->asHiddenFields(array('filter' => "/PublicationDate:.*/")) ?>
+        <input type="hidden" name="daterange[]" value="PublicationDate"/>
 
         <div class="publishDateForceHeight" id="publishDateForceHeight">
             <fieldset class="publishDateLimit facet_toggler_publishdate" id="publishDateSlider">
                 <div class="values">
                     <div>
-                        <label for="publishDatefrom"><?= $this->transEsc('date_from') ?>:</label>
-                        <input type="text" size="4" maxlength="4" class="yearbox" name="publishDatefrom"
-                               id="publishDatefrom" value="<?= $publishDateFrom ?>"/>
+                        <label for="PublicationDatefrom"><?= $this->transEsc('date_from') ?>:</label>
+                        <input type="text" size="4" maxlength="4" class="yearbox" name="publicationDatefrom"
+                               id="PublicationDatefrom" value="<?= $publishDateFrom ?>"/>
                     </div>
                     <div>
-                        <label for="publishDateto"><?= $this->transEsc('date_to') ?>:</label>
-                        <input type="text" size="4" maxlength="4" class="yearbox" name="publishDateto"
-                               id="publishDateto" value="<?= $publishDateTo ?>"/>
+                        <label for="PublicationDateto"><?= $this->transEsc('date_to') ?>:</label>
+                        <input type="text" size="4" maxlength="4" class="yearbox" name="publicationDateto"
+                               id="PublicationDateto" value="<?= $publishDateTo ?>"/>
                     </div>
                 </div>
-                <div id="publishDateSlider" class="dateSlider"></div>
+                <div id="PublicationDateSlider" class="dateSlider"></div>
                 <input type="submit" value="<?= $this->transEsc('Set') ?>" id="publishDategoButton"/>
             </fieldset>
         </div>

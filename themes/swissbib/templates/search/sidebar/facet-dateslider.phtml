@@ -1,8 +1,8 @@
 <?php
-// @todo Don't use $_GET parameters directly
 $this->headScript()->appendFile('pubdate_slider.js');
-$publishDateFrom = isset($_GET['publishDatefrom']) ? intval($_GET['publishDatefrom']) : '1450';
-$publishDateTo = isset($_GET['publishDateto']) ? intval($_GET['publishDateto']) : intval(date('Y')) + 1;
+$dateRange          = $params->getDateRange();
+$publishDateFrom    = $dateRange['from'];
+$publishDateTo      = $dateRange['to'];
 ?>
 <div id="facet_pubdate_slider" class="facet">
     <h5 id="facet_toggler_publishdate" onclick="$('#publishDateForceHeight').toggleClass('publishDateForceHeight')"

@@ -36,9 +36,7 @@ $checkboxFilters = $results->getParams()->getCheckboxFacets();
 																				   ));?>
 
 	<!-- Slider widget: Range of publication date  -->
-	<?=$this->render($this->tabTemplate('search/sidebar/facet-dateslider', $this->activeTabKey), array(
-																					 'results'	=> $results
-																				));?>
+	<?=$this->render($this->tabTemplate('search/sidebar/facet-dateslider', $this->activeTabKey));?>
 
 </div>
 
