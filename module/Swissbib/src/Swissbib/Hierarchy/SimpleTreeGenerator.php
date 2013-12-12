@@ -30,7 +30,7 @@ class SimpleTreeGenerator {
      * @return string
      */
     private function generatePageTree(&$datas, $currentNode = ""){
-        $tree = [];
+        $tree = array();
 
         $currentNodeHead = explode(".", $currentNode);
         $currentNodeHead = $currentNodeHead[0];
@@ -46,10 +46,10 @@ class SimpleTreeGenerator {
 
             if ($parent === $currentNode) {
                 unset($datas[$key]);
-                $tree[] = [
+                $tree[] = array(
                     "entry" => $data,
                     "children" => $this->generatePageTree($datas, $data['value'])
-                ];
+                );
             }
         }
 
@@ -65,7 +65,7 @@ class SimpleTreeGenerator {
      * @return array
      */
     private function orderAndFilter($arrayList) {
-        $sorted = [];
+        $sorted = array();
 
         foreach ($arrayList as $classification) {
             preg_match_all("/[0-9]/",$classification['value'],$out,PREG_OFFSET_CAPTURE );
@@ -74,10 +74,9 @@ class SimpleTreeGenerator {
 
             if (!isset($sorted[$key])) {
                 $sorted[$key] = $classification;
-                $sorted[$key]['queryValue'] = $classification['value'];
+                $sorted[$key]['queryValue'] = $key;
             } else {
                 $sorted[$key]['count'] += $classification['count'];
-                $sorted[$key]['queryValue'] .= " OR " . $classification['value'];
             }
             $sorted[$key]['value'] = $key;
         }

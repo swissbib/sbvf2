@@ -116,7 +116,6 @@ class SearchController extends VuFindSearchController
         if ($isCatTreeElementConfigured) {
             $treeGenerator                  = new SimpleTreeGenerator($viewModel->facetList['navDrsys']['list']);
             $viewModel->classificationTree  = $treeGenerator->getTree();
-            $viewModel->translator          = $this->getServiceLocator()->get('VuFind\Translator');
         }
 
 
