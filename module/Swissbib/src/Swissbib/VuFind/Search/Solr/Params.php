@@ -13,9 +13,9 @@ class Params extends VuFindSolrParams
     /**
      * @var array
      */
-    protected $dateRange = [
+    protected $dateRange = array(
         'isActive' => false
-    ];
+    );
 
 
 

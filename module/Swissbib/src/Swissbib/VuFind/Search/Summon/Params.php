@@ -15,9 +15,9 @@ class Params extends VFSummonParams
     /**
      * @var array
      */
-    protected $dateRange = [
+    protected $dateRange = array(
         'isActive' => false
-    ];
+    );
 
 
     public function getSearchClassId()
