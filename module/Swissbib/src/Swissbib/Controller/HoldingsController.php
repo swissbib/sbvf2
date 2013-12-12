@@ -43,11 +43,8 @@ class HoldingsController extends BaseController
         $holdingsData['recordTitle'] = $record->getTitle();
         $holdingsData['institution'] = $institution;
 
-        if (isset($holdingsData['items']) && !empty($holdingsData['items'])) {
-            $template = 'Holdings/items';
-        }
-        if (isset($holdingsData['holdings']) && !empty($holdingsData['holdings'])) {
-            $template = 'Holdings/holdings';
+        if (isset($holdingsData['holdings']) && !empty($holdingsData['holdings']) || isset($holdingsData['items']) && !empty($holdingsData['items'])) {
+            $template = 'Holdings/holdings-and-items';
         }
 
         return $this->getAjaxViewModel($holdingsData, $template);
