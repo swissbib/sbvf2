@@ -401,3 +401,13 @@
     font-weight: bold;
     color: #c77405;
 }
+
+
+/* -------------------------------------------------------------------------------------
+ Advanced Search - Classification tree
+ ======================================================================================*/
+#classification-tree.jstree-default li.selected > a,
+#classification-tree.jstree-default li a:hover {
+    background: #F67F00;
+    border-color: #F67F00;
+}

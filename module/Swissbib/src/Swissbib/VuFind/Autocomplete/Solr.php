@@ -49,7 +49,7 @@ class Solr extends VFAutocompleteSolr {
                         $current[$field], $query, $exact
                     );
                     if ($bestMatch) {
-                        $forbidden = array(':', '&', '?', '*', '[',']', '"', '/','\\',';','.');
+                        $forbidden = array(':', '&', '?', '*', '[',']', '"', '/','\\',';','.','=');
                         $bestMatch = str_replace($forbidden, " ", $bestMatch);
 
                         $results[] = $bestMatch;

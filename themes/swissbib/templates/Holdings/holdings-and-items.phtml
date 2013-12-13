@@ -1,0 +1,48 @@
+<?php
+/** @var Array[] $holdings */
+/** @var String $record */
+/** @var String $institution */
+/** @var String $recordTitle */
+
+$idTable = 'holdings-holding-' . $record . '-' . $institution;
+?>
+<table class="holdings-holding holdingTable" id="<?= $this->escapeHtml($idTable) ?>">
+    <thead>
+    <tr>
+        <th class="actions">&nbsp;</th>
+        <th class="availability"><?= $this->transEsc('Availability') ?></th>
+        <th class="location"><?= $this->transEsc('Location') ?></th>
+        <th class="callnr"><?= $this->transEsc('Call Number') ?></th>
+        <th class="qr"><?= $this->transEsc('hold_qr') ?></th>
+        <th class="description"><?= $this->transEsc('Description') ?></th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php
+    if (!empty($holdings)) {
+        foreach ($holdings as $holding) {
+            echo $this->render(
+                'Holdings/holding-holding.phtml',
+                array(
+                    'holding'     => $holding,
+                    'record'      => $record,
+                    'recordTitle' => $recordTitle
+                )
+            );
+        }
+    }
+    if (!empty($items)) {
+        foreach ($items as $item) {
+            echo $this->render(
+                'Holdings/holding-item.phtml',
+                array(
+                    'item'        => $item,
+                    'record'      => $record,
+                    'recordTitle' => $recordTitle
+                )
+            );
+        }
+    }
+    ?>
+    </tbody>
+</table>

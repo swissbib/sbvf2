@@ -136,6 +136,7 @@
 /** ------------ adv. search: classification tree ------------  */
 #classification-tree {
     float: left;
+    width: 540px;
 }
 
 #classification-tree.jstree-default .jstree-clicked {
@@ -144,11 +145,13 @@
     padding: 0 2px 0 1px;
 }
 
-#classification-tree.jstree-default li.selected > a {
-    background: #0279AA;
+#classification-tree.jstree-default li.selected > a,
+#classification-tree.jstree-default li a:hover {
+    background: #188100;
     color: #FFF;
-    border: 1px solid #0279AA;
+    border: 1px solid #188100;
     padding: 0 2px 0 1px;
+    cursor: pointer;
 }
 
 #classification-tree.jstree-default > ul > li.selected > a { /* root node */
@@ -157,15 +160,6 @@
     border: 1px solid #FFF;
     padding: 0 2px 0 1px;
 }
-
-#classification-tree.jstree-default li a:hover {
-    background: #12AFEF;
-    border: 1px solid #12AFEF;
-    padding: 0 2px 0 1px;
-    cursor: pointer;
-}
-
-
 
 /** ------------ facets ------------  */
 div.facets fieldset#publishDateSlider {
