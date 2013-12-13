@@ -23,28 +23,7 @@ if (isset($this->dateRangeLimit)) {
     $this->headScript()->appendFile('pubdate_slider.js');
 }
 
-/**
- * recursive function is necessary to print tree!
- * @param $classification
- * @param $translator
- */
-function renderTreeItem($classification,&$translator) {
-    $entry = $classification['entry'];
-    ?>
-    <ul>
-        <li>
-            <ins>&nbsp;</ins>
-            <input type="hidden" value="navDrsys:&quot;<?=$entry['queryValue']?>&quot;">
-            <a> <?=$entry['value']?> <?=$translator->translate($entry['value'])?> ( <?=$entry['count']?> Treffer)</a>
-            <? if (count($classification['children']) > 0) {
-                foreach ($classification['children'] as $child) {
-                    renderTreeItem($child,$translator);
-                }
-            }
-            ?>
-        </li>
-    </ul>
-<?}?>
+?>
 
 
 <fieldset>
@@ -131,7 +110,15 @@ function renderTreeItem($classification,&$translator) {
                         <li>
                             <ins>&nbsp;</ins>
                             <a><?=$this->transEsc('Subjects')?></a>
-                            <? foreach($this->classificationTree as $classification){ renderTreeItem($classification,$this->translator); } ?>
+                            <? foreach($this->classificationTree as $classification){
+                                echo $this->render(
+                                    'search/advanced/treeItem',
+                                    array(
+                                         'classification' => $classification
+                                    )
+                                );
+                            }
+                            ?>
                         </li>
                     </ul>
                 </div>

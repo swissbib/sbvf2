@@ -1,0 +1,19 @@
+<? $entry = $classification['entry']; ?>
+<ul>
+    <li>
+        <ins>&nbsp;</ins>
+        <input type="hidden" value="navDrsys:&quot;<?=$entry['queryValue']?>&quot;">
+        <a> <?=$entry['value']?> <?=$this->transEsc($entry['value'])?> (<?=$entry['count']?> <?=$this->transEsc('Showing')?>)</a>
+        <? if (count($classification['children']) > 0) {
+            foreach ($classification['children'] as $child) {
+                echo $this->render(
+                    'search/advanced/treeItem',
+                    array (
+                          'classification' => $child
+                    )
+                );
+            }
+        }
+        ?>
+    </li>
+</ul>

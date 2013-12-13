@@ -34,6 +34,13 @@
     background-image: url("../images/icon_pagefunctions_perma.gif");
 }
 
+/** adv. search: classification tree */
+#classification-tree.jstree-default li.selected > a,
+#classification-tree.jstree-default li a:hover {
+    background: #0279AA;
+    border-color: #0279AA;
+}
+
 /** Slider blue */
 .ui-widget-header {
     border: 1px solid #3A718A;
