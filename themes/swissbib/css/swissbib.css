@@ -137,6 +137,8 @@
 #classification-tree {
     float: left;
     width: 540px;
+    font-size: 1.2em;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 #classification-tree.jstree-default .jstree-clicked {
@@ -154,11 +156,17 @@
     cursor: pointer;
 }
 
-#classification-tree.jstree-default > ul > li.selected > a { /* root node */
-    background: none;
-    color: #000;
-    border: 1px solid #FFF;
-    padding: 0 2px 0 1px;
+/** ------------ adv. search: tabs ------------  */
+#adv_tab label,
+#adv_tab.ui-widget select,
+#adv_tab.ui-widget input{
+    font-size: 1.2em;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#adv_tab.tabs .ui-slider .ui-slider-handle {
+    background-position: 50% 50%;
+    background-repeat: repeat-x;
 }
 
 /** ------------ facets ------------  */

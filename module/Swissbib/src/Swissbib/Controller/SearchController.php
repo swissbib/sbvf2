@@ -118,6 +118,8 @@ class SearchController extends VuFindSearchController
             $viewModel->classificationTree  = $treeGenerator->getTree();
         }
 
+        $viewModel->activeTabId = $mainConfig->Site->adv_search_activeTabId;
+
         return $viewModel;
     }
 
