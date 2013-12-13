@@ -12,6 +12,13 @@ use SerialsSolutions_Summon_Query as SummonQuery,
 class Params extends VFSummonParams
 {
 
+    /**
+     * @var array
+     */
+    protected $dateRange = array(
+        'isActive' => false
+    );
+
 
     public function getSearchClassId()
     {
@@ -96,6 +103,44 @@ class Params extends VFSummonParams
     public function getTypeLabel()
     {
         return $this->getServiceLocator()->get('Swissbib\TypeLabelMappingHelper')->getLabel($this);
+    }
+
+
+
+    /**
+     * @return array
+     */
+    public function getDateRange()
+    {
+        $this->dateRange['min'] = 1980;
+        $this->dateRange['max'] = intval(date('Y')) + 1;
+
+        if (!$this->dateRange['isActive']) {
+            $this->dateRange['from']    = (int) $this->dateRange['min'];
+            $this->dateRange['to']      = (int) $this->dateRange['max'];
+        }
+
+        return $this->dateRange;
+    }
+
+
+
+    /**
+     * @Override
+     *
+     * @param string $field field to use for filtering.
+     * @param string $from  year for start of range.
+     * @param string $to    year for end of range.
+     *
+     * @return string       filter query.
+     */
+    protected function buildDateRangeFilter($field, $from, $to)
+    {
+        $this->dateRange['from']        = (int) $from;
+        $this->dateRange['to']          = (int) $to;
+        $this->dateRange['isActive']    = true;
+
+        return parent::buildDateRangeFilter($field, $from, $to);
     }
 
 }

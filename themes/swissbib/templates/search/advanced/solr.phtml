@@ -1,7 +1,6 @@
 <?php
 
 $dateRangeName = isset($this->dateRangeName) ? $this->dateRangeName : 'publishDate';
-$startYear = $searchClassId === 'Summon' ? 1980 : 1450;
 $counter = 0;
 $facetGroups = array();
 $favoriteLanguages = array('ger', 'German', 'eng', 'English', 'fre', 'French', 'ita', 'Italian');
@@ -96,7 +95,7 @@ if (isset($this->dateRangeLimit)) {
                 'search/advanced/daterange', array(
                                                   'name'           => $dateRangeName,
                                                   'dateRangeLimit' => $this->dateRangeLimit,
-                                                  'startYear'      => $startYear
+                                                  'params'         => $params
                                              )
             );
         }
