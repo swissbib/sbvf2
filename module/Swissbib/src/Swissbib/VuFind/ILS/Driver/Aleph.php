@@ -572,8 +572,8 @@ class Aleph extends VuFindDriver
 			$itemData['item_id']	= substr($href[0], strrpos($href[0], '/') + 1);
 			$itemData['isbn']		= array($itemData['isbn-raw']);
 			$itemData['id']			= $this->barcodeToID($itemData['barcode']);
-			$itemData['expire']		= $this->parseDate($itemData['expire']);
-			$itemData['create']		= $this->parseDate($itemData['create']);
+			$itemData['expire']		= DateTime::createFromFormat('Ymd', $itemData['expire'])->format('d.m.Y');
+            $itemData['create']     = DateTime::createFromFormat('Ymd', $itemData['create'])->format('d.m.Y');
 			$itemData['balance']	= $itemData['balance'] === '00000000' ? false : $this->parseDate($itemData['balance']);
 			$itemData['delete']		= (string)($delete[0]) === 'Y';
 			$itemData['position']	= ltrim($itemData['sequence'], '0');
