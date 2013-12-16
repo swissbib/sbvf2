@@ -1778,12 +1778,18 @@ class SolrMarc extends VuFindSolrMarc
         $lines = array();
         $summary = $this->getMarcSubFieldMaps(520, array(
             'a' => 'summary',
-//											'b'	=> 'expansion'
+            'b' => 'expansion',
         ), false);
 
         // Copy into simple list
         foreach ($summary as $item) {
-            $lines[] = $item['summary'];
+            if(isset($item['expansion'])) {
+                $lines[] = $item['summary'] . '. ' . $item['expansion'];
+            }
+            else {
+                $lines[] = $item['summary'];
+            }
+
         }
 
         return $lines;
