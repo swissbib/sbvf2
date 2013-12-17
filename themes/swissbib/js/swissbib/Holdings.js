@@ -116,7 +116,7 @@ swissbib.Holdings = {
 		width	= width || 650;
 		height	= height|| 760;
 
-		window.open(url, 'eod-popup', 'height=' + height + ',width=' + width).focus();
+		window.open(url, 'eodpopup', 'height=' + height + ',width=' + width).focus();
 	},
 
 
@@ -133,7 +133,7 @@ swissbib.Holdings = {
 		width	= width || 650;
 		height	= height|| 760;
 
-		window.open(url, 'map-popup', 'height=' + height + ',width=' + width).focus();
+		window.open(url, 'mappopup', 'height=' + height + ',width=' + width).focus();
 	},
 
 
