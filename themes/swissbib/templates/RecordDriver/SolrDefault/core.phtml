@@ -142,8 +142,8 @@ $highlightedFulltext = $record->getHighlightedFulltext();
         <?php endif; ?>
 
         <? if ($urls): ?>
-            <h4><?= $this->transEsc('Online Access') ?>: </h4>
             <? foreach ($urls as $current): ?>
+            <h4><?= $this->transEsc('Online Access') ?>: </h4>
                 <p>
                     <a href="<?= $this->escapeHtml($this->proxyUrl($current['url'])) ?>"
                        target="_blank"><?= $this->escapeHtml($current['desc']) ?></a><br/>
