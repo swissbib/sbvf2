@@ -34,7 +34,7 @@ class QrCodeHolding extends AbstractTranslatorHelper
 			$data[] = $recordTitle;
 		}
 		if (!empty($item['institution'])) {
-			$data[] = $this->translator->translate(strtolower($item['institution']), 'institution');
+			$data[] = $this->translator->translate($item['institution'], 'institution');
 		}
 		if (!empty($item['locationLabel'])) {
 			$data[] = $item['locationLabel'];
