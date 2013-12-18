@@ -79,6 +79,7 @@ class HoldingsController extends BaseController
         $networkCode = $dummyHoldingItem['network'];
         $bibSysNumber = $dummyHoldingItem['bibsysnumber'];
         $admCode = $dummyHoldingItem['adm_code'];
+        $bib = $dummyHoldingItem['bib_library'];
         $resourceFilters = $aleph->getResourceFilters($resourceId);
         $extendingOptions = array(
             'availability' => false
@@ -90,6 +91,7 @@ class HoldingsController extends BaseController
             $holdingItem['network'] = $networkCode;
             $holdingItem['bibsysnumber'] = $bibSysNumber;
             $holdingItem['adm_code'] = $admCode;
+            $holdingItem['bib_library'] = $bib;
             $holdingItems[$index] = $helper->extendItem($holdingItem, $record, $extendingOptions);
         }
 
