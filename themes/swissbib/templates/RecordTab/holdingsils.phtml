@@ -9,9 +9,6 @@ $holdings	= $this->extractFavoriteInstitutionsForHoldings($holdings);
 
 ?>
 <? if ($holdings): ?>
-    <div class="print">
-        <h2><?= $this->transEsc('Holdings') ?></h2>
-    </div>
 
 	<? foreach($holdings as $groupCode => $group): ?>
 		<!-- begin: innerbox <?=$groupCode?> -->

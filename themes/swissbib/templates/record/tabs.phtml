@@ -16,7 +16,12 @@ $viewRecord = $this->record($this->driver);
 
     <?php foreach ($this->tabs as $tabKey => $tabObject): ?>        <!-- begin: tab <?=$tabKey?> -->
         <div id="tab-<?= strtolower($tabKey) ?>" class="tab">
-            <?= $viewRecord->getTab($tabObject) ?>
+            <div class="print">
+                <h2><?= $this->transEsc($tabObject->getDescription()) ?></h2>
+            </div>
+            <div class="print-border">
+                <?= $viewRecord->getTab($tabObject) ?>
+            </div>
         </div>
         <!-- end: tab <?=$tabKey?> -->
     <?php endforeach; ?>

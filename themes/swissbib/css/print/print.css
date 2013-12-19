@@ -11,17 +11,17 @@
 .data colgroup, .data caption, .data .col-1, .data .col-2, .data .col-3,
 .data th.col-6, .data td.col-5, .data td.col-6 img,
 .format a, #tabbed li, #pagefunctions, #content .box img,
-#tabnav > h3, #tab-holdings .miniactions, #tab-description > *,
+#tabnav > h3, #tab-holdings .miniactions,
 .ui-widget-header {
 	display: none;
 }
 
 .print,
-#sidebar .print h3, #tabnav, #tab-description .print {
+#sidebar .print h3, #tabnav {
 	display: block;
 }
 
-#tab-holdings, #tab-description, .holdingsBox > div {
+#tab-holdings, .holdingsBox > div {
 	display: block !important; /* override element style added by jQuery */
 }
 
@@ -40,7 +40,8 @@ h1, h2, h3, h4, h6 {
 }
 
 #tab-holdings h4, h5,
-#sidebar .print h3 {
+#sidebar .print h3,
+#tab-toc .keywordList li {
 	font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
 }
 
@@ -130,8 +131,7 @@ a:link, a:visited,
 	Detail (Vollanzeige)
 */
 .box .details,
-.tabs .details,
-#tab-holdings .holdingsBox {
+.print-border {
 	border: none;
 	border-left: 1px solid #333;
 	margin-left: 5px;
@@ -154,7 +154,8 @@ a:link, a:visited,
 	margin-bottom: 0;
 }
 
-.tabs h3 {
+.tabs h3,
+#tab-toc .keywordList li {
 	font-size: 13px;
 }
 
@@ -163,10 +164,12 @@ a:link, a:visited,
 	margin: 0;
 }
 
-#tab-holdings h4 {
+#tab-holdings h4,
+.subjectVocabularies .vocabularyList li {
 	font-size: 13px;
 	font-weight: normal;
-	color: #000;
+	color: #333;
+    list-style: none;
 }
 
 .holdingsBox > div {
@@ -180,6 +183,13 @@ a:link, a:visited,
 #tabnav {
 	padding: 0;
 }
+
+#tab-toc ul,
+.subjectVocabularies .vocabularyList {
+    padding-left: 10px;
+    margin: 0;
+}
+
 
 /* -------------------------------------------------------------------------------------
  content.css
@@ -211,6 +221,13 @@ a:link:after, a:visited:after {
 	content: none;
 }
 
+#hierarchyTreeHolder {
+    border: none;
+}
+
+#hierarchyTree {
+    overflow: hidden;
+}
 
 /* -------------------------------------------------------------------------------------
  jQuery UI
