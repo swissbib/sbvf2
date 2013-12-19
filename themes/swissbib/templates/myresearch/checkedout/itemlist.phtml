@@ -23,18 +23,12 @@
 				$safeId 			= preg_replace('/[^a-zA-Z0-9]/', '', $transaction->getUniqueId());
 				$infoMessages		= array();
 
-				/**
-				 * TODO: The renewal limit should not be hardcoded
-				 * Instead, parse $ilsDetails['renew_info']
-				 * Example: "O (out of 5). No limit on latest due date."
-				 * 04.12.2013/ava
-				 */
 				if ( $isRenewable ) {
-					$Renewals = $ilsDetails['renewals'] .' ' .$this->transEsc('of') .'  5';
+                    $renewalLimit = preg_replace('/^\d+ \(out of (\d+)\).*$/', '$1', $ilsDetails['renew_info']);
+					$Renewals     = $ilsDetails['renewals'] . ' ' .$this->transEsc('of') . ' ' . $renewalLimit;
 				} else {
 					$Renewals = '-';
 				}
-
 
 				if (isset($this->renewResult[$ilsDetails['item_id']])) {
 					$renewDetails = $this->renewResult[$ilsDetails['item_id']];
@@ -77,7 +71,7 @@
                     <?if ($ilsDetails['status'] == 'Active'): ?>
 						<?=$this->escapeHtml($ilsDetails['duedate'])?>
                     <? else: ?>
-						<?=$this->escapeHtml($ilsDetails['duedate'])?> (<?=$this->escapeHtml($ilsDetails['status'])?>)
+						<?=$this->escapeHtml($ilsDetails['duedate'])?> (<?=$this->escapeHtml($this->transEsc($ilsDetails['status']))?>)
                     <? endif; ?>
                 </td>
 				<td><?=$this->escapeHtml($Renewals)?></td>
