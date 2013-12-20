@@ -393,6 +393,12 @@ swissbib.AdvancedSearch = {
         });
 
         return template(data);
+    },
+
+
+    initializeTabs: function(tabContainerId, activeTabId) {
+        var index = $(activeTabId).length > 0 ? $(activeTabId).index() - 1 : 0;
+        $(tabContainerId).tabs({ active: index });
     }
 
 };

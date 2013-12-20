@@ -60,27 +60,27 @@ if (isset($this->dateRangeLimit)) {
                         ?>
 
                         <?php if (strtolower($facet['field'])==="language") : ?>
-                            <?php foreach ($sorted as $index => $display): ?>
-                                <?php $value = $facet['list']['list'][$index]; ?>
-                                <? if (in_array($value['value'],$favoriteLanguages)) : ?>
-                                    <option value='<?= $this->escapeHtml($facet['field'] . ':"' . $value['value'] . '"') ?>' <?= (isset($value['selected']) && $value['selected']) ? ' selected="selected"' : '' ?> title="<?= $this->escapeHtml($display) ?>">
-                                        <?= $this->escapeHtml($display) ?>
-                                    </option>
-                                <? endif; ?>
-                            <?php endforeach; ?>
-                            <optgroup label="<?= $this->transEsc('all_languages') ?>">
-                        <?php endif; ?>
-
-                        <?php foreach ($sorted as $index => $display): /* Render options of current facet's selector */ ?>
-                            <?php $value = $facet['list']['list'][$index]; ?>
+                    <?php foreach ($sorted as $index => $display): ?>
+                        <?php $value = $facet['list']['list'][$index]; ?>
+                        <? if (in_array($value['value'],$favoriteLanguages)) : ?>
                             <option value='<?= $this->escapeHtml($facet['field'] . ':"' . $value['value'] . '"') ?>' <?= (isset($value['selected']) && $value['selected']) ? ' selected="selected"' : '' ?> title="<?= $this->escapeHtml($display) ?>">
                                 <?= $this->escapeHtml($display) ?>
                             </option>
-                        <?php endforeach; ?>
+                        <? endif; ?>
+                    <?php endforeach; ?>
+                        <optgroup label="<?= $this->transEsc('all_languages') ?>">
+                            <?php endif; ?>
 
-                        <?php if ($facet['field']==="language") : ?>
-                            </optgroup>
-                        <?php endif; ?>
+                            <?php foreach ($sorted as $index => $display): /* Render options of current facet's selector */ ?>
+                                <?php $value = $facet['list']['list'][$index]; ?>
+                                <option value='<?= $this->escapeHtml($facet['field'] . ':"' . $value['value'] . '"') ?>' <?= (isset($value['selected']) && $value['selected']) ? ' selected="selected"' : '' ?> title="<?= $this->escapeHtml($display) ?>">
+                                    <?= $this->escapeHtml($display) ?>
+                                </option>
+                            <?php endforeach; ?>
+
+                            <?php if ($facet['field']==="language") : ?>
+                        </optgroup>
+                    <?php endif; ?>
 
                     </select>
                 </div>
@@ -126,4 +126,9 @@ if (isset($this->dateRangeLimit)) {
 
 
     </div>
+    <script>
+        $(function(){
+            swissbib.AdvancedSearch.initializeTabs("#adv_tab", "#<?=$activeTabId?>");
+        });
+    </script>
 </fieldset>
