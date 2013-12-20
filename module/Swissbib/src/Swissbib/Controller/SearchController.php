@@ -105,11 +105,15 @@ class SearchController extends VuFindSearchController
         $this->searchClassId    = $activeTabConfig['searchClassId'];
         $viewModel              = parent::advancedAction();
         $viewModel->options     = $this->getServiceLocator()->get('Swissbib\SearchOptionsPluginManager')->get($this->searchClassId);
+        $results                = $this->getResultsManager()->get($this->searchClassId);
 
         $viewModel->setVariable('allTabsConfig', $allTabsConfig);
         $viewModel->setVariable('activeTabKey', $activeTabKey);
+        $viewModel->setVariable('params', $results->getParams());
 
         $mainConfig = $this->getServiceLocator()->get('Vufind\Config')->get('config');
+        $viewModel->adv_search_activeTabId = $mainConfig->Site->adv_search_activeTabId;
+        $viewModel->adv_search_useTabs     = $mainConfig->Site->adv_search_useTabs;
         $isCatTreeElementConfigured = $mainConfig->Site->displayCatTreeElement;
         $isCatTreeElementConfigured = !empty($isCatTreeElementConfigured) && ($isCatTreeElementConfigured == "true" || $isCatTreeElementConfigured == "1") ? "1" : 0;
 
