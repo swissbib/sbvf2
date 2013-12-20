@@ -1,0 +1,56 @@
+<?php if (!empty($lastSort)): ?>
+    <input type="hidden" name="sort" value="<?= $this->escapeHtml($lastSort) ?>"/>
+<?php endif; ?>
+<h3><?= $this->transEsc("Your search terms") ?></h3>
+
+<fieldset class="actions">
+    <label for="advancedsearch_submit" class="hidden"><?= $this->transEsc("Find") ?></label>
+    <input id="advancedsearch_submit" type="submit" class="submit primary"
+           value="<?= $this->transEsc("Find") ?>"/>
+    <label for="advancedsearch_reset" class="hidden"><?= $this->transEsc("Reset") ?></label>
+    <input id="advancedsearch_reset" name="advancedsearch_reset" type="reset" class="reset"
+           value="<?= $this->transEsc('Reset') ?>"/>
+</fieldset>
+
+<fieldset>
+
+
+    <div id="groupJoin" class="searchGroups">
+        <div class="searchGroupDetails">
+            <label for="groupJoinOptions"><?= $this->transEsc("search_match") ?>:</label>
+            <select id="groupJoinOptions" name="join">
+                <option value="AND"><?= $this->transEsc("group_AND") ?></option>
+                <option
+                    value="OR"<?= (isset($searchDetails) && is_object($searchDetails) && $searchDetails->getOperator() == 'OR') ? ' selected="selected"' : '' ?>><?= $this->transEsc("group_OR") ?></option>
+            </select>
+        </div>
+        <h4><?= $this->transEsc("search_groups") ?>:</h4>
+    </div>
+
+    <?php /* An empty div. This is the target for the javascript that builds this screen */ ?>
+    <div id="searchHolder">
+        <?php /* fallback to a fixed set of search groups/fields if JavaScript is turned off */ ?>
+        <?php if (false): ?>
+            <noscript><?= $this->render('search/advanced/noscript.phtml') ?></noscript>
+        <?php endif; ?>
+    </div>
+
+    <div class="fieldbox">
+        <a href="javascript:void(0)" class="linkbutton small icon_add"
+           onclick="swissbib.AdvancedSearch.addNewGroup()"><span><?= $this->transEsc("add_search_group") ?></span></a>
+    </div>
+
+</fieldset>
+
+<?php if (isset($this->extraAdvancedControls)): ?>
+    <?= $this->extraAdvancedControls ?>
+<?php endif; ?>
+
+<fieldset class="actions">
+    <label for="advancedsearch_submit" class="hidden"><?= $this->transEsc("Find") ?></label>
+    <input id="advancedsearch_submit" type="submit" class="submit primary"
+           value="<?= $this->transEsc("Find") ?>"/>
+    <label for="advancedsearch_reset" class="hidden"><?= $this->transEsc("Reset") ?></label>
+    <input id="advancedsearch_reset" name="advancedsearch_reset" type="reset" class="reset"
+           value="<?= $this->transEsc("Reset") ?>"/>
+</fieldset>
