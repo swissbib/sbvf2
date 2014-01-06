@@ -366,12 +366,14 @@ class MyResearchController extends VuFindMyResearchController
 
         // If the referer lives outside of VuFind, don't store it! We only
         // want internal post-login redirects.
-        //$baseUrl = $this->url()->fromRoute('home');
-        //$baseUrlNorm = trim(end(explode('://', $baseUrl, 2)), '/');
-        //if (0 !== strpos($refererNorm, $baseUrlNorm)) {
-        //    return;
-        //}
-
+        $clazz =  $this->getAuthManager()->getAuthClass();
+        if ($clazz === "VuFind\\Auth\\ILS" ) {
+            $baseUrl = $this->url()->fromRoute('home');
+            $baseUrlNorm = trim(end(explode('://', $baseUrl, 2)), '/');
+            if (0 !== strpos($refererNorm, $baseUrlNorm)) {
+                return;
+            }
+        }
         // If the referer is the MyResearch/Home action, it probably means
         // that the user is repeatedly mistyping their password. We should
         // ignore this and instead rely on any previously stored referer.
