@@ -552,9 +552,9 @@ class Aleph extends VuFindDriver
 			'expire'		=> 'z37-end-request-date',
 			'holddate'		=> 'z37-hold-date',
 			'create'		=> 'z37-open-date',
-			'status'		=> 'z37-status',
+			'status'		=> 'status',
 			'sequence'		=> 'z37-sequence',
-			'balance'		=> 'z37-balancer-date',
+			//'balance'		=> 'z37-balancer-date',
 			'institution'	=> 'z30-sub-library-code',
 			'signature'		=> 'z30-call-no',
 			'description'	=> 'z30-description'
@@ -574,9 +574,22 @@ class Aleph extends VuFindDriver
 			$itemData['id']			= $this->barcodeToID($itemData['barcode']);
 			$itemData['expire']		= DateTime::createFromFormat('Ymd', $itemData['expire'])->format('d.m.Y');
             $itemData['create']     = DateTime::createFromFormat('Ymd', $itemData['create'])->format('d.m.Y');
-			$itemData['balance']	= $itemData['balance'] === '00000000' ? false : $this->parseDate($itemData['balance']);
+			//$itemData['balance']	= $itemData['balance'] === '00000000' ? false : $this->parseDate($itemData['balance']);
 			$itemData['delete']		= (string)($delete[0]) === 'Y';
-			$itemData['position']	= ltrim($itemData['sequence'], '0');
+            if (preg_match('/^In process$/', $itemData['status']))
+            {
+                $itemData['status'] = $itemData['status'];
+            }
+            elseif (preg_match('/due date/', $itemData['status']))
+            {
+                $itemData['position'] = ltrim($itemData['sequence'], '0');
+                $itemData['duedate'] = DateTime::createFromFormat('d/m/y', preg_replace('/^.* due date ([0-3][0-9]\/[0-2][0-9]\/[0-9][0-9])$/', '$1', $itemData['status']))->format('d.m.Y');
+
+            }
+            else
+            {
+                $itemData['status'] = $itemData['status'];
+            }
 
 			$holds[] = $itemData;
 		}

@@ -20,9 +20,16 @@
 			$ilsDetails		= $holding->getExtraDetail('ils_details');
 			//$isNonMissingRecord	= is_a($holding, 'VuFind\\RecordDriver\\SolrDefault') && !is_a($holding, 'VuFind\\RecordDriver\\Missing');
 			$safeId 		= preg_replace('/[^a-zA-Z0-9]/', '', $holding->getUniqueId());
-			$balanceInfo	= $ilsDetails['balance'] ? '<span class="balanceInfo">' . $this->transEsc('Due Date') . ': ' . $ilsDetails['balance'] . '</a>' : '';
             $institution    = $ilsDetails['institution'];
-            $position       = $ilsDetails['position'] === '1' ? '' : $ilsDetails['position'] -1;
+            if (preg_match('/^In process$/', $ilsDetails['status']))
+            {
+                $status = $this->transEsc($ilsDetails['status']);
+            }
+            else
+            {
+                $status = $this->transEsc('Waiting in queue') . ': ' . $ilsDetails['position'] . '; ' .
+                          $this->transEsc('Due Date') . ': ' . $ilsDetails['duedate'];
+            }
         ?>
     <tr>
         <td>
@@ -34,7 +41,7 @@
         <td><?=$this->escapeHtml($ilsDetails['title']) ?> <?=$this->escapeHtml($ilsDetails['description']) ?></td>
         <td><?=$this->escapeHtml($ilsDetails['create']) ?></td>
         <td><?=$this->escapeHtml($this->transEsc($ilsDetails['location'])) ?></td>
-        <td><?=$this->escapeHtml($this->transEsc($ilsDetails['status'])) ?><?=$balanceInfo . ' ' . $position?></td>
+        <td><?=$this->escapeHtml($status) ?></td>
         <td><?=$this->escapeHtml($this->zendTranslate($institution, 'institution'))?></td>
         <td><?=$this->escapeHtml($ilsDetails['signature'])?></td>
     </tr>
