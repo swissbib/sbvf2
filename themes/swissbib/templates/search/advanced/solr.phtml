@@ -38,7 +38,7 @@ if (isset($this->dateRangeLimit)) {
                     <?php $fieldKey = str_replace(' ', '', $facet['field']); ?>
 
                     <label for="limit_<?= $this->escapeHtml($fieldKey) ?>" class="label"><?= $this->transEsc($facet['list']['label']) ?></label>
-                    <select id="limit_<?= $this->escapeHtml($fieldKey) ?>" name="filter[]" class="select multiple large" multiple="multiple">
+                    <select id="limit_<?= $this->escapeHtml($fieldKey) ?>" name="filter[]" class="select multiple xlarge" multiple="multiple">
 
                         <?php
                         // Sort the current facet list alphabetically; we'll use this data
@@ -59,7 +59,7 @@ if (isset($this->dateRangeLimit)) {
                         natcasesort($sorted);
                         ?>
 
-                        <?php if (strtolower($facet['field'])===strtolower("language")) : ?>
+                        <?php if (strtolower($facet['field'])==="language") : ?>
                             <?php foreach ($sorted as $index => $display): ?>
                                 <?php $value = $facet['list']['list'][$index]; ?>
                                 <? if (in_array($value['value'],$favoriteLanguages)) : ?>

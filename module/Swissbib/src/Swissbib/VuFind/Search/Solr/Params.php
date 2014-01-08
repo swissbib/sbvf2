@@ -151,4 +151,23 @@ class Params extends VuFindSolrParams
         return $backendParams;
     }
 
+
+
+    /**
+     * @override
+     *
+     * @param string $field Facet field name.
+     *
+     * @return string       Human-readable description of field.
+     */
+    public function getFacetLabel($field)
+    {
+        switch($field) {
+            case 'publishDate':
+                return 'adv_search_year';
+            default:
+                return parent::getFacetLabel($field);
+        }
+    }
+
 }

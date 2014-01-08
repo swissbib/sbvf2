@@ -27,7 +27,7 @@ class EbooksOnDemand extends EbooksOnDemandBase
 	{
 		$institutionCode	= $item['institution'];
 		list(,$publishYear) = $recordDriver->getPublicationDates();
-		$itemFormats		= $recordDriver->getFormatsRaw();
+		$itemFormats		= $recordDriver->getMostSpecificFormat();
 
 		return		$this->isYearInRange($institutionCode, $publishYear)
 				&&	$this->isSupportedInstitution($institutionCode)

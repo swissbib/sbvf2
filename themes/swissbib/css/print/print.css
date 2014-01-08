@@ -1,231 +1,237 @@
 @media print {
 
-
 /* -------------------------------------------------------------------------------------
  display options
  ======================================================================================*/
-
 .no-print,
 #access, #service, #meta, #navigation, #logo h1, #inlay,
 #search, #sidebar h3, #sidebar .subnavigation, .facets, .tools, #notepad, h4.filters_indicator,
 .data colgroup, .data caption, .data .col-1, .data .col-2, .data .col-3,
 .data th.col-6, .data td.col-5, .data td.col-6 img,
 .format a, #tabbed li, #pagefunctions, #content .box img,
-#tabnav > h3, #tab-holdings .miniactions, #tab-description > *,
+#tabnav > h3, #tab-holdings .miniactions,
 .ui-widget-header {
-	display: none;
+    display: none;
 }
 
 .print,
-#sidebar .print h3, #tabnav, #tab-description .print {
-	display: block;
+#sidebar .print h3, #tabnav {
+    display: block;
 }
 
-#tab-holdings, #tab-description, .holdingsBox > div {
-	display: block !important; /* override element style added by jQuery */
+#tab-holdings, .holdingsBox > div {
+    display: block !important; /* override element style added by jQuery */
 }
-
 
 /* -------------------------------------------------------------------------------------
  basemod.css
  ======================================================================================*/
-
 body {
-	margin: 0;
-	padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
 h1, h2, h3, h4, h6 {
-	font-family: Georgia, "Times New Roman", Times, serif;
+    font-family: Georgia, "Times New Roman", Times, serif;
 }
 
 #tab-holdings h4, h5,
-#sidebar .print h3 {
-	font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+#sidebar .print h3,
+#tab-toc .keywordList li {
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
 }
 
 #header {
-	background: none !important; /* override orange.css to only have one print.css */
-	border: none !important;
+    background: none !important; /* override orange.css to only have one print.css */
+    border: none !important;
 }
 
-a,a:link,a:visited {
-	text-decoration: none;
-	color:#000;
+a, a:link, a:visited {
+    text-decoration: none;
+    color: #000;
 }
 
 h1, h4, h5, h6 {
-	font-weight: bold;
-	font-size: 13px;
-	margin: 0;
+    font-weight: bold;
+    font-size: 13px;
+    margin: 0;
 }
 
 h2, h3 {
-	font-weight: bold;
-	font-size: 16px;
-	margin: 0 0 5px 0;
+    font-weight: bold;
+    font-size: 16px;
+    margin: 0 0 5px 0;
 }
 
 h6 {
-	display: inline;
+    display: inline;
 }
 
 .clear {
-	clear: both;
+    clear: both;
 }
-
 
 /* -------------------------------------------------------------------------------------
  swissbib.css / global.css
  ======================================================================================*/
-
 /*
-	List (Trefferliste)
+    List (Trefferliste)
 */
 .data {
-	border-spacing: 0;
-	border: none;
-	position: relative;
+    border-spacing: 0;
+    border: none;
+    position: relative;
 }
 
 .data tr {
-	position: relative;
+    position: relative;
 }
 
 .data tr th {
-	border-top: 0px solid #fff; /*ie fix*/
-	border-right: 0px solid #fff;
-	border-left: 0px solid #fff;
-	border-bottom: 2px solid #000;
-	text-align: left;
+    border-top: 0px solid #fff; /*ie fix*/
+    border-right: 0px solid #fff;
+    border-left: 0px solid #fff;
+    border-bottom: 2px solid #000;
+    text-align: left;
 }
 
 .data tr td {
-	vertical-align: top;
-	padding: 15px 0 5px 0;
-	text-align: left;
-	border-top: 0px solid #fff; /*ie fix*/
-	border-right: 0px solid #fff;
-	border-left: 0px solid #fff;
-	border-bottom: 1px solid #AAA;
-	position: relative;
-	page-break-inside: avoid;
+    vertical-align: top;
+    padding: 15px 0 5px 0;
+    text-align: left;
+    border-top: 0px solid #fff; /*ie fix*/
+    border-right: 0px solid #fff;
+    border-left: 0px solid #fff;
+    border-bottom: 1px solid #AAA;
+    position: relative;
+    page-break-inside: avoid;
 }
 
 .data ul {
-	padding-left: 16px;
-	margin-top: 0;
+    padding-left: 16px;
+    margin-top: 0;
 }
 
 .data .col-6 {
-	width: 40%;
+    width: 40%;
 }
 
 a:link, a:visited,
 .print h3 span {
-	font-weight: normal;
+    font-weight: normal;
 }
 
 /*
-	Detail (Vollanzeige)
+    Detail (Vollanzeige)
 */
 .box .details,
-.tabs .details,
-#tab-holdings .holdingsBox {
-	border: none;
-	border-left: 1px solid #333;
-	margin-left: 5px;
-	padding-left: 8px;
+.print-border {
+    border: none;
+    border-left: 1px solid #333;
+    margin-left: 5px;
+    padding-left: 8px;
 }
 
 .box .details h4 {
-	float: left;
-	padding: 0 5px 0 0;
-	margin: 0;
+    float: left;
+    padding: 0 5px 0 0;
+    margin: 0;
 }
 
 .box .details p {
-	margin: 4px 0;
+    margin: 4px 0;
 }
 
 .box h2,
 .tabs h2 {
-	margin-top: 10px;
-	margin-bottom: 0;
+    margin-top: 10px;
+    margin-bottom: 0;
 }
 
-.tabs h3 {
-	font-size: 13px;
+.tabs h3,
+#tab-toc .keywordList li {
+    font-size: 13px;
 }
 
 #tab-holdings .institutionToggler,
-#tab-holdings .toggler{
-	margin: 0;
+#tab-holdings .toggler {
+    margin: 0;
 }
 
-#tab-holdings h4 {
-	font-size: 13px;
-	font-weight: normal;
-	color: #000;
+#tab-holdings h4,
+.subjectVocabularies .vocabularyList li {
+    font-size: 13px;
+    font-weight: normal;
+    color: #333;
+    list-style: none;
 }
 
 .holdingsBox > div {
-	padding-left: 10px;
+    padding-left: 10px;
 }
 
 #tab-description p {
-	margin: 0;
+    margin: 0;
 }
 
 #tabnav {
-	padding: 0;
+    padding: 0;
+}
+
+#tab-toc ul,
+.subjectVocabularies .vocabularyList {
+    padding-left: 10px;
+    margin: 0;
 }
 
 /* -------------------------------------------------------------------------------------
  content.css
  ======================================================================================*/
-
 .filter ul {
-	margin: 0;
-	padding-left: 15px;
+    margin: 0;
+    padding-left: 15px;
 }
 
 .filters h4 {
-	font-weight: normal;
+    font-weight: normal;
 }
 
 .filters p span {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 .filters ul li a.filter_remove {
-	background: none !important; /* override orange.css to only have one print.css */
+    background: none !important; /* override orange.css to only have one print.css */
 }
-
 
 /* -------------------------------------------------------------------------------------
  blueprint.css
  ======================================================================================*/
-
 a:link:after, a:visited:after {
-	content: none;
+    content: none;
 }
 
+#hierarchyTreeHolder {
+    border: none;
+}
+
+#hierarchyTree {
+    overflow: hidden;
+}
 
 /* -------------------------------------------------------------------------------------
  jQuery UI
  ======================================================================================*/
-
 .ui-widget-content {
-	background: none;
+    background: none;
 }
 
 .ui-tabs .ui-tabs-panel {
-	padding: 0;
+    padding: 0;
 }
 
 .ui-widget {
-	font-size: 13px;
+    font-size: 13px;
 }
 
 }

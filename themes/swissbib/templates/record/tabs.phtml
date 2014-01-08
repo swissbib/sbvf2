@@ -1,31 +1,36 @@
 <?php
-/** @var  VuFind\View\Helper\Root\Record $viewRecord  */
-$viewRecord	= $this->record($this->driver);
+/** @var  VuFind\View\Helper\Root\Record $viewRecord */
+$viewRecord = $this->record($this->driver);
 
 ?>
 <div class="tabs" id="tabnav">
-	<h3 class="hidden">Tabnavigation</h3>
-	<ul>
-		<?php foreach($this->tabs as $tabKey => $tabObject): ?>
-			<?php /** @var	\VuFind\RecordTab\TabInterface $tabObject */ ?>
-			<li id="tab-head-<?=strtolower($tabKey)?>">
-				<a href="#tab-<?=strtolower($tabKey)?>"><?=$this->transEsc($tabObject->getDescription())?></a>
-			</li>
-		<?php endforeach; ?>
-	</ul>
+    <h3 class="hidden">Tabnavigation</h3>
+    <ul>
+        <?php foreach ($this->tabs as $tabKey => $tabObject): ?>
+            <?php /** @var    \VuFind\RecordTab\TabInterface $tabObject */ ?>
+            <li id="tab-head-<?= strtolower($tabKey) ?>">
+                <a href="#tab-<?= strtolower($tabKey) ?>"><?= $this->transEsc($tabObject->getDescription()) ?></a>
+            </li>
+        <?php endforeach; ?>
+    </ul>
 
-	<?php foreach($this->tabs as $tabKey => $tabObject): ?>		<!-- begin: tab <?=$tabKey?> -->
-		<div id="tab-<?=strtolower($tabKey)?>" class="tab">
-			<?=$viewRecord->getTab($tabObject)?>
-		</div>
-		<!-- end: tab <?=$tabKey?> -->
-	<?php endforeach; ?>
+    <?php foreach ($this->tabs as $tabKey => $tabObject): ?>        <!-- begin: tab <?=$tabKey?> -->
+        <div id="tab-<?= strtolower($tabKey) ?>" class="tab">
+            <div class="print">
+                <h2><?= $this->transEsc($tabObject->getDescription()) ?></h2>
+            </div>
+            <div class="print-border">
+                <?= $viewRecord->getTab($tabObject) ?>
+            </div>
+        </div>
+        <!-- end: tab <?=$tabKey?> -->
+    <?php endforeach; ?>
 
 </div>
 
 <script type="text/javascript">
-	$(document).ready(function() {
-			// Simulate click on active tab to make sure it's visible
-		$('#tab-head-<?=$this->activeTab?> a').click();
-	});
+    $(document).ready(function () {
+        // Simulate click on active tab to make sure it's visible
+        $('#tab-head-<?=$this->activeTab?> a').click();
+    });
 </script>

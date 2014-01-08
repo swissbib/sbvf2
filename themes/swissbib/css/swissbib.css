@@ -41,7 +41,7 @@
     padding: 10px;
 }
 
-#advSearchForm  #groupJoin {
+#advSearchForm #groupJoin {
     background-color: #efefef;
     margin-bottom: 30px;
     padding: 10px;
@@ -154,7 +154,8 @@
     cursor: pointer;
 }
 
-#classification-tree.jstree-default > ul > li.selected > a { /* root node */
+#classification-tree.jstree-default > ul > li.selected > a {
+    /* root node */
     background: none;
     color: #000;
     border: 1px solid #FFF;
@@ -846,36 +847,35 @@ TVI: 20100811
     color: #c77405;
 }
 
-
 /** lightbox */
 .ui-dialog {
-	min-width: 400px;
-	min-height: 250px;
+    min-width: 400px;
+    min-height: 250px;
 }
 
 .ui-dialog .ui-state-default .ui-icon,
 .ui-dialog .ui-state-hover .ui-icon {
-	background-image: url(ui-lightness/images/ui-icons_222222_256x240.png);
+    background-image: url(ui-lightness/images/ui-icons_222222_256x240.png);
 }
 
 .ui-dialog .ui-widget-header .ui-state-hover {
-	border: 1px solid #ccc;
-	background: #eee;
-	font-weight: bold;
-	color: #222;
+    border: 1px solid #ccc;
+    background: #eee;
+    font-weight: bold;
+    color: #222;
 }
 
 input.close {
-	display: none;
+    display: none;
 }
 
 .ui-dialog input.close {
-	display: block;
+    display: block;
 }
 
 .ui-dialog form {
-	text-align: left;
-	margin: 0 20px;
+    text-align: left;
+    margin: 0 20px;
 }
 
 /** Bild rechtsbündig (Inhaltsseite) */
@@ -889,4 +889,9 @@ img.small.right {
 option {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 1em;
+}
+
+/**  Advanced Search Select-boxen */
+select.xlarge {
+    width: 460px;
 }
