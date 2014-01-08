@@ -7,6 +7,7 @@ use Zend\View\Model\ViewModel,
     VuFind\Db\Row\User,
     Swissbib\VuFind\ILS\Driver\Aleph,
     Zend\Session\Container as SessionContainer;
+use Zend\Uri\UriFactory;
 
 class MyResearchController extends VuFindMyResearchController
 {
@@ -368,11 +369,31 @@ class MyResearchController extends VuFindMyResearchController
         // want internal post-login redirects.
         $clazz =  $this->getAuthManager()->getAuthClass();
         if ($clazz === "VuFind\\Auth\\ILS" ) {
-            $baseUrl = $this->url()->fromRoute('home');
-            $baseUrlNorm = trim(end(explode('://', $baseUrl, 2)), '/');
-            if (0 !== strpos($refererNorm, $baseUrlNorm)) {
+            //tests were done with referrers from outside and inside
+            //$referer = "http://www.woz.ch/diesunddas"; // -> not stored
+            //$referer = "http://sb-vf1.swissbib.unibas.ch"; // -> stored
+            //$referer = "http://test.swissbib.ch"; // -> stored
+            //$referer = "http://baselbern.swissbib.ch"; // -> stored
+
+            //I guess we should use only the scheme (hostname) because the whole URL
+            //something like this: http://localhost/vufind/Record/304410349/HierarchyTree?hierarchy=125488483&recordID=304410349
+            //could contain the searched pattern with no intent (especially webpages from UB Basel)
+            $uri = UriFactory::factory($referer);
+            $scheme = $uri->getHost();
+
+            //hosts running VuFind are labeled similar to
+            //test.swissbib.ch || sb-vf1.swissbib.unibas.ch ..
+            //these links could be defined via configuration once the "Bestellvorgang" - seems to be a monster -  is stable (I guess this won't happen in the future...)
+            $matches = array_filter(array("/swissbib\.?.*?\.ch/","/localhost/"), function ($pattern) use ($scheme) {
+                $matched = preg_match($pattern,$scheme);
+                return $matched == 1 ? true : false;
+            });
+            if (count($matches) == 0) {
+                //referrer doesn't match against a "friendly" domain
+                //so it has to be a link from outside of the VuFind world which we don't store for later use
                 return;
             }
+
         }
         // If the referer is the MyResearch/Home action, it probably means
         // that the user is repeatedly mistyping their password. We should
