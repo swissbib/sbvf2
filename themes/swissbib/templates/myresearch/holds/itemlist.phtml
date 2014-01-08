@@ -20,15 +20,20 @@
 			$ilsDetails		= $holding->getExtraDetail('ils_details');
 			//$isNonMissingRecord	= is_a($holding, 'VuFind\\RecordDriver\\SolrDefault') && !is_a($holding, 'VuFind\\RecordDriver\\Missing');
 			$safeId 		= preg_replace('/[^a-zA-Z0-9]/', '', $holding->getUniqueId());
-            $institution    = $ilsDetails['institution'];
-            if (preg_match('/^In process$/', $ilsDetails['status']))
-            {
-                $status = $this->transEsc($ilsDetails['status']);
-            }
-            else
+
+            /* Display Reservationsstatus */
+            if (preg_match('/due date/', $ilsDetails['status']))
             {
                 $status = $this->transEsc('Waiting in queue') . ': ' . $ilsDetails['position'] . '; ' .
                           $this->transEsc('Due Date') . ': ' . $ilsDetails['duedate'];
+            }
+            if (preg_match('/queue$/', $ilsDetails['status']))
+            {
+                $status = $this->transEsc('Waiting in queue') . ': ' . $ilsDetails['position'];
+            }
+            else
+            {
+                $status = $this->transEsc($ilsDetails['status']);
             }
         ?>
     <tr>
@@ -42,7 +47,7 @@
         <td><?=$this->escapeHtml($ilsDetails['create']) ?></td>
         <td><?=$this->escapeHtml($this->transEsc($ilsDetails['location'])) ?></td>
         <td><?=$this->escapeHtml($status) ?></td>
-        <td><?=$this->escapeHtml($this->zendTranslate($institution, 'institution'))?></td>
+        <td><?=$this->escapeHtml($this->zendTranslate($ilsDetails['institution'], 'institution'))?></td>
         <td><?=$this->escapeHtml($ilsDetails['signature'])?></td>
     </tr>
         <?php endforeach; ?>

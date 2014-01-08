@@ -554,13 +554,10 @@ class Aleph extends VuFindDriver
 			'create'		=> 'z37-open-date',
 			'status'		=> 'status',
 			'sequence'		=> 'z37-sequence',
-			//'balance'		=> 'z37-balancer-date',
 			'institution'	=> 'z30-sub-library-code',
 			'signature'		=> 'z30-call-no',
 			'description'	=> 'z30-description'
 		);
-
-//		$holdResponseItems	= array_slice($holdResponseItems, 0, 5);
 
 		foreach ($holdResponseItems as $holdResponseItem) {
 			$itemData	= $this->extractResponseData($holdResponseItem, $dataMap);
@@ -574,23 +571,18 @@ class Aleph extends VuFindDriver
 			$itemData['id']			= $this->barcodeToID($itemData['barcode']);
 			$itemData['expire']		= DateTime::createFromFormat('Ymd', $itemData['expire'])->format('d.m.Y');
             $itemData['create']     = DateTime::createFromFormat('Ymd', $itemData['create'])->format('d.m.Y');
-			//$itemData['balance']	= $itemData['balance'] === '00000000' ? false : $this->parseDate($itemData['balance']);
 			$itemData['delete']		= (string)($delete[0]) === 'Y';
-            if (preg_match('/^In process$/', $itemData['status']))
-            {
-                $itemData['status'] = $itemData['status'];
-            }
-            elseif (preg_match('/due date/', $itemData['status']))
-            {
-                $itemData['position'] = ltrim($itemData['sequence'], '0');
-                $itemData['duedate'] = DateTime::createFromFormat('d/m/y', preg_replace('/^.* due date ([0-3][0-9]\/[0-2][0-9]\/[0-9][0-9])$/', '$1', $itemData['status']))->format('d.m.Y');
 
-            }
-            else
+            // Auslesen Reservationsstatus
+            if (preg_match('/due date/', $itemData['status']))
             {
-                $itemData['status'] = $itemData['status'];
+                $itemData['position'] = preg_replace('/^Waiting in position[\s]+([\d]+).*$/', '$1', $itemData['status']);
+                $itemData['duedate']  = DateTime::createFromFormat('d/m/y', preg_replace('/^.* due date ([0-3][0-9]\/[0-2][0-9]\/[0-9][0-9])$/', '$1', $itemData['status']))->format('d.m.Y');
             }
-
+            if (preg_match('/queue$/', $itemData['status']))
+            {
+                $itemData['position'] = preg_replace('/^Waiting in position[\s]+([\d]+).*$/', '$1', $itemData['status']);
+            }
 			$holds[] = $itemData;
 		}
 
