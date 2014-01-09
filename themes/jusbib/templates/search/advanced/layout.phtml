@@ -88,7 +88,7 @@ $lastSort = $this->options->getLastSort();
                 </div>
             <?php endif; ?>
 
-            <h1><?= $this->transEsc('Advanced Search') ?></h1>
+            <h1><?= $this->transEsc($allTabsConfig[$activeTabKey]['label']) ?></h1>
             <?= $this->flashmessages() ?>
 
             <form method="get" action="<?= $this->url($this->options->getSearchAction()) ?>" id="advSearchForm" name="searchForm" class="search data">

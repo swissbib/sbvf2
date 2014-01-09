@@ -35,7 +35,13 @@ swissbib.AdvancedSearch = {
         .bind("select_node.jstree", function (event, data) {
             data.rslt.obj.toggleClass("selected");
             data.rslt.obj.hasClass("selected") ? data.rslt.obj.children("input").attr("name", "filter[]") : data.rslt.obj.children("input").removeAttr("name");
+            swissbib.AdvancedSearch.sendForm(data.rslt.obj);
         });
+    },
+
+
+    sendForm: function(el) {
+        jQuery(el).parents('form:first').submit();
     },
 
 

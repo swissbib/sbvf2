@@ -156,13 +156,14 @@
     cursor: pointer;
 }
 
+/* root node -> uncomment if root node is needed
 #classification-tree.jstree-default > ul > li.selected > a {
-    /* root node */
     background: none;
     color: #000;
     border: 1px solid #FFF;
     padding: 0 2px 0 1px;
 }
+*/
 
 /** ------------ adv. search: tabs ------------  */
 #adv_tab label,

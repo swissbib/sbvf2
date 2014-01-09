@@ -30,7 +30,7 @@ class SearchController extends SwissbibSearchController
     {
         $viewModel              = parent::advancedAction();
 
-        $allTabsConfig          = $this->getThemeTabsConfig();
+        $allTabsConfig          = $this->getAdvancedThemeTabsConfig();
         $activeTabKey           = 'swissbib';
 
         $activeTabConfig        = $allTabsConfig[$activeTabKey];
@@ -53,7 +53,7 @@ class SearchController extends SwissbibSearchController
     {
         $viewModel              = parent::advancedAction();
 
-        $allTabsConfig          = $this->getThemeTabsConfig();
+        $allTabsConfig          = $this->getAdvancedThemeTabsConfig();
         $activeTabKey           = 'classification';
 
         $activeTabConfig        = $allTabsConfig[$activeTabKey];
@@ -74,7 +74,7 @@ class SearchController extends SwissbibSearchController
      *
      * @return    Array[]
      */
-    protected function getThemeTabsConfig()
+    protected function getAdvancedThemeTabsConfig()
     {
         return $this->getServiceLocator()->get('Jusbib\Theme\Theme')->getThemeTabsConfig();
     }
