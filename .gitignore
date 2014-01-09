@@ -4,6 +4,7 @@ build
 cli/removeLocalCacheLocalosc.sh
 cli/removeLocalCache_debian.sh
 cli/syncLocal.sh
+cli/tv_sync.sh
 cli/sync_debian.sh
 local/config/vufind/config.ini
 local/config/vufind/libadmin-groups.ini
