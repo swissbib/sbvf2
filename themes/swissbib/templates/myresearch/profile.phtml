@@ -5,10 +5,13 @@
     $showHomeLibForm = (isset($this->pickup) && count($this->pickup) > 1);
         // Template for use by the renderArray helper
 	$userDataMapping = array(
-		$this->transEsc('Username')         => 'lastname',
-		$this->transEsc('Address') . ' 1'   => 'address1',
+		$this->transEsc('User Account')     => 'lastname',
+        $this->transEsc('Address') . ' 1'   => 'address1',
 		$this->transEsc('Address') . ' 2'   => 'address2',
-		$this->transEsc('Zip')              => 'zip',
+        $this->transEsc('Address') . ' 3'   => 'address3',
+        $this->transEsc('Address') . ' 4'   => 'address4',
+        $this->transEsc('Address') . ' 5'   => 'address5',
+		//$this->transEsc('Zip')              => 'zip',
         $this->transEsc('Email')            => 'email',
 		$this->transEsc('Phone Number')     => 'phone'
 	);

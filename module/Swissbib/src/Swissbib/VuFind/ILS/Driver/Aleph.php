@@ -440,6 +440,144 @@ class Aleph extends VuFindDriver
 		return $xml->xpath('//loan');
 	}
 
+    /**
+     * Get Patron Profile
+     *
+     * This is responsible for retrieving the profile for a specific patron.
+     *
+     * @param array $user The patron array
+     *
+     * @throws ILSException
+     * @return array      Array of the patron's profile data on success.
+     */
+    public function getMyProfile($user)
+    {
+        if ($this->xserver_enabled) {
+            return $this->getMyProfileX($user);
+        } else {
+            return $this->getMyProfileDLF($user);
+        }
+    }
+
+    /**
+     * Get profile information using X-server.
+     *
+     * @param array $user The patron array
+     *
+     * @throws ILSException
+     * @return array      Array of the patron's profile data on success.
+     * Angepasste Funktion im Bereich Ausgabe der Adresse (z304)
+     */
+    public function getMyProfileX($user)
+    {
+        $recordList=array();
+        if (!isset($user['college'])) {
+            $user['college'] = $this->useradm;
+        }
+        $xml = $this->doXRequest(
+            "bor-info",
+            array(
+                'loans' => 'N', 'cash' => 'N', 'hold' => 'N',
+                'library' => $user['college'], 'bor_id' => $user['id']
+            ), true
+        );
+        $id = (string) $xml->z303->{'z303-id'};
+        $address1 = (string) $xml->z304->{'z304-address-0'};
+        $address2 = (string) $xml->z304->{'z304-address-1'};
+        $address3 = (string) $xml->z304->{'z304-address-2'};
+        $address4 = (string) $xml->z304->{'z304-address-3'};
+        $address5 = (string) $xml->z304->{'z304-address-4'};
+        $zip = (string) $xml->z304->{'z304-zip'};
+        $phone = (string) $xml->z304->{'z304-telephone'};
+        //$barcode = (string) $xml->z304->{'z304-address-0'};
+        $group = (string) $xml->z305->{'z305-bor-status'};
+        $expiry = (string) $xml->z305->{'z305-expiry-date'};
+        $credit_sum = (string) $xml->z305->{'z305-sum'};
+        $credit_sign = (string) $xml->z305->{'z305-credit-debit'};
+        $name = (string) $xml->z303->{'z303-name'};
+        if (strstr($name, ",")) {
+            list($lastname, $firstname) = explode(",", $name);
+        } else {
+            $lastname = $name;
+            $firstname = "";
+        }
+        if ($credit_sign == null) {
+            $credit_sign = "C";
+        }
+        $recordList['firstname'] = $firstname;
+        $recordList['lastname'] = $lastname;
+        if (isset($user['email'])) {
+            $recordList['email'] = $user['email'];
+        }
+        $recordList['address1'] = $address1;
+        $recordList['address2'] = $address2;
+        $recordList['address3'] = $address3;
+        $recordList['address4'] = $address4;
+        $recordList['address5'] = $address5;
+        $recordList['zip'] = $zip;
+        $recordList['phone'] = $phone;
+        $recordList['group'] = $group;
+        //$recordList['barcode'] = $barcode;
+        $recordList['expire'] = $this->parseDate($expiry);
+        $recordList['credit'] = $expiry;
+        $recordList['credit_sum'] = $credit_sum;
+        $recordList['credit_sign'] = $credit_sign;
+        $recordList['id'] = $id;
+        return $recordList;
+    }
+
+    /**
+     * Get profile information using DLF service.
+     *
+     * @param array $user The patron array
+     *
+     * @throws ILSException
+     * @return array      Array of the patron's profile data on success.
+     */
+    public function getMyProfileDLF($user)
+    {
+        $xml = $this->doRestDLFRequest(
+            array('patron', $user['id'], 'patronInformation', 'address')
+        );
+        $address = $xml->xpath('//address-information');
+        $address = $address[0];
+        $address1 = (string)$address->{'z304-address-1'};
+        $address2 = (string)$address->{'z304-address-2'};
+        $address3 = (string)$address->{'z304-address-3'};
+        $address4 = (string)$address->{'z304-address-4'};
+        $address5 = (string)$address->{'z304-address-5'};
+        $zip = (string)$address->{'z304-zip'};
+        $phone = (string)$address->{'z304-telephone-1'};
+        $email = (string)$address->{'z404-email-address'};
+        $dateFrom = (string)$address->{'z304-date-from'};
+        $dateTo = (string)$address->{'z304-date-to'};
+        if (strpos($address2, ",") === false) {
+            $recordList['lastname'] = $address2;
+            $recordList['firstname'] = "";
+        } else {
+            list($recordList['lastname'], $recordList['firstname'])
+                = explode(",", $address2);
+        }
+        $recordList['address1'] = $address1;
+        $recordList['address2'] = $address2;
+        $recordList['address3'] = $address3;
+        $recordList['address4'] = $address4;
+        $recordList['address5'] = $address5;
+        $recordList['zip'] = $zip;
+        $recordList['phone'] = $phone;
+        $recordList['email'] = $email;
+        $recordList['dateFrom'] = $dateFrom;
+        $recordList['dateTo'] = $dateTo;
+        $recordList['id'] = $user['id'];
+        $xml = $this->doRestDLFRequest(
+            array('patron', $user['id'], 'patronStatus', 'registration')
+        );
+        $status = $xml->xpath("//institution/z305-bor-status");
+        $expiry = $xml->xpath("//institution/z305-expiry-date");
+        $recordList['expire'] = $this->parseDate($expiry[0]);
+        $recordList['group'] = $status[0];
+        return $recordList;
+    }
 
 
 	/**
