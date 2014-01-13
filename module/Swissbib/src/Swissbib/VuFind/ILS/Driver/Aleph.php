@@ -365,59 +365,6 @@ class Aleph extends VuFindDriver
 		return $data;
 	}
 
-
-	/**
-	 * Perform a RESTful DLF request.
-	 *
-	 * @param array  $path_elements URL path elements
-	 * @param array  $params        GET parameters (null for none)
-	 * @param string $method        HTTP method
-	 * @param string $body          HTTP body
-	 *
-	 * @return \SimpleXMLElement
-	 */
-	protected function doRestDLFRequestIgnoreFailures($path_elements, $params = null, $method = 'GET', $body = null)
-	{
-		$path = implode('/', $path_elements) . '/';
-		$url  = "http://$this->host:$this->dlfport/rest-dlf/" . $path;
-		$url  = $this->appendQueryString($url, $params);
-
-		return $this->doHTTPRequest($url, $method, $body);
-	}
-
-
-
-	/**
-	 * Send renew request do REST server
-	 * Use non breaking DLF request method to support failure messages (which are still a valid response)
-	 *
-	 * @param	Array	$details
-	 * @return	Array[]
-	 */
-	public function renewMyItems($details)
-	{
-		$patron = $details['patron'];
-		$blocks	= array();
-
-		foreach ($details['details'] as $id) {
-			$result = $this->doRestDLFRequestIgnoreFailures(
-				array('patron', $patron['id'], 'circulationActions', 'loans', $id),
-				null, 'POST', null
-			);
-
-			if ($result->renewals && $result->renewals->institution && $result->renewals->institution->loan) {
-				$status   = (string)$result->{'reply-text'};
-				$code     = (int)$result->{'reply-code'};
-				$reason   = (string)$result->renewals->institution->loan->status;
-				$blocks[] = $status . ': ' . $reason . ($code?' [' . $code . ']':'') . ' (' . $id . ')';
-			}
-		}
-
-		return array('blocks' => $blocks, 'details' => array());
-	}
-
-
-
 	/**
 	 * Get my transactions response items
 	 *
@@ -610,25 +557,26 @@ class Aleph extends VuFindDriver
 			'renewals'		=> 'z36-no-renewal',
 			'library'		=> 'z30-sub-library',
 			'callnum'		=> 'z30-call-no',
-			'renew_info'    => 'renew-info'
+            'renew_info'    => 'renew-info'
 		);
 		$transactionsData	= array();
 
 		foreach ($transactionsResponseItems as $transactionsResponseItem) {
 			$itemData	= $this->extractResponseData($transactionsResponseItem, $dataMap);
 			$group   	= $transactionsResponseItem->xpath('@href');
+            $itemURL    = (string) $group[0];
 
-			// Bug in Aleph 21.01.1: xpath(@renew) at this position will always be 'Y'.
-			// (Calling the URL in @href would deliver the correct value.
-			// This is a quick workaround.)
-			$renewable = ( stripos($itemData['renew_info'],'Renewal is not allowed') === false ) ? true : false;
+            // get renew-Information for every Item. ALEPH-logic forces to iterate, info on resultlist is always true
+            $response  = $this->doHTTPRequest($itemURL);
+            $renewable = (string) $response->loan->attributes()->renew;
+            $renewable = $renewable === 'Y' ? true : false;
 
 				// Add special data
             try {
                 $itemData['id']			= ($history) ? null : $this->barcodeToID($itemData['barcode']);
                 $itemData['item_id']	= substr(strrchr($group[0], "/"), 1);
                 $itemData['reqnum']		= $itemData['doc-number'] . $itemData['item-sequence'] . $itemData['sequence'];
-                $itemData['loandate']  = DateTime::createFromFormat('Ymd', $itemData['loaned'])->format('d.m.Y');
+                $itemData['loandate']   = DateTime::createFromFormat('Ymd', $itemData['loaned'])->format('d.m.Y');
                 $itemData['duedate']    = DateTime::createFromFormat('Ymd', $itemData['due'])->format('d.m.Y');
                 $itemData['returned']   = DateTime::createFromFormat('Ymd', $itemData['return'])->format('d.m.Y');
                 $itemData['renewable']	= $renewable;
