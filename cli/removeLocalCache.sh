@@ -1,42 +1,26 @@
 #!/bin/bash
 #
-#
+# Removal of local caches (except hierarchy cache)
 
-VUFIND_CACHE=/usr/local/vufind/httpd/local/cache
-#VUFIND_DEPLOY_LOG=$VUFIND_BASE/log
-#VUFIND_DEPLOY=$VUFIND_BASE/httpd
-
-TIMESTAMP=`date +%Y%m%d%H%M%S`
-
-#LOGFILE=$VUFIND_DEPLOY_LOG/remove.local.cache.$TIMESTAMP.log
-
-
-TIMESTAMP=`date +%Y%m%d%H%M%S`	# seconds
-
-
-#CURRENTHOST=sb-vf1.swissbib.unibas.ch
-
-
-function setTimestamp()
-{
-    CURRENT_TIMESTAMP=`date +%Y%m%d%H%M%S`
-}
-
-
+VUFIND_BASE=/usr/local/vufind/httpd
+VUFIND_CACHE=$VUFIND_BASE/local/cache
+VUFIND_DEPLOY_LOG=$VUFIND_BASE/log
+TIMESTAMP=`date +%Y%m%d%H%M%S`  # seconds
+LOGFILE=$VUFIND_DEPLOY_LOG/remove.local.cache.$TIMESTAMP.log
 
 if [ "$UID"  -eq 0 ]; then
 
-
-    echo "tryinig to remove local cache in $VUFIND_CACHE"
-    rm -rf $VUFIND_CACHE/*
+    echo "Tryinig to remove local cache"
+    # no removal of hierarchy cache
+    rm -rf $VUFIND_CACHE/searchspecs/*
+    rm -rf $VUFIND_CACHE/objects/*
+    rm -rf $VUFIND_CACHE/languages/*
 
     echo "now restart apache ..."
 
     service httpd restart
 
-
-
 else
-        echo "you have to be root to start this script ..."
+        echo "You have to be root to start this script!"
         exit 1
 fi
