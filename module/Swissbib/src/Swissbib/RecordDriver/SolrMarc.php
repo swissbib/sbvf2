@@ -491,6 +491,8 @@ class SolrMarc extends VuFindSolrMarc
             return $path;
         } elseif ($path = $this->getThumbnail_856_1()) {
             return $path;
+        } elseif ($path = $this->getThumbnail_erara()) {
+            return $path;
         }
 
         return false;
@@ -553,6 +555,22 @@ class SolrMarc extends VuFindSolrMarc
         } elseif ($field['union'] === 'CHARCH' && $field['tag'] === '856') {
             $URL_thumb = preg_replace('SIZE=10', 'SIZE=30', $field['sf_u']);
             return $URL_thumb;
+        }
+    }
+
+    /**
+     * get thumbnail link from e-rara-DOI (see wiki documentation)
+     *
+     * @return string
+     */
+
+    public function getThumbnail_erara()
+    {
+        $field = $this->getDOIs();
+        if (preg_match('/^.*e-rara/', $field['0'])) {
+            return 'http://www.e-rara.ch/titlepage/doi/'
+            . $field['0']
+            . '/128';
         }
     }
 
