@@ -1,0 +1,71 @@
+<?php
+
+/** @var VuFind\Search\Solr\Options $options */
+if (!isset($this->searchClassId)) {
+    $this->searchClassId = 'Solr';
+}
+$options                    = $this->searchOptions($this->searchClassId);
+$lastSort                   = $options->getLastSort();
+$lastLimit                  = $options->getLastLimit();
+$basicSearch                = $options->getSearchAction();
+$searchHome                 = $options->getSearchHomeAction();
+$advSearchClassification    = $options->getAdvancedSearchClassificationAction();
+$advSearch                  = $options->getAdvancedSearchAction();
+
+/** @var VuFind\Search\Base\Params $resultViewParams */
+$resultViewParams = $this->layout()->resultViewParams;
+$searchBoxParams = isset($this->layout()->searchboxParams) ? $this->layout()->searchboxParams : false;
+
+if ($resultViewParams) {
+    $lookFor = $resultViewParams->getDisplayQuery();
+} else {
+    $lookFor = $this->lastSearchWord();
+}
+
+$isAdvancedSearch = $searchBoxParams && $searchBoxParams['searchType'] == 'advanced';
+
+$activateAutosuggest = $this->configAccess()->Site->activateAutosuggest;
+$activateAutosuggest = !empty($activateAutosuggest) && ($activateAutosuggest == "true" || $activateAutosuggest == "1") ? "autocomplete" : "";
+
+
+?>
+<div id="search" class="<?= $isAdvancedSearch ? 'advSearch' : '' ?>">
+    <?php if ($isAdvancedSearch): ?>
+        <div id="advancedSearchJumpNavi">
+            <a href="<?= $this->url($advSearch) ?>?edit=<?= $this->escapeHtml($searchBoxParams['searchId']) ?>"><?= $this->transEsc("Edit this Advanced Search") ?></a> |
+            <a href="<?= $this->url($advSearch) ?>"><?= $this->transEsc("Start a new Advanced Search") ?></a> |
+            <a href="<?= $this->url($searchHome) ?>"><?= $this->transEsc("Start a new Basic Search") ?></a>
+
+            <div class="advSearchQuery">
+                <?= $this->transEsc("Your search terms") ?> : "<strong><?= $this->escapeHtml($lookFor) ?></strong>"
+            </div>
+        </div>
+
+    <?php else: ?>
+        <form id="form_search" name="form_search" action="<?= $this->url($basicSearch) ?>" method="get">
+            <h3>
+                <label for="lookfor"><?= $this->transEsc('Search For') ?></label>
+            </h3>
+            <input type="text" class="text <?= $activateAutosuggest ?>" name="lookfor" id="lookfor" autocomplete="off" value="<?= $this->escapeHtml($lookFor) ?>"/>
+            <label for="search_submit" class="hidden"><?= $this->transEsc('Find') ?></label>
+            <input type="submit" class="submit primary" id="search_submit" value="<?= $this->transEsc('Find') ?>"/>
+            <label for="search_favorites" class="checker">Nur in Favoriten</label>
+            <input type="checkbox" class="hidden" id="search_favorites" name="search_favorites"/>
+            <a href="<?= $this->url($advSearchClassification) ?>" title="<?= $this->transEsc('Advanced Search') ?>" id="search_extended"><?= $this->transEsc('Advanced Search') ?></a>
+
+            <?php /* Load hidden limit preference from Session */ ?>
+            <?php if (!empty($lastLimit)): ?>
+                <input type="hidden" name="limit" value="<?= $this->escapeHtml($lastLimit) ?>"/>
+            <?php endif; ?>
+
+            <?php if (!empty($lastSort)): ?>
+                <input type="hidden" name="sort" value="<?= $this->escapeHtml($lastSort) ?>"/>
+            <?php endif; ?>
+
+        </form>
+    <?php endif; ?>
+</div>
+
+<script language="JavaScript">
+    $("input#lookfor").focus();
+</script>

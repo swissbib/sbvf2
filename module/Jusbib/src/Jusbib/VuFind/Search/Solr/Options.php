@@ -15,7 +15,7 @@ class Options extends SwissbibSolrOptions
      *
      * @return string|bool
      */
-    public function getAdvancedSearchAction()
+    public function getAdvancedSearchClassificationAction()
     {
         return 'search-advancedClassification';
     }
