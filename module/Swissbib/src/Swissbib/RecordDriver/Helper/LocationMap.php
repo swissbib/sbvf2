@@ -69,12 +69,20 @@ class LocationMap extends LocationMapBase
 	 * @param    Array    $item
 	 * @param    Holdings $holdingsHelper
 	 * @return    Boolean
-	 * @todo	Implement checks
 	 */
 	protected function isItemValidForLocationMapB500(array $item, HoldingsHelper $holdingsHelper)
 	{
-		return false;
-	}
+        {
+            $isItemAvailable      = true; // Implement availability check with holdings helper
+            $hasSignature         = isset($item['signature']) && !empty($item['signature']) && $item['signature'] !== '-';
+            //$accessibleConfigKey  = $item['institution'] . '_codes';
+            //$isAccessible         = isset($item['location_code']) && $this->isValueInConfigList($accessibleConfigKey, $item['location_code']);
+            $isAccessible         = true;
+            //$circulatingConfigKey = $item['institution'] . '_status';
+            $isCirculating		  = true;
+
+            return $isItemAvailable && $hasSignature && $isAccessible && $isCirculating;
+        }	}
 
 
 

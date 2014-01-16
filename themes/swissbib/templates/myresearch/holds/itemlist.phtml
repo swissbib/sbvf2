@@ -27,7 +27,7 @@
                 $status = $this->transEsc('Waiting in queue') . ': ' . $ilsDetails['position'] . '; ' .
                           $this->transEsc('Due Date') . ': ' . $ilsDetails['duedate'];
             }
-            if (preg_match('/queue$/', $ilsDetails['status']))
+            elseif (preg_match('/queue$/', $ilsDetails['status']))
             {
                 $status = $this->transEsc('Waiting in queue') . ': ' . $ilsDetails['position'];
             }

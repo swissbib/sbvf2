@@ -19,16 +19,20 @@
 			<?php
 				/** @var Array $ilsDetails */
 				$ilsDetails 		= $transaction->getExtraDetail('ils_details');
-				$isRenewable		= isset($ilsDetails['renewable']) && $ilsDetails['renewable'] && isset($ilsDetails['renew_details']);
+				$isRenewable		= $ilsDetails['renewable'];
 				$safeId 			= preg_replace('/[^a-zA-Z0-9]/', '', $transaction->getUniqueId());
 				$infoMessages		= array();
 
-				if ( $isRenewable ) {
+				if ( $isRenewable )
+                {
                     $renewalLimit = preg_replace('/^\d+ \(out of (\d+)\).*$/', '$1', $ilsDetails['renew_info']);
-					$Renewals     = $ilsDetails['renewals'] . ' ' .$this->transEsc('of') . ' ' . $renewalLimit;
-				} else {
-					$Renewals = '-';
 				}
+                else
+                {
+				    $renewalLimit = $ilsDetails['renewals'];
+				}
+
+                $Renewals     = $ilsDetails['renewals'] . ' ' .$this->transEsc('of') . ' ' . $renewalLimit;
 
 				if (isset($this->renewResult[$ilsDetails['item_id']])) {
 					$renewDetails = $this->renewResult[$ilsDetails['item_id']];
@@ -38,9 +42,10 @@
 					} else {
 						$infoMessages[] = $this->translate('renew_fail');
 
-						if (isset($renewDetails['sysMessage'])) {
-							$infoMessages[] = $renewDetails['sysMessage'];
-						}
+                        // no display of sysMessage. Information about the reason of failure is in other element
+						//if (isset($renewDetails['sysMessage'])) {
+						//	$infoMessages[] = $renewDetails['sysMessage'];
+						//}
 					}
 				}
 					// Not supported statuses for solr
@@ -56,7 +61,7 @@
 			<tr>
 				<td><?=$index+1?></td>
                 <td>
-					<?php if (isset($ilsDetails['renewable']) && $ilsDetails['renewable'] && isset($ilsDetails['renew_details'])): ?>
+					<?php if ($isRenewable): ?>
 						<input type="checkbox" name="renewSelectedIDS[]" value="<?=$this->escapeHtml($ilsDetails['renew_details'])?>" class="checkbox" style="margin-left: 0" id="checkbox_<?=$safeId?>" />
 					<?php endif; ?>
 				</td>
@@ -82,14 +87,21 @@
 			<?php /** Show messages for item as extra row */ ?>
 			<?php if (sizeof($infoMessages)): ?>
 				<tr class="infoMessagesRow">
-					<td colspan="8">
+					<td>&NonBreakingSpace;</td>
+                    <td>&NonBreakingSpace;</td>
+                    <td>
 						<ul>
 							<?php foreach($infoMessages as $infoMessage): ?>
-								<li><?=$this->escapeHtml($infoMessage)?></li>
+								<li><b><?=$this->escapeHtml($infoMessage)?></b></li>
 							<?php endforeach; ?>
 						</ul>
 					</td>
-				</tr>
+                    <td>&NonBreakingSpace;</td>
+                    <td>&NonBreakingSpace;</td>
+                    <td>&NonBreakingSpace;</td>
+                    <td>&NonBreakingSpace;</td>
+                    <td>&NonBreakingSpace;</td>
+                </tr>
 			<?php endif; ?>
 
 		<?php endforeach; ?>
