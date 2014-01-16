@@ -965,10 +965,10 @@ class Holdings
 		$values = array(
 			'server'            => $data['domain'],
 			'language-code'     => 'de', // @todo fetch from user,
-			'RERO-network-code' => substr($institutionCode, 2, 2), // third and fourth character
-			'bib-system-number' => $this->getNumericString($item['bibsysnumber']), // remove characters from number string
-			'sub-library-code'  => $institutionCode
-		);
+            'RERO-network-code' => (int)substr($institutionCode, 2, 2), // third and fourth character
+            'bib-system-number' => $item['bibsysnumber'], // replaces the incorrect version: 'bib-system-number' => $this->getNumericString($item['bibsysnumber']), // remove characters from number string
+            'sub-library-code' => $this->getNumericString($institutionCode) //removes the RE-characters from the number string
+        );
 
 		return $this->compileString($data['pattern'], $values);
 	}
