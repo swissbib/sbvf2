@@ -3,7 +3,7 @@
 	"recordtype": "marc",
 	"language": ["zxx"],
 	"format": ["MU010100000"],
-	"group_id": ["005378974"],
+	"groupid_isn_mv": ["005378974"],
 	"hierarchytype": "series",
 	"hierarchy_parent_id": ["00294118X"],
 	"hierarchy_parent_title": ["Hortus Musicus"],

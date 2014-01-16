@@ -86,7 +86,7 @@ class SolrMarcSimpleTest extends SolrMarcTestCase
 		$institutions = $this->driver->getInstitutions();
 
 		$this->assertInternalType('array', $institutions);
-		$this->assertEquals('lumh1', $institutions[0]);
+		$this->assertEquals('LUMH1', $institutions[0]);
 	}
 
 
