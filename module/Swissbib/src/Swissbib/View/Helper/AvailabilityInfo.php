@@ -13,6 +13,7 @@ class AvailabilityInfo extends AbstractHelper
     const LENDABLE_BORROWED = "lendable_borrowed"; // generell ausleihbar, jedoch bereits ausgeliehene Exemplare
     const USE_ON_SITE = "use-on-site"; // vor Ort einsehbare Exemplare (Lesesaal)
     const LOOK_ON_SITE = "lookOnSite"; // Informationsabruf über das lokale System (fallback)
+    const EXHIBITION = "exhibition"; // nicht einsehbar, extern ausgestellt (mit Datum bis)
     const ONLINE_AVAILABLE = "onlineAvailable"; // by now only for ETH, could be enhanced for other library systems (labels for LoanStatus needed!)
     const ITEM_LOST = "itemlost"; // vermisst, in Reparatur, abbestellt: Exemplar für Benutzer verloren
 
@@ -79,6 +80,25 @@ class AvailabilityInfo extends AbstractHelper
 
                     $infotext = $escapedTranslation($statusfield);
                     $info = "<div class='availability_moreInfo'><div class='nice'>" . "$infotext" . "</div></div>";
+                    break;
+                case self::EXHIBITION:
+
+                    unset($borrowinginformation['due_hour']);
+                    $infotext = $escapedTranslation($statusfield);
+                    $info = "<div class='availability_notok'>Ausstellung";
+
+                    if ($borrowinginformation['due_date'] === 'on reserve') {
+                        $info .= $escapedTranslation('On Reserve') . " (" . $borrowinginformation['no_requests'] . ")";
+                    } else {
+                        foreach ($borrowinginformation as $key => $value) {
+                            if (strcmp(trim($value), "") != 0) {
+                                $info .= "<div class='nice'>" . $escapedTranslation($key) . "&nbsp;" . $value . "</div>";
+                            }
+                        }
+                    }
+
+                    $info .= "</div>";
+
                     break;
                 case self::ONLINE_AVAILABLE:
 
