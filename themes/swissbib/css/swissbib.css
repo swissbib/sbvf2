@@ -1,3 +1,29 @@
+/** ------------ Logo HOME and OTHER - PNG-versions ------------  */
+
+/* home logo
+.template_home #logo a {
+	display:block;
+	height:100px;
+	width:300px;
+	padding:75px 660px 48px 30px;
+	background-image:url(../../images/logo_swissbib-home.png);
+	background-position:30px 75px;
+} */
+
+/* logo
+#logo a {
+	display:block;
+	height:50px;
+	width:140px;
+	padding:15px 835px 18px 15px;
+	background-color:#32CD0F;
+	background-image:url(../../images/logo_swissbib.png);
+	background-position:15px 15px;
+	background-repeat:no-repeat;
+}*/
+
+/** ------------ Basic table design ------------  */
+
 #content table.data {
     width: 760px;
 }
