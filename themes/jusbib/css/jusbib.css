@@ -62,3 +62,10 @@ Bibliotheksinfo-Link mit Fragezeichen
 .bibinfo {
     background-image: url(../images/icon_info.gif);
 }
+
+/*
+Tabbed
+*/
+#tabbed {
+    display: block;
+}
