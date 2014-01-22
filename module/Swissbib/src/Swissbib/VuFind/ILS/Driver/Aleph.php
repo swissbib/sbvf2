@@ -61,8 +61,80 @@ class Aleph extends VuFindDriver
 		return $photoCopiesData;
 	}
 
+    /**
+     * Place PhotocopyRequest
+     *
+     * Attempts to place a photocopy request and returns
+     * an array with result details or throws an exception on failure of support
+     * classes
+     *
+     * Note: this function is a copy of placeHold as workaround, using a cgi-script, meanwhile DLF RESTFul has no such function for ALEPH.
+     *
+     * @param array $details An array of item and patron data
+     *
+     * @throws ILSException
+     * @return mixed An array of data on the request including
+     * whether or not it was successful and a system message (if available)
+     */
+    public function placePhotocopyRequest($details)
+    {
+        list($bib, $sys_no) = $this->parseId($details['id']);
+        $recordId = $bib . $sys_no;
+        $itemId = $details['item_id'];
+        $patron = $details['patron'];
+        $pickupLocation = $details['pickUpLocation'];
+        if (!$pickupLocation) {
+            $pickupLocation = $this->getDefaultPickUpLocation($patron, $details);
+        }
+        $comment = $details['comment'];
+        if (strlen($comment) <= 50) {
+            $comment1 = $comment;
+        }
+        else {
+            $comment1 = substr($comment, 0, 50);
+            $comment2 = substr($comment, 50, 50);
+        }
+        try {
+            $requiredBy = $this->dateConverter
+                ->convertFromDisplayDate('Ymd', $details['requiredBy']);
+        } catch (DateException $de) {
+            return array(
+                'success'    => false,
+                'sysMessage' => 'hold_date_invalid'
+            );
+        }
+        $patronId = $patron['id'];
+        $body = new \SimpleXMLElement(
+            '<?xml version="1.0" encoding="UTF-8"?>'
+            . '<hold-request-parameters></hold-request-parameters>'
+        );
+        $body->addChild('pickup-location', $pickupLocation);
+        $body->addChild('last-interest-date', $requiredBy);
+        $body->addChild('note-1', $comment1);
+        $body->addChild('note-2', $comment2);
+        $body = 'post_xml=' . $body->asXML();
+        try {
+            $result = $this->doRestDLFRequest(
+                array(
+                    'patron', $patronId, 'record', $recordId, 'items', $itemId,
+                    'hold'
+                ), null, "PUT", $body
+            );
+        } catch (AlephRestfulException $exception) {
+            $message = $exception->getMessage();
+            $note = $exception->getXmlResponse()
+                ->xpath('/put-item-hold/create-hold/note[@type="error"]');
+            $note = $note[0];
+            return array(
+                'success' => false,
+                'sysMessage' => "$message ($note)"
+            );
+        }
+        return array('success' => true);
+    }
 
-	/**
+
+    /**
 	 *
 	 *
 	 * @param    Integer        $idPatron

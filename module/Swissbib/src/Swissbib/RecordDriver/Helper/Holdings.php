@@ -713,7 +713,7 @@ class Holdings
 		$host           = $ilsDriver->host; // @todo make dev port dynamic
 
 		if ($allowedActions['photocopyRequest']) {
-			$allowedActions['photocopyRequestLink'] = $this->getPhotoCopyRequestLink($host, $item);
+			$allowedActions['photocopyRequestLink'] = $this->getPhotoCopyRequestLink($host, $item, $patron);
 		}
 
         if ($allowedActions['bookingRequest']) {
@@ -731,8 +731,9 @@ class Holdings
 	 * @param    String        $host
 	 * @param    Array         $item
 	 * @return    String
-	 */
-	protected function getPhotoCopyRequestLink($host, array $item)
+     * former function, building just a link to ALEPH
+
+    protected function getPhotoCopyRequestLink($host, array $item)
 	{
 		$queryParams = array(
 			'func'           => 'item-photo-request',
@@ -745,6 +746,20 @@ class Holdings
 
 		return 'http://' . $host . '/F/?' . http_build_query($queryParams);
 	}
+    */
+
+    protected function getPhotoCopyRequestLink($host, array $item, array $patron)
+    {
+        $queryParams = array(
+            'itemkey'        => $item['adm_code'] . $item['localid'] . $item['sequencenumber'],
+            'userid'         => $patron['id'],
+            'type'           => 'HOME',
+            'pages'          => 'all',
+        );
+
+        return 'http://' . $host . '/cgi-bin/create_photocopy_request.pl?' . http_build_query($queryParams);
+    }
+
 
     /**
      * Get link for external booking request

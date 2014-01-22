@@ -1,0 +1,122 @@
+<?
+// Set page title
+$this->headTitle($this->translate('photocopy_place_text') . ': ' . $this->driver->getBreadcrumb());
+$record	= $this->driver;
+
+?>
+
+
+<!-- begin: col1 (sidebar)  -->
+<div id="col1" class="sidebar">
+	<div id="col1_content" class="clearfix">
+		<!-- begin: sidebar -->
+		<!-- end: sidebar -->
+	</div>
+</div>
+<!-- end: col1 (sidebar) -->
+
+<!-- begin: col3 (content) -->
+<div id="col3" class="content">
+	<div id="col3_content" class="clearfix">
+		<!-- begin: content -->
+		<div id="content">
+
+			<h1><?=$this->transEsc('photocopy_place_text')?></h1>
+            <p><?=$this->escapeHtml($record->getTitle())?></p>
+			
+			<?=$this->flashmessages()?>
+
+			<div class="hold-form">
+				<form class="form" action="" method="post">
+
+                    <div style="margin-left: 40px; width: 200px; height: 60px" class="hidden placeMaskIcon">
+
+
+
+                    </div>
+
+                    <fieldset>
+                        <?php if( in_array("pickUpLocation", $this->extraHoldFields) ): ?>
+                            <div class="fieldbox">
+                                <?php if( count($this->pickup) > 1 ): ?>
+                                    <?
+                                    if( isset($this->gatheredDetails['pickUpLocation']) && !empty($this->gatheredDetails['pickUpLocation']) ) {
+                                        $selected = $this->gatheredDetails['pickUpLocation'];
+                                    }
+                                    elseif( isset($this->homeLibrary) ) {
+                                        $selected = $this->homeLibrary;
+                                    }
+                                    else {
+                                        $selected = $this->defaultPickup;
+                                    }
+                                    ?>
+                                <?php else: ?>
+                                    <?php foreach($this->pickup as $lib): ?>
+                                        <label class="label" for="gatheredDetails[pickUpLocation]"><?=$this->transEsc('pick_up_location')?>:</label>
+                                        <input type="hidden" name="gatheredDetails[pickUpLocation]" value="<?=$this->escapeHtml($this->defaultPickup)?>" />
+                                        <input class="select large" type="text" name="gatheredDetails[pickUpLocationLabel]" value="<?=$this->escapeHtml($this->transEsc($lib['locationDisplay']))?>" readonly />
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
+                        <?php if( in_array("comments", $this->extraHoldFields) ): ?>
+                            <div class="fieldbox">
+                                <label class="label" for="gatheredDetails[comment]"><?=$this->transEsc('Comments')?>:</label>
+                                <textarea class="textarea large" maxlength="100"
+                                          name="gatheredDetails[comment]"><?=isset($this->gatheredDetails['comment']) ? $this->escapeHtml($this->gatheredDetails['comment']) : ''?></textarea>
+                            </div>
+                            <div class="fieldbox">
+                                <label class="label" for="gatheredDetails[comment]"><?=$this->transEsc('Comments')?>:</label>
+                                <textarea class="textarea large" maxlength="100"
+                                          name="gatheredDetails[comment]"><?=isset($this->gatheredDetails['comment']) ? $this->escapeHtml($this->gatheredDetails['comment']) : ''?></textarea>
+                            </div>
+                            <div class="fieldbox">
+                                <label class="label" for="gatheredDetails[comment]"><?=$this->transEsc('Comments')?>:</label>
+                                <textarea class="textarea large" maxlength="100"
+                                          name="gatheredDetails[comment]"><?=isset($this->gatheredDetails['comment']) ? $this->escapeHtml($this->gatheredDetails['comment']) : ''?></textarea>
+                            </div>
+                            <div class="fieldbox">
+                                <label class="label" for="gatheredDetails[comment]"><?=$this->transEsc('Comments')?>:</label>
+                                <textarea class="textarea large" maxlength="100"
+                                          name="gatheredDetails[comment]"><?=isset($this->gatheredDetails['comment']) ? $this->escapeHtml($this->gatheredDetails['comment']) : ''?></textarea>
+                            </div>
+                        <?php endif; ?>
+                        <?php if (in_array("requiredByDate", $this->extraHoldFields)): ?>
+                            <div class="fieldbox hidden">
+                                <label class="label" for="gatheredDetails[requiredBy]"><?= $this->transEsc("hold_required_by") ?> (<?= $this->dateTime()->getDisplayDateFormat() ?>): </label>
+                                <input class="text small" id="requiredByDate" type="text"
+                                       name="gatheredDetails[requiredBy]"
+                                       value="<?= (isset($this->gatheredDetails['requiredBy']) && !empty($this->gatheredDetails['requiredBy'])) ? $this->escapeHtml($this->gatheredDetails['requiredBy']) : $this->escapeHtml($this->defaultRequiredDate) ?>"
+                                       size="8"/>
+                            </div>
+                        <? endif; ?>
+                    </fieldset>
+                    <fieldset class="actions">
+                        <div class="fieldbox">
+                            <input class="submit primary showMaskIcon" style="margin-left: 170px" type="submit" name="placePhotocopyRequest" value="<?=$this->transEsc('photocopy_submit_text')?>"/>
+                        </div>
+                    </fieldset>
+           
+           <fieldset>
+                        <div class="fieldbox">
+                            <label class="label"><?=$this->transEsc('photocopy_text1')?>:</label>
+                            <div style="margin-left: 170px">
+                    <ul class="list">
+                    <li><?=$this->transEsc('photocopy_text2') ?></li>
+                    <li><?=$this->transEsc('photocoy_text3') ?></li>
+                    <li><?=$this->transEsc('photocopy_text4') ?> <a href="http://www.ub.unibas.ch/ub-hauptbibliothek/dienstleistungen/kopienversand/" target="_blank" ><?=$this->transEsc('photocopy_text5')?>, </a><a href="http://www.ub.unibe.ch/content/bestellen__ausleihen/fernleihe/index_ger.html" target="_blank" ><?=$this->transEsc('photocopy_text6')?>, </a><a href="http://www.ub.unibas.ch/ids-basel-bern/kosten-lieferfristen" target="_blank" ><?=$this->transEsc('photocopy_text7')?></a></li>
+                    </ul>              
+                     </div>
+                    </div>
+                    </fieldset>
+				</form>
+			</div>
+
+		</div>
+		<!-- end: content -->
+	</div>
+	<div id="ie_clearing">
+		&nbsp;
+	</div>
+</div>
+<!-- end: col3 (content) -->
