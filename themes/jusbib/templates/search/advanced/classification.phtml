@@ -1,3 +1,8 @@
 <fieldset>
     <?= $this->render('search/advanced/classificationTree') ?>
 </fieldset>
+<script>
+    jQuery(function(){
+        swissbib.AdvancedSearch.catTreeAutoSend = true;
+    });
+</script>

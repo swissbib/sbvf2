@@ -907,3 +907,8 @@ option {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 1em;
 }
+
+/**  Advanced Search Select-boxen */
+select.xlarge {
+    width: 460px;
+}

@@ -8,6 +8,8 @@ swissbib.AdvancedSearch = {
     groupCount: 0,
     fieldCount: [],
 
+    catTreeAutoSend: false,
+
 
     /**
      * Initialize when in advanced search view
@@ -35,7 +37,9 @@ swissbib.AdvancedSearch = {
         .bind("select_node.jstree", function (event, data) {
             data.rslt.obj.toggleClass("selected");
             data.rslt.obj.hasClass("selected") ? data.rslt.obj.children("input").attr("name", "filter[]") : data.rslt.obj.children("input").removeAttr("name");
-            swissbib.AdvancedSearch.sendForm(data.rslt.obj);
+            if (swissbib.AdvancedSearch.catTreeAutoSend) {
+                swissbib.AdvancedSearch.sendForm(data.rslt.obj);
+            }
         });
     },
 
