@@ -527,12 +527,15 @@ class SolrMarc extends VuFindSolrMarc
             . $field['filename']
             . '&scale=0.75&reqServicename=ImageTransformer';
         } elseif ($field['ADM'] === 'ZAD50') {
-            $dirpath = preg_replace('/^.*thumbnail/', '', $field['directory']);
-            $dirpath = empty($dirpath) ? $dirpath : substr($dirpath, 1) . '/';
-            return 'http://www.swissbib.ch/TouchPoint/ExternalServicesRedirect?imagePath=http://opac.nebis.ch/thumb_zb/'
-            . $dirpath
-            . $field['filename']
-            . '&scale=0.75&reqServicename=ImageTransformer';
+            if (preg_match('/^.*thumbnail/', $field['directory'])) {
+                $dirpath = preg_replace('/^.*thumbnail/', '', $field['directory']);
+                $dirpath = empty($dirpath) ? $dirpath : substr($dirpath, 1) . '/';
+                return 'http://www.swissbib.ch/TouchPoint/ExternalServicesRedirect?imagePath=http://opac.nebis.ch/thumb_zb/'
+                . $dirpath
+                . $field['filename']
+                . '&scale=0.75&reqServicename=ImageTransformer';
+            }
+
         }
     }
 
