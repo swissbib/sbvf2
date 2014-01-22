@@ -1,0 +1,11 @@
+<div id="classification-tree" class="jstree jstree-default">
+    <? foreach($classificationTree as $classification){
+        echo $this->render(
+            'search/advanced/classificationTreeItem',
+            array(
+                 'classification' => $classification
+            )
+        );
+    }
+    ?>
+</div>

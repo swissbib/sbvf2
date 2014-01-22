@@ -1,0 +1,105 @@
+<?php
+
+use VuFindSearch\Query\QueryGroup;
+use VuFindSearch\Query\Query;
+
+// Set page title
+$this->headTitle($this->translate('Advanced Search'));
+
+// Set up saved search details:
+
+$jsSearchDetails = array();
+
+if (isset($this->saved) && is_object($this->saved)) {
+    /** @var QueryGroup $searchDetails */
+    /** @var QueryGroup $searchGroup */
+    /** @var Query $searchQuery */
+    $searchDetails = $this->saved->getParams()->getQuery();
+    $groups = $searchDetails->getQueries();
+    $searchFilters = $this->saved->getParams()->getFilterList();
+
+    if (is_object($searchDetails)) {
+        foreach ($searchDetails->getQueries() as $searchGroup) {
+            $groupData = array();
+            foreach ($searchGroup->getQueries() as $searchQuery) {
+                $groupData[] = array(
+                    'lookfor' => $searchQuery->getString(),
+                    'field' => $searchQuery->getHandler(),
+                    'bool' => $searchGroup->isNegated() ? 'NOT' : $searchGroup->getOperator()
+                );
+            }
+            $jsSearchDetails[] = $groupData;
+        }
+    }
+} else {
+    $searchDetails = $searchFilters = $groups = false;
+}
+
+// Set up Javascript
+// Step 1: Define our search arrays so they are usable in javascript
+
+// Step 2: Call the javascript to make use of the above
+$this->headScript()->appendFile('advanced_search.js');
+$this->headScript()->appendFile('swissbib/AdvancedSearch.js');
+$this->headScript()->appendFile('lib/handlebars.js');
+// Step 3: Build the page
+//    $this->headScript()->appendScript($this->partial('search/advanced/build_page.phtml', array('searchDetails' => $searchDetails)));
+// Replace build_page
+$this->headScript()->appendScript('swissbib.AdvancedSearch.searchDetails = ' . json_encode($jsSearchDetails) . ';');
+$this->headScript()->appendScript($this->render('search/advanced/globals.phtml'));
+
+$lastSort = $this->options->getLastSort();
+
+
+
+?>
+
+<?= $this->render('search/advanced/templates-handlebars') ?>
+
+<!-- begin: col1 (sidebar)  -->
+<div id="col1" class="sidebar">
+    <div id="col1_content" class="clearfix">
+        <!-- begin: sidebar -->
+        <?= $this->render('search/advanced/sidebar') ?>
+        <!-- end: sidebar -->
+    </div>
+</div>
+<!-- end: col1 (sidebar) -->
+<!-- begin: col3 (content) -->
+<div id="col3" class="content">
+    <div id="col3_content" class="clearfix">
+        <!-- begin: content -->
+        <div id="content">
+
+            <?php if (sizeof($this->allTabsConfig) > 1): ?>
+                <div id="inlay">
+                    <div id="tabbed">
+                        <ul>
+                            <?php foreach ($this->allTabsConfig as $tabKey => $tabConfig): ?>
+                                <?php $isSelected = $tabKey === $this->activeTabKey; ?>
+                                <li class="<?= $isSelected ? 'selected' : '' ?>">
+                                    <a href="<?= $isSelected ? 'javascript:void(0)' : $this->url($tabConfig['advSearch']) ?>">
+                                        <span><?= $this->transEsc($tabConfig['label']) ?></span>
+                                    </a>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <h1><?= $this->transEsc($allTabsConfig[$activeTabKey]['label']) ?></h1>
+            <?= $this->flashmessages() ?>
+
+            <form method="get" action="<?= $this->url($this->options->getSearchAction()) ?>" id="advSearchForm" name="searchForm" class="search data">
+                <?= $this->render('search/advanced/' . $activeTabKey) ?>
+            </form>
+
+        </div>
+        <!-- end: content -->
+    </div>
+    <div id="ie_clearing">
+        &nbsp;
+    </div>
+</div>
+<!-- end: col3 (content) -->

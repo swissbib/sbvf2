@@ -1,0 +1,31 @@
+<fieldset>
+    <h3 class="toggler persist collapsed" id="searchoption_toggler_refine">
+        <?= $this->transEsc('Limit To') ?>
+    </h3>
+    <div class="searchoption_toggler_refine">
+        <div id="adv_tab" class="tabs">
+            <ul>
+                <li><a href="#tab-1"><?= $this->transEsc('facets') ?></a></li>
+                <? if (!empty($this->classificationTree)) : ?>
+                <li><a href="#tab-2"><?= $this->transEsc('classification_tree') ?></a></li>
+                <? endif; ?>
+            </ul>
+            <div id="tab-1" class="tab">
+                <?= $this->render('search/advanced/solr-filters') ?>
+            </div>
+
+            <? if (!empty($classificationTree)) : ?>
+            <div id="tab-2" class="tab">
+                <div class="fieldbox">
+                    <?= $this->render('search/advanced/classificationTree') ?>
+                </div>
+            </div>
+            <? endif; ?>
+    </div>
+
+    <script>
+        $(function(){
+            swissbib.AdvancedSearch.initializeTabs("#adv_tab", "#<?=$adv_search_activeTabId?>");
+        });
+    </script>
+</fieldset>
