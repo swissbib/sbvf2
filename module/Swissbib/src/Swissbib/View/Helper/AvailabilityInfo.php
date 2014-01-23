@@ -15,7 +15,7 @@ class AvailabilityInfo extends AbstractHelper
     const LOOK_ON_SITE = "lookOnSite"; // Informationsabruf über das lokale System (fallback)
     const EXHIBITION = "exhibition"; // nicht einsehbar, extern ausgestellt (mit Datum bis)
     const ONLINE_AVAILABLE = "onlineAvailable"; // by now only for ETH, could be enhanced for other library systems (labels for LoanStatus needed!)
-    const ITEM_LOST = "itemlost"; // vermisst, in Reparatur, abbestellt: Exemplar für Benutzer verloren
+    const UNAVAILABLE = "unavailable"; // vermisst, in Reparatur, abbestellt: Exemplar für Benutzer verloren
 
     /**
      * Convert availability info into html string
@@ -105,7 +105,7 @@ class AvailabilityInfo extends AbstractHelper
                     //do something special for online resources (dedicated icon and / or text?)
                     $info = $escapedTranslation($statusfield);
                     break;
-                case self::ITEM_LOST:
+                case self::UNAVAILABLE:
 
                     $infotext = $escapedTranslation($statusfield);
                     $info = "<div class='availability_notok'>" . "$infotext" . "</div>";
