@@ -22,17 +22,8 @@
 				$isRenewable		= $ilsDetails['renewable'];
 				$safeId 			= preg_replace('/[^a-zA-Z0-9]/', '', $transaction->getUniqueId());
 				$infoMessages		= array();
-
-				if ( $isRenewable )
-                {
-                    $renewalLimit = preg_replace('/^\d+ \(out of (\d+)\).*$/', '$1', $ilsDetails['renew_info']);
-				}
-                else
-                {
-				    $renewalLimit = $ilsDetails['renewals'];
-				}
-
-                $Renewals     = $ilsDetails['renewals'] . ' ' .$this->transEsc('of') . ' ' . $renewalLimit;
+				$renewalLimit       = preg_replace('/^\d+ \(out of (\d+)\).*$/', '$1', $ilsDetails['renew_info']);
+				$Renewals           = $ilsDetails['renewals'] . ' ' .$this->transEsc('of') . ' ' . $renewalLimit;
 
 				if (isset($this->renewResult[$ilsDetails['item_id']])) {
 					$renewDetails = $this->renewResult[$ilsDetails['item_id']];
