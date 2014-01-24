@@ -7,7 +7,7 @@
         <? if (count($classification['children']) > 0) {
             foreach ($classification['children'] as $child) {
                 echo $this->render(
-                    'search/advanced/treeItem',
+                    'search/advanced/classificationTreeItem',
                     array (
                           'classification' => $child
                     )

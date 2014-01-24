@@ -1,0 +1,12 @@
+<?
+// Load the Solr-specific advanced search controls and inject them into the
+// standard advanced search layout:
+
+if ($adv_search_useTabs) {
+    $this->extraAdvancedControls = $this->render('search/advanced/solr-tabs.phtml');
+} else {
+    $this->extraAdvancedControls = $this->render('search/advanced/solr.phtml');
+}
+
+echo $this->render('search/advanced/layout.phtml');
+?>

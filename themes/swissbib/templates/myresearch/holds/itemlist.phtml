@@ -46,7 +46,7 @@
         <td><?=$this->escapeHtml($ilsDetails['title']) ?> <?=$this->escapeHtml($ilsDetails['description']) ?></td>
         <td><?=$this->escapeHtml($ilsDetails['create']) ?></td>
         <td><?=$this->escapeHtml($this->transEsc($ilsDetails['location'])) ?></td>
-        <td><?=$this->escapeHtml($status) ?></td>
+        <td><?=$status?></td>
         <td><?=$this->escapeHtml($this->zendTranslate($ilsDetails['institution'], 'institution'))?></td>
         <td><?=$this->escapeHtml($ilsDetails['signature'])?></td>
     </tr>

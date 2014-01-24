@@ -6,8 +6,7 @@
 			<th><?=$this->transEsc('date_from')?></th>
 			<th><?=$this->transEsc('date_to')?></th>
 			<th><?=$this->transEsc('Place of Delivery') ?></th>
-			<th><?=$this->transEsc('Status') ?></th>
-            <th><?=$this->transEsc('Library') ?></th>
+		    <th><?=$this->transEsc('Library') ?></th>
 			<th><?=$this->transEsc('Call Number') ?></th>
 			<th><?=$this->transEsc('Note') ?></th>
 		</tr>
@@ -20,8 +19,7 @@
 				<td><?=date('d/m/y H:i', $booking['dateStart'])?></td>
 				<td><?=date('d/m/y H:i', $booking['dateEnd'])?></td>
 				<td><?=$this->escapeHtml($booking['pickupLocation'])?></td>
-				<td><?=$this->escapeHtml($booking['itemStatus'])?></td>
-                <td><?=$this->escapeHtml($booking['library'])?></td>
+		        <td><?=$this->escapeHtml($booking['library'])?></td>
 				<td><?=$this->escapeHtml($booking['callNumber'])?></td>
 				<td></td>
 			</tr>

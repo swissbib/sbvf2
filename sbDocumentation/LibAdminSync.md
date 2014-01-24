@@ -52,16 +52,16 @@ The three parameters host, api and path are combined to the URI which is called 
 **Example config:**
 
 	[Libadmin]
-    host	= http://libadmin.swissbib.unibas.ch
-    api		= api
+    host	= http://admin.swissbib.ch
+    api		= libadmin/api
     path	= vufind/green.json
 
 Results in this request URL:
 
-	http://libadmin.swissbib.unibas.ch/api/vufind/green.json
+	http://admin.swissbib.ch/libadmin/api/vufind/green.json
 
-	#In Additiion this gets automatically called. it generates the libadmin_all.json to have all institution information available
-	http://libadmin.swissbib.unibas.ch/api/vufind/green.json?option[all]=true
+	Additionaly, the following URL gets automatically called. It generates the libadmin_all.json to have all institution information available
+	http://admin.swissbib.ch/libadmin/api/vufind/green.json?option[all]=true
 
 ## Examples
 

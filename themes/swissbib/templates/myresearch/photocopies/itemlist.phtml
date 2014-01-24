@@ -38,8 +38,8 @@
 				<?= $this->escapeHtml($addTitle) ?>
 			</td>
 			<td><?= $this->escapeHtml($photoCopy['dateOpen']) ?></td>
-			<td><?= $this->escapeHtml($photoCopy['status']) ?></td>
-			<td><?= $this->escapeHtml($photoCopy['pickup']) ?></td>
+		    <td><?= $this->transEsc($photoCopy['status']) ?></td>
+			<td><?= $this->transEsc($photoCopy['pickup']) ?></td>
 			<td><?= $this->escapeHtml($photoCopy['library']) ?></td>
 			<td><?= $this->escapeHtml($photoCopy['callNumber']) ?></td>
 			<td><?= $this->escapeHtml($photoCopy['note1'] . ' ' . $photoCopy['note2']) ?></td>
