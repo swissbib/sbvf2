@@ -273,7 +273,7 @@ class Importer implements ServiceLocatorAwareInterface
 		}
 
 			// Sort and extract institution-group relation
-		ksort($institutionRaw);
+		uksort($institutionRaw, 'strnatcmp');
 		foreach ($institutionRaw as $sortKey => $relation) {
 			$relations['institutions'][$relation['institution']] = $relation['group'];
 		}

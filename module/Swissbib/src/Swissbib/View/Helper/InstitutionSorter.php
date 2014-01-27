@@ -46,7 +46,7 @@ class InstitutionSorter extends AbstractHelper
 		}
 
 		foreach ($institutions as $institution) {
-			$institutionKey = strtolower($institution);
+			$institutionKey = $institution;
 			$pos	= isset($this->institutions[$institutionKey]) ? $this->institutions[$institutionKey] : $missingCounter++;
 			$sorted[$pos] = $institution;
 		}
