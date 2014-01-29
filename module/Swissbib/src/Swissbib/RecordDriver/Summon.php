@@ -46,47 +46,50 @@ use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
 class Summon extends VuFindSummon
 {
 
-	/**
-	 * @param    String $fieldName
-	 * @param    String $fallbackValue
-	 * @return    String
-	 */
-	private function getField($fieldName, $fallbackValue = '')
-	{
-		return array_key_exists($fieldName, $this->fields) ? $this->fields[$fieldName] : $fallbackValue;
-	}
+    /**
+     * @param    String $fieldName
+     * @param    String $fallbackValue
+     *
+     * @return    String
+     */
+    private function getField($fieldName, $fallbackValue = '')
+    {
+        return array_key_exists($fieldName, $this->fields) ? $this->fields[$fieldName] : $fallbackValue;
+    }
 
 
 
-	/**
-	 * @return    String    Author name(s)
-	 */
-	public function getAuthor()
-	{
-		$author = $this->getField('Author', '-');
+    /**
+     * @return    String    Author name(s)
+     */
+    public function getAuthor()
+    {
+        $author = $this->getField('Author', '-');
 
-		return is_array($author) ? implode('; ', $author) : $author;
-	}
-
-
-
-	/**
-	 * @return    Array
-	 */
-	private function getLinkModel()
-	{
-		return $this->getField('LinkModel');
-	}
+        return is_array($author) ? implode('; ', $author) : $author;
+    }
 
 
 
-	/**
-	 * @return    Array
-	 */
-	public function getURI()
-	{
-		return $this->getField('URI');
-	}
+    /**
+     * @return    Array
+     */
+    private function getLinkModel()
+    {
+        return $this->getField('LinkModel');
+    }
+
+
+
+    /**
+     * @return    Array
+     */
+    public function getURI()
+    {
+        return $this->getField('URI');
+    }
+
+
 
     /**
      * @return string ??
@@ -98,93 +101,106 @@ class Summon extends VuFindSummon
     }
 
 
+
     /**
-	 * @return    Boolean
-	 */
-	public function hasDirectLink()
-	{
-		return in_array('DirectLink', $this->getLinkModel());
-	}
+     * @return    Boolean
+     */
+    public function hasDirectLink()
+    {
+        return in_array('DirectLink', $this->getLinkModel());
+    }
 
 
 
-	/**
-	 * @return    Boolean
-	 */
-	public function hasFulltext()
-	{
-		return 1 === intval($this->getField('hasFullText'));
-	}
-
-	/**
-	 * @return  string
-	 */
-	public function getImprint()
-	{
-		$imprint = '';
-		$pub_place =  $this->getPlacesOfPublication();
-		if (is_array($pub_place) && count($pub_place)>0) {
-			$imprint = implode(', ',$pub_place);
-			$imprint .= ': ';
-		}
-		$publishers = $this->getPublishers();
-		if (is_array($publishers) && count($publishers)>0) {
-			$imprint .= implode(', ', $publishers);
-			$imprint .= ', ';
-		}
-		$pub_date = $this->getPublicationDates();
-		if ( is_array($pub_date)) {
-			$imprint .= implode('-',$pub_date);
-		}
-		return $imprint;
-	}
-
-	/**
-	 * @return  string
-	 */
-	public function getAllSubjectHeadingsAsString()
-	{
-		$ret=array();
-		$subj = $this->getAllSubjectHeadings();
-		if (is_array($subj) and count($subj)>0) {
-			foreach($subj as $sub) {
-				$ret = array_merge($ret, $sub);
-			}
-			$ret=trim(implode('; ', $ret));
-		}
-		return $ret;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getDatabaseTitle()
-	{
-		$ret='';
-		$db = $this->getField('DatabaseTitle');
-		if (is_array($db)) {
-			$ret = implode('; ',$db);
-		}
-		return $ret;
-	}
+    /**
+     * @return    Boolean
+     */
+    public function hasFulltext()
+    {
+        return 1 === intval($this->getField('hasFullText'));
+    }
 
 
 
-	/**
-	 * @todo    implement
-	 * @return    array
-	 */
-	public function getAllSubjectVocabularies()
-	{
-		return array();
-	}
+    /**
+     * @return  string
+     */
+    public function getImprint()
+    {
+        $imprint = '';
+        $pub_place = $this->getPlacesOfPublication();
+        if (is_array($pub_place) && count($pub_place) > 0) {
+            $imprint = implode(', ', $pub_place);
+            $imprint .= ': ';
+        }
+        $publishers = $this->getPublishers();
+        if (is_array($publishers) && count($publishers) > 0) {
+            $imprint .= implode(', ', $publishers);
+            $imprint .= ', ';
+        }
+        $pub_date = $this->getPublicationDates();
+        if (is_array($pub_date)) {
+            $imprint .= implode('-', $pub_date);
+        }
 
-	/**
-	 * @todo    implement
-	 * @return string
-	 */
-	public function getAltTitle()
-	{
-		return '';
-	}
+        return $imprint;
+    }
+
+
+
+    /**
+     * @return  string
+     */
+    public function getAllSubjectHeadingsAsString()
+    {
+        $ret = array();
+        $subj = $this->getAllSubjectHeadings();
+        if (is_array($subj) and count($subj) > 0) {
+            foreach ($subj as $sub) {
+                $ret = array_merge($ret, $sub);
+            }
+            $ret = trim(implode('; ', $ret));
+        }
+
+        return $ret;
+    }
+
+
+
+    /**
+     * @return string
+     */
+    public function getDatabaseTitle()
+    {
+        $ret = '';
+        $db = $this->getField('DatabaseTitle');
+        if (is_array($db)) {
+            $ret = implode('; ', $db);
+        }
+
+        return $ret;
+    }
+
+
+
+    /**
+     * @todo    implement
+     * @return    array
+     */
+    public function getAllSubjectVocabularies()
+    {
+        return array();
+    }
+
+
+
+    /**
+     * @todo    implement
+     * @return string
+     */
+    public function getAltTitle()
+    {
+        return '';
+    }
+
 }
