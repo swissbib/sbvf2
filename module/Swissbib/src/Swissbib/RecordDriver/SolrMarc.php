@@ -1360,6 +1360,15 @@ class SolrMarc extends VuFindSolrMarc
         return is_array($title) ? reset($title) : $title;
     }
 
+    /**
+     * Get is_hierarchy_title
+     *
+     * @return string
+     */
+    public function getIs_hierarchy_title() {
+        return isset($this->fields['is_hierarchy_title']) ? $this->fields['is_hierarchy_title'] : $this->getTitle();
+    }
+
 
     /**
      * Get holdings data
