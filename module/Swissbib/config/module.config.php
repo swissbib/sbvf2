@@ -32,6 +32,7 @@ use Swissbib\VuFind\Hierarchy\TreeDataSource\Solr as TreeDataSourceSolr;
 use Swissbib\Log\Logger as SwissbibLogger;
 use Swissbib\View\Helper\DomainURL;
 use Swissbib\View\Helper\InstitutionDefinedAsFavorite as DefinedFavoriteInstitutions;
+use Swissbib\RecordDriver\SolrDefaultAdapter;
 
 return array(
     'router' => array(
@@ -331,7 +332,12 @@ return array(
                     );
 
                     return $logger;
-                }
+                },
+            'Swissbib\RecordDriver\SolrDefaultAdapter' => function ($sm) {
+                    $config = $sm->get('Vufind\Config')->get('Config');
+
+                    return new SolrDefaultAdapter($config);
+                },
         )
     ),
     'view_helpers'    => array(

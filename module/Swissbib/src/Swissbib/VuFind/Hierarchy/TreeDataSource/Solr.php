@@ -57,7 +57,7 @@ class Solr extends VuFindTreeDataSourceSolr
 			$isCollection = $current->isCollection() ? "true" : "false";
 			$xmlNode .= '<item id="' . htmlspecialchars($current->getUniqueID()) .
 					'" isCollection="' . $isCollection . '"><content><name>' .
-					htmlspecialchars($current->getTitle()) . '</name></content>';
+					htmlspecialchars($current->getIs_hierarchy_title()) . '</name></content>';
 			$xmlNode .= $this->getChildren($current->getUniqueID(), $count);
 			$xmlNode .= '</item>';
 			array_push($xml, array((isset($sequence) ? $sequence : 0), $xmlNode));
