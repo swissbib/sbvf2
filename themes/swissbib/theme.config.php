@@ -77,7 +77,11 @@ return array(
 
                     return new \Swissbib\VuFind\View\Helper\Root\Flashmessages($messenger);
                 },
-
+            'citation' => function ($sm) {
+                    return new \Swissbib\VuFind\View\Helper\Root\Citation(
+                        $sm->getServiceLocator()->get('VuFind\DateConverter')
+                    );
+                },
             'recordlink'                => function ($sm) {
                     return new \Swissbib\View\Helper\RecordLink(
                         $sm->getServiceLocator()->get('VuFind\RecordRouter')

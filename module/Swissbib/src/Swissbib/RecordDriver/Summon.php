@@ -203,4 +203,17 @@ class Summon extends VuFindSummon
         return '';
     }
 
+
+
+    /**
+     * @override
+     * @return array Strings representing citation formats.
+     */
+    public function getCitationFormats()
+    {
+        $solrDefaultAdapter = $this->hierarchyDriverManager->getServiceLocator()->get('Swissbib\RecordDriver\SolrDefaultAdapter');
+
+        return $solrDefaultAdapter->getCitationFormats();
+    }
+
 }

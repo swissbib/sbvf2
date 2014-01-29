@@ -1928,4 +1928,16 @@ class SolrMarc extends VuFindSolrMarc
         return false;
     }
 
+
+    /**
+     * @override
+     * @return array Strings representing citation formats.
+     */
+    public function getCitationFormats()
+    {
+        $solrDefaultAdapter = $this->getServiceLocator()->get('Swissbib\RecordDriver\SolrDefaultAdapter');
+
+        return $solrDefaultAdapter->getCitationFormats();
+    }
+
 }
