@@ -1,1 +1,39 @@
-<h2>Info migration swissbib TouchPoint -> VuFind2</h2>
+<h2>swissbib wechselt seine Suchsoftware und passt die Daten an</h2>
+<h3>Was funktioniert nicht mehr?</h3>
+<p>Es handelt sich um ein sehr umfangreiches Update. Dies führt zu drei tiefgreifenden Anpassungen, mit Folgen für Ihre
+    persönlichen Daten:
+</p>
+<ol class="list">
+    <li>Die Einstellungen ihres Benutzerkontos gehen verloren. Private Nutzer müssen sich einen neuen Account anlegen.
+    </li>
+    <li>Die Merklisten als Teil des Kontos wurden gelöscht.</li>
+    <li>Die Kurzlinks auf swissbib-Datensätze sind nicht mehr gültig</li>
+</ol>
+<h3>Was ändert sich?</h3>
+<p>Auf den ersten Blick ändert sich wenig, die Unterschiede liegen im Detail:
+</p>
+<ul class="list">
+    <li>Der Filter nach Verbünden entfällt auf der Startseite und wird als Facette angeboten</li>
+    <li>Neue &raquo;Erweiterte Suche&laquo;</li>
+    <li>Neue Anmeldung für Privatpersonen <a href="<?= $this->url('myresearch-home'); ?>"
+                                             title="<?= $this->transEsc('Your Account') ?>"><img alt="Info"
+                                                                                                 src="/themes/swissbib/images/icon_info.gif"></a>
+    </li>
+    <li>Trefferliste
+        <ul>
+            <li>Neue Facette für die Einschränkung nach Jahren</li>
+            <li>Verbesserungen beim Druck</li>
+        </ul>
+    </li>
+    <li>Einzeltrefferanzeige
+        <ul>
+            <li>Angepasste Bibliotheksanzeige</li>
+            <li>Übersichtliche Bandanzeige bei mehrbändigen Werken <a
+                    href="https://test.swissbib.ch/Record/073920207/HierarchyTree?hierarchy=259118362"><img alt="Info"
+                                                                                                            src="/themes/swissbib/images/icon_info.gif"></a>
+            </li>
+            <li>Verbesserungen beim Druck</li>
+            <li>Die Dokumentbeschreibung ist umfangreicher, falls die Daten es hergeben</li>
+        </ul>
+    </li>
+</ul>
