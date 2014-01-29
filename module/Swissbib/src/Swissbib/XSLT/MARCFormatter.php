@@ -26,6 +26,7 @@ class MARCFormatter
         "DDB" => "http://d-nb.info/%s",
         "RETROS" => "http://retro.seals.ch/oai/dataprovider?verb=GetRecord&metadataPrefix=oai_dc&identifier=%s",
         "ZORA" => "http://www.zora.uzh.ch/cgi/oai2?verb=GetRecord&metadataPrefix=oai_dc&identifier=%s"
+        //"ALEX" => "http://www.alexandria.ch/primo_library/libweb/action/dlSearch.do?institution=BIG&vid=ALEX&scope=default_scope&query=lsr07,contains,vtls%s-41big_inst",
     );
 
 
