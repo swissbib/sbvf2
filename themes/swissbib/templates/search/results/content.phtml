@@ -21,7 +21,9 @@ $searchHandler = $results->getParams()->getSearchHandler()
 
             <? if (strcmp($searchHandler, "FRBR") != 0): ?>
                 <?= $this->number($recordTotal) ?>&nbsp;<?= $this->transEsc('hits for your search') ?>
-                <cite><?= $this->escapeHtml($lookFor) ?></cite>
+                <? if (!empty($lookFor)): ?>
+                    <cite><?= $this->escapeHtml($lookFor) ?></cite>
+                <? endif; ?>
             <? else: ?>
 
                 <?= $this->number($recordTotal) ?>&nbsp;<?= $this->transEsc('zero hits for your search') ?>
