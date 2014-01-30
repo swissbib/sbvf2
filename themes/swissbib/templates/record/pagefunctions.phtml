@@ -9,7 +9,7 @@ $controllerClass = 'controller' . $this->record($this->driver)->getController();
 	<ul>
 
 		<? if (count($this->driver->getCitationFormats()) > 0): ?>
-			<li id="pagefunction_cite">
+			<li id="pagefunction_link">
 				<a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Cite')?>" class="citeRecord cite <?=$controllerClass?>" id="citeRecord" title="<?=$this->transEsc('Cite this')?>"><?=$this->transEsc('Cite this')?></a>
 			</li>
 		<? endif; ?>
