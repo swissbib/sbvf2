@@ -105,7 +105,7 @@ class JSTree extends VfJsTree implements ServiceLocatorAwareInterface
 		$query = new Query(
 			'hierarchy_parent_id:"' . addcslashes($id, '"') . '"'
 		);
-		$results    = $this->searchService->search('Solr', $query, 0, 10000);
+		$results    = $this->searchService->search('Solr', $query, 0, 1);
 
 		return $results->getTotal() > 0;
 	}
