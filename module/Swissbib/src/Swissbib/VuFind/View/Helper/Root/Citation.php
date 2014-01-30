@@ -37,6 +37,27 @@ class Citation extends VuFindCitation
 {
 
     /**
+     * @override
+     * @param \VuFind\RecordDriver\Base $driver Record driver object.
+     *
+     * @return Citation
+     */
+    public function __invoke($driver)
+    {
+        parent::__invoke($driver);
+        $pubDates = $driver->tryMethod('getPublicationDates');
+
+        if (empty($this->details['journal'])) {
+            $this->details['pubDate'] = $this->view->publicationDateMarc($pubDates);
+        } else {
+            $this->details['pubDate'] = $this->view->publicationDateSummon($pubDates);
+        }
+
+        return $this;
+    }
+
+
+    /**
      * Get Custom citation.
      *
      * This function assigns all the necessary variables and then returns a Custom
@@ -60,6 +81,31 @@ class Citation extends VuFindCitation
         } else {
             return $partial('Citation/custom-article.phtml', $custom);
         }
+    }
+
+
+    /**
+     * @override
+     * @return string
+     */
+    protected function getPublisher()
+    {
+        if (isset($this->details['pubName'])
+            && !empty($this->details['pubName'])
+        ) {
+            return $this->details['pubName'];
+        } else {
+            return '';
+        }
+    }
+
+    /**
+     * @override
+     * @return string
+     */
+    protected function getYear()
+    {
+        return !empty($this->details['pubDate']) ? $this->details['pubDate'] : '';
     }
 
 }
