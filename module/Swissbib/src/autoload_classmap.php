@@ -109,6 +109,7 @@ return array(
   'Swissbib\RecordDriver\WorldCat'                              => __DIR__ . '/Swissbib/RecordDriver/WorldCat.php',
   'Swissbib\RecordDriver\SolrMarc'                              => __DIR__ . '/Swissbib/RecordDriver/SolrMarc.php',
   'Swissbib\RecordDriver\Summon'                                => __DIR__ . '/Swissbib/RecordDriver/Summon.php',
+  'Swissbib\RecordDriver\SolrDefaultAdapter'                    => __DIR__ . '/Swissbib/RecordDriver/SolrDefaultAdapter.php',
   'Swissbib\TargetsProxy\Exception'                             => __DIR__ . '/Swissbib/TargetsProxy/Exception.php',
   'Swissbib\TargetsProxy\TargetsProxy'                          => __DIR__ . '/Swissbib/TargetsProxy/TargetsProxy.php',
   'Swissbib\TargetsProxy\IpMatcher'                             => __DIR__ . '/Swissbib/TargetsProxy/IpMatcher.php',

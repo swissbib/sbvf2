@@ -1,11 +1,18 @@
 <?php
 
 $exportFormats = $this->export()->getFormatsForRecord($this->driver);
+$controllerClass = 'controller' . $this->record($this->driver)->getController();
 
 ?>
 <div id="pagefunctions" class="offset">
 	<h3 class="hidden"><?=$this->transEsc('Search Tools')?></h3>
 	<ul>
+
+		<? if (count($this->driver->getCitationFormats()) > 0): ?>
+			<li id="pagefunction_link">
+				<a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Cite')?>" class="citeRecord cite <?=$controllerClass?>" id="citeRecord" title="<?=$this->transEsc('Cite this')?>"><?=$this->transEsc('Cite this')?></a>
+			</li>
+		<? endif; ?>
 
 		<li id="pagefunction_print">
 			<a href="#" title="<?=$this->transEsc('Print')?>"><?=$this->transEsc('Print')?></a>

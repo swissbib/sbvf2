@@ -54,6 +54,8 @@ class Availability
 		try {
 			$responseBody	= $this->fetch($apiUrl);
 			$responseData	= json_decode($responseBody, true);
+            //the following line could be used to check on json errors (possible trouble with UTF8 encountered)
+            //$error          = json_last_error();
 
 			if (is_array($responseData)) {
 				return $responseData;
