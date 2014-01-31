@@ -99,6 +99,16 @@ if (!empty($journalTitle)) {
         }
         echo "%P $page\n";
     }
+} else {
+    $physical = $this->driver->tryMethod('getPhysicalDescriptions');
+    if (is_array($physical)) {
+        foreach ($physical as $current) {
+            if ( preg_match('/([0-9]+)\s*S/', $current, $matches) || preg_match('/([0-9]+)\s*p/', $current, $matches)) {
+                echo "%P $matches[1]\n";
+                break;
+            }
+        }
+    }
 }
 
 foreach ($this->record($this->driver)->getUrlList() as $url) {
