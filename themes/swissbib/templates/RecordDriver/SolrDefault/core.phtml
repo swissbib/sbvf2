@@ -15,10 +15,8 @@ $thumbnailSrc = $thumbnail ? $thumbnail : $this->url('cover-unavailable');
 
 $titleStatement       = $record->getTitleStatement(true);
 $shortTitle           = $record->getShortTitle();
-$parts_name           = is_array($titleStatement['parts_name']) ? implode('. ', $titleStatement['parts_name']) : $titleStatement['parts_name'];
-$subtitle             = $titleStatement['title_remainder'] ? $titleStatement['title_remainder'] : $parts_name;
-$responsible          = isset($titleStatement['statement_responsibility']) ? $titleStatement['statement_responsibility'] : $record->getPrimaryAuthor(true);
-$responsible          = isset($responsible) && !empty($responsible) ? $responsible : implode('; ', $record->getSecondaryAuthors(true));
+$subtitle             = $viewRecord->getSubtitle($titleStatement);
+$responsible          = $viewRecord->getResponsible($titleStatement, $record);
 $publishers           = $record->getPublishers(true);
 $physicalDescriptions = $record->getPhysicalDescriptions(false);
 $edition              = $record->getEdition();

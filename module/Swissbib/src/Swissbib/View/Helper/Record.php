@@ -163,6 +163,7 @@ class Record extends VuFindRecord
      *
      * @return string
      */
+
     public function getFormatClass($format)
     {
         if (!($this->driver instanceof \Swissbib\RecordDriver\SolrMarc) || !$this->driver->getUseMostSpecificFormat()) return parent::getFormatClass($format);
@@ -173,4 +174,64 @@ class Record extends VuFindRecord
         return pathinfo($mediaType, PATHINFO_FILENAME);
     }
 
+    /**
+     * @param $titleStatement
+     *
+     * @return string
+     */
+
+    public function getSubtitle($titleStatement)
+    {
+        if (isset($titleStatement['parts_name'])) {
+            $parts_name           = is_array($titleStatement['parts_name']) ? implode('. ', $titleStatement['parts_name']) : $titleStatement['parts_name'];
+        }
+        if (isset($titleStatement['title_remainder'])) {
+            $title_remainder      = $titleStatement['title_remainder'];
+        }
+
+        if (!empty($title_remainder) && empty($parts_name))
+        {
+            return $title_remainder;
+        }
+
+        elseif (!empty($title_remainder) && !empty($parts_name))
+        {
+            return $title_remainder . '. ' . $parts_name;
+        }
+
+        elseif (empty($title_remainder) && !empty($parts_name))
+        {
+            return $parts_name;
+        }
+    }
+
+    /**
+     * @param $titleStatement
+     * @param $record
+     *
+     * @return string
+     */
+    
+    public function getResponsible($titleStatement, $record)
+    {
+        if (isset($titleStatement['statement_responsibility']))
+        {
+            return $titleStatement['statement_responsibility'];
+        }
+
+        elseif ($record->getPrimaryAuthor(true))
+        {
+            return $record->getPrimaryAuthor();
+        }
+
+        elseif ($record->getSecondaryAuthors(true))
+        {
+            return implode('; ', $record->getSecondaryAuthors());
+        }
+
+        elseif ($record->getCorporationNames(true))
+        {
+            return implode('; ', $record->getCorporationNames());
+        }
+    }
 }

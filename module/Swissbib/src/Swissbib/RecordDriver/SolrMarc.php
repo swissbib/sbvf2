@@ -810,6 +810,33 @@ class SolrMarc extends VuFindSolrMarc
         return $authors;
     }
 
+    /**
+     * @param bool $asString
+     *
+     * @return array|\Array[]
+     */
+
+    public function getCorporationNames($asString = true)
+    {
+        $corporations = $this->getAddedCorporateNames();
+        //$corporations[] = $this->getMainCorporateName();
+
+        if ($asString) {
+            $stringCorporations = array();
+
+            foreach ($corporations as $corporation) {
+                $name = isset($corporation['name']) ? rtrim($corporation['name'], '.') : '';
+                foreach ($corporation['unit'] as $unit) {
+                    $units = '. ' . $unit;
+                }
+                $stringCorporations[] = trim($name . $units);
+            }
+
+            $corporations = $stringCorporations;
+        }
+        return $corporations;
+    }
+
 
     /**
      * Get corporate name (authors)

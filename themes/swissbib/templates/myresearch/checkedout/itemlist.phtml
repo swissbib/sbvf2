@@ -22,10 +22,27 @@
 				$isRenewable		= $ilsDetails['renewable'];
 				$safeId 			= preg_replace('/[^a-zA-Z0-9]/', '', $transaction->getUniqueId());
 				$infoMessages		= array();
-				$renewalLimit       = preg_replace('/^\d+ \(out of (\d+)\).*$/', '$1', $ilsDetails['renew_info']);
-				$Renewals           = $ilsDetails['renewals'] . ' ' .$this->transEsc('of') . ' ' . $renewalLimit;
 
-				if (isset($this->renewResult[$ilsDetails['item_id']])) {
+            if ( $isRenewable )
+            {
+                $renewalLimit = preg_replace('/^\d+ \(out of (\d+)\).*$/', '$1', $ilsDetails['renew_info']);
+                if (is_numeric($renewalLimit))
+                {
+                   $Renewals = $ilsDetails['renewals'] . ' ' .$this->transEsc('of') . ' ' . $renewalLimit;
+                }
+                else
+                {
+                   $renewalInfo = preg_replace('/^\d+ \((.*)\).$/', '$1', $ilsDetails['renew_info']);
+                   $Renewals = $ilsDetails['renewals'] . ' (' .$this->translate($renewalInfo) . ')';
+                   //$Renewals = $ilsDetails['renew_info'];
+                }
+            }
+            else
+            {
+                $Renewals = $this->translate('no_renewal');
+            }
+
+            if (isset($this->renewResult[$ilsDetails['item_id']])) {
 					$renewDetails = $this->renewResult[$ilsDetails['item_id']];
 
 					if (isset($renewDetails['success']) && $renewDetails['success']) {
@@ -38,7 +55,7 @@
 						//	$infoMessages[] = $renewDetails['sysMessage'];
 						//}
 					}
-				}
+			}
 					// Not supported statuses for solr
 //				if (isset($ilsDetails['dueStatus']) && $ilsDetails['dueStatus'] == "overdue") {
 //					$infoMessages[] = $this->transslate("renew_item_overdue");
