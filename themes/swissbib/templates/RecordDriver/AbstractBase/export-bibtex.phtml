@@ -127,13 +127,13 @@ foreach ($this->record($this->driver)->getUrlList() as $url) {
 
 echo "crossref = " . $this->serverUrl($this->recordLink()->getUrl($this->driver)) . "\n";
 
-$isbns = $driver->tryMethod('getISNBs');
+$isbns = $driver->tryMethod('getISBNs');
 if (!empty($isbns)) {
     echo 'isbn= ' . $isbns[0] . "\n";
 }
 
 $issns =$driver->tryMethod('getISSNs');
-if (!empty($isbns)) {
+if (!empty($issns)) {
     echo 'issn= ' . $issns[0] . "\n";
 }
 // Record separator:
