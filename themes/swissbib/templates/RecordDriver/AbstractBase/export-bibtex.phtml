@@ -128,13 +128,23 @@ foreach ($this->record($this->driver)->getUrlList() as $url) {
 echo "crossref = " . $this->serverUrl($this->recordLink()->getUrl($this->driver)) . "\n";
 
 $isbns = $driver->tryMethod('getISBNs');
-if (!empty($isbns)) {
-    echo 'isbn= ' . $isbns[0] . "\n";
+//if (!empty($isbns)) {
+//    echo 'isbn= ' . $isbns[0] . "\n";
+//}
+if (is_array($isbns)) {
+    foreach ($isbns as $isbn) {
+        echo "isbn = $isbn\n";
+    }
 }
 
 $issns =$driver->tryMethod('getISSNs');
-if (!empty($issns)) {
-    echo 'issn= ' . $issns[0] . "\n";
+//if (!empty($issns)) {
+//    echo 'issn= ' . $issns[0] . "\n";
+//}
+if (is_array($issns)) {
+    foreach ($issns as $issn) {
+        echo "issn = $issn\n";
+    }
 }
 // Record separator:
 echo "}\n\n";
