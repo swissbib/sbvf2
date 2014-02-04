@@ -115,6 +115,7 @@ class SolrMarc extends VuFindSolrMarc
 
         // Get a representative publication date:
         $pubDate = $this->getPublicationDates();
+
         $pubDate = empty($pubDate) ? '' : $pubDate[1];
 
         // Start an array of OpenURL parameters:
@@ -139,7 +140,29 @@ class SolrMarc extends VuFindSolrMarc
                     $params['rft.series'] = is_array($series[0]) ?
                         $series[0]['name'] : $series[0];
                 }
-                $params['rft.au'] = $this->getPrimaryAuthor();
+                $authors[] = $this->getPrimaryAuthor();
+                $addauthors = $this->getSecondaryAuthors();
+                if (!empty($addauthors)) {
+                    foreach ($addauthors as $addauthor) {
+                        $authors[] = $addauthor;
+                    }
+                }
+                if (!empty($authors)) {
+                    foreach ($authors as $author) {
+                        $params['rft.au'][] = $author;
+                    }
+                }
+                $addcorporations = $this->getCorporationNames(true);
+                if (!empty($addcorporations)) {
+                    foreach ($addcorporations as $addcorporation) {
+                        $corporations[] = $addcorporation;
+                    }
+                }
+                if (!empty($corporations)) {
+                    foreach ($corporations as $corporation) {
+                        $params['rft.aucorp '][] = $corporation;
+                    }
+                }
                 $publishers = $this->getPublishers();
                 if (count($publishers) > 0) {
                     $params['rft.pub'] = $publishers[0];
@@ -160,8 +183,19 @@ class SolrMarc extends VuFindSolrMarc
                 unset($params['rft.title']);
                 $params['rft.jtitle'] = $this->getContainerTitle();
                 $params['rft.atitle'] = $this->getTitle();
-                $params['rft.au'] = $this->getPrimaryAuthor();
 
+                $authors[] = $this->getPrimaryAuthor();
+                $addauthors = $this->getSecondaryAuthors();
+                if (!empty($addauthors)) {
+                    foreach ($addauthors as $addauthor) {
+                        $authors[] = $addauthor;
+                    }
+                }
+                if (!empty($authors)) {
+                    foreach ($authors as $author) {
+                        $params['rft.au'][] = $author;
+                    }
+                }
                 $params['rft.format'] = $format;
                 $langs = $this->getLanguages();
                 if (count($langs) > 0) {
@@ -197,8 +231,19 @@ class SolrMarc extends VuFindSolrMarc
                 }
             default:
                 $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:dc';
-                $params['rft.creator'] = $this->getPrimaryAuthor();
-                $publishers = $this->getPublishers();
+
+                $authors[] = $this->getPrimaryAuthor();
+                $addauthors = $this->getSecondaryAuthors();
+                if (!empty($addauthors)) {
+                    foreach ($addauthors as $addauthor) {
+                        $authors[] = $addauthor;
+                    }
+                }
+                if (!empty($authors)) {
+                    foreach ($authors as $author) {
+                        $params['rft.au'][] = $author;
+                    }
+                }                $publishers = $this->getPublishers();
                 if (count($publishers) > 0) {
                     $params['rft.pub'] = $publishers[0];
                 }
@@ -213,7 +258,15 @@ class SolrMarc extends VuFindSolrMarc
         // Assemble the URL:
         $parts = array();
         foreach ($params as $key => $value) {
-            $parts[] = $key . '=' . urlencode($value);
+            if (is_array($value))
+            {
+                foreach ($value as $content) {
+                    $parts[] = $key . '=' . urlencode($content);
+                }
+            }
+            else {
+                $parts[] = $key . '=' . urlencode($value);
+            }
         }
         return implode('&', $parts);
     }
