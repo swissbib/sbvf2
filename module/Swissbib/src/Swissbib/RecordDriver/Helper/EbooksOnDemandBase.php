@@ -61,7 +61,7 @@ abstract class EbooksOnDemandBase extends CustomizedMethods
 	 */
 	protected function isValidForLink(array $item, SolrMarc $recordDriver, Holdings $holdingsHelper)
 	{
-		return $this->callMethod('isValidForLink', $item['institution'], array($item, $recordDriver, $holdingsHelper));
+		return $this->callMethod('isValidForLink', $item['institution_chb'], array($item, $recordDriver, $holdingsHelper));
 	}
 
 
@@ -76,7 +76,7 @@ abstract class EbooksOnDemandBase extends CustomizedMethods
 	 */
 	protected function buildLink(array $item, SolrMarc $recordDriver, Holdings $holdingsHelper)
 	{
-		return $this->callMethod('buildLink', $item['institution'], array($item, $recordDriver, $holdingsHelper));
+		return $this->callMethod('buildLink', $item['institution_chb'], array($item, $recordDriver, $holdingsHelper));
 	}
 
 

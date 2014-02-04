@@ -25,7 +25,7 @@ class EbooksOnDemand extends EbooksOnDemandBase
 
 	protected function isValidForLinkA100(array $item, SolrMarc $recordDriver, Holdings $holdingsHelper)
 	{
-		$institutionCode	= $item['institution'];
+		$institutionCode	= $item['institution_chb'];
 		list(,$publishYear) = $recordDriver->getPublicationDates();
 		$itemFormats		= $recordDriver->getMostSpecificFormat();
 
@@ -47,10 +47,10 @@ class EbooksOnDemand extends EbooksOnDemandBase
 
 	protected function buildLinkA100(array $item, SolrMarc $recordDriver, Holdings $holdingsHelper)
 	{
-		$linkPattern	= $this->getLinkPattern($item['institution']);
+ 		$linkPattern	= $this->getLinkPattern($item['institution_chb']);
 		$data	= array(
 			'SYSID'			=> $item['bibsysnumber'],
-			'INSTITUTION'	=> urlencode($item['institution'] . $item['signature']),
+			'INSTITUTION'	=> urlencode($item['institution_chb'] . $item['signature']),
 			'LANGUAGE'		=> $this->getConvertedLanguage()
 		);
 
@@ -116,7 +116,7 @@ class EbooksOnDemand extends EbooksOnDemandBase
 
     protected function buildLinkZ01(array $item, SolrMarc $recordDriver, Holdings $holdingsHelper)
 	{
-		$linkPattern	= $this->getLinkPattern($item['institution']);
+		$linkPattern	= $this->getLinkPattern($item['institution_chb']);
 		$data	= array(
 			'SYSID'		=> $item['bibsysnumber'],
 			'CALLNUM'	=> urlencode($item['signature'])
@@ -137,7 +137,7 @@ class EbooksOnDemand extends EbooksOnDemandBase
 
     protected function isValidForLinkAX5(array $item, SolrMarc $recordDriver, Holdings $holdingsHelper)
     {
-        $institutionCode	= $item['institution'];
+        $institutionCode	= $item['institution_chb'];
         list(,$publishYear) = $recordDriver->getPublicationDates();
         $itemFormats		= $recordDriver->getFormatsRaw();
 
@@ -161,7 +161,7 @@ class EbooksOnDemand extends EbooksOnDemandBase
 
     protected function buildLinkAX5(array $item, SolrMarc $recordDriver, Holdings $holdingsHelper)
     {
-        $linkPattern	= $this->getLinkPattern($item['institution']);
+        $linkPattern	= $this->getLinkPattern($item['institution_chb']);
         $data	= array(
             'SYSID'			=> str_replace('vtls', '', $item['bibsysnumber']),
             'CALLNUM'	    => urlencode($item['signature']),
