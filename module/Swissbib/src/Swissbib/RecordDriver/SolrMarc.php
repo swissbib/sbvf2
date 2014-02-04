@@ -937,7 +937,26 @@ class SolrMarc extends VuFindSolrMarc
      */
     public function getEdition()
     {
-        return $this->getFirstFieldValue('250', array('a'));
+        $data = $this->getMarcSubFieldMaps(250, array(
+                'a' => 'statement',
+                'b' => 'remainder',
+            ));
+
+        foreach ($data as $field)
+        {
+            $string = '';
+            if (isset($field['statement']))
+            {
+                $string = $field['statement'];
+            }
+            if (isset($field['remainder']))
+            {
+                $string .= ' / ' . $field['remainder'];
+            }
+        }
+
+        $data = $string;
+        return $data;
     }
 
 
@@ -949,6 +968,42 @@ class SolrMarc extends VuFindSolrMarc
     public function getAltTitle()
     {
         return $this->getFieldArray('246', '247');
+    }
+
+    /**
+     * get Cartographic Mathematical Data
+     *
+     * @return string
+     */
+    public function getCartMathData()
+    {
+        $data = $this->getMarcSubFieldMaps(255, array(
+                'a' => 'scale',
+                'b' => 'projection',
+                'c' => 'coordinates',
+                'd' => 'zone',
+                'e' => 'equinox',
+            ));
+
+        foreach ($data as $field) {
+            $string = '';
+
+            if (isset($field['scale']))
+            {
+                $string = $field['scale'];
+            }
+            if (isset($field['projection']))
+            {
+                $string .= '; ' . $field['projection'];
+            }
+            if (isset($field['coordinates']))
+            {
+                $string .= ' - ' . $field['coordinates'];
+            }
+        }
+
+        $data = $string;
+        return $data;
     }
 
 
@@ -1071,23 +1126,6 @@ class SolrMarc extends VuFindSolrMarc
 
         return $institutions;
     }
-
-
-    /**
-     * Get local topic term
-     *
-     * @return    Array[]
-     */
-    public function getLocalTopicalTerms()
-    {
-        return $this->getMarcSubFieldMaps(690, array(
-            'a' => 'term',
-            'q' => 'label', // @todo real name?
-            't' => 'time', // @todo real name?
-            '_v' => 'form_subdivision'
-        ));
-    }
-
 
     /**
      * Get structured subject vocabularies from predefined fields

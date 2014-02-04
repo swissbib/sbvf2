@@ -20,6 +20,7 @@ $responsible          = $viewRecord->getResponsible($titleStatement, $record);
 $publishers           = $record->getPublishers(true);
 $physicalDescriptions = $record->getPhysicalDescriptions(false);
 $edition              = $record->getEdition();
+$cartMathData         = $record->getCartMathData();
 $summary              = trim(implode($record->getSummary()));
 $groupID              = $record->getGroup(true);
 $uniqueID             = $record->getUniqueID();
@@ -126,6 +127,16 @@ $highlightedFulltext = $record->getHighlightedFulltext();
             <p><?= $this->escapeHtml($publicationDate) ?></p>
         <? endif; ?>
 
+        <?php if ($edition): ?>
+            <h4><?= $this->transEsc('Edition') ?>:</h4>
+            <p><?= $this->escapeHtml($edition) ?></p>
+        <?php endif; ?>
+
+        <?php if ($cartMathData): ?>
+            <h4><?= $this->transEsc('Map_Scale') ?>:</h4>
+            <p><?= $this->escapeHtml($cartMathData) ?></p>
+        <?php endif; ?>
+
         <?php if ($physicalDescriptions): ?>
             <h4><?= $this->transEsc('Physical Description') ?>:</h4>
             <p><?= $this->physicalDescription($physicalDescriptions) ?></p>
@@ -133,11 +144,6 @@ $highlightedFulltext = $record->getHighlightedFulltext();
 
         <h4><?= $this->transEsc('Format') ?>:</h4>
         <p><?=$viewRecord->getFormatList()?></p>
-
-        <?php if ($edition): ?>
-            <h4><?= $this->transEsc('Edition') ?>:</h4>
-            <p><?= $this->escapeHtml($edition) ?></p>
-        <?php endif; ?>
 
         <? if ($urls): ?>
             <? foreach ($urls as $current): ?>
