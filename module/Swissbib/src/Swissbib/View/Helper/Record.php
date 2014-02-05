@@ -234,4 +234,57 @@ class Record extends VuFindRecord
             return implode('; ', $record->getCorporationNames());
         }
     }
+
+    /**
+     * Generate a thumbnail URL (return false if unsupported).
+     *
+     * @param string $size Size of thumbnail (small, medium or large -- small is
+     * default).
+     *
+     * @return string|bool
+     */
+    public function getThumbnail($size = 'small')
+    {
+        // Try to build thumbnail:
+        $thumb = $this->driver->tryMethod('getThumbnail', array($size));
+
+        // No thumbnail?  Return false:
+        if (empty($thumb)) {
+            if (!empty ($this->config->Content->externalResourcesServer)) {
+                //$urlHelper = $this->getView()->plugin('url');
+                //$urlSrc = $urlHelper('cover-unavailable');
+                //sometimes our app is not the root domain
+                //$position =  strpos($urlSrc,'/Cover');
+                //return  $this->config->Content->externalResourcesServer . substr($urlSrc,$position) ;
+                return $this->config->Content->externalResourcesServer . "/img/noCover2.gif";
+
+            } else {
+                $urlHelper = $this->getView()->plugin('url');
+                return $urlHelper('cover-unavailable') ;
+            }
+
+        }
+
+        // Array?  It's parameters to send to the cover generator:
+        if (is_array($thumb)) {
+
+            if (!empty ($this->config->Content->externalResourcesServer)) {
+                $urlHelper = $this->getView()->plugin('url');
+                $urlSrc = $urlHelper('cover-show');
+                //sometimes our app is not the root domain
+                $position =  strpos($urlSrc,'/Cover');
+                return  $this->config->Content->externalResourcesServer . substr($urlSrc,$position) .  '?' . http_build_query($thumb);
+
+            } else {
+
+                $urlHelper = $this->getView()->plugin('url');
+                return $urlHelper('cover-show') . '?' . http_build_query($thumb);
+            }
+
+        }
+
+        // Default case -- return fixed string:
+        return $thumb;
+    }
+
 }
