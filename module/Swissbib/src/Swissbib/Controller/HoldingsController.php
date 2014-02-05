@@ -88,6 +88,7 @@ class HoldingsController extends BaseController
         // Add missing data to holding items
         foreach ($holdingItems as $index => $holdingItem) {
             $holdingItem['institution'] = $institution;
+            $holdingItem['institution_chb'] = $institution;
             $holdingItem['network'] = $networkCode;
             $holdingItem['bibsysnumber'] = $bibSysNumber;
             $holdingItem['adm_code'] = $admCode;

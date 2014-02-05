@@ -11,7 +11,7 @@ if (isset($holding['locationMap']) && $holding['locationMap']) {
 
 if (isset($holding['itemsLink']) && $holding['itemsLink']['count']) {
 	$popupDataUrl	= $this->url('holdings-holding-items', $holding['itemsLink']['url']);
-	$popupHref		= 'javascript:swissbib.Holdings.openHoldingItemsPopup(\'' . $popupDataUrl . '\', \'' . $this->escapeHtml($recordTitle) . '\')';
+	$popupHref		= 'javascript:swissbib.Holdings.openHoldingItemsPopup(\'' . $popupDataUrl . '\', \'' . '-' . '\')';
 //	$popupLinkLabel	= 'Enthält ' . $holding['itemsLink']['count'] . ' Items';
 	$popupLinkLabel	= $this->transEsc('holdings_items_found');
 	$moreDetailsLink= '<a href="' . $popupHref . '" title="Show Holdings">' . $popupLinkLabel . '</a>';

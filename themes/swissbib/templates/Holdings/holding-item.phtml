@@ -19,7 +19,7 @@ if (isset($item['locationMap']) && $item['locationMap']) {
       <?php  if (isset($item['institutionUrl'])): ?>
         <a href="<?=$this->escapeHtml($item['institutionUrl'])?>" class="bibinfo" target="_blank" title="<?=$this->transEsc('Library_Information')?>"></a>
       <?php endif; ?>
-  </td>
+    </td>
 	<td><?=$this->qrCodeHolding($item, $recordTitle)?></td>
 	<td><?=$this->escapeHtml($description)?></td>
 </tr>
