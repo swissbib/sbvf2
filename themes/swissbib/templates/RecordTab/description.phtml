@@ -84,8 +84,7 @@ $recordLinks = $this->driver->getAllRecordLinks();
 <? $alttitle = $this->driver->getAltTitle();
 if (!empty($alttitle)): ?>
     <div class="details">
-        <h4><?= $this->transEsc('Other_Title') ?></h4>
-
+        <h4><?= $this->transEsc('Other_Title') ?>: </h4>
         <p>
             <? foreach ($alttitle as $field): ?>
                 <?= $this->escapeHtml($field) ?><br/>
@@ -165,6 +164,8 @@ $prevTitles = $this->driver->getPreviousTitles(); ?>
 
 <?
 $notes      = $resultItem->getGeneralNotes();
+$freq       = $resultItem->getPublicationFrequency();
+$contDates  = $resultItem->getContResourceDates();
 $diss       = $resultItem->getDissertationNotes();
 $bib        = $resultItem->getBibliographyNotes();
 $access     = $resultItem->getAccessRestrictions();
@@ -177,8 +178,8 @@ $orignotes  = $resultItem->getOriginalVersionNotes();
 $copynotes  = $resultItem->getCopyNotes();
 $system     = $resultItem->getSystemDetails();
 ?>
-<? if (!empty($notes) or !empty($diss) or !empty($bib) or
-    !empty($access) or !empty($credits) or !empty($awards) or
+<? if (!empty($notes) or !empty($freq) or !empty($contDates) or !empty($diss) or
+    !empty($bib) or !empty($access) or !empty($credits) or !empty($awards) or
     !empty($citenotes) or !empty($orignotes) or !empty($copynotes) or
     !empty($origtitle) or !empty($perfomer) or !empty($system)
 ): ?>
@@ -193,6 +194,27 @@ $system     = $resultItem->getSystemDetails();
                 <? endforeach; ?>
             </p>
         <? endif; ?>
+
+        <? /* Display publication frequency (field 310) */ ?>
+        <? if (!empty($freq)): ?>
+            <h4><?= $this->transEsc('Publication Frequency') ?>: </h4>
+            <p>
+                <? foreach ($freq as $field): ?>
+                    <?=$this->escapeHtml($field)?><br/>
+                <? endforeach; ?>
+            </p>
+        <? endif; ?>
+
+        <? /* Display Dates of Publication and/or Sequential Designation (field 362) */ ?>
+        <? if (!empty($contDates)): ?>
+            <h4><?= $this->transEsc('Numeration') ?>: </h4>
+            <p>
+                <? foreach ($contDates as $field): ?>
+                    <?= $this->escapeHtml($field)?><br>
+                <? endforeach; ?>
+            </p>
+        <? endif; ?>
+
         <? /* Display dissertation notes (field 502) */ ?>
         <? if (!empty($diss)): ?>
             <h4><?= $this->transEsc('Dissertation_Note') ?>: </h4>

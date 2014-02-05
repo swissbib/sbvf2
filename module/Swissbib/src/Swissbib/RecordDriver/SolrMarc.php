@@ -1427,6 +1427,15 @@ class SolrMarc extends VuFindSolrMarc
         return $descriptions;
     }
 
+    /**
+     * Get Dates of Publication and/or Sequential Designation (field 362)
+     *
+     * return @array
+     */
+    public function getContResourceDates()
+    {
+        return $this->getFieldArray('362');
+    }
 
     /**
      * Get unions
