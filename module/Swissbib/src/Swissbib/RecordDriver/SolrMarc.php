@@ -559,37 +559,41 @@ class SolrMarc extends VuFindSolrMarc
 
     public function getThumbnail_956_1()
     {
+        $thumbnailURL = null;
+
         $field = $this->get956();
         if ($field['union'] === 'IDSBB' || $field['union'] === 'IDSLU' || $field['institution'] === 'E45') {
             if (preg_match('/Vorschau zum Bild|Porträt|Bild/', $field['description'])) {
-                return 'http://www.swissbib.ch/TouchPoint/ExternalServicesRedirect?imagePath='
-                . $field['URL']
-                . '&scale=0.75&reqServicename=ImageTransformer';
+                $thumbnailURL = 'http://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
+                    . $field['URL']
+                    . '&scale=0.75&reqServicename=ImageTransformer';
             }
         } elseif ($field['union'] === 'SGBN') {
             $dirpath = preg_replace('/^.*sgb50/', '', $field['directory']);
             $dirpath = empty($dirpath) ? $dirpath : substr($dirpath, 1) . '/';
-            return 'http://www.swissbib.ch/TouchPoint/ExternalServicesRedirect?imagePath=http://aleph.sg.ch/adam/'
-            . $dirpath
-            . $field['filename']
-            . '&scale=0.75&reqServicename=ImageTransformer';
+            $thumbnailURL = 'http://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://aleph.sg.ch/adam/'
+                . $dirpath
+                . $field['filename']
+                . '&scale=0.75';
         } elseif ($field['union'] === 'BGR') {
             $dirpath = substr($field['directory'], 29);
-            return 'http://www.swissbib.ch/TouchPoint/ExternalServicesRedirect?imagePath=http://aleph.gr.ch/adam/'
-            . $dirpath . '/'
-            . $field['filename']
-            . '&scale=0.75&reqServicename=ImageTransformer';
+            $thumbnailURL = 'http://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://aleph.gr.ch/adam/'
+                . $dirpath . '/'
+                . $field['filename']
+                . '&scale=0.75';
         } elseif ($field['ADM'] === 'ZAD50') {
             if (preg_match('/^.*thumbnail/', $field['directory'])) {
                 $dirpath = preg_replace('/^.*thumbnail/', '', $field['directory']);
                 $dirpath = empty($dirpath) ? $dirpath : substr($dirpath, 1) . '/';
-                return 'http://www.swissbib.ch/TouchPoint/ExternalServicesRedirect?imagePath=http://opac.nebis.ch/thumb_zb/'
-                . $dirpath
-                . $field['filename']
-                . '&scale=0.75&reqServicename=ImageTransformer';
+                $thumbnailURL = 'http://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://opac.nebis.ch/thumb_zb/'
+                    . $dirpath
+                    . $field['filename']
+                    . '&scale=0.75';
             }
 
         }
+
+        return $thumbnailURL;
     }
 
     /**
