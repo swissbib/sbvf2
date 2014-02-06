@@ -973,9 +973,23 @@ class Holdings
 		return $this->compileString($data['pattern'], $values);
 	}
 
+    /**
+     * Get back link for helvetic archives
+     * Currently only a wrapper for virtua
+     *
+     * @param    String $networkCode
+     * @param    String $institutionCode
+     * @param    Array $item
+     * @param    Array $data
+     * @return    String
+     */
+    protected function getBackLinkCHARCH($networkCode, $institutionCode, array $item, array $data)
+    {
+        return $this->getBackLinkVirtua($networkCode, $institutionCode, $item, $data);
+    }
 
 
-	/**
+    /**
 	 * Compile string. Replace {varName} pattern with names and data from array
 	 *
 	 * @param    String        $string
