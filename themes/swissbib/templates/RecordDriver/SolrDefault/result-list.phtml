@@ -41,9 +41,9 @@ $memorizeLink	   = $this->recordLink()->getActionUrl($this->driver, 'Save');
         <!-- Untertitel und Verfasserangabe -->
         <div class="meta">
             <? if (isset($subtitle)): ?>
-                <span>
-                    <?=$this->escapeHtml($subtitle)?>
-                </span><br />
+                <p>
+                <?=$this->escapeHtml($subtitle)?>
+                </p>
             <? endif; ?>
 
             <? if ($responsible): ?>
