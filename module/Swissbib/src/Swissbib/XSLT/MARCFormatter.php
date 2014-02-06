@@ -38,7 +38,8 @@ class MARCFormatter
         "vtls",
         "on",
         "ocn",
-        "ocm"
+        "ocm",
+        "cha"
     );
 
 
