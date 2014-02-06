@@ -613,7 +613,7 @@ class SolrMarc extends VuFindSolrMarc
             $URL_thumb = preg_replace('/hi-res.cgi/', 'get_thumb.cgi', $field['sf_u']);
             return $URL_thumb;
         } elseif ($field['union'] === 'CHARCH' && $field['tag'] === '856') {
-            $URL_thumb = preg_replace('SIZE=10', 'SIZE=30', $field['sf_u']);
+            $URL_thumb = preg_replace('/SIZE=10/', 'SIZE=30', $field['sf_u']);
             return $URL_thumb;
         }
     }
