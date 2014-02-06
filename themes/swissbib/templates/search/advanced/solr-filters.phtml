@@ -56,23 +56,46 @@ if (isset($this->dateRangeLimit)) {
                     <?php if (strtolower($facet['field'])==="language") : ?>
                 <?php foreach ($sorted as $index => $display): ?>
                     <?php $value = $facet['list']['list'][$index]; ?>
-                    <? if (in_array($value['value'],$favoriteLanguages)) : ?>
-                        <option value='<?= $this->escapeHtml($facet['field'] . ':"' . $value['value'] . '"') ?>' <?= (isset($value['selected']) && $value['selected']) ? ' selected="selected"' : '' ?> title="<?= $this->escapeHtml($display) ?>">
+                    <? if (in_array($value['value'], $favoriteLanguages)) : ?>
+                        <option
+                            value='<?= $this->escapeHtml($facet['field'] . ':"' . $value['value'] . '"') ?>' <?= (isset($value['selected']) && $value['selected']) ? ' selected="selected"' : '' ?>
+                            title="<?= $this->escapeHtml($display) ?>">
                             <?= $this->escapeHtml($display) ?>
                         </option>
                     <? endif; ?>
                 <?php endforeach; ?>
                     <optgroup label="<?= $this->transEsc('all_languages') ?>">
                         <?php endif; ?>
+                        <?php if (strtolower($facet['field']) === "format") : ?>
 
-                        <?php foreach ($sorted as $index => $display): /* Render options of current facet's selector */ ?>
+                        <option value='format:"*K01*"' title="article"><?= $this->transEsc('*K01*') ?></option>
+                        <option value='format:"BK02*"' title="book"><?= $this->transEsc('BK02*') ?></option>
+                        <option value='format:"*R0*"' title="continuing"><?= $this->transEsc('*R0*') ?></option>
+                        <option value='format:"CL0*"' title="collection"><?= $this->transEsc('CL0*') ?></option>
+                        <option value='format:"MU01*"' title="sheet_music"><?= $this->transEsc('MU01*') ?></option>
+                        <option value='format:"MU03*"' title="sound"><?= $this->transEsc('MU03*') ?></option>
+                        <option value='format:"MU04*"' title="music"><?= $this->transEsc('MU04*') ?></option>
+                        <option value='format:"MP0*"' title="map"><?= $this->transEsc('MP0*') ?></option>
+                        <option value='format:"VM01*"' title="film"><?= $this->transEsc('VM01*') ?></option>
+                        <option value='format:"VM02*"' title="picture"><?= $this->transEsc('VM02*') ?></option>
+                        <option value='format:"VM03*"' title="mx_game"><?= $this->transEsc('VM03*') ?></option>
+                        <option value='format:"VM04*"' title="object"><?= $this->transEsc('VM04*') ?></option>
+                        <option value='format:"CF0*"' title="software"><?= $this->transEsc('CF0*') ?></option>
+
+                        <optgroup label="<?= $this->transEsc('all_formats') ?>">
+                            <?php endif; ?>
+
+                            <?php foreach ($sorted as $index => $display): /* Render options of current facet's selector */ ?>
                             <?php $value = $facet['list']['list'][$index]; ?>
                             <option value='<?= $this->escapeHtml($facet['field'] . ':"' . $value['value'] . '"') ?>' <?= (isset($value['selected']) && $value['selected']) ? ' selected="selected"' : '' ?> title="<?= $this->escapeHtml($display) ?>">
                                 <?= $this->escapeHtml($display) ?>
                             </option>
                         <?php endforeach; ?>
 
-                        <?php if ($facet['field']==="language") : ?>
+                            <?php if ($facet['field'] === "language") : ?>
+                        </optgroup>
+                    <?php endif; ?>
+                        <?php if ($facet['field'] === "format") : ?>
                     </optgroup>
                 <?php endif; ?>
 
