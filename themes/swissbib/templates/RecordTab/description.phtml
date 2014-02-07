@@ -325,7 +325,7 @@ $system     = $resultItem->getSystemDetails();
     <div class="subjectVocabularies">
         <h4><?= $this->transEsc('Subjects') ?>: </h4>
         <? foreach ($subjectVocabularies as $vocabulary => $fieldsData): ?>
-            <h5 class="vocabularyTitle"><?= $this->transEsc('vocabulary.' . $vocabulary, array(), $vocabulary) ?></h5>
+            <h4 class="vocabularyTitle"><?= $this->transEsc('vocabulary.' . $vocabulary, array(), $vocabulary) ?></h4>
             <ul class="vocabularyList vocabulary<?= ucfirst($vocabulary) ?>">
                 <? foreach ($fieldsData as $fieldIndex => $fieldData): ?>
                     <? foreach ($fieldData as $fieldValues): ?>
