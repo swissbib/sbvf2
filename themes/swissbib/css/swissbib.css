@@ -938,3 +938,9 @@ option {
 select.xlarge {
     width: 460px;
 }
+
+/** Korrektur der jquery ui Schrift auf nose-Vorgabe */
+.ui-widget {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.0em;
+}
