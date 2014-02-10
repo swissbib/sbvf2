@@ -18,5 +18,11 @@ input.checkbox {
 input.radio {
 	margin:4px 5px 0 0;
 }
-	
+
+    /* Kopiert von TP: This deals with the fact that IE8 has difficulties with css-max-width in combination
+           with an xhtml doctype-declaration TVI20120403 */
+    div.ie8buster {
+        width: 100px;
+    }
+
 }
