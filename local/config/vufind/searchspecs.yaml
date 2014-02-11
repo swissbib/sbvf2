@@ -142,6 +142,10 @@ WNEL:
   DismaxFields:
     - itemnote_txt_mv
 
+WFC:
+  DismaxFields:
+    - classif_912
+
 Title:
   DismaxHandler: edismax
   DismaxFields:
