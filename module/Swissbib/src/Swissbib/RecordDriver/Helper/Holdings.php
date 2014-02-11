@@ -731,6 +731,7 @@ class Holdings
 	 * @param    String        $host
 	 * @param    Array         $item
 	 * @return    String
+     *
      * former function, building just a link to ALEPH
 
     protected function getPhotoCopyRequestLink($host, array $item)
@@ -747,7 +748,14 @@ class Holdings
 		return 'http://' . $host . '/F/?' . http_build_query($queryParams);
 	}
     */
-
+    /**
+     * @param $host
+     * @param array $itemkey
+     * @param array $patron
+     * @return string
+     *
+     * Copy of above, to test create_photocopy_request-Script
+     */
     protected function getPhotoCopyRequestLink($host, array $item, array $patron)
     {
         $queryParams = array(
@@ -758,6 +766,7 @@ class Holdings
         );
 
         return 'http://' . $host . '/cgi-bin/create_photocopy_request.pl?' . http_build_query($queryParams);
+        //return 'http://localhost/Record/Photocopy';
     }
 
 
