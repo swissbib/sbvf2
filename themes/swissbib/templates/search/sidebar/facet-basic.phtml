@@ -62,8 +62,9 @@ $toggleLabel		= $this->transEsc('more_info_toggle');
 					</a>
 				</li>
 				<div id="narrowGroupHidden_<?=$facetId ?>" class="offscreen">
-					<?php while ($itemsCount < $amountItems): ?>
-						<?=$this->facetItem($facetGroupItems[$itemsCount++], $facetField) ?>
+					<?php while ($itemsCount <= $amountItems): ?>
+                        <? $itemsPosition = $itemsCount++ - 1 ?>
+						<?=$this->facetItem($facetGroupItems[$itemsPosition], $facetField) ?>
 					<?php endwhile; ?>
 					<li id="less<?=$facetId ?>" class="facet_more">
 						<a href="javascript:lessFacets('<?=$facetId?>')" title="<?=$toggleLabel?>">
