@@ -25,19 +25,19 @@ $showHomeLibForm = (isset($this->pickup) && count($this->pickup) > 1);
                             <td><?=$this->escapeHtml($this->profile['address1'])?></td>
                         </tr>
                         <tr>
-                            <th width="100">&NonBreakingSpace;</th>
+                            <th width="100">&nbsp;</th>
                             <td><?=$this->escapeHtml($this->profile['address2'])?></td>
                         </tr>
                         <tr>
-						    <th width="100">&NonBreakingSpace;</th>
+						    <th width="100">&nbsp;</th>
                             <td><?=$this->escapeHtml($this->profile['address3'])?></td>
                         </tr>
                         <tr>
-                            <th width="100">&NonBreakingSpace;</th>
+                            <th width="100">&nbsp;</th>
                             <td><?=$this->escapeHtml($this->profile['address4'])?></td>
                         </tr>
                         <tr>
-                            <th width="100">&NonBreakingSpace;</th>
+                            <th width="100">&nbsp;</th>
                             <td><?=$this->escapeHtml($this->profile['address5'])?></td>
                         </tr>
                         <tr>
@@ -51,17 +51,32 @@ $showHomeLibForm = (isset($this->pickup) && count($this->pickup) > 1);
 				</tbody>
 			</table>
             <table>
+                <? switch ($_COOKIE['language']) {
+                    case 'de':
+                        $lang = '=GER';
+                        break;
+                    case 'fr':
+                        $lang = '=FRE';
+                        break;
+                    case 'en':
+                        $lang = '=ENG';
+                        break;
+                    case 'it':
+                        $lang = '=ENG';
+                        break;
+                } ?>
+                <? $loginlink = 'http://aleph.unibas.ch/F/?func=file&file_name=login-session&con_lng' . $lang; ?>
                 <tbody>
                     <tr>
-                        <th width="100">&NonBreakingSpace;</th>
+                        <th width="100">&nbsp;</th>
                         <td>
-                            <a href="http://aleph.unibas.ch/F/?func=LOGIN-PAGE" target="_blank"><?=$this->transEsc('changeaddress')?></a>
+                            <a href="<?=$loginlink?>" target="_blank"><?=$this->transEsc('changeaddress')?></a>
                         </td>
                     </tr>
                     <tr>
-                        <th width="100">&NonBreakingSpace;</th>
+                        <th width="100">&nbsp;</th>
                         <td>
-                            <a href="http://aleph.unibas.ch/F/?func=LOGIN-PAGE" target="_blank"><?=$this->transEsc('changepassword')?></a>
+                            <a href="<?=$loginlink?>" target="_blank"><?=$this->transEsc('changepassword')?></a>
                         </td>
                     </tr>
                 </tbody>
