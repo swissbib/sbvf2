@@ -9,7 +9,7 @@
  * http://www.swissbib.org  / http://www.swissbib.ch / http://www.ub.unibas.ch
  *
  * Date: 2/13/14
- * Time: 1:49 PM
+ * Time: 4:49 PM
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2,
  * as published by the Free Software Foundation.
@@ -31,20 +31,16 @@
  */
 
 
-namespace Swissbib\View\Helper;
+namespace Swissbib\Services;
 
 
-use Zend\View\Helper\AbstractHelper;
-use Swissbib\Services\RedirectProtocolWrapper as ServiceRedirectProtocolWrapper;
+class RedirectProtocolWrapper {
 
+    private $vfConfig = null;
 
-class RedirectProtocolWrapper extends AbstractHelper {
+    public function __construct($config) {
 
-    private  $serviceProtolWrapper;
-
-    public function __construct(ServiceRedirectProtocolWrapper $spW) {
-
-        $this->serviceProtolWrapper = $spW;
+        $this->vfConfig = $config;
 
     }
 
@@ -53,8 +49,20 @@ class RedirectProtocolWrapper extends AbstractHelper {
      * for swissbib we use the service for http URL's which should used within a https environment
      */
     public function getWrappedURL($url) {
-        return $this->serviceProtolWrapper->getWrappedURL($url);
+
+        $wrapper = $this->vfConfig->Content->redirectProtocolWrapper;
+
+        if (!empty ($wrapper)) {
+
+            //& has to be escaped otherwise the wrapper service isn't able to group parts of the QUERY_STRING correctly
+            $url = preg_replace("/&/","ESCAPED_AND_PERCENT",$url);
+            $url = $this->vfConfig->Content->redirectProtocolWrapper . "?" . "targetURL=" . $url ;
+
+        }
+
+        return $url;
 
     }
+
 
 } 

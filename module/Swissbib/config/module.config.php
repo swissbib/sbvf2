@@ -33,7 +33,8 @@ use Swissbib\Log\Logger as SwissbibLogger;
 use Swissbib\View\Helper\DomainURL;
 use Swissbib\View\Helper\InstitutionDefinedAsFavorite as DefinedFavoriteInstitutions;
 use Swissbib\RecordDriver\SolrDefaultAdapter;
-use Swissbib\View\Helper\RedirectProtocolWrapper as RedirectProtocolWrapper;
+use Swissbib\View\Helper\RedirectProtocolWrapper as ViewHelperRedirectProtocolWrapper;
+use Swissbib\Services\RedirectProtocolWrapper as ServiceRedirectProtocolWrapper;
 
 return array(
     'router' => array(
@@ -220,7 +221,10 @@ return array(
         'invokables' => array(
             'VuFindTheme\ResourceContainer'       => 'Swissbib\VuFind\ResourceContainer',
             'Swissbib\RecordDriverHoldingsHelper' => 'Swissbib\RecordDriver\Helper\Holdings',
-            'Swissbib\QRCode'                     => 'Swissbib\CRCode\QrCodeService'
+            'Swissbib\QRCode'                     => 'Swissbib\CRCode\QrCodeService',
+            'MarcFormatter'                     => 'Swissbib\XSLT\MARCFormatter'
+
+
         ),
         'factories' => array(
             'Swissbib\HoldingsHelper'                  => function ($sm) {
@@ -247,6 +251,13 @@ return array(
                         $logger
                     );
                 },
+
+            'Swissbib\Services\RedirectProtocolWrapper' => function ($sm) {
+                    $config = $sm->get('VuFind\Config')->get('config');
+
+                    return new ServiceRedirectProtocolWrapper($config);
+                },
+
             'Swissbib\TargetsProxy\TargetsProxy'       => function ($sm) {
                     $config = $sm->get('VuFind\Config')->get('TargetsProxy');
 
@@ -419,7 +430,7 @@ return array(
                 },
             'redirectProtocolWrapper'                              => function ($sm) {
                     $locator = $sm->getServiceLocator();
-                    return new RedirectProtocolWrapper($locator->get('VuFind\Config')->get('config'));
+                    return new  ViewHelperRedirectProtocolWrapper($locator->get("Swissbib\Services\RedirectProtocolWrapper"));
 
 
                 }
