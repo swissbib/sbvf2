@@ -33,6 +33,7 @@ use Swissbib\Log\Logger as SwissbibLogger;
 use Swissbib\View\Helper\DomainURL;
 use Swissbib\View\Helper\InstitutionDefinedAsFavorite as DefinedFavoriteInstitutions;
 use Swissbib\RecordDriver\SolrDefaultAdapter;
+use Swissbib\View\Helper\RedirectProtocolWrapper as RedirectProtocolWrapper;
 
 return array(
     'router' => array(
@@ -415,7 +416,15 @@ return array(
                     $locator = $sm->getServiceLocator();
 
                     return new DomainURL($locator->get('Request'));
+                },
+            'redirectProtocolWrapper'                              => function ($sm) {
+                    $locator = $sm->getServiceLocator();
+                    return new RedirectProtocolWrapper($locator->get('VuFind\Config')->get('config'));
+
+
                 }
+
+
 
 
         )
