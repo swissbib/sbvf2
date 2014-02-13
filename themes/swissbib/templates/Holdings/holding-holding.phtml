@@ -19,6 +19,15 @@ if (isset($holding['itemsLink']) && $holding['itemsLink']['count']) {
 	$moreDetailsLink= $this->transEsc('holdings_noitems');
 }
 
+// description (last column)
+$description = isset($holding['holding_information']) ? $holding['holding_information'] : '';
+if (!empty($holding['public_note'])) {
+    $description .= '. ' . $holding['public_note'];
+}
+if (!empty($holding['opac_note'])) {
+    $description .= '. ' . $holding['opac_note'];
+}
+
 ?>
 <tr>
 	<td><?=$this->holdingActions($holding, 'holdingActionsHolding')?> </td>
@@ -31,5 +40,5 @@ if (isset($holding['itemsLink']) && $holding['itemsLink']['count']) {
 		<?php endif; ?>
 	</td>
 	<td><?=$this->qrCodeHolding($holding, $recordTitle)?></td>
-	<td><?=$this->escapeHtml($holding['holding_information'])?></td>
+	<td><?=$this->escapeHtml($description)?></td>
 </tr>

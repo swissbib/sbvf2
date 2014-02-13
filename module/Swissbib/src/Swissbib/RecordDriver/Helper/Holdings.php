@@ -62,7 +62,8 @@ class Holdings
 		'r' => 'sequencenumber',
 		's' => 'signature2',
 		'u' => 'holding_url',
-		'y' => 'opac_note'
+		'y' => 'opac_note',
+        'z' => 'public_note',
 	);
 
 	/**
