@@ -44,10 +44,9 @@ class Availability
 	 * @param	String		$locale
 	 * @return	Array|Boolean
 	 */
-	public function getAvailability($sysNumber, $barcode, $network, $locale)
+	public function getAvailability($sysNumber, $barcode, $bib, $locale)
 	{
-		$idls	= $this->getIDLS($network);
-		$apiUrl	= $this->getApiUrl($sysNumber, $barcode, $idls, $locale);
+		$apiUrl	= $this->getApiUrl($sysNumber, $barcode, $bib, $locale);
 
 //		echo $network . ' : ' . $apiUrl;
 
@@ -91,12 +90,12 @@ class Availability
 	 * @param	String		$locale
 	 * @return	String
 	 */
-	protected function getApiUrl($sysNumber, $barcode, $idls, $locale)
+	protected function getApiUrl($sysNumber, $barcode, $bib, $locale)
 	{
 		return 	$this->config->apiEndpoint
 				. '?sysnumber=' . $sysNumber
 				. '&barcode=' . $barcode
-				. '&idls=' . $idls
+				. '&idls=' . $bib
 				. '&language=' . $locale;
 	}
 

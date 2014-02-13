@@ -6,7 +6,7 @@
 $mapLink	= '';
 
 // Description (last column)
-$description = isset($item['description']) ? $item['description'] . '. ' : '';
+$description = !empty($item['description']) ? $item['description'] . '. ' : '';
 if (!empty($item['public_note'])) {
     $description .= $item['public_note'] . '. ';
 }
