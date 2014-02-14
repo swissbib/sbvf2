@@ -108,19 +108,20 @@ class Availability
 	 * @return    Array
 	 * @throws    \Exception
 	 */
-	protected function fetch($url)
-	{
-		$client = new HttpClient($url, array(
-							'timeout'      => 3
-					   ));
+    protected function fetch($url)
+    {
+        $client = new HttpClient($url, array(
+            'timeout'      => 3
+        ));
+        $client->setOptions(array('sslverifypeer' => false));
 
-		/** @var HttpResponse $response */
-		$response = $client->send();
+        /** @var HttpResponse $response */
+        $response = $client->send();
 
-		if ($response->isSuccess()) {
-			return $response->getBody();
-		} else {
-			throw new \Exception('Availability request failed: ' . $response->getReasonPhrase());
-		}
-	}
+        if ($response->isSuccess()) {
+            return $response->getBody();
+        } else {
+            throw new \Exception('Availability request failed: ' . $response->getReasonPhrase());
+        }
+    }
 }
