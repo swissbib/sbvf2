@@ -114,7 +114,6 @@ class Availability
 		$client = new HttpClient($url, array(
 							'timeout'      => 3
 					   ));
-        $client->setOptions(array('sslverifypeer' => false));
 
 		/** @var HttpResponse $response */
 		$response = $client->send();
