@@ -236,10 +236,11 @@ class Aleph extends VuFindDriver
 			'library'           	=> 'z30-sub-library',
 			'barcode'           	=> 'z30-barcode',
 			'location_expanded' 	=> 'z30-collection',
-			'location_code'			=> 'z30-collection',
+			'location_code'			=> 'z30-collection-code',
 			'description'       	=> 'z30-description',
 			'raw-sequence-number'	=> 'z30-item-sequence',
-			'localid'				=> 'z30-doc-number'
+			'localid'				=> 'z30-doc-number',
+            'opac_note'             => 'z30-note-opac',
 		);
 
 		$linksToExtend = array_slice($links, 0, $numItems);
@@ -735,11 +736,8 @@ class Aleph extends VuFindDriver
 		foreach ($fineResponseItems as $fineResponseItem) {
 			$itemData	= $this->extractResponseData($fineResponseItem, $dataMap);
 
-			$sum	= (float)preg_replace('/[\(\)]/', '', $itemData['sum']);
-			$factor	= $itemData['credittype'] === 'Debit' ? -1 : 1;
-
             $itemData['title']      = (string) $fineResponseItem->{'z13'}->{'z13-title'};
-			$itemData['amount'] 	= $factor * $sum;
+			$itemData['amount'] 	= (float)preg_replace('/[\(\)]/', '', $itemData['sum']);
             $itemData['checkout']   = DateTime::createFromFormat('Ymd', $itemData['checkout'])->format('d.m.Y');
 			$itemData['institution']= (string) $fineResponseItem->{'z30-sub-library-code'};
 

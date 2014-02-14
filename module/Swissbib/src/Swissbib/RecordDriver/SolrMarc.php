@@ -1893,6 +1893,7 @@ class SolrMarc extends VuFindSolrMarc
                             $index += 1;
                         }
                     }
+                    $index++;
                 } elseif ($currentTag === 't') {
                     if ($hasNext) {
                         if ($nextTag === 'r') { // $t / $r

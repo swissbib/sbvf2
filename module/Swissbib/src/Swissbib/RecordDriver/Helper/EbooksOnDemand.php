@@ -26,7 +26,7 @@ class EbooksOnDemand extends EbooksOnDemandBase
 	protected function isValidForLinkA100(array $item, SolrMarc $recordDriver, Holdings $holdingsHelper)
 	{
 		$institutionCode	= $item['institution_chb'];
-		list(,$publishYear) = $recordDriver->getPublicationDates();
+        $publishYear        = $recordDriver->getPublicationDates();
 		$itemFormats		= $recordDriver->getMostSpecificFormat();
 
 		return		$this->isYearInRange($institutionCode, $publishYear)
@@ -138,7 +138,7 @@ class EbooksOnDemand extends EbooksOnDemandBase
     protected function isValidForLinkAX5(array $item, SolrMarc $recordDriver, Holdings $holdingsHelper)
     {
         $institutionCode	= $item['institution_chb'];
-        list(,$publishYear) = $recordDriver->getPublicationDates();
+        $publishYear        = $recordDriver->getPublicationDates();
         $itemFormats		= $recordDriver->getFormatsRaw();
 
 		return 		// $item['location_code'] != 'AX50001' // not this location code
