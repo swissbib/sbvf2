@@ -1270,17 +1270,17 @@ class Holdings
 		}
 
 		$linkValues = array(
-			'id'      => $holdingItem['bibsysnumber'], // $this->idItem,
-			'item_id' => $this->buildItemId($holdingItem)
+			'id'      => $holdingItem['bib_library'] . '-' . $holdingItem['bibsysnumber'],
+			'item_id' => $this->buildItemId($holdingItem),
 		);
 
 		return array(
 			'action' => 'Hold',
-			'record' => $this->idItem,
+			'record' => $this->idItem, //'id',
 			'anchor' => '#tabnav',
 			'query'  => http_build_query($linkValues + array(
 				'hashKey' => $this->hmac->generate($this->hmacKeys, $linkValues)
-			))
+			)),
 		);
 	}
 
