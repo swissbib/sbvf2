@@ -4,7 +4,15 @@
 /** @var String $recordTitle */
 
 $mapLink	= '';
-$description= isset($item['description']) ? $item['description'] : '';
+
+// Description (last column)
+$description = !empty($item['description']) ? $item['description'] . '. ' : '';
+if (!empty($item['public_note'])) {
+    $description .= $item['public_note'] . '. ';
+}
+if (!empty($item['opac_note'])) {
+    $description .= $item['opac_note'];
+}
 
 if (isset($item['locationMap']) && $item['locationMap']) {
 	$mapLink = '<a href="' . $item['locationMap'] . '" class="holdingMapLink">' . $this->transEsc('Show_Location_Map') . '</a>';

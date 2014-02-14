@@ -62,7 +62,8 @@ class Holdings
 		'r' => 'sequencenumber',
 		's' => 'signature2',
 		'u' => 'holding_url',
-		'y' => 'opac_note'
+		'y' => 'opac_note',
+        'z' => 'public_note',
 	);
 
 	/**
@@ -535,7 +536,7 @@ class Holdings
 
 				// Add availability
 			if (!isset($extendingOptions['availability']) || $extendingOptions['availability']) {
-				$item['availability'] = $this->getAvailabilityInfos($item['bibsysnumber'], $item['barcode'], $networkCode);
+				$item['availability'] = $this->getAvailabilityInfos($item['bibsysnumber'], $item['barcode'], $item['bib_library']);
 			}
 		}
 
@@ -606,8 +607,8 @@ class Holdings
 			if ($this->isRestfulNetwork($networkCode)) {
                 // no backlink for Restful enabled networks, either actions are possible, or nothing
                 unset($holding['backlink']);
-				$idls		= $this->bibCodeHelper->getBibCode($holding['network']);
-				$resourceId	= $idls . $holding['bibsysnumber'];
+				$bib		= $holding['bib_library'];
+				$resourceId	= $bib . $holding['bibsysnumber'];
 				$itemsCount	= $this->getIlsDriver()->getHoldingItemCount($resourceId, $holding['institution']);
 
 				$holding['itemsLink'] = array(
@@ -1057,11 +1058,11 @@ class Holdings
 	 * @param     String $network
 	 * @return    Array|Boolean
 	 */
-	protected function getAvailabilityInfos($sysNumber, $barcode, $network)
+	protected function getAvailabilityInfos($sysNumber, $barcode, $bib)
 	{
 		$userLocale	= $this->translator->getLocale();
 
-		return $this->availability->getAvailability($sysNumber, $barcode, $network, $userLocale);
+		return $this->availability->getAvailability($sysNumber, $barcode, $bib, $userLocale);
 	}
 
 

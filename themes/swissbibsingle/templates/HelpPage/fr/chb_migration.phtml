@@ -1,39 +1,43 @@
-<h2>swissbib wechselt seine Suchsoftware und passt die Daten an</h2>
-<h3>Was funktioniert nicht mehr?</h3>
-<p>Es handelt sich um ein sehr umfangreiches Update. Dies führt zu drei tiefgreifenden Anpassungen, mit Folgen für Ihre
-    persönlichen Daten:
+<h2>swissbib adapte les données bibliographiques en changeant le logiciel de recherche</h2>
+<h3>Qu’est-ce qui ne fonctionne plus ?</h3>
+<p>Il s’agit d’une mise à jour très profonde qui mène à trois adaptions importantes avec des conséquences pour vos
+    données personnelles :
 </p>
 <ol class="list">
-    <li>Die Einstellungen ihres Benutzerkontos gehen verloren. Private Nutzer müssen sich einen neuen Account anlegen.
+    <li>Les alignements de votre compte d’utilisateur ne fonctionnent plus. Les usagers privés sont obligés à refaire un
+        compte nouveau.
     </li>
-    <li>Die Merklisten als Teil des Kontos wurden gelöscht.</li>
-    <li>Die Kurzlinks auf swissbib-Datensätze sind nicht mehr gültig</li>
+    <li>Les listes de sélection qui font partie de votre compte d’utilisateur sont supprimées.</li>
+    <li>Les liens qui réfèrent aux données de swissbib ne sont plus valables.</li>
 </ol>
-<h3>Was ändert sich?</h3>
-<p>Auf den ersten Blick ändert sich wenig, die Unterschiede liegen im Detail:
+<h3>Qu’est-ce qui change?</h3>
+<p>En générale il y a peu de changement – les différences se trouvent en détail :
 </p>
 <ul class="list">
-    <li>Der Filter nach Verbünden entfällt auf der Startseite und wird als Facette angeboten</li>
-    <li>Neue &raquo;Erweiterte Suche&laquo;</li>
-    <li>Neue Anmeldung für Privatpersonen <a href="<?= $this->url('myresearch-home'); ?>"
-                                             title="<?= $this->transEsc('Your Account') ?>"><img alt="Info"
+    <li>Le filtre par réseau de bibliothèque est supprimé à la page d’accueil. Il vient afficher dans la liste &laquo;
+        affiner la recherche &raquo; qui se trouve sur la gauche de la liste de vos résultats.
+    </li>
+    <li>Nouvelle &laquo; recherche étendue &raquo;</li>
+    <li>Nouvelle inscription pour usagers privés <a href="<?= $this->url('myresearch-home'); ?>"
+                                                    title="<?= $this->transEsc('Your Account') ?>"><img alt="Info"
                                                                                                  src="/themes/swissbib/images/icon_info.gif"></a>
     </li>
-    <li>Trefferliste
+    <li>La liste des résultats
         <ul>
-            <li>Neue Facette für die Einschränkung nach Jahren</li>
-            <li>Verbesserungen beim Druck</li>
+            <li>Nouvelle facette pour le filtre par années</li>
+            <li>Améliorations pour imprimer et échanger les résultats</li>
         </ul>
     </li>
-    <li>Einzeltrefferanzeige
+    <li>Affichage des résultats
         <ul>
-            <li>Angepasste Bibliotheksanzeige</li>
-            <li>Übersichtliche Bandanzeige bei mehrbändigen Werken <a
-                    href="https://test.swissbib.ch/Record/073920207/HierarchyTree?hierarchy=259118362"><img alt="Info"
-                                                                                                            src="/themes/swissbib/images/icon_info.gif"></a>
+            <li>Affichage des bibliothèques adaptés</li>
+            <li>Affichage des volumes clair en cas des œuvres en plusieurs volumes <a
+                    href="/Record/073920207/HierarchyTree?hierarchy=259118362"><img alt="Info"
+                                                                                    src="/themes/swissbib/images/icon_info.gif"></a>
             </li>
-            <li>Verbesserungen beim Druck</li>
-            <li>Die Dokumentbeschreibung ist umfangreicher, falls die Daten es hergeben</li>
+            <li>Améliorations pour imprimer et échanger les résultats</li>
+            <li>La description des documents est plus détaillée si les données le permettent</li>
         </ul>
     </li>
 </ul>
+
