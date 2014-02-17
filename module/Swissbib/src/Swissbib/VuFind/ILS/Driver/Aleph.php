@@ -722,11 +722,8 @@ class Aleph extends VuFindDriver
 		foreach ($fineResponseItems as $fineResponseItem) {
 			$itemData	= $this->extractResponseData($fineResponseItem, $dataMap);
 
-			$sum	= (float)preg_replace('/[\(\)]/', '', $itemData['sum']);
-			$factor	= $itemData['credittype'] === 'Debit' ? -1 : 1;
-
             $itemData['title']      = (string) $fineResponseItem->{'z13'}->{'z13-title'};
-			$itemData['amount'] 	= $factor * $sum;
+			$itemData['amount'] 	= (float)preg_replace('/[\(\)]/', '', $itemData['sum']);
             $itemData['checkout']   = DateTime::createFromFormat('Ymd', $itemData['checkout'])->format('d.m.Y');
 			$itemData['institution']= (string) $fineResponseItem->{'z30-sub-library-code'};
 
