@@ -120,9 +120,30 @@ abstract class EbooksOnDemandBase extends CustomizedMethods
 	 * @param	Integer		$year
 	 * @return	Boolean
 	 */
-	protected function isYearInRange($institutionCode, $year)
-	{
-		$year			= intval($year);
+    protected function isYearInRange($institutionCode, $yearArray)
+    {
+        $dateType = array_shift($yearArray);
+        preg_replace('/\D/','9',$yearArray);
+        $year1                        = intval($yearArray[0]);
+        $year2                        = intval($yearArray[1]);
+        $noSecondYear = 'se';
+
+        if ( stripos($noSecondYear,$dateType) !== false )
+        {
+            $year = $year1;
+        }
+        elseif ( $year1 > $year2 )
+        {
+            $year = $year1;
+        }
+        elseif ( $year2 > $year1 )
+        {
+            $year = $year2;
+        }
+        else {
+            $year = $year1;
+        }
+
 		$customConfigKey= $institutionCode . '_range';
 
 		if ($this->hasConfigValue($customConfigKey)) {

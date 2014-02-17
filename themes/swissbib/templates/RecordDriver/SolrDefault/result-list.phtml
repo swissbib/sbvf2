@@ -79,8 +79,9 @@ $memorizeLink	   = $this->recordLink()->getActionUrl($this->driver, 'Save');
             <? if (!empty($showFRBR) && $showFRBR && !empty($groupID) && !strcmp($results->getParams()->getSearchHandler(),'FRBR') == 0   ) : ?>
 
 
-                <a href="<?= $this->url('search-results') . '?lookfor=' . $groupID . "&type=FRBR&limit=" . $results->getParams()->getLimit()  ?>" class="linkbutton icon_show" title="<?=$this->transEsc('FRBR_Button')?>">
-					<span><?=$this->transEsc('FRBR_Button')?></span>
+                <a href="<?= $this->url('search-results') . '?lookfor=' . $groupID . "&type=FRBR&limit=" . $results->getParams()->getLimit() . "&sort=publishDateSort+desc" ?>"
+                   class="linkbutton icon_show" title="<?= $this->transEsc('FRBR_Button') ?>">
+                <span><?=$this->transEsc('FRBR_Button')?></span>
 				</a>
             <? endif; ?>
 		</div>
