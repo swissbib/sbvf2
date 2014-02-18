@@ -51,6 +51,22 @@ $showHomeLibForm = (isset($this->pickup) && count($this->pickup) > 1);
 				</tbody>
 			</table>
             <table>
+                <tbody>
+                <tr>
+                    <th width="100"><?=$this->escapeHtml($this->transEsc('Delinquency'))?></th>
+                        <td><?=$this->escapeHtml($this->profile['delinq-n-1'])?></td>
+                </tr>
+                <tr>
+                    <th width="100">&nbsp;</th>
+                    <td><?=$this->escapeHtml($this->profile['delinq-n-2'])?></td>
+                </tr>
+                <tr>
+                    <th width="100">&nbsp;</th>
+                    <td><?=$this->escapeHtml($this->profile['delinq-n-3'])?></td>
+                </tr>
+                </tbody>
+            </table>
+            <table>
                 <? switch ($_COOKIE['language']) {
                     case 'de':
                         $lang = '=GER';

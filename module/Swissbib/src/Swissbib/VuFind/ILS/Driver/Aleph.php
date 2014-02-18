@@ -423,13 +423,21 @@ class Aleph extends VuFindDriver
             $user['college'] = $this->useradm;
         }
         $xml = $this->doXRequest(
-            "bor-info",
+            "bor-auth",
+            //array(
+            //    'loans' => 'N', 'cash' => 'N', 'hold' => 'N',
+            //    'library' => $user['college'], 'bor_id' => $user['id']
             array(
-                'loans' => 'N', 'cash' => 'N', 'hold' => 'N',
-                'library' => $user['college'], 'bor_id' => $user['id']
+                'library' => $user['college'], 'bor_id' => $user['id'], 'verification' => $user['cat_password']
             ), true
         );
         $id = (string) $xml->z303->{'z303-id'};
+        $delinq_1 = (string) $xml->z303->{'z303-delinq-1'};
+        $delinq_n_1 = (string) $xml->z303->{'z303-delinq-n-1'};
+        $delinq_2 = (string) $xml->z303->{'z303-delinq-2'};
+        $delinq_n_2 = (string) $xml->z303->{'z303-delinq-n-2'};
+        $delinq_3 = (string) $xml->z303->{'z303-delinq-3'};
+        $delinq_n_3 = (string) $xml->z303->{'z303-delinq-n-3'};
         $address1 = (string) $xml->z304->{'z304-address-0'};
         $address2 = (string) $xml->z304->{'z304-address-1'};
         $address3 = (string) $xml->z304->{'z304-address-2'};
@@ -471,6 +479,12 @@ class Aleph extends VuFindDriver
         $recordList['credit_sum'] = $credit_sum;
         $recordList['credit_sign'] = $credit_sign;
         $recordList['id'] = $id;
+        $recordList['delinq-1'] = $delinq_1;
+        $recordList['delinq-n-1'] = $delinq_n_1;
+        $recordList['delinq-2'] = $delinq_2;
+        $recordList['delinq-n-2'] = $delinq_n_2;
+        $recordList['delinq-3'] = $delinq_3;
+        $recordList['delinq-n-3'] = $delinq_n_3;
         return $recordList;
     }
 
