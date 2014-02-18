@@ -3,6 +3,7 @@
 $this->headTitle($this->translate('My Profile'));
 // Only display home library form if we have multiple pickup locations
 $showHomeLibForm = (isset($this->pickup) && count($this->pickup) > 1);
+$delinquency = $profile['delinq-1'] . $profile['delinq-2'] . $profile['delinq-3'];
 ?>
 
 <?=$this->myResearchSideBar('profile', $this->location);?>
@@ -50,11 +51,12 @@ $showHomeLibForm = (isset($this->pickup) && count($this->pickup) > 1);
                         </tr>
 				</tbody>
 			</table>
+            <? if (preg_match('/[1-9]/', $delinquency)): ?>
             <table>
                 <tbody>
                 <tr>
                     <th width="100"><?=$this->escapeHtml($this->transEsc('Delinquency'))?></th>
-                        <td><?=$this->escapeHtml($this->profile['delinq-n-1'])?></td>
+                    <td><?=$this->escapeHtml($this->profile['delinq-n-1'])?></td>
                 </tr>
                 <tr>
                     <th width="100">&nbsp;</th>
@@ -66,6 +68,7 @@ $showHomeLibForm = (isset($this->pickup) && count($this->pickup) > 1);
                 </tr>
                 </tbody>
             </table>
+            <? endif; ?>
             <table>
                 <? switch ($_COOKIE['language']) {
                     case 'de':
