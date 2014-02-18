@@ -563,21 +563,22 @@ class SolrMarc extends VuFindSolrMarc
 
         $field = $this->get956();
         if ($field['union'] === 'IDSBB' || $field['union'] === 'IDSLU' || $field['institution'] === 'E45') {
+
             if (preg_match('/Vorschau zum Bild|Porträt|Bild/', $field['description'])) {
-                $thumbnailURL = 'http://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
+                $thumbnailURL = 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
                     . $field['URL']
                     . '&scale=0.75&reqServicename=ImageTransformer';
             }
         } elseif ($field['union'] === 'SGBN') {
             $dirpath = preg_replace('/^.*sgb50/', '', $field['directory']);
             $dirpath = empty($dirpath) ? $dirpath : substr($dirpath, 1) . '/';
-            $thumbnailURL = 'http://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://aleph.sg.ch/adam/'
+            $thumbnailURL = 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://aleph.sg.ch/adam/'
                 . $dirpath
                 . $field['filename']
                 . '&scale=0.75';
         } elseif ($field['union'] === 'BGR') {
             $dirpath = substr($field['directory'], 29);
-            $thumbnailURL = 'http://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://aleph.gr.ch/adam/'
+            $thumbnailURL = 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://aleph.gr.ch/adam/'
                 . $dirpath . '/'
                 . $field['filename']
                 . '&scale=0.75';
@@ -585,7 +586,7 @@ class SolrMarc extends VuFindSolrMarc
             if (preg_match('/^.*thumbnail/', $field['directory'])) {
                 $dirpath = preg_replace('/^.*thumbnail/', '', $field['directory']);
                 $dirpath = empty($dirpath) ? $dirpath : substr($dirpath, 1) . '/';
-                $thumbnailURL = 'http://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://opac.nebis.ch/thumb_zb/'
+                $thumbnailURL = 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://opac.nebis.ch/thumb_zb/'
                     . $dirpath
                     . $field['filename']
                     . '&scale=0.75';
