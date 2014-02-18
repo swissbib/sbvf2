@@ -28,10 +28,12 @@ $memorizeLink	   = $this->recordLink()->getActionUrl($this->driver, 'Save');
 	</td>
     <!-- Column 3: Teaser-image / Thumbnail -->
 	<td class="col-3 right nodivider">
-		<a class="preview" href="<?=$detailLink?>" title="<?=$this->escapeHtml($shortTitle)?>">
+        <div class="ie8buster">
+        <a class="preview" href="<?=$detailLink?>" title="<?=$this->escapeHtml($shortTitle)?>">
 			<img src="<?=$thumbnailSrc?>" alt="<?=$this->escapeHtml($shortTitle)?>" class="dropshadow"/>
 		</a>
-	</td>
+        </div>
+    </td>
     <!-- Column 4: Title and author details => links to full-view -->
 	<td class="col-4">
 		<h3>
