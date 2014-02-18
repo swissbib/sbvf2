@@ -562,7 +562,7 @@ class SolrMarc extends VuFindSolrMarc
         $thumbnailURL = null;
 
         $field = $this->get956();
-        if ($field['union'] === 'IDSBB' || $field['union'] === 'IDSLU' || $field['institution'] === 'E45') {
+        if ($field['union'] === 'IDSBB' || $field['union'] === 'IDSLU') {
             if (preg_match('/Vorschau zum Bild|Porträt|Bild/', $field['description'])) {
                 $thumbnailURL = 'http://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
                     . $field['URL']
@@ -590,7 +590,10 @@ class SolrMarc extends VuFindSolrMarc
                     . $field['filename']
                     . '&scale=0.75';
             }
-
+        } elseif ($field['institution'] === 'E45' && $field['usage'] === 'VIEW') {
+            $thumbnailURL = 'http://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
+                . $field['URL']
+                . '&scale=0.75&reqServicename=ImageTransformer';
         }
 
         return $thumbnailURL;
