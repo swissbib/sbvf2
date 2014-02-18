@@ -479,12 +479,12 @@ class Aleph extends VuFindDriver
         $recordList['credit_sum'] = $credit_sum;
         $recordList['credit_sign'] = $credit_sign;
         $recordList['id'] = $id;
-        $recordList['deling-1'] = $delinq_1;
-        $recordList['deling-n-1'] = $delinq_n_1;
-        $recordList['deling-2'] = $delinq_2;
-        $recordList['deling-n-2'] = $delinq_n_2;
-        $recordList['deling-3'] = $delinq_3;
-        $recordList['deling-n-3'] = $delinq_n_3;
+        $recordList['delinq-1'] = $delinq_1;
+        $recordList['delinq-n-1'] = $delinq_n_1;
+        $recordList['delinq-2'] = $delinq_2;
+        $recordList['delinq-n-2'] = $delinq_n_2;
+        $recordList['delinq-3'] = $delinq_3;
+        $recordList['delinq-n-3'] = $delinq_n_3;
         return $recordList;
     }
 
