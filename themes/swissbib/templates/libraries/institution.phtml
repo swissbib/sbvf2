@@ -1,7 +1,7 @@
-<? if ($institution['is_favorite'] == 1): ?>
-    <div class="institution">
-    <h4><?= $institution['label'][$this->layout()->userLang] ?>&nbsp;&nbsp;(<?= $institution['bib_code'] ?>)</h4>
-
+<div class="institution">
+    <h4>
+        <?= $institution['label'][$this->layout()->userLang] . '  (' . $institution['bib_code'] . ')' ?>
+    </h4>
     <div>
         <? if(!empty($institution['address'])): ?>
             <p><?= $institution['address'] ?></p>
@@ -15,4 +15,3 @@
         <? endif; ?>
     </div>
 </div>
-<? endif; ?>
