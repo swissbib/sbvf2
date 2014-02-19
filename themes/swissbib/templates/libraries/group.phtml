@@ -2,12 +2,14 @@
     <h2><?= $group['label'][$this->layout()->userLang] ?></h2>
     <div class="institutions">
         <? foreach($institutions as $institution): ?>
-            <?= $this->render(
-                'libraries/institution',
-                array(
-                     'institution' => $institution
-                )
-            ) ?>
+            <? if ($institution['is_favorite']): ?>
+                <?= $this->render(
+                    'libraries/institution',
+                    array(
+                         'institution' => $institution
+                    )
+                ) ?>
+            <? endif; ?>
         <? endforeach; ?>
     </div>
 </div>
