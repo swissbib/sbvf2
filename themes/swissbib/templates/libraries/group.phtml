@@ -2,7 +2,7 @@
     <h2><?= $group['label'][$this->layout()->userLang] ?></h2>
     <div class="institutions">
         <? foreach($institutions as $institution): ?>
-            <? if ($institution['is_favorite'] == '1'): ?>
+            <? if ($institution['is_favorite']): ?>
                 <?= $this->render(
                     'libraries/institution',
                     array(
