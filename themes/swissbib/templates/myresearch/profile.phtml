@@ -4,6 +4,11 @@ $this->headTitle($this->translate('My Profile'));
 // Only display home library form if we have multiple pickup locations
 $showHomeLibForm = (isset($this->pickup) && count($this->pickup) > 1);
 $delinquency = $profile['delinq-1'] . $profile['delinq-2'] . $profile['delinq-3'];
+$delinq_notes = array(
+    'n1' => $profile['delinq-n-1'],
+    'n2' => $profile['delinq-n-2'],
+    'n3' => $profile['delinq-n-3']
+);
 ?>
 
 <?=$this->myResearchSideBar('profile', $this->location);?>
@@ -55,16 +60,12 @@ $delinquency = $profile['delinq-1'] . $profile['delinq-2'] . $profile['delinq-3'
             <table>
                 <tbody>
                 <tr>
-                    <th width="100"><?=$this->escapeHtml($this->transEsc('Delinquency'))?></th>
-                    <td><?=$this->escapeHtml($this->profile['delinq-n-1'])?></td>
-                </tr>
-                <tr>
-                    <th width="100">&nbsp;</th>
-                    <td><?=$this->escapeHtml($this->profile['delinq-n-2'])?></td>
-                </tr>
-                <tr>
-                    <th width="100">&nbsp;</th>
-                    <td><?=$this->escapeHtml($this->profile['delinq-n-3'])?></td>
+                    <th width="100"><?=$this->escapeHtml($this->transEsc('Your account has been blocked:'))?></th>
+                    <td>
+                        <? foreach ($delinq_notes as $field): ?>
+                            <?= $this->transEsc($field) ?><br/>
+                        <? endforeach; ?>
+                    </td>
                 </tr>
                 </tbody>
             </table>

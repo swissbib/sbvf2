@@ -1,5 +1,5 @@
 <h1>Login</h1>
-<p>Identificarti con il numero e la password della tua tessera utente IDS Basel Bern.</p> 
+<p>Identificarti con il numero e la password della tua tessera utente IDS Basel Bern.</p>
 <!--
 <p>Se possiedi una tessera utente valida per qualsiasi biblioteca cooperante, puoi identificarti come d'abitudine:</p>
 <ul class="list">
@@ -11,14 +11,16 @@
 </ul>
 -->
 <h3>Non hai un conto?</h3>
-<p><a href="http://aleph.unibas.ch/F/?func=bor-new-0&CON_LNG=ENG" target="_blank">Crea un nuovo conto</a></p>
+<p><a href="http://aleph.unibas.ch/F/?func=bor-new-0&CON_LNG=ENG"
+      target="_blank"><?= $this->transEsc('Create New Account') ?></a></p>
 
 <h3>Perché il login?</h3>
 <p>Per effettuare dei prestiti, per salvare le tue biblioteche preferite, per recuperare liste o ricerche che hai
     salvato, per modificare le impostazioni.</p>
 
 <h3>Hai dimenticato la password?</h3>
-<p>Contatta la <a href="http://www.ub.unibas.ch/ids-basel-bern/ausleihbibliotheken/" target="_blank">tua biblioteca</a>.</p>
+<p>Contatta la <a href="http://www.ub.unibas.ch/ids-basel-bern/ausleihbibliotheken/" target="_blank">tua biblioteca</a>.
+</p>
 
 <h3>Profilo</h3>
 <p><a href="http://aleph.unibas.ch/F/?func=LOGIN-PAGE" target="_blank">Cambia password, indirizzo, ecc.</a></p>
@@ -35,7 +37,8 @@
 <p>Se vuoi aggiungere una biblioteca alle <i>Preferite</i> puoi farlo attraverso <i>Il mio swissbib - Preferite</i>
     oppure cliccando sull'icona del <img
         src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_favorit.gif') ?>"
-        alt="Aggiungi alle mie preferite"> nel catalogo. Nella tua lista di risultati queste biblioteche sono marcate con un <img src="<?= $this->basePath('themes/swissbib/images/icon_favorit_library.gif') ?>"
+        alt="Aggiungi alle mie preferite"> nel catalogo. Nella tua lista di risultati queste biblioteche sono marcate
+    con un <img src="<?= $this->basePath('themes/swissbib/images/icon_favorit_library.gif') ?>"
                 alt=" "> e possono essere usate come filtro.</p>
 
 <h3>Liste</h3>
