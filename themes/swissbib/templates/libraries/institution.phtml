@@ -11,7 +11,9 @@
         <? endif; ?>
         <? if(!empty($institution['url']) && is_array($institution['url'])): ?>
             <? $url = $institution['url'][$this->layout()->userLang]; ?>
-        <p><a href="<?= $url?>" class="color" target="_blank"><?=$this->transEsc('libraries.website')?></a></p>
+            <p><a href="<?= $url ?>" class="color" target="_blank"><?= $this->transEsc('Library_Information') ?></a></p>
         <? endif; ?>
+        <p><a href='/Search/Results?type=AllFields&filter[]=institution%3A"<?= $institution['bib_code'] ?>"'
+              class='color'><?= $this->transEsc('hold_backlink') ?></a></p>
     </div>
 </div>
