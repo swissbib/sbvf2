@@ -637,7 +637,8 @@ class SolrMarc extends VuFindSolrMarc
             return $URL_thumb;
         } elseif ($field['union'] === 'CHARCH' && $field['tag'] === '856') {
             $URL_thumb = preg_replace('/SIZE=10/', 'SIZE=30', $field['sf_u']);
-            return $URL_thumb;
+            $thumb_URL = preg_replace('/http/', 'https', $URL_thumb);
+            return $thumb_URL;
         }
     }
 
