@@ -7,11 +7,15 @@
             <p><?= $institution['address'] ?></p>
         <? endif; ?>
         <? if(!empty($institution['city']) && !empty($institution['zip'])): ?>
-            <p><?= $institution['zip'] ?> <?= $institution['city'] ?></p>
+        <? $canton = !empty($institution['canton']) ? ' (' . strtoupper($institution['canton']) . ')' : ''; ?>
+            <p><?= $institution['zip'] . ' ' . $institution['city'] . $canton ?></p>
         <? endif; ?>
         <? if(!empty($institution['url']) && is_array($institution['url'])): ?>
             <? $url = $institution['url'][$this->layout()->userLang]; ?>
-        <p><a href="<?= $url?>" class="color" target="_blank"><?=$this->transEsc('libraries.website')?></a></p>
+            <p><a href="<?= $url?>" class="color" target="_blank"><?=$this->transEsc('Library_Information')?></a></p>
+        <? endif; ?>
+        <? if (!empty($institution['website'])): ?>
+            <p><a href="<?= $institution['website']?>" class="color" target="_blank"><?=$this->transEsc('libraries.website')?></a></p>
         <? endif; ?>
     </div>
 </div>
