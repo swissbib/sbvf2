@@ -489,7 +489,7 @@ return array(
                                 $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
                                 null,
                                 $sm->getServiceLocator()->get('VuFind\Config')->get('searches'),
-                                $sm->getServiceLocator()
+                                $sm->getServiceLocator()->get("Swissbib\Services\RedirectProtocolWrapper")
                             );
                             $driver->attachILS(
                                 $sm->getServiceLocator()->get('VuFind\ILSConnection'),
