@@ -579,8 +579,8 @@ class SolrMarc extends VuFindSolrMarc
 
         foreach ($fields as $field) {
             if ($field['union'] === 'IDSBB' || $field['union'] === 'IDSLU') {
-            if (preg_match('/Vorschau zum Bild|Porträt|Bild/', $field['description'])) {
-                $thumbnailURL = 'http://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
+                if (preg_match('/Vorschau zum Bild|Porträt|Bild$/', $field['description'])) {
+                    $thumbnailURL = 'http://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
                     . $field['URL']
                     . '&scale=0.75&reqServicename=ImageTransformer';
             }
