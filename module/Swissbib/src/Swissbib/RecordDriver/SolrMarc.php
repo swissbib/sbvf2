@@ -561,39 +561,61 @@ class SolrMarc extends VuFindSolrMarc
     {
         $thumbnailURL = null;
 
-        $field = $this->get956();
-        if ($field['union'] === 'IDSBB' || $field['union'] === 'IDSLU' || $field['institution'] === 'E45') {
+        $fields = $this->getMarcSubFieldMaps(956, array(
+                'B' => 'union',
+                'C' => 'ADM',
+                'D' => 'library',
+                'a' => 'institution',
+                'u' => 'URL',
+                'd' => 'directory',
+                'f' => 'filename',
+                'q' => 'type',
+                'x' => 'usage',
+                'y' => 'description',
+            ));
+        if (!$fields) {
+            return array();
+        }
 
+        foreach ($fields as $field) {
+            if ($field['union'] === 'IDSBB' || $field['union'] === 'IDSLU') {
             if (preg_match('/Vorschau zum Bild|Porträt|Bild/', $field['description'])) {
-                $thumbnailURL = 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
+                $thumbnailURL = 'http://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
                     . $field['URL']
                     . '&scale=0.75&reqServicename=ImageTransformer';
             }
-        } elseif ($field['union'] === 'SGBN') {
+        }
+            elseif ($field['union'] === 'SGBN') {
             $dirpath = preg_replace('/^.*sgb50/', '', $field['directory']);
             $dirpath = empty($dirpath) ? $dirpath : substr($dirpath, 1) . '/';
-            $thumbnailURL = 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://aleph.sg.ch/adam/'
+            $thumbnailURL = 'http://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://aleph.sg.ch/adam/'
                 . $dirpath
                 . $field['filename']
                 . '&scale=0.75';
-        } elseif ($field['union'] === 'BGR') {
+        }
+            elseif ($field['union'] === 'BGR') {
             $dirpath = substr($field['directory'], 29);
-            $thumbnailURL = 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://aleph.gr.ch/adam/'
+            $thumbnailURL = 'http://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://aleph.gr.ch/adam/'
                 . $dirpath . '/'
                 . $field['filename']
                 . '&scale=0.75';
-        } elseif ($field['ADM'] === 'ZAD50') {
-            if (preg_match('/^.*thumbnail/', $field['directory'])) {
-                $dirpath = preg_replace('/^.*thumbnail/', '', $field['directory']);
-                $dirpath = empty($dirpath) ? $dirpath : substr($dirpath, 1) . '/';
-                $thumbnailURL = 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://opac.nebis.ch/thumb_zb/'
+        }
+            elseif ($field['ADM'] === 'ZAD50') {
+                if (preg_match('/^.*thumbnail/', $field['directory'])) {
+                    $dirpath = preg_replace('/^.*thumbnail/', '', $field['directory']);
+                    $dirpath = empty($dirpath) ? $dirpath : substr($dirpath, 1) . '/';
+                    $thumbnailURL = 'http://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://opac.nebis.ch/thumb_zb/'
                     . $dirpath
                     . $field['filename']
                     . '&scale=0.75';
+                }
             }
-
+            elseif ($field['institution'] === 'E45' && $field['usage'] === 'VIEW') {
+                $thumbnailURL = 'http://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
+                . $field['URL']
+                . '&scale=0.75&reqServicename=ImageTransformer';
+            }
         }
-
         return $thumbnailURL;
     }
 
@@ -615,7 +637,8 @@ class SolrMarc extends VuFindSolrMarc
             return $URL_thumb;
         } elseif ($field['union'] === 'CHARCH' && $field['tag'] === '856') {
             $URL_thumb = preg_replace('/SIZE=10/', 'SIZE=30', $field['sf_u']);
-            return $URL_thumb;
+            $thumb_URL = preg_replace('/http/', 'https', $URL_thumb);
+            return $thumb_URL;
         }
     }
 
