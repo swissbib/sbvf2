@@ -14,6 +14,7 @@ class AvailabilityInfo extends AbstractHelper
     const USE_ON_SITE = "use-on-site"; // vor Ort einsehbare Exemplare (Lesesaal)
     const LOOK_ON_SITE = "lookOnSite"; // Informationsabruf über das lokale System (fallback)
     const EXHIBITION = "exhibition"; // nicht einsehbar, extern ausgestellt (mit Datum bis)
+    const INPROCESS = "inProcess";
     const ONLINE_AVAILABLE = "onlineAvailable"; // by now only for ETH, could be enhanced for other library systems (labels for LoanStatus needed!)
     const UNAVAILABLE = "unavailable"; // vermisst, in Reparatur, abbestellt: Exemplar für Benutzer verloren
 
@@ -106,6 +107,10 @@ class AvailabilityInfo extends AbstractHelper
 
                     $info .= "</div>";
 
+                    break;
+                case self::INPROCESS:
+                    $infotext = $escapedTranslation($statusfield);
+                    $info = "<div class='availability_ok'><div class='nice'>" . "$infotext" . "</div></div>";
                     break;
                 case self::ONLINE_AVAILABLE:
 
