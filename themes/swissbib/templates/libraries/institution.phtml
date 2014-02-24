@@ -11,7 +11,7 @@
             <p><?= $institution['zip'] . ' ' . $institution['city'] . $canton ?></p>
         <? endif; ?>
         <? if(!empty($institution['email'])): ?>
-            <p><a mailto="<?= $institution['email'] ?>"><?= $this->transEsc('Email') ?></a></p>
+            <p><a href="mailto:<?= $institution['email'] ?>"><?= $this->transEsc('Email') ?></a></p>
         <? endif; ?>
         <p><b><?= $this->transEsc('library.code') ?>:</b> <?= $institution['bib_code'] ?><?= !empty($institution['isil']) ? '; <b>ISIL: </b>' . $institution['isil'] : '' ?></p>
         </div>
