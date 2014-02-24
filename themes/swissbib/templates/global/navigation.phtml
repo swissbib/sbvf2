@@ -31,9 +31,8 @@ $isLoggedIn = !!$this->auth()->isLoggedIn();
             <a href="<?= $this->url('help-page', array('topic' => 'chb_about')); ?>"><?= $this->transEsc('menu.service.information') ?></a>
         </li>
         <li>
-            <a title="Feedback" href="javascript:javascript:void(0)" data-uv-lightbox="classic_widget"
-               data-uv-mode="full" data-uv-primary-color="#36d40e" data-uv-link-color="#484d59"
-               data-uv-default-mode="support" data-uv-forum-id="29443""><?= $this->transEsc('menu.feedback') ?></a>
+            <a title="<?= $this->transEsc('menu.feedback') ?>" href=""
+               id="feedback"><?= $this->transEsc('menu.feedback') ?></a>
         </li>
         <li class="nav_help">
             <a href="<?= $this->url('help-page', array('topic' => 'chb_3steps')); ?>"><?= $this->transEsc('helppage') ?></a>
