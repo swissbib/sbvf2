@@ -1,6 +1,6 @@
 <div class="institution">
     <h4>
-        <?= $institution['label'][$this->layout()->userLang] . '  (' . $institution['bib_code'] . ')' ?>
+        <?= $institution['label'][$this->layout()->userLang]?>
     </h4>
     <div>
         <? if(!empty($institution['address'])): ?>
@@ -8,8 +8,14 @@
         <? endif; ?>
         <? if(!empty($institution['city']) && !empty($institution['zip'])): ?>
             <? $canton = !empty($institution['canton']) ? ' (' . strtoupper($institution['canton']) . ')' : ''; ?>
-            <p style="margin-bottom: 0.3692em;"><?= $institution['zip'] . ' ' . $institution['city'] . $canton ?></p>
+            <p><?= $institution['zip'] . ' ' . $institution['city'] . $canton ?></p>
         <? endif; ?>
+        <? if(!empty($institution['email'])): ?>
+            <p><a mailto="<?= $institution['email'] ?>"><?= $this->transEsc('Email') ?></a></p>
+        <? endif; ?>
+        <p><b><?= $this->transEsc('library.code') ?>:</b> <?= $institution['bib_code'] ?><?= !empty($institution['isil']) ? '; <b>ISIL: </b>' . $institution['isil'] : '' ?></p>
+        </div>
+    <div>
         <ul class="list">
             <? if (!empty($institution['url']) && is_array($institution['url'])): ?>
                 <? $url = $institution['url'][$this->layout()->userLang]; ?>

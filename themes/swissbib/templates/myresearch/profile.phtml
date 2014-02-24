@@ -60,10 +60,12 @@ $delinq_notes = array(
             <table>
                 <tbody>
                 <tr>
-                    <th width="100"><?=$this->escapeHtml($this->transEsc('Your account has been blocked:'))?></th>
+                    <th width="100"><?=$this->escapeHtml($this->transEsc('Account blocked'))?></th>
                     <td>
                         <? foreach ($delinq_notes as $field): ?>
-                            <?= $this->transEsc($field) ?><br/>
+                            <? if (!empty($field)): ?>
+                               <?= $this->transEsc($field) ?><br/>
+                            <? endif; ?>
                         <? endforeach; ?>
                     </td>
                 </tr>
