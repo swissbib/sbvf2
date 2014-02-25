@@ -668,7 +668,10 @@ class SolrMarc extends VuFindSolrMarc
             $URL_thumb = 'http://www.e-rara.ch/titlepage/doi/'
                 . $field['0']
             . '/128';
-            return $this->protocolWrapper->getWrappedURL($URL_thumb);
+            return 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
+            . $URL_thumb
+            . '&scale=1';
+            //return $this->protocolWrapper->getWrappedURL($URL_thumb);
         }
     }
 
