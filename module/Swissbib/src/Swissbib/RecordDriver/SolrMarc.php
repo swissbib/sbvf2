@@ -599,17 +599,15 @@ class SolrMarc extends VuFindSolrMarc
                     . $field['URL']
                     . '&scale=0.75&reqServicename=ImageTransformer';
             }
-        }
-            elseif ($field['union'] === 'SGBN') {
-            $dirpath = preg_replace('/^.*sgb50/', '', $field['directory']);
+        } elseif ($field['union'] === 'SGBN' && $field['type'] === 'jpg') {
+                $dirpath = preg_replace('/^.*sgb50/', '', $field['directory']);
             $dirpath = empty($dirpath) ? $dirpath : substr($dirpath, 1) . '/';
             $thumbnailURL = 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://aleph.sg.ch/adam/'
                 . $dirpath
                 . $field['filename']
                 . '&scale=0.75';
-        }
-            elseif ($field['union'] === 'BGR') {
-            $dirpath = substr($field['directory'], 29);
+        } elseif ($field['union'] === 'BGR' && $field['type'] === 'jpg') {
+                $dirpath = substr($field['directory'], 29);
             $thumbnailURL = 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://aleph.gr.ch/adam/'
                 . $dirpath . '/'
                 . $field['filename']
@@ -645,15 +643,15 @@ class SolrMarc extends VuFindSolrMarc
         $field = $this->get950();
         if ($field['union'] === 'RERO' && $field['tag'] === '856') {
             if (preg_match('/^.*v_bcu\/media\/images/', $field['sf_u'])) {
-                return $field['sf_u'];
+                return $this->protocolWrapper->getWrappedURL($field['sf_u']);
             }
         } elseif ($field['union'] === 'CCSA' && $field['tag'] === '856') {
             $URL_thumb = preg_replace('/hi-res.cgi/', 'get_thumb.cgi', $field['sf_u']);
-            return $URL_thumb;
+            return $this->protocolWrapper->getWrappedURL($URL_thumb);
         } elseif ($field['union'] === 'CHARCH' && $field['tag'] === '856') {
             $URL_thumb = preg_replace('/SIZE=10/', 'SIZE=30', $field['sf_u']);
             $thumb_URL = preg_replace('/http/', 'https', $URL_thumb);
-            return $thumb_URL;
+            return $this->protocolWrapper->getWrappedURL($thumb_URL);
         }
     }
 
@@ -667,9 +665,10 @@ class SolrMarc extends VuFindSolrMarc
     {
         $field = $this->getDOIs();
         if (preg_match('/^.*e-rara/', $field['0'])) {
-            return 'http://www.e-rara.ch/titlepage/doi/'
-            . $field['0']
+            $URL_thumb = 'http://www.e-rara.ch/titlepage/doi/'
+                . $field['0']
             . '/128';
+            return $this->protocolWrapper->getWrappedURL($URL_thumb);
         }
     }
 
