@@ -584,17 +584,15 @@ class SolrMarc extends VuFindSolrMarc
                     . $field['URL']
                     . '&scale=0.75&reqServicename=ImageTransformer';
             }
-        }
-            elseif ($field['union'] === 'SGBN') {
-            $dirpath = preg_replace('/^.*sgb50/', '', $field['directory']);
+        } elseif ($field['union'] === 'SGBN' && $field['type'] === 'jpg') {
+                $dirpath = preg_replace('/^.*sgb50/', '', $field['directory']);
             $dirpath = empty($dirpath) ? $dirpath : substr($dirpath, 1) . '/';
             $thumbnailURL = 'http://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://aleph.sg.ch/adam/'
                 . $dirpath
                 . $field['filename']
                 . '&scale=0.75';
-        }
-            elseif ($field['union'] === 'BGR') {
-            $dirpath = substr($field['directory'], 29);
+        } elseif ($field['union'] === 'BGR' && $field['type'] === 'jpg') {
+                $dirpath = substr($field['directory'], 29);
             $thumbnailURL = 'http://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://aleph.gr.ch/adam/'
                 . $dirpath . '/'
                 . $field['filename']
