@@ -15,7 +15,7 @@
         <? endif; ?>
         <p><b><?= $this->transEsc('library.code') ?>:</b> <?= $institution['bib_code'] ?><?= !empty($institution['isil']) ? '; <b>ISIL: </b>' . $institution['isil'] : '' ?></p>
         </div>
-    <div style="margin-bottom: 0.3692em;">
+    <div style="margin-top: 0.3692em;">
     <ul class="list">
             <? if (!empty($institution['url']) && is_array($institution['url'])): ?>
                 <? $url = $institution['url'][$this->layout()->userLang]; ?>
