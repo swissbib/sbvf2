@@ -2,6 +2,7 @@
 <div class="box">
 <?
     $spellingSuggestions = $this->results->getSpellingSuggestions();
+
     if (sizeof($spellingSuggestions) > 0) {
 ?>
         <h4><?= $this->translate('nohit_spelling') ?></h4>
@@ -20,12 +21,14 @@
 <?
     }
 ?>
+
     <h4><?=$this->transEsc('nohit_suggest') ?></h4>
     <ul class="list">
         <li><?=$this->transEsc('nohit_text1') ?></li>
-        <li><?=$this->transEsc('nohit_text2') ?></li>   
+        <li><?=$this->transEsc('nohit_text2') ?></li>
+        <li><?=$this->transEsc('nohit_text3') ?><a href="https://test.swissbib.ch/Search/Results?lookfor=$oldTerm" target="_blank">swissbib (swiss meta catalogue)</a></li>
     </ul>
-    <h4><?=$this->transEsc('nohit_text3') ?></h4>
+    <h4><?=$this->transEsc('nohit_tip') ?></h4>
     <ul class="list">
         <li><a href="<?=$this->url('help-page')?>"><?=$this->transEsc('helppage')?></a> <?=$this->transEsc('nohit_text4') ?> </li>
         <li><a href="<?=$this->url('search-advanced')?>"><?=$this->transEsc('Advanced Search')?></a> <?=$this->transEsc('nohit_text5') ?> </li>
