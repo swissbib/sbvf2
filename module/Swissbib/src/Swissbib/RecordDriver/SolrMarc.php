@@ -597,22 +597,22 @@ class SolrMarc extends VuFindSolrMarc
                 if (preg_match('/Vorschau zum Bild|Porträt|Bild$/', $field['description'])) {
                     $thumbnailURL = 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
                     . $field['URL']
-                    . '&scale=0.75&reqServicename=ImageTransformer';
-            }
+                        . '&scale=1&reqServicename=ImageTransformer';
+                }
         } elseif ($field['union'] === 'SGBN' && $field['type'] === 'jpg') {
                 $dirpath = preg_replace('/^.*sgb50/', '', $field['directory']);
             $dirpath = empty($dirpath) ? $dirpath : substr($dirpath, 1) . '/';
             $thumbnailURL = 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://aleph.sg.ch/adam/'
                 . $dirpath
                 . $field['filename']
-                . '&scale=0.75';
-        } elseif ($field['union'] === 'BGR' && $field['type'] === 'jpg') {
+                . '&scale=1';
+            } elseif ($field['union'] === 'BGR' && $field['type'] === 'jpg') {
                 $dirpath = substr($field['directory'], 29);
             $thumbnailURL = 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://aleph.gr.ch/adam/'
                 . $dirpath . '/'
                 . $field['filename']
-                . '&scale=0.75';
-        }
+                . '&scale=1';
+            }
             elseif ($field['ADM'] === 'ZAD50') {
                 if (preg_match('/^.*thumbnail/', $field['directory'])) {
                     $dirpath = preg_replace('/^.*thumbnail/', '', $field['directory']);
@@ -620,13 +620,13 @@ class SolrMarc extends VuFindSolrMarc
                     $thumbnailURL = 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://opac.nebis.ch/thumb_zb/'
                     . $dirpath
                     . $field['filename']
-                    . '&scale=0.75';
+                        . '&scale=1';
                 }
             }
             elseif ($field['institution'] === 'E45' && $field['usage'] === 'VIEW') {
                 $thumbnailURL = 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
                 . $field['URL']
-                . '&scale=0.75&reqServicename=ImageTransformer';
+                    . '&scale=1&reqServicename=ImageTransformer';
             }
         }
         return $thumbnailURL;
@@ -643,15 +643,21 @@ class SolrMarc extends VuFindSolrMarc
         $field = $this->get950();
         if ($field['union'] === 'RERO' && $field['tag'] === '856') {
             if (preg_match('/^.*v_bcu\/media\/images/', $field['sf_u'])) {
-                return $this->protocolWrapper->getWrappedURL($field['sf_u']);
+                return 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
+                . $field['sf_u']
+                . '&scale=1';
             }
         } elseif ($field['union'] === 'CCSA' && $field['tag'] === '856') {
             $URL_thumb = preg_replace('/hi-res.cgi/', 'get_thumb.cgi', $field['sf_u']);
-            return $this->protocolWrapper->getWrappedURL($URL_thumb);
+            return 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
+            . $URL_thumb
+            . '&scale=1';
         } elseif ($field['union'] === 'CHARCH' && $field['tag'] === '856') {
-            $URL_thumb = preg_replace('/SIZE=10/', 'SIZE=30', $field['sf_u']);
-            $thumb_URL = preg_replace('/http/', 'https', $URL_thumb);
-            return $this->protocolWrapper->getWrappedURL($thumb_URL);
+            $thumb_URL = preg_replace('/SIZE=10/', 'SIZE=30', $field['sf_u']);
+            $URL_thumb = preg_replace('/http/', 'https', $thumb_URL);
+            return 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
+            . $URL_thumb
+            . '&scale=1';
         }
     }
 
@@ -667,11 +673,10 @@ class SolrMarc extends VuFindSolrMarc
         if (preg_match('/^.*e-rara/', $field['0'])) {
             $URL_thumb = 'http://www.e-rara.ch/titlepage/doi/'
                 . $field['0']
-            . '/128';
+                . '/128';
             return 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
             . $URL_thumb
             . '&scale=1';
-            //return $this->protocolWrapper->getWrappedURL($URL_thumb);
         }
     }
 
