@@ -655,9 +655,10 @@ class SolrMarc extends VuFindSolrMarc
         } elseif ($field['union'] === 'CHARCH' && $field['tag'] === '856') {
             $thumb_URL = preg_replace('/SIZE=10/', 'SIZE=30', $field['sf_u']);
             $URL_thumb = preg_replace('/http/', 'https', $thumb_URL);
-            return 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
-            . $URL_thumb
-            . '&scale=1';
+            return $URL_thumb;
+            //return 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
+            //. $URL_thumb
+            //. '&scale=1';
         }
     }
 
