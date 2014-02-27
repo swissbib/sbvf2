@@ -56,53 +56,9 @@ $delinq_notes = array(
                         </tr>
 				</tbody>
 			</table>
-            <? if (preg_match('/[1-9]/', $delinquency)): ?>
-            <table>
-                <tbody>
-                <tr>
-                    <th width="100"><?=$this->escapeHtml($this->transEsc('Account blocked'))?></th>
-                    <td>
-                        <? foreach ($delinq_notes as $field): ?>
-                            <? if (!empty($field)): ?>
-                               <?= $this->transEsc($field) ?><br/>
-                            <? endif; ?>
-                        <? endforeach; ?>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <? endif; ?>
-            <table>
-                <? switch ($_COOKIE['language']) {
-                    case 'de':
-                        $lang = '=GER';
-                        break;
-                    case 'fr':
-                        $lang = '=FRE';
-                        break;
-                    case 'en':
-                        $lang = '=ENG';
-                        break;
-                    case 'it':
-                        $lang = '=ENG';
-                        break;
-                } ?>
-                <? $loginlink = 'http://aleph.unibas.ch/F/?func=file&file_name=login-session&con_lng' . $lang; ?>
-                <tbody>
-                    <tr>
-                        <th width="100">&nbsp;</th>
-                        <td>
-                            <a href="<?=$loginlink?>" target="_blank"><?=$this->transEsc('changeaddress')?></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th width="100">&nbsp;</th>
-                        <td>
-                            <a href="<?=$loginlink?>" target="_blank"><?=$this->transEsc('changepassword')?></a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <?/**
+            siehe template in swissbibmulti fuer Moeglichkeiten und Loesungen (Adressaenderung, Sperrungen, etc.
+            */?>
 
 			<?php
 				if( $showHomeLibForm ) {
