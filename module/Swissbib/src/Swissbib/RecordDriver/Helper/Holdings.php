@@ -973,7 +973,7 @@ class Holdings
      */
     protected function getBackLinkIDSSG($networkCode, $institutionCode, array $item, array $data)
     {
-        return $this->getBackLinkVirtua($networkCode, $institutionCode, $item, $data);
+        return $this->getBackLinkAleph($networkCode, $institutionCode, $item, $data);
     }
 
 
