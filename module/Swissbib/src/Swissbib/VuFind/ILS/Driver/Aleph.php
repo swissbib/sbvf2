@@ -613,9 +613,24 @@ class Aleph extends VuFindDriver
 		return $transactionsData;
 	}
 
+    /**
+     * Get Required Date
+     *
+     * @return
+     */
 
+    public function getRequiredDate($patron, $holdInfo=null)
+    {
+        if ($holdInfo != null) {
+            $details = $this->getHoldingInfoForItem(
+                $patron['id'], $holdInfo['id'], $holdInfo['item_id']
+            );
+            $requiredDate = $details['last-interest-date'];
+            return $requiredDate;
+        }
+    }
 
-	/**
+    /**
 	 * Get my holds xml data
 	 *
 	 * @param	String		$userId
