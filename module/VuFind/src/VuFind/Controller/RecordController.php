@@ -101,6 +101,7 @@ class RecordController extends AbstractRecord
 
         // Send various values to the view so we can build the form:
         $pickup = $catalog->getPickUpLocations($patron, $gatheredDetails);
+        $requiredDate = $catalog->getRequiredDate($patron, $gatheredDetails);
         $extraHoldFields = isset($checkHolds['extraHoldFields'])
             ? explode(":", $checkHolds['extraHoldFields']) : array();
 
@@ -145,9 +146,11 @@ class RecordController extends AbstractRecord
         }
 
         // Find and format the default required date:
-        $defaultRequired = $this->holds()->getDefaultRequiredDate($checkHolds);
-        $defaultRequired = $this->getServiceLocator()->get('VuFind\DateConverter')
-            ->convertToDisplayDate("U", $defaultRequired);
+        $defaultDateUNIX = $this->holds()->getDefaultRequiredDate($checkHolds);
+        $defaultRequired = (!empty($requiredDate)) ? $requiredDate : $this->getServiceLocator()->get('VuFind\DateConverter')
+            ->convertToDisplayDate("U", $defaultDateUNIX);
+        //$defaultRequired = $this->getServiceLocator()->get('VuFind\DateConverter')
+        //    ->convertToDisplayDate("U", $defaultRequired);
 
         return $this->createViewModel(
             array(

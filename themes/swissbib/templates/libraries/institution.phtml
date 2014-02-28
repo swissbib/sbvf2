@@ -11,12 +11,12 @@
             <p><?= $institution['zip'] . ' ' . $institution['city'] . $canton ?></p>
         <? endif; ?>
         <? if(!empty($institution['email'])): ?>
-            <p><a mailto="<?= $institution['email'] ?>"><?= $this->transEsc('Email') ?></a></p>
+            <p><a href="mailto:<?= $institution['email'] ?>"><?= $this->transEsc('Email') ?></a></p>
         <? endif; ?>
         <p><b><?= $this->transEsc('library.code') ?>:</b> <?= $institution['bib_code'] ?><?= !empty($institution['isil']) ? '; <b>ISIL: </b>' . $institution['isil'] : '' ?></p>
         </div>
-    <div>
-        <ul class="list">
+    <div style="margin-top: 0.3692em;">
+    <ul class="list">
             <? if (!empty($institution['url']) && is_array($institution['url'])): ?>
                 <? $url = $institution['url'][$this->layout()->userLang]; ?>
                 <li><a href="<?= $url ?>" class="color"
