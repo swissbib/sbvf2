@@ -1,12 +1,19 @@
 <?php
 namespace Swissbib\XSLT;
 
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\ServiceManager;
+use Zend\ServiceManager\ServiceManagerAwareInterface;
 
-class MARCFormatter
+class MARCFormatter implements ServiceManagerAwareInterface
 {
     /**
      * @var array
      */
+
+    private static $sM;
+
     protected static $institutionURLs = array(
         "NEBIS" => "http://opac.nebis.ch/F/?local_base=EBI01&con_lng=GER&func=find-b&find_code=SYS&request=%s",
         "IDSBB" => "http://aleph.unibas.ch/F/?local_base=DSV01&con_lng=GER&func=find-b&find_code=SYS&request=%s",
@@ -63,7 +70,9 @@ class MARCFormatter
             $request = str_replace(self::$trimPrefixes, '', $request);
             $url = str_replace('%s', $request, self::$institutionURLs[$institution]);
 
-            return '<a href="' . $url . '" target="_blank">' . htmlentities('(' . $institution . ')' . $request) . '</a>';
+            $pW =  static::$sM->get("Swissbib\Services\RedirectProtocolWrapper");
+
+            return '<a href="' . $pW->getWrappedURL( $url) . '" target="_blank">' . htmlentities('(' . $institution . ')' . $request) . '</a>';
         }
     }
 
@@ -89,5 +98,16 @@ class MARCFormatter
 
         return '';
     }
+
+    /**
+     * Set service manager
+     *
+     * @param ServiceManager $serviceManager
+     */
+    public function setServiceManager(ServiceManager $serviceManager)
+    {
+        static::$sM = $serviceManager;
+    }
+
 
 }

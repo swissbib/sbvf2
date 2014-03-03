@@ -24,8 +24,11 @@ if (isset($item['locationMap']) && $item['locationMap']) {
 	<td><?=$this->availabilityInfo($item['availability'])?></td>
 	<td><?=$this->escapeHtml($item['locationLabel'])?><?=$mapLink?></td>
 	<td><?=$this->escapeHtml($item['signature'])?>
+
+
       <?php  if (isset($item['institutionUrl'])): ?>
-        <a href="<?=$this->escapeHtml($item['institutionUrl'])?>" class="bibinfo" target="_blank" title="<?=$this->transEsc('Library_Information')?>"></a>
+        <?php  $wrappedURL = $this->redirectProtocolWrapper()->getWrappedURL($item['institutionUrl']) ?>
+        <a href="<?=$this->escapeHtml($wrappedURL)?>" class="bibinfo" target="_blank" title="<?=$this->transEsc('Library_Information')?>"></a>
       <?php endif; ?>
     </td>
 	<td><?=$this->qrCodeHolding($item, $recordTitle)?></td>
