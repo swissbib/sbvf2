@@ -989,6 +989,20 @@ class Holdings
         return $this->getBackLinkVirtua($networkCode, $institutionCode, $item, $data);
     }
 
+    /**
+     * Get back link for IDSSG (self-developed-non-aleph-request)
+     * Currently only a wrapper for Aleph
+     *
+     * @param    String $networkCode
+     * @param    String $institutionCode
+     * @param    Array $item
+     * @param    Array $data
+     * @return    String
+     */
+    protected function getBackLinkIDSSG($networkCode, $institutionCode, array $item, array $data)
+    {
+        return $this->getBackLinkAleph($networkCode, $institutionCode, $item, $data);
+    }
 
     /**
 	 * Compile string. Replace {varName} pattern with names and data from array
