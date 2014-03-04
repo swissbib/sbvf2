@@ -309,6 +309,23 @@ class Aleph extends VuFindDriver
 		return sizeof($links);
 	}
 
+    /**
+     * Public Function which retrieves renew, hold and cancel settings from the
+     * driver ini file.
+     *
+     * @param string $func The name of the feature to be checked
+     *
+     * @return array An array with key-value pairs.
+     */
+    public function getConfig($func)
+    {
+        if ($func == "Holds") {
+            return $this->config['Holds'];
+        } else {
+            return array();
+        }
+    }
+
 
 
 	/**
