@@ -112,10 +112,18 @@ class MyResearchController extends AbstractBase
      */
     public function homeAction()
     {
+        // if the current auth class proxies others, we'll get the proxied
+        //   auth method as a querystring or post parameter.
+        //   Force to post.
+        if ($method = trim($this->params()->fromQuery('auth_method'))) {
+            $this->getRequest()->getPost()->set('auth_method', $method);
+        }
+
         // Process login request, if necessary (either because a form has been
         // submitted or because we're using an external login provider):
         if ($this->params()->fromPost('processLogin')
             || $this->getSessionInitiator()
+            || $this->params()->fromPost('auth_method')
         ) {
             try {
                 $this->getAuthManager()->login($this->getRequest());
@@ -152,9 +160,12 @@ class MyResearchController extends AbstractBase
      */
     public function accountAction()
     {
+        // if the current auth class proxies others, we'll get the proxied
+        //   auth method as a querystring parameter.
+        $method = trim($this->params()->fromQuery('auth_method'));
         // If authentication mechanism does not support account creation, send
         // the user away!
-        if (!$this->getAuthManager()->supportsCreation()) {
+        if (!$this->getAuthManager()->supportsCreation($method)) {
             return $this->forwardTo('MyResearch', 'Home');
         }
 
@@ -229,6 +240,9 @@ class MyResearchController extends AbstractBase
         if (empty($logoutTarget)) {
             $logoutTarget = $this->getServerUrl('home');
         }
+
+        // clear querystring parameters
+        $logoutTarget = preg_replace('/\?.*/', '', $logoutTarget);
 
         return $this->redirect()
             ->toUrl($this->getAuthManager()->logout($logoutTarget));
@@ -814,6 +828,10 @@ class MyResearchController extends AbstractBase
         $view = $this->createViewModel();
         $view->cancelResults = $cancelStatus
             ? $this->holds()->cancelHolds($catalog, $patron) : array();
+        // If we need to confirm
+        if (!is_array($view->cancelResults)) {
+            return $view->cancelResults;
+        }
 
         // By default, assume we will not need to display a cancel form:
         $view->cancelForm = false;

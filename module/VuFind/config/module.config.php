@@ -84,7 +84,6 @@ $config = array(
             },
         ),
         'invokables' => array(
-            'admin' => 'VuFind\Controller\AdminController',
             'ajax' => 'VuFind\Controller\AjaxController',
             'alphabrowse' => 'VuFind\Controller\AlphabrowseController',
             'author' => 'VuFind\Controller\AuthorController',
@@ -377,6 +376,7 @@ $config = array(
                     },
                 ),
                 'invokables' => array(
+                    'choiceauth' => 'VuFind\Auth\ChoiceAuth',
                     'database' => 'VuFind\Auth\Database',
                     'ldap' => 'VuFind\Auth\LDAP',
                     'multiauth' => 'VuFind\Auth\MultiAuth',
@@ -1024,8 +1024,6 @@ $listRoutes = array('userList' => 'MyList', 'editList' => 'EditList');
 
 // Define static routes -- Controller/Action strings
 $staticRoutes = array(
-    'Admin/Config', 'Admin/DeleteExpiredSearches', 'Admin/EnableAutoConfig',
-    'Admin/Home', 'Admin/Maintenance', 'Admin/SocialStats', 'Admin/Statistics',
     'Alphabrowse/Home', 'Author/Home', 'Author/Search',
     'Authority/Home', 'Authority/Record', 'Authority/Search',
     'Browse/Author', 'Browse/Dewey', 'Browse/Era', 'Browse/Genre', 'Browse/Home',

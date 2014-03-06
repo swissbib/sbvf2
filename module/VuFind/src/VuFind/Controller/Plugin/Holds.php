@@ -29,7 +29,7 @@ namespace VuFind\Controller\Plugin;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin, Zend\Session\Container;
 
 /**
- * Zend action helper to perform renewal-related actions
+ * Zend action helper to perform holds-related actions
  *
  * @category VuFind2
  * @package  Controller_Plugins
@@ -163,6 +163,34 @@ class Holds extends AbstractPlugin
         }
 
         if (!empty($details)) {
+            // Confirm?
+            if ($params->fromPost('confirm') === "0") {
+                if ($params->fromPost('cancelAll') !== null) {
+                    return $this->getController()->confirm(
+                        'hold_cancel_all',
+                        $this->getController()->url()->fromRoute('myresearch-holds'),
+                        $this->getController()->url()->fromRoute('myresearch-holds'),
+                        'confirm_hold_cancel_all_text',
+                        array(
+                            'cancelAll' => 1,
+                            'cancelAllIDS' => $params->fromPost('cancelAllIDS')
+                        )
+                    );
+                } else {
+                    return $this->getController()->confirm(
+                        'hold_cancel_selected',
+                        $this->getController()->url()->fromRoute('myresearch-holds'),
+                        $this->getController()->url()->fromRoute('myresearch-holds'),
+                        'confirm_hold_cancel_selected_text',
+                        array(
+                            'cancelSelected' => 1,
+                            'cancelSelectedIDS' =>
+                                $params->fromPost('cancelSelectedIDS')
+                        )
+                    );
+                }
+            }
+            
             foreach ($details as $info) {
                 // If the user input contains a value not found in the session
                 // whitelist, something has been tampered with -- abort the process.
@@ -230,7 +258,7 @@ class Holds extends AbstractPlugin
 
         // Make sure the bib ID is included, even if it's not loaded as part of
         // the validation loop below.
-        $gatheredDetails['id'] = $params->fromRoute('id');
+        $gatheredDetails['id'] = $params->fromRoute('id', $params->fromQuery('id'));
 
         // Get Values Passed from holdings.php
         $gatheredDetails = array_merge($gatheredDetails, $keyValueArray);
