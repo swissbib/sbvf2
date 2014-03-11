@@ -1,0 +1,47 @@
+<?php
+/** @var String[] $pages List of pages/keys */
+/** @var Boolean $first Route directly matched to content */
+/** @var String $topic Active topic */
+
+$this->headTitle($this->translate('helppage') . ' - ' . $this->translate('helppage.' . $topic));
+
+?>
+<!-- begin: col1 (sidebar)  -->
+<div id="col1" class="sidebar">
+    <div id="col1_content" class="clearfix">
+        <!-- begin: sidebar -->
+        <div id="sidebar">
+            <h3><?= $this->transEsc('helppage.subtitle') ?></h3>
+
+            <div class="subnavigation">
+                <ul>
+                    <?php foreach ($pages as $page): ?>
+                        <li class="<?= ($page === $topic ? 'selected' : '') ?>">
+                            <a href="<?= $this->url('help-page', array('topic' => ucfirst($page))) ?>"
+                               title=""><?= $this->transEsc('helppage.' . $page) ?></a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        </div>
+        <!-- end: sidebar -->
+    </div>
+</div>
+<!-- end: col1 (sidebar) -->
+<div id="col3" class="content">
+    <div id="col3_content" class="clearfix">
+        <!-- begin: content -->
+        <div id="content">
+            <?php if (!$first): ?>
+                <p class="notFirstMatchWarning"><?= $this->transEsc('helppage.notFirstMatchWarning') ?></p>
+            <?php endif; ?>
+
+            <?= $this->helpContent; ?>
+        </div>
+        <!-- end: content -->
+    </div>
+    <div id="ie_clearing">
+        &nbsp;
+    </div>
+</div>
+<!-- end: col3 (content) -->
