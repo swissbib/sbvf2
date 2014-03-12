@@ -20,8 +20,9 @@ $this->layout()->searchboxParams = array(
     <div id="col1_content" class="clearfix">
         <!-- begin: sidebar -->
         <div id="sidebar">
-            <?= $this->render($this->tabTemplate('search/sidebar/results', $this->activeTabKey)); ?>
-
+            <? if($searchClassId !== 'MixedList') :?>
+                <?= $this->render($this->tabTemplate('search/sidebar/results', $this->activeTabKey)); ?>
+            <? endif ?>
         </div>
         <!-- end: sidebar -->
     </div>
