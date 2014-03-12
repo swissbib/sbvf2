@@ -58,7 +58,7 @@ class MARCFormatter implements ServiceManagerAwareInterface
     public static function compileSubfield(array $domArray)
     {
         $domNode = $domArray[0];
-        if ($domNode->parentNode->getAttribute('tag') != '035') return $domNode; //return before trying to find institution
+        if ($domNode->parentNode !== null && $domNode->parentNode->getAttribute('tag') != '035') return $domNode; //return before trying to find institution
 
         $nodeValue = preg_replace('/\s+/', '', $domNode->textContent);
         $institution = self::getInstitutionFromNodeText($nodeValue);
