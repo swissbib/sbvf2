@@ -2083,6 +2083,24 @@ class SolrMarc extends VuFindSolrMarc
         return parent::getHierarchyPositionsInParents();
     }
 
+    /**
+     * Get the titles of this item within parent collections.  Returns an array
+     * of parent ID => sequence number.
+     *
+     * @return Array
+     */
+    public function getHierarchyTitlesInParents()
+    {
+        $retVal = array();
+        if (isset($this->fields['hierarchy_parent_id'])
+            && isset($this->fields['is_hierarchy_title'])
+        ) {
+            foreach ($this->fields['hierarchy_parent_id'] as $key => $val) {
+                $retVal[$val] = $this->fields['is_hierarchy_title'][$key];
+            }
+        }
+        return $retVal;
+    }
 
     /**
      * @return bool

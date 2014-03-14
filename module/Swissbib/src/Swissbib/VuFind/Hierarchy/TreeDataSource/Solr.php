@@ -47,9 +47,14 @@ class Solr extends VuFindTreeDataSourceSolr
 			++$count;
 			if ($sorting) {
 				$positions = $current->getHierarchyPositionsInParents();
+                $titles = $current->getHierarchyTitlesInParents();
 				if (isset($positions[$parentID])) {
 					$sequence = $positions[$parentID];
+                    $title    = $titles[$parentID];
 				}
+                else {
+                    $title = $current->getIs_hierarchy_title();
+                }
 			}
 
 			$this->debug("$parentID: " . $current->getUniqueID());
@@ -57,7 +62,7 @@ class Solr extends VuFindTreeDataSourceSolr
 			$isCollection = $current->isCollection() ? "true" : "false";
 			$xmlNode .= '<item id="' . htmlspecialchars($current->getUniqueID()) .
 					'" isCollection="' . $isCollection . '"><content><name>' .
-					htmlspecialchars($current->getIs_hierarchy_title()) . '</name></content>';
+					htmlspecialchars($title) . '</name></content>';
 			$xmlNode .= $this->getChildren($current->getUniqueID(), $count);
 			$xmlNode .= '</item>';
 			array_push($xml, array((isset($sequence) ? $sequence : 0), $xmlNode));
