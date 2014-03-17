@@ -52,6 +52,13 @@ class Importer implements ServiceLocatorAwareInterface
 	protected $downloadAllInstitutions = false;
 
 
+    /**
+     * @var String - overwrites default path
+     */
+    protected $configPath = null;
+
+
+
 	/**
 	 * Initialize importer with import config and language cache
 	 *
@@ -122,6 +129,42 @@ class Importer implements ServiceLocatorAwareInterface
 
 		return $this->result;
 	}
+
+
+
+    public function importMapPortalData($path = null)
+    {
+        $this->result->reset();
+        $this->result->addInfo('Start import at ' . date('r'));
+
+        if (isset($path)) {
+            $this->configPath = $path;
+        }
+
+        try {
+            $this->getData();
+            $this->downloadAndStoreAllInstitutionData(); //libadmin_all.json
+
+            $this->result->addSuccess('Data fetched from libadmin for MapPortal');
+        } catch (Exceptions\Exception $e) {
+            return $this->result->addError($e->getMessage());
+        } catch (HttpException $e) {
+            $this->result->addError('Unable to connect to the server! Stopped sync');
+            return $this->result->addError($e->getMessage());
+        } catch (\Exception $e) {
+            $this->result->addError('Unexpected error type during import data fetching');
+            return $this->result->addError($e->getMessage());
+        }
+
+
+        if ($this->result->isSuccess()) {
+            $this->result->addSuccess('Import for MapPortal successfully completed at ' . date('r'));
+        } else {
+            $this->result->addError('Import for MapPortal was NOT successful. Finished at ' . date('r'));
+        }
+
+        return $this->result;
+    }
 
 
 
@@ -448,7 +491,14 @@ class Importer implements ServiceLocatorAwareInterface
 	protected function storeDownloadedData($responseBody)
 	{
 		if ($this->cacheDir && is_writable($this->cacheDir)) {
-			$fileName = $this->downloadAllInstitutions ? 'libadmin_all.json' : 'libadmin.json';
+
+            $filenamePrefix = "libadmin";
+            if (isset($this->configPath)) {
+                $partsOfConfigPath = explode('/',$this->configPath);
+                $filenamePrefix = $partsOfConfigPath[0];
+            }
+
+			$fileName = $this->downloadAllInstitutions ? $filenamePrefix . '_all.json' : $filenamePrefix . '.json';
 			$cacheFile = $this->cacheDir . '/' . $fileName;
 
 			return file_put_contents($cacheFile, $responseBody) !== false;
@@ -496,7 +546,10 @@ class Importer implements ServiceLocatorAwareInterface
 	 */
 	protected function getApiEndpointUrl()
 	{
-		$apiUrl = $this->config->host . '/' . $this->config->api . '/' . $this->config->path;
+
+        $path = isset($this->configPath) ? $this->configPath : $this->config->path;
+
+		$apiUrl = $this->config->host . '/' . $this->config->api . '/' . $path;
 		if ($this->downloadAllInstitutions) $apiUrl .= '?option[all]=true';
 
 		if (!filter_var($apiUrl, FILTER_VALIDATE_URL)) {
