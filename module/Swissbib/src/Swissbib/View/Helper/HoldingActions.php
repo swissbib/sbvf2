@@ -53,7 +53,7 @@ class HoldingActions extends AbstractTranslatorHelper
 					'href'  => 'javascript:alert(\'Not implemented yet\')'
 				);
 			}
-			if ($item['userActions']['photocopyRequest']) {
+			/** if ($item['userActions']['photocopyRequest']) {
 				$actions['photocopy'] = array(
 					'label' => $this->translate('hold_copy'),
 					'href'  => $item['userActions']['photocopyRequestLink'],
@@ -66,7 +66,7 @@ class HoldingActions extends AbstractTranslatorHelper
                     'href'   => $item['userActions']['bookingRequestLink'],
                     'target' => '_blank',
 				);
-			}
+			} */
 		} elseif (isset($item['holdLink'])) {
 			$actions['hold'] = array(
 				'label' => $this->translate('hold_place'),
