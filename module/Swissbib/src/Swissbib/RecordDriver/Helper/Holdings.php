@@ -66,6 +66,11 @@ class Holdings
         'z' => 'public_note',
     );
 
+    /** @var Array      Map fieldId => delimiter, fields listed here get concatenated using the delimiter */
+    protected $concatenationMapping = array(
+        'z' => ' '
+    );
+
     /**
      * @var    Array[]|Boolean
      */
@@ -1273,7 +1278,11 @@ class Holdings
 
         // Fetch data
         foreach ($subFields as $code => $subdata) {
-            $rawData[$code] = $subdata->getData();
+            if ($this->useConcatenation($code, $rawData)) {
+                $rawData[$code] .= $this->concatenationMapping[$code] . $subdata->getData();
+            } else {
+                $rawData[$code] = $subdata->getData();
+            }
         }
 
         foreach ($fieldMapping as $code => $name) {
@@ -1282,4 +1291,19 @@ class Holdings
 
         return $data;
     }
+
+
+
+    /**
+     * @param String    $code
+     * @param Array     $rawData
+     *
+     * @return bool
+     */
+    protected function useConcatenation($code, array $rawData)
+    {
+        return array_key_exists($code, $rawData) && array_key_exists($code, $this->concatenationMapping);
+    }
+
+
 }
