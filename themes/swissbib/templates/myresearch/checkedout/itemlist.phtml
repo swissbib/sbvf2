@@ -5,7 +5,7 @@
 <table>
 	<thead>
 		<tr>
-			<th colspan="2">&nbsp;</th>
+			<th colspan="1">&nbsp;</th>
             <th><?=$this->transEsc('Title')?></th>
 			<th><?=$this->transEsc('Checked Out')?></th>
 			<th><?=$this->transEsc('Due')?></th>
@@ -87,7 +87,7 @@
 						<?=$this->escapeHtml($ilsDetails['duedate'])?> (<?=$this->escapeHtml($this->transEsc($ilsDetails['status']))?>)
                     <? endif; ?>
                 </td>
-				<td><?=$this->escapeHtml($Renewals)?></td>
+				<!-- td><!?=$this->escapeHtml($Renewals)?></td -->
 				<td><?=$this->escapeHtml($ilsDetails['library'])?></td>
 				<td><?=$this->escapeHtml($ilsDetails['callnum'])?></td>
 			</tr>
