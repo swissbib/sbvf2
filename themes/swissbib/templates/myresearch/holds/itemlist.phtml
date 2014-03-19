@@ -9,7 +9,7 @@
         <th><?=$this->transEsc('Title')?></th>
         <th><?=$this->transEsc('Created') ?></th>
         <th><?=$this->transEsc('pick_up_location') ?></th>
-        <th><?=$this->transEsc('Status')?></th>
+        <!-- th><?=$this->transEsc('Status')?></th -->
         <th><?=$this->transEsc('Library')?></th>
         <th><?=$this->transEsc('Call Number')?></th>
     </tr>
@@ -19,7 +19,7 @@
         <?php
 			$ilsDetails		= $holding->getExtraDetail('ils_details');
 			//$isNonMissingRecord	= is_a($holding, 'VuFind\\RecordDriver\\SolrDefault') && !is_a($holding, 'VuFind\\RecordDriver\\Missing');
-			$safeId 		= preg_replace('/[^a-zA-Z0-9]/', '', $holding->getUniqueId());
+			//$safeId 		= preg_replace('/[^a-zA-Z0-9]/', '', $holding->getUniqueId());
 
             /* Display Reservationsstatus */
             if (preg_match('/due date/', $ilsDetails['status']))
@@ -37,12 +37,12 @@
             }
         ?>
     <tr>
-        <td>
-			<span><?=$index+1?></span>
-			<?php if ($this->cancelForm && isset($ilsDetails['cancel_details'])): ?>
-				<input type="checkbox" name="cancelSelectedIDS[]" value="<?=$this->escapeHtml($ilsDetails['cancel_details']) ?>" class="checkbox" style="margin-left:0;" id="checkbox_<?=$safeId?>" />
-			<?php endif; ?>
-		</td>
+        <!-- td>
+			<span><!?=$index+1?></span>
+			<!?php if ($this->cancelForm && isset($ilsDetails['cancel_details'])): ?>
+				<input type="checkbox" name="cancelSelectedIDS[]" value="<!?=$this->escapeHtml($ilsDetails['cancel_details']) ?>" class="checkbox" style="margin-left:0;" id="checkbox_<!?=$safeId?>" />
+			<!?php endif; ?>
+		</td -->
         <td><?=$this->escapeHtml($ilsDetails['title']) ?> <?=$this->escapeHtml($ilsDetails['description']) ?></td>
         <td><?=$this->escapeHtml($ilsDetails['create']) ?></td>
         <td><?=$this->escapeHtml($this->transEsc($ilsDetails['location'])) ?></td>
