@@ -171,6 +171,15 @@ return array(
                         )
                     )
                 ),
+                'libadmin-sync-mapportal' => array(
+                    'options' => array(
+                        'route'    => 'libadmin syncMapPortal [--verbose|-v] [--result|-r] [<path>] ',
+                        'defaults' => array(
+                            'controller' => 'libadminsync',
+                            'action'     => 'syncMapPortal'
+                        )
+                    )
+                ),
                 'tab40-import' => array( // Importer for aleph tab40 files
                     'options' => array(
                         'route'    => 'tab40import <network> <locale> <source>',
