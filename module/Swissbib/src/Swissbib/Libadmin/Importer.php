@@ -143,7 +143,7 @@ class Importer implements ServiceLocatorAwareInterface
 
         try {
             $this->getData();
-            $this->downloadAndStoreAllInstitutionData(); //libadmin_all.json
+            //$this->downloadAndStoreAllInstitutionData(); //libadmin_all.json
 
             $this->result->addSuccess('Data fetched from libadmin for MapPortal');
         } catch (Exceptions\Exception $e) {
