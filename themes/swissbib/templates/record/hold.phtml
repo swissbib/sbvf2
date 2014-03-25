@@ -58,8 +58,8 @@ $record	= $this->driver;
                                     ?>
                                     <label class="label" for="gatheredDetails[pickUpLocation]"><?=$this->transEsc('pick_up_location')?>:</label>
                                     <select class="select large" name="gatheredDetails[pickUpLocation]">
+                                        <option value="">[<?=$this->transEsc('select pickup location')?>:]</option>
                                         <?php foreach($this->pickup as $lib): ?>
-                                            <!-- remove POPA (Freihandbestand) from pickup locations -->
                                             <?php if($lib['locationID'] === 'POPA'): ?>
                                                 <? unset($lib); ?>
                                             <?php else: ?>
