@@ -22,7 +22,6 @@ AllFields:
     - fulltext                    # imported fulltext, i.e. TOC/Abstracts
     - callnumber^1000             # callnumbers (works only when quoted) with high boost
     - ctrlnum^1000
-    - institution^200             # sublibrary codes for librarians who know it
     - publishDate
     - isbn
     - issn
@@ -139,8 +138,9 @@ WLC:
     - localcode_txt_mv
 
 WNEL:
-  DismaxFields:
-    - itemnote_txt_mv
+  QueryFields:
+     itemnote_isn_mv:
+        - [or, ~]
 
 WFC:
   DismaxFields:
