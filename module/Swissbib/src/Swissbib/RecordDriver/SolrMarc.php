@@ -180,7 +180,13 @@ class SolrMarc extends VuFindSolrMarc
                 }
                 $publishers = $this->getPublishers();
                 if (count($publishers) > 0) {
-                    $params['rft.pub'] = $publishers[0];
+                    if (preg_match('/ : /', $publishers[0])) {
+                        $params['rft.place'] = preg_replace('/ : .*$/', '', $publishers[0]);
+                        $params['rft.pub'] = preg_replace('/^.* : /', '', $publishers[0]);
+                    }
+                    else {
+                        $params['rft.place'] = $publishers[0];
+                    }
                 }
                 $params['rft.edition'] = $this->getEdition();
                 $params['rft.isbn'] = $this->getCleanISBN();
@@ -260,7 +266,13 @@ class SolrMarc extends VuFindSolrMarc
                     }
                 }                $publishers = $this->getPublishers();
                 if (count($publishers) > 0) {
-                    $params['rft.pub'] = $publishers[0];
+                    if (preg_match('/ : /', $publishers[0])) {
+                        $params['rft.place'] = preg_replace('/ : .*$/', '', $publishers[0]);
+                        $params['rft.pub'] = preg_replace('/^.* : /', '', $publishers[0]);
+                    }
+                    else {
+                        $params['rft.place'] = $publishers[0];
+                    }
                 }
                 $params['rft.format'] = $format;
                 $langs = $this->getLanguages();
@@ -1218,7 +1230,7 @@ class SolrMarc extends VuFindSolrMarc
     /*
     * Library / Institution Codes
      *
-    * @return	String[]
+    * @return    String[]
     */
     public function getInstitutions()
     {
@@ -1432,10 +1444,10 @@ class SolrMarc extends VuFindSolrMarc
                 $string = '';
 
                 if (isset($publication['place'])) {
-                    $string = $publication['place'] . ' : ';
+                    $string = $publication['place'];
                 }
                 if (isset($publication['name'])) {
-                    $string .= $publication['name'];
+                    $string .= ' : ' . $publication['name'];
                 }
 
                 $strings[] = trim($string);
