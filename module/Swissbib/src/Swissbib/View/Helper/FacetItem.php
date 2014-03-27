@@ -9,20 +9,20 @@ use Zend\View\Helper\AbstractHelper;
 class FacetItem extends AbstractHelper
 {
 
-	/**
-	 * Render facet item
-	 *
-	 * @param	Array		$facetData
-	 * @param	String		$facetType
-	 * @return	String
-	 */
-	public function __invoke(array $facetData, $facetType)
-	{
-		$facetData = array(
-			'facet' => $facetData,
-			'type'	=> $facetType
-		);
+    /**
+     * Render facet item
+     *
+     * @param    Array        $facetData
+     * @param    String        $facetType
+     * @return    String
+     */
+    public function __invoke(array $facetData, $facetType)
+    {
+        $facetData = array(
+            'facet' => $facetData,
+            'type'    => $facetType
+        );
 
-		return $this->getView()->render('search/sidebar/facet-item', $facetData);
-	}
+        return $this->getView()->render('search/sidebar/facet-item', $facetData);
+    }
 }

@@ -9,52 +9,52 @@ use Zend\I18n\View\Helper\AbstractTranslatorHelper;
  */
 class ExtractFavoriteInstitutionsForHoldings extends AbstractTranslatorHelper
 {
-	/** @var	Array  */
-	protected $userInstitutionCodes;
+    /** @var    Array  */
+    protected $userInstitutionCodes;
 
 
 
-	/**
-	 *
-	 * @param	String[]	$userInstitutionCodes
-	 */
-	public function __construct(array $userInstitutionCodes)
-	{
-		$this->userInstitutionCodes = array_flip($userInstitutionCodes);
-	}
+    /**
+     *
+     * @param    String[]    $userInstitutionCodes
+     */
+    public function __construct(array $userInstitutionCodes)
+    {
+        $this->userInstitutionCodes = array_flip($userInstitutionCodes);
+    }
 
 
 
-	/**
-	 * Convert holdings list. Copy favorite institutions
-	 *
-	 * @param	Array[]		$holdings
-	 * @return	Array[]
-	 */
-	public function __invoke(array $holdings)
-	{
-		$favoriteInstitutions = array();
+    /**
+     * Convert holdings list. Copy favorite institutions
+     *
+     * @param    Array[]        $holdings
+     * @return    Array[]
+     */
+    public function __invoke(array $holdings)
+    {
+        $favoriteInstitutions = array();
 
-		foreach ($holdings as $group => $groupData) {
-			foreach ($groupData['institutions'] as $institutionCode => $institution) {
-				if (isset($this->userInstitutionCodes[$institutionCode])) {
-					$favoriteInstitutions[$institutionCode] = $institution;
-						// Mark as favorite in favorite group and original group
-					$favoriteInstitutions[$institutionCode]['favorite'] = true;
-					$holdings[$group]['institutions'][$institutionCode]['favorite'] = true;
-				}
-			}
-		}
+        foreach ($holdings as $group => $groupData) {
+            foreach ($groupData['institutions'] as $institutionCode => $institution) {
+                if (isset($this->userInstitutionCodes[$institutionCode])) {
+                    $favoriteInstitutions[$institutionCode] = $institution;
+                        // Mark as favorite in favorite group and original group
+                    $favoriteInstitutions[$institutionCode]['favorite'] = true;
+                    $holdings[$group]['institutions'][$institutionCode]['favorite'] = true;
+                }
+            }
+        }
 
-		if ($favoriteInstitutions) {
-			$favoriteHoldings = array(
-				'label'			=> 'mylibraries',
-				'institutions'	=> $favoriteInstitutions
-			);
+        if ($favoriteInstitutions) {
+            $favoriteHoldings = array(
+                'label'            => 'mylibraries',
+                'institutions'    => $favoriteInstitutions
+            );
 
-			$holdings = array('favorite' => $favoriteHoldings) + $holdings;
-		}
+            $holdings = array('favorite' => $favoriteHoldings) + $holdings;
+        }
 
-		return $holdings;
-	}
+        return $holdings;
+    }
 }

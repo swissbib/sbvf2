@@ -569,9 +569,9 @@ class Holdings
 
         // Add backlink for not restful networks
         // @note Disabled check until the
-//		if (!$this->isRestfulNetwork($holding['network'])) {
+//        if (!$this->isRestfulNetwork($holding['network'])) {
         $holding['backlink'] = $this->getBackLink($holding['network'], strtoupper($holding['institution']), $holding);
-//		}
+//        }
 
         $bibInfoLink = $this->getBibInfoLink($holding['institution']);
         $holding['institutionUrl'] = $bibInfoLink['url'];

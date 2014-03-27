@@ -14,16 +14,16 @@ use Zend\View\Helper\AbstractHelper;
 
 class RemoveHighlight extends AbstractHelper
 {
-	/**
-	 * @param   String   $shortTitle
-	 * @return  String
-	 */
-	public function __invoke($shortTitle)
-	{
-		return str_replace(
-			array('{{{{START_HILITE}}}}', '{{{{END_HILITE}}}}'),
-			array('', ''),
-			$shortTitle
-		);
-	}
+    /**
+     * @param   String   $shortTitle
+     * @return  String
+     */
+    public function __invoke($shortTitle)
+    {
+        return str_replace(
+            array('{{{{START_HILITE}}}}', '{{{{END_HILITE}}}}'),
+            array('', ''),
+            $shortTitle
+        );
+    }
 }

@@ -15,46 +15,46 @@ use Swissbib\Tab40Import\Importer as Tab40Importer;
 class Tab40ImportController extends AbstractActionController
 {
 
-	/**
-	 * Import file as label data
-	 *
-	 * @return	String
-	 * @throws	\RuntimeException
-	 */
-	public function importAction()
-	{
-		$request = $this->getRequest();
+    /**
+     * Import file as label data
+     *
+     * @return    String
+     * @throws    \RuntimeException
+     */
+    public function importAction()
+    {
+        $request = $this->getRequest();
 
-		if (!$request instanceof ConsoleRequest) {
-			throw new \RuntimeException('You can only use this action from a console!');
-		}
+        if (!$request instanceof ConsoleRequest) {
+            throw new \RuntimeException('You can only use this action from a console!');
+        }
 
-		$network    = $request->getParam('network');
-		$locale		= $request->getParam('locale');
-		$sourceFile = $request->getParam('source');
+        $network    = $request->getParam('network');
+        $locale        = $request->getParam('locale');
+        $sourceFile = $request->getParam('source');
 
-		$importResult	= $this->getImporter()->import($network, $locale, $sourceFile);
+        $importResult    = $this->getImporter()->import($network, $locale, $sourceFile);
 
-		echo "Imported language data from tab40 file\n";
-		echo "Source: $sourceFile\n";
-		echo "Network: $network\n";
-		echo "Locale: $locale\n";
-		echo "\nResult:\n";
-		echo "Written File: {$importResult->getFilePath()}\n";
-		echo "Items imported: {$importResult->getRecordCount()}\n";
+        echo "Imported language data from tab40 file\n";
+        echo "Source: $sourceFile\n";
+        echo "Network: $network\n";
+        echo "Locale: $locale\n";
+        echo "\nResult:\n";
+        echo "Written File: {$importResult->getFilePath()}\n";
+        echo "Items imported: {$importResult->getRecordCount()}\n";
 
-		return '';
-	}
+        return '';
+    }
 
 
 
-	/**
-	 *
-	 *
-	 * @return	Tab40Importer
-	 */
-	protected function getImporter()
-	{
-		return $this->getServiceLocator()->get('Swissbib\Tab40Importer');
-	}
+    /**
+     *
+     *
+     * @return    Tab40Importer
+     */
+    protected function getImporter()
+    {
+        return $this->getServiceLocator()->get('Swissbib\Tab40Importer');
+    }
 }

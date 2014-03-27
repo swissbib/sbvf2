@@ -27,25 +27,25 @@ use Zend\Filter\AbstractFilter;
 class TemplateFilenameFilter extends AbstractFilter implements ServiceLocatorAwareInterface
 {
 
-	protected $serviceLocator;
+    protected $serviceLocator;
 
 
-	/**
-	 * @param    Mixed    $content
-	 * @return    Mixed|String
-	 */
-	public function filter($content)
-	{
-		$sm = $this->getServiceLocator();
-		/** @var $phpRenderer \Zend\View\Renderer\PhpRenderer */
-		$phpRenderer = $sm->get('Zend\View\Renderer\PhpRenderer');
+    /**
+     * @param    Mixed    $content
+     * @return    Mixed|String
+     */
+    public function filter($content)
+    {
+        $sm = $this->getServiceLocator();
+        /** @var $phpRenderer \Zend\View\Renderer\PhpRenderer */
+        $phpRenderer = $sm->get('Zend\View\Renderer\PhpRenderer');
 
-		// Fetch private property PhpRenderer::__file via reflection
-		$rendererReflection = new \ReflectionObject($phpRenderer);
+        // Fetch private property PhpRenderer::__file via reflection
+        $rendererReflection = new \ReflectionObject($phpRenderer);
 
-		$fileProperty = $rendererReflection->getProperty('__file');
-		$fileProperty->setAccessible(true);
-		$templateFilename = $fileProperty->getValue($phpRenderer);
+        $fileProperty = $rendererReflection->getProperty('__file');
+        $fileProperty->setAccessible(true);
+        $templateFilename = $fileProperty->getValue($phpRenderer);
 
         // Don't wrap export stuff
         if ( (stristr($templateFilename, 'export-') !== false) ||
@@ -55,49 +55,49 @@ class TemplateFilenameFilter extends AbstractFilter implements ServiceLocatorAwa
             return $content;
         }
 
-		// Remove possibly confidential server details from path
-		$directoryDelimiter = 'themes' . DIRECTORY_SEPARATOR;
-		$templateFilename   = substr($templateFilename, strpos($templateFilename, $directoryDelimiter)+7);
+        // Remove possibly confidential server details from path
+        $directoryDelimiter = 'themes' . DIRECTORY_SEPARATOR;
+        $templateFilename   = substr($templateFilename, strpos($templateFilename, $directoryDelimiter)+7);
 
-		return $this->wrapContentWithComment($content, $templateFilename, '');
-	}
-
-
-
-	/**
-	 * @param    String    $content
-	 * @param    String    $templateFilename
-	 * @return    String
-	 */
-	private function wrapContentWithComment($content, $templateFilename)
-	{
-		$templateFilename	= str_replace('\\', '/', $templateFilename);
-		$isStartOfHtml 		= strstr($content, '<html') !== false || strstr($content, '<xml') !== false;
-
-		return $isStartOfHtml ? $content :
-				"\n" . '<!-- Begin' . (!empty($type) ? ' ' . $type : '') . ': ' . $templateFilename . ' -->'
-				. "\n" . $content
-				. "\n" . '<!-- End: ' . $templateFilename . ' -->'
-				. "\n";
-	}
+        return $this->wrapContentWithComment($content, $templateFilename, '');
+    }
 
 
 
-	/**
-	 * @param    ServiceLocatorInterface    $serviceLocator
-	 */
-	public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-	{
-		$this->serviceLocator = $serviceLocator;
-	}
+    /**
+     * @param    String    $content
+     * @param    String    $templateFilename
+     * @return    String
+     */
+    private function wrapContentWithComment($content, $templateFilename)
+    {
+        $templateFilename    = str_replace('\\', '/', $templateFilename);
+        $isStartOfHtml         = strstr($content, '<html') !== false || strstr($content, '<xml') !== false;
+
+        return $isStartOfHtml ? $content :
+                "\n" . '<!-- Begin' . (!empty($type) ? ' ' . $type : '') . ': ' . $templateFilename . ' -->'
+                . "\n" . $content
+                . "\n" . '<!-- End: ' . $templateFilename . ' -->'
+                . "\n";
+    }
 
 
 
-	/**
-	 * @return    ServiceLocatorInterface
-	 */
-	public function getServiceLocator()
-	{
-		return $this->serviceLocator;
-	}
+    /**
+     * @param    ServiceLocatorInterface    $serviceLocator
+     */
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->serviceLocator = $serviceLocator;
+    }
+
+
+
+    /**
+     * @return    ServiceLocatorInterface
+     */
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
+    }
 }

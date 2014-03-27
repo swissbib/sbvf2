@@ -13,15 +13,15 @@ use Zend\View\Model\ViewModel,
 class RecordController extends VuFindRecordController
 {
 
-	/**
-	 * Record home action
-	 * Catch record not found exceptions and show error page
-	 *
-	 * @return	ViewModel
-	 */
-	public function homeAction()
-	{
-		try {
+    /**
+     * Record home action
+     * Catch record not found exceptions and show error page
+     *
+     * @return    ViewModel
+     */
+    public function homeAction()
+    {
+        try {
             //GH: this is kind of a hack but in this situation not avoidable
             //MarcFormatter and Processor are hard instantiated (not as a service) so you get no chance to set references for these types
             //because MarcFormatter is now implementing ServiceManagerAwareInterface it will get a reference to the ServiceManager to fetch the
@@ -31,21 +31,21 @@ class RecordController extends VuFindRecordController
             //some work for a redesign
             $this->getServiceLocator()->get("MarcFormatter");
 
-			return parent::homeAction();
+            return parent::homeAction();
 
 
-		} catch (RecordMissingException $e) {
-			$viewModel	= new ViewModel();
+        } catch (RecordMissingException $e) {
+            $viewModel    = new ViewModel();
 
-			$viewModel->setTemplate('record/not-found');
-			$viewModel->setVariables(array(
-										  'message'		=> $e->getMessage(),
-										  'exception'	=> $e
-									 ));
+            $viewModel->setTemplate('record/not-found');
+            $viewModel->setVariables(array(
+                                          'message'        => $e->getMessage(),
+                                          'exception'    => $e
+                                     ));
 
-			return $viewModel;
-		}
-	}
+            return $viewModel;
+        }
+    }
 
     /**
      * Save action - Allows the save template to appear,

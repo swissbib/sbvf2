@@ -14,210 +14,210 @@ use Swissbib\Favorites\Manager as FavoriteManager;
 class FavoritesController extends BaseController
 {
 
-	/**
-	 * show list of already defined favorites
-	 *
-	 * @return ViewModel
-	 */
-	public function displayAction()
-	{
-		$favoriteManager = $this->getFavoriteManager();
+    /**
+     * show list of already defined favorites
+     *
+     * @return ViewModel
+     */
+    public function displayAction()
+    {
+        $favoriteManager = $this->getFavoriteManager();
 
-			// Are institutions already in browser cache?
-		if ($favoriteManager->hasInstitutionsDownloaded()) {
-			$autocompleterData	= false;
-		} else {
-			$autocompleterData	= $this->getAutocompleterData();
+            // Are institutions already in browser cache?
+        if ($favoriteManager->hasInstitutionsDownloaded()) {
+            $autocompleterData    = false;
+        } else {
+            $autocompleterData    = $this->getAutocompleterData();
 
-				// mark as downloaded
-			$favoriteManager->setInstitutionsDownloaded();
-		}
+                // mark as downloaded
+            $favoriteManager->setInstitutionsDownloaded();
+        }
 
-		$data = array(
-			'autocompleterData' 	=> $autocompleterData,
-			'userInstitutionsList'	=> $this->getUserInstitutionsList()
-		);
+        $data = array(
+            'autocompleterData'     => $autocompleterData,
+            'userInstitutionsList'    => $this->getUserInstitutionsList()
+        );
 
         //facetquery   ->>> facet.query=institution:z01
 
         return new ViewModel($data);
-	}
+    }
 
 
 
-	/**
-	 * Add an institution to users favorite list
-	 * Return view for selection
-	 *
-	 * @return	ViewModel
-	 */
-	public function addAction()
-	{
-		$institutionCode= $this->params()->fromPost('institution');
-		$sendList		= !!$this->params()->fromPost('list');
+    /**
+     * Add an institution to users favorite list
+     * Return view for selection
+     *
+     * @return    ViewModel
+     */
+    public function addAction()
+    {
+        $institutionCode= $this->params()->fromPost('institution');
+        $sendList        = !!$this->params()->fromPost('list');
 
-		if ($institutionCode) {
-			$this->addUserInstitution($institutionCode);
-		}
+        if ($institutionCode) {
+            $this->addUserInstitution($institutionCode);
+        }
 
-		if ($sendList) {
-			return $this->getSelectionList();
-		} else {
-			return $this->getResponse();
-		}
-	}
-
-
-
-	/**
-	 * Delete a user institution
-	 *
-	 * @return	ViewModel
-	 */
-	public function deleteAction()
-	{
-		$institutionCode	= $this->params()->fromPost('institution');
-		$sendList		= !!$this->params()->fromPost('list');
-
-		if ($institutionCode) {
-			$this->removeUserInstitution($institutionCode);
-		}
-
-		if ($sendList) {
-			return $this->getSelectionList();
-		} else {
-			return $this->getResponse();
-		}
-	}
+        if ($sendList) {
+            return $this->getSelectionList();
+        } else {
+            return $this->getResponse();
+        }
+    }
 
 
 
-	/**
-	 * Get select list view model
-	 *
-	 * @return	ViewModel
-	 */
-	public function getSelectionList()
-	{
-		return $this->getAjaxViewModel(array(
-											'userInstitutionsList'	=> $this->getUserInstitutionsList()
-									   ), 'favorites/selectionList');
-	}
+    /**
+     * Delete a user institution
+     *
+     * @return    ViewModel
+     */
+    public function deleteAction()
+    {
+        $institutionCode    = $this->params()->fromPost('institution');
+        $sendList        = !!$this->params()->fromPost('list');
+
+        if ($institutionCode) {
+            $this->removeUserInstitution($institutionCode);
+        }
+
+        if ($sendList) {
+            return $this->getSelectionList();
+        } else {
+            return $this->getResponse();
+        }
+    }
 
 
 
-	/**
-	 * Get data for user institution list
-	 *
-	 * @return	Array[]
-	 */
-	protected function getUserInstitutionsList()
-	{
-		return $this->getFavoriteManager()->getUserInstitutionsListingData();
-	}
+    /**
+     * Get select list view model
+     *
+     * @return    ViewModel
+     */
+    public function getSelectionList()
+    {
+        return $this->getAjaxViewModel(array(
+                                            'userInstitutionsList'    => $this->getUserInstitutionsList()
+                                       ), 'favorites/selectionList');
+    }
 
 
 
-	/**
-	 * Add an institution to users favorite list
-	 *
-	 * @param	String		$institutionCode
-	 */
-	protected function addUserInstitution($institutionCode)
-	{
-		$userInstitutions = $this->getUserInstitutions();
-
-		if (!in_array($institutionCode, $userInstitutions)) {
-			$userInstitutions[] = $institutionCode;
-
-			$this->getFavoriteManager()->saveUserInstitutions($userInstitutions);
-		}
-	}
+    /**
+     * Get data for user institution list
+     *
+     * @return    Array[]
+     */
+    protected function getUserInstitutionsList()
+    {
+        return $this->getFavoriteManager()->getUserInstitutionsListingData();
+    }
 
 
 
-	/**
-	 * Remove an institution from users favorite list
-	 *
-	 * @param	String		$institutionCode
-	 */
-	protected function removeUserInstitution($institutionCode)
-	{
-		$userInstitutions = $this->getUserInstitutions();
+    /**
+     * Add an institution to users favorite list
+     *
+     * @param    String        $institutionCode
+     */
+    protected function addUserInstitution($institutionCode)
+    {
+        $userInstitutions = $this->getUserInstitutions();
 
-		if (($pos = array_search($institutionCode, $userInstitutions)) !== false) {
-			unset($userInstitutions[$pos]);
+        if (!in_array($institutionCode, $userInstitutions)) {
+            $userInstitutions[] = $institutionCode;
 
-			$this->getFavoriteManager()->saveUserInstitutions($userInstitutions);
-		}
-	}
-
-
-
-	/**
-	 * Get autocompleter user institutions data
-	 * Fetch the translated institution name from label files and append general info (not translated)
-	 *
-	 * @return	Array
-	 */
-	protected function getAutocompleterData()
-	{
-		$availableInstitutions	= $this->getAvailableInstitutions();
-		$data					= array();
-		$translator				= $this->getServiceLocator()->get('VuFind\Translator');
-
-		foreach ($availableInstitutions as $institutionCode => $additionalInfo) {
-			$data[$institutionCode]	= $translator->translate($institutionCode, 'institution') . ' ' . $additionalInfo;
-		}
-
-		return $data;
-	}
+            $this->getFavoriteManager()->saveUserInstitutions($userInstitutions);
+        }
+    }
 
 
 
-	/**
-	 * Get all available institutions
-	 *
-	 * @return	Array
-	 */
-	protected function getAvailableInstitutions()
-	{
-		return $this->getFavoriteDataSource()->getFavoriteInstitutions();
-	}
+    /**
+     * Remove an institution from users favorite list
+     *
+     * @param    String        $institutionCode
+     */
+    protected function removeUserInstitution($institutionCode)
+    {
+        $userInstitutions = $this->getUserInstitutions();
+
+        if (($pos = array_search($institutionCode, $userInstitutions)) !== false) {
+            unset($userInstitutions[$pos]);
+
+            $this->getFavoriteManager()->saveUserInstitutions($userInstitutions);
+        }
+    }
 
 
 
-	/**
-	 * Get institutions which are users favorite
-	 *
-	 * @return	String[]
-	 */
-	protected function getUserInstitutions()
-	{
-		return $this->getFavoriteManager()->getUserInstitutions();
-	}
+    /**
+     * Get autocompleter user institutions data
+     * Fetch the translated institution name from label files and append general info (not translated)
+     *
+     * @return    Array
+     */
+    protected function getAutocompleterData()
+    {
+        $availableInstitutions    = $this->getAvailableInstitutions();
+        $data                    = array();
+        $translator                = $this->getServiceLocator()->get('VuFind\Translator');
+
+        foreach ($availableInstitutions as $institutionCode => $additionalInfo) {
+            $data[$institutionCode]    = $translator->translate($institutionCode, 'institution') . ' ' . $additionalInfo;
+        }
+
+        return $data;
+    }
 
 
 
-	/**
-	 *
-	 *
-	 * @return	FavoriteManager
-	 */
-	protected function getFavoriteManager()
-	{
-		return $this->getServiceLocator()->get('Swissbib\FavoriteInstitutions\Manager');
-	}
+    /**
+     * Get all available institutions
+     *
+     * @return    Array
+     */
+    protected function getAvailableInstitutions()
+    {
+        return $this->getFavoriteDataSource()->getFavoriteInstitutions();
+    }
 
 
 
-	/**
-	 *
-	 *
-	 * @return	FavoriteDataSource
-	 */
-	protected function getFavoriteDataSource()
-	{
-		return $this->getServiceLocator()->get('Swissbib\FavoriteInstitutions\DataSource');
-	}
+    /**
+     * Get institutions which are users favorite
+     *
+     * @return    String[]
+     */
+    protected function getUserInstitutions()
+    {
+        return $this->getFavoriteManager()->getUserInstitutions();
+    }
+
+
+
+    /**
+     *
+     *
+     * @return    FavoriteManager
+     */
+    protected function getFavoriteManager()
+    {
+        return $this->getServiceLocator()->get('Swissbib\FavoriteInstitutions\Manager');
+    }
+
+
+
+    /**
+     *
+     *
+     * @return    FavoriteDataSource
+     */
+    protected function getFavoriteDataSource()
+    {
+        return $this->getServiceLocator()->get('Swissbib\FavoriteInstitutions\DataSource');
+    }
 }

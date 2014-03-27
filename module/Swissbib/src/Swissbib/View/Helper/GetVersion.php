@@ -12,16 +12,16 @@ use Zend\View\Helper\AbstractHelper;
  */
 class GetVersion extends AbstractHelper
 {
-	/**
-	 * Get tab specific template path if present
-	 *
-	 * @return	String
-	 */
-	public function __invoke()
-	{
-		$pathVersionFile	= 'module/Swissbib/version.txt';
+    /**
+     * Get tab specific template path if present
+     *
+     * @return    String
+     */
+    public function __invoke()
+    {
+        $pathVersionFile    = 'module/Swissbib/version.txt';
 
-		return file_exists($pathVersionFile) ? file_get_contents($pathVersionFile) : '';
-	}
+        return file_exists($pathVersionFile) ? file_get_contents($pathVersionFile) : '';
+    }
 
 }

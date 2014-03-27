@@ -53,9 +53,9 @@ use Swissbib\VuFindSearch\Backend\Solr\QueryBuilder;
 class SolrDefaultBackendFactory extends VuFindSolrDefaultBackendFactory
 {
 
-	protected function createListeners(Backend $backend)
-	{
-		parent::createListeners($backend);
+    protected function createListeners(Backend $backend)
+    {
+        parent::createListeners($backend);
 
 
         $events = $this->serviceLocator->get('SharedEventManager');
@@ -86,18 +86,18 @@ class SolrDefaultBackendFactory extends VuFindSolrDefaultBackendFactory
 
 
         $this->attachHighlightSolrConfigurator($backend);
-	}
+    }
 
 
-	protected function attachHighlightSolrConfigurator(Backend $backend)
-	{
-//		$events = $this->serviceLocator->get('SharedEventManager');
+    protected function attachHighlightSolrConfigurator(Backend $backend)
+    {
+//        $events = $this->serviceLocator->get('SharedEventManager');
 
-		/** @var HighlightSolrConfigurator $highlightListener */
-		$highlightListener = $this->serviceLocator->get('Swissbib\Highlight\SolrConfigurator');
+        /** @var HighlightSolrConfigurator $highlightListener */
+        $highlightListener = $this->serviceLocator->get('Swissbib\Highlight\SolrConfigurator');
 
-		$highlightListener->attach($backend/*, $events*/);
-	}
+        $highlightListener->attach($backend/*, $events*/);
+    }
 
 
     /**

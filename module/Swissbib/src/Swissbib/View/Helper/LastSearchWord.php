@@ -12,26 +12,26 @@ use VuFind\Search\Memory;
 class LastSearchWord extends AbstractHelper
 {
 
-	/**
-	 * Get last search word
-	 *
-	 * @return    String
-	 */
-	public function __invoke()
-	{
-		$lookFor       = '';
+    /**
+     * Get last search word
+     *
+     * @return    String
+     */
+    public function __invoke()
+    {
+        $lookFor       = '';
 
-		$lastSearchUrl = $this->getView()->plugin('getextendedlastsearchlink')->getLinkOnly();
-		$lastSearch    = parse_url($lastSearchUrl);
+        $lastSearchUrl = $this->getView()->plugin('getextendedlastsearchlink')->getLinkOnly();
+        $lastSearch    = parse_url($lastSearchUrl);
 
-		if (isset($lastSearch['query'])) {
-			parse_str($lastSearch['query'], $queryParts);
+        if (isset($lastSearch['query'])) {
+            parse_str($lastSearch['query'], $queryParts);
 
-			if (isset($queryParts['lookfor'])) {
-				$lookFor = trim($queryParts['lookfor']);
-			}
-		}
+            if (isset($queryParts['lookfor'])) {
+                $lookFor = trim($queryParts['lookfor']);
+            }
+        }
 
-		return $lookFor;
-	}
+        return $lookFor;
+    }
 }

@@ -11,18 +11,18 @@ use Zend\View\Helper\AbstractHelper;
 class MyResearchSideBar extends AbstractHelper
 {
 
-	/**
-	 * Render myresearch sidebar with active element
-	 *
-	 * @param    String        $active        Active item
-	 * @param    String        $location
-	 * @return    String
-	 */
-	public function __invoke($active, $location = '')
-	{
-		return $this->getView()->render('myresearch/sidebar/wrap.phtml', array(
-																			  'active'   => $active,
-																			  'location' => $location
-																		 ));
-	}
+    /**
+     * Render myresearch sidebar with active element
+     *
+     * @param    String        $active        Active item
+     * @param    String        $location
+     * @return    String
+     */
+    public function __invoke($active, $location = '')
+    {
+        return $this->getView()->render('myresearch/sidebar/wrap.phtml', array(
+                                                                              'active'   => $active,
+                                                                              'location' => $location
+                                                                         ));
+    }
 }

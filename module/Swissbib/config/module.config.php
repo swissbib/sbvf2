@@ -576,10 +576,10 @@ return array(
         )
     ),
     //'swissbib' => array(
-    //	'ignore_assets' => array(
-    //		'blueprint/screen.css',
-    //		'jquery-ui.css'
-    //	),
+    //    'ignore_assets' => array(
+    //        'blueprint/screen.css',
+    //        'jquery-ui.css'
+    //    ),
 
     'swissbib' => array(
         // The ignore patterns have to be valid regex!
