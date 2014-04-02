@@ -337,7 +337,7 @@ class SolrMarc extends VuFindSolrMarc
 
         // Which fields/subfields should we check for URLs?
         $fieldsToCheck = array(
-            '856' => array('u', '3'), // Standard URL
+            '856' => array('u', 'z'), // Standard URL
             '956' => array('u', 'y'), // Standard URL
             //'555' => array('a')         // Cumulative index/finding aids
         );
