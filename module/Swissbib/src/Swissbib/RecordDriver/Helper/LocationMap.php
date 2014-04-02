@@ -100,8 +100,9 @@ class LocationMap extends LocationMapBase
     protected function buildLocationMapLinkB500(array $item, HoldingsHelper $holdingsHelper)
     {
         $mapLinkPattern  = $this->config->get('B500');
+        $b500_param = $item['location_expanded'] . '_' . $item['signature'];
 
-        return $this->buildSimpleLocationMapLink($mapLinkPattern, $item['signature']);
+        return $this->buildSimpleLocationMapLink($mapLinkPattern, $b500_param);
     }
 
 
