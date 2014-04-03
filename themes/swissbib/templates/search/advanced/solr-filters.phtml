@@ -27,7 +27,7 @@ if (isset($this->dateRangeLimit)) {
 <div class="searchoption_toggler_refine">
     <?php foreach ($facetGroups as $facetGroup): ?>
         <?php foreach ($facetGroup as $facet): ?>
-            <?php if($facet['field']==='navDrsys') continue; ?>
+            <?php if ($facet['field'] === 'navDrsys_Gen') continue; ?>
             <div class="fieldbox">
                 <?php $fieldKey = str_replace(' ', '', $facet['field']); ?>
 

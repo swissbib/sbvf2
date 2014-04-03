@@ -60,7 +60,7 @@ class SearchController extends SwissbibSearchController
         $this->searchClassId    = $activeTabConfig['searchClassId'];
 
         if (is_null($viewModel->classificationTree)) {
-            $treeGenerator                  = new SimpleTreeGenerator($viewModel->facetList['navDrsys']['list']);
+            $treeGenerator = new SimpleTreeGenerator($viewModel->facetList['navDrsys_Gen']['list']);
             $viewModel->classificationTree  = $treeGenerator->getTree();
         }
 
