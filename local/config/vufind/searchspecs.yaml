@@ -7,20 +7,23 @@
 AllFields:
   DismaxHandler: edismax
   DismaxFields:
-    - title_short^1000            # main title, i.e. 245 $a
+    - title_short^1000                    # main title, i.e. 245 $a
     - title_alt^200
     - title_sub^200
     - title_old^200
     - title_new^200
-    - author^750                  # all entries main name forms
-    - author_additional^100       # all entries additional fields
+    - author^750                          # all entries main name forms
+    - author_additional^100               # all entries additional fields
+    - author_additional_dsv11_txt_mv^100  # variants from dsv11
+    - title_additional_dsv11_txt_mv^100
     - series^200
     - journals^200
-    - topic^500                   # all verbal topics, i.e. 6xx
-    - addfields_txt_mv^50         # additional fields
-    - publplace_txt_mv^25         # publication country and place, i.e. 752ad
-    - fulltext                    # imported fulltext, i.e. TOC/Abstracts
-    - callnumber^1000             # callnumbers (works only when quoted) with high boost
+    - topic^500                           # all verbal topics, i.e. 6xx
+    - addfields_txt_mv^50                 # additional fields
+    - publplace_txt_mv^25                 # publication country and place, i.e. 752ad
+    - publplace_dsv11_txt_mv^25
+    - fulltext                            # imported fulltext, i.e. TOC/Abstracts
+    - callnumber^1000                     # callnumbers (works only when quoted) with high boost
     - ctrlnum^1000
     - publishDate
     - isbn
@@ -42,6 +45,9 @@ AllFields:
       title_alt:
         - [onephrase, 600]
         - [and, 500]
+      title_additional_dsv11_txt_mv:
+        - [onephrase, 600]
+        - [and, 500]
       title_sub:
         - [onephrase, 400]
       title_old:
@@ -52,6 +58,8 @@ AllFields:
     author:
       - [and, 750]
     author_additional:
+      - [and, 100]
+    author_additional_dsv11_txt_mv:
       - [and, 100]
     series:
       - [and, 50]
@@ -66,6 +74,9 @@ AllFields:
     publplace_txt_mv:
       - [onephrase, 150]
       - [and, 125]
+    publplace_dsv11_txt_mv:
+      - [onephrase, 150]
+      - [and, 125]
     fulltext:
       - [or, ~]
 
@@ -74,6 +85,7 @@ Author:
   DismaxFields:
     - author^100
     - author_additional^20
+    - author_additional_dsv11_txt_mv^20
   QueryFields:
     author:
       - [onephrase, 350]
@@ -83,7 +95,10 @@ Author:
       - [onephrase, 50]
       - [and, 50]
       - [or, 20]
-
+    author_additional_dsv11_txt_mv:
+      - [onephrase, 50]
+      - [and, 50]
+      - [or, 20]
 
 ISN:
   DismaxFields:
@@ -151,6 +166,7 @@ Title:
   DismaxFields:
     - title_short^1000            # main title, i.e. 245 $a
     - title_alt^200
+    - title_additional_dsv11_txt_mv^200
     - title_sub^200
     - title_old^200
     - title_new^200
@@ -162,6 +178,9 @@ Title:
     title_short:
       - [onephrase, 500]
     title_alt:
+      - [onephrase, 450]
+      - [and, 400]
+    title_additional_dsv11_txt_mv:
       - [onephrase, 450]
       - [and, 400]
     title_sub:
