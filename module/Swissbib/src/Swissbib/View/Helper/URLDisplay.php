@@ -15,11 +15,11 @@ use Zend\View\Helper\AbstractHelper;
 class URLDisplay extends AbstractHelper
 {
 
-	/**
-	 * @return  String
-	 */
-	public function __invoke($driver)
-	{
+    /**
+     * @return  String
+     */
+    public function __invoke($driver)
+    {
         $retval           = array();
         $retval['online'] = $driver->getOnlineStatus();
         $retval['unions'] = $driver->getUnions();

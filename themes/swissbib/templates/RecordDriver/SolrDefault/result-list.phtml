@@ -1,57 +1,59 @@
 <?php
-	/** @var	Swissbib\RecordDriver\SolrMarc	$resultItem  */
-	/** @var	VuFind\View\Helper\Root\Record		$viewRecord  */
-$record            = $this->driver;
-$viewRecord		   = $this->record($this->driver);
-$thumbnail		   = $viewRecord->getThumbnail('small');
-$thumbnailSrc      = $thumbnail ? $thumbnail : $this->url('cover-unavailable');
-$detailLink		   = $this->recordLink()->getUrl($record);
-$titleStatement	   = $record->getTitleStatement(true);
-$shortTitle        = $record->getShortTitle();
-$subtitle          = $viewRecord->getSubtitle($titleStatement);
-$responsible       = $viewRecord->getResponsible($titleStatement, $record);
-$edition		   = $record->getEdition();
-$publicationDate   = $this->publicationDateMarc($record->getPublicationDates());
-$hostitems         = $record->getHostItemEntry();
-$groupID		   = $record->getGroup(true);
-$uniqueID          = $record->getUniqueID();
-$showFRBR          = $this->configAccess()->Site->displayFrbr;
-$memorizeLink	   = $this->recordLink()->getActionUrl($this->driver, 'Save');
+/** @var    Swissbib\RecordDriver\SolrMarc $resultItem */
+/** @var    VuFind\View\Helper\Root\Record $viewRecord */
+$record = $this->driver;
+$viewRecord = $this->record($this->driver);
+$thumbnail = $viewRecord->getThumbnail('small');
+$thumbnailSrc = $thumbnail ? $thumbnail : $this->url('cover-unavailable');
+$detailLink = $this->recordLink()->getUrl($record);
+$titleStatement = $record->getTitleStatement(true);
+$shortTitle = $record->getShortTitle();
+$subtitle = $viewRecord->getSubtitle($titleStatement);
+$responsible = $viewRecord->getResponsible($titleStatement, $record);
+$edition = $record->getEdition();
+$publicationDate = $this->publicationDateMarc($record->getPublicationDates());
+$hostitems = $record->getHostItemEntry();
+$groupID = $record->getGroup(true);
+$uniqueID = $record->getUniqueID();
+$showFRBR = $this->configAccess()->Site->displayFrbr;
+$memorizeLink = $this->recordLink()->getActionUrl($this->driver, 'Save');
 
 ?>
 <tr>
     <!-- Column 1: Index -->
-	<td class="col-1 small center nodivider"><?=$this->recordIndex?></td>
+    <td class="col-1 small center nodivider"><?= $this->recordIndex ?></td>
     <!-- Column 2: Memo list -->
-	<td class="col-2 nodivider">
-		<a href="<?=$memorizeLink?>" class="icon_notepad_add" title="<?=$this->transEsc('memorizelistadd')?>"></a>
-	</td>
+    <td class="col-2 nodivider">
+        <a href="<?= $memorizeLink ?>" class="icon_notepad_add" title="<?= $this->transEsc('memorizelistadd') ?>"></a>
+    </td>
     <!-- Column 3: Teaser-image / Thumbnail -->
-	<td class="col-3 right nodivider">
+    <td class="col-3 right nodivider">
         <div class="ie8buster">
             <a class="preview" href="<?= $detailLink ?>" title="<?= $this->escapeHtml($shortTitle) ?>">
-            <img src="<?=$thumbnailSrc?>" alt="<?=$this->escapeHtml($shortTitle)?>" class="dropshadow"/>
-            </a></div>
+                <img src="<?= $thumbnailSrc ?>" alt="<?= $this->escapeHtml($shortTitle) ?>" class="dropshadow"/>
+            </a>
+        </div>
     </td>
     <!-- Column 4: Title and author details => links to full-view -->
-	<td class="col-4">
-		<h3>
-            <a href="<?=$detailLink?>" title="<?=$this->escapeHtml($shortTitle)?>" class="color singleLink"><?=$this->escapeHtml($shortTitle)?></a>
+    <td class="col-4">
+        <h3>
+            <a href="<?= $detailLink ?>" title="<?= $this->escapeHtml($shortTitle) ?>"
+               class="color singleLink"><?= $this->escapeHtml($shortTitle) ?></a>
         </h3>
 
         <!-- Untertitel und Verfasserangabe -->
         <div class="meta">
             <? if (isset($subtitle)): ?>
                 <p>
-                <?=$this->escapeHtml($subtitle)?>
+                    <?= $this->escapeHtml($subtitle) ?>
                 </p>
             <? endif; ?>
 
             <? if ($responsible): ?>
-			    <h6><?=$this->transEsc('Author')?>:</h6>
-			        <span>
-    					<?=$this->escapeHtml($responsible)?>
-                    </span><br />
+                <h6><?= $this->transEsc('Author') ?>:</h6>
+                <span>
+                    <?= $this->escapeHtml($responsible) ?>
+                </span><br/>
             <? endif; ?>
         </div>
 
@@ -59,51 +61,52 @@ $memorizeLink	   = $this->recordLink()->getActionUrl($this->driver, 'Save');
         <div class="meta">
             <? if ($hostitems): ?>
                 <? foreach ($hostitems as $hostitem): ?>
-                <h6><?=$this->transEsc('note_773')?>: </h6>
-                <? $text = array_key_exists('related', $hostitem) ? $hostitem['title'] . ', ' . $hostitem['related'] : $hostitem['title'] ?>
-                <span><?=$this->escapeHtml($text)?></span><br />
+                    <h6><?= $this->transEsc('note_773') ?>: </h6>
+                    <? $text = array_key_exists('related', $hostitem) ? $hostitem['title'] . ', ' . $hostitem['related'] : $hostitem['title'] ?>
+                    <span><?= $this->escapeHtml($text) ?></span><br/>
                 <? endforeach; ?>
             <? endif; ?>
-			<h6><?=$this->transEsc('Year')?>:</h6>
-            <span><?=$this->escapeHtml($publicationDate)?></span>
+            <h6><?= $this->transEsc('Year') ?>:</h6>
+            <span><?= $this->escapeHtml($publicationDate) ?></span>
             <? if ($edition): ?>
-                <h6><?=$this->transEsc('Edition')?>:</h6>
-                <span><?=$this->escapeHtml($edition)?></span>
+                <h6><?= $this->transEsc('Edition') ?>:</h6>
+                <span><?= $this->escapeHtml($edition) ?></span>
             <? endif; ?>
-		</div>
+        </div>
 
         <!-- format -->
-		<div class="format">
-			<?=$viewRecord->getFormatList()?>
+        <div class="format">
+            <?= $viewRecord->getFormatList() ?>
 
-        <!-- <h6 class="icon_format_book">Buch</h6> -->
-            <? if (!empty($showFRBR) && $showFRBR && !empty($groupID) && !strcmp($results->getParams()->getSearchHandler(),'FRBR') == 0   ) : ?>
+            <!-- <h6 class="icon_format_book">Buch</h6> -->
+            <? if (!empty($showFRBR) && $showFRBR && !empty($groupID) && !strcmp($results->getParams()->getSearchHandler(), 'FRBR') == 0) : ?>
 
 
                 <a href="<?= $this->url('search-results') . '?lookfor=' . $groupID . "&type=FRBR&limit=" . $results->getParams()->getLimit() . "&sort=publishDateSort+desc" ?>"
                    class="linkbutton icon_show" title="<?= $this->transEsc('FRBR_Button') ?>">
-                <span><?=$this->transEsc('FRBR_Button')?></span>
-				</a>
+                    <span><?= $this->transEsc('FRBR_Button') ?></span>
+                </a>
             <? endif; ?>
-		</div>
-		<span class="Z3988" title="<?=$this->escapeHtml($this->driver->getOpenURL())?>"></span>
+        </div>
+        <span class="Z3988" title="<?= $this->escapeHtml($this->driver->getOpenURL()) ?>"></span>
 
-		<? if (!empty($uniqueID)): ?>
-			<div class="print">
-				<h6><?=$this->transEsc('Item_ID')?>:</h6> <span><?=$uniqueID ?> </span>
-			</div>
-		<? endif; ?>
+        <? if (!empty($uniqueID)): ?>
+            <div class="print">
+                <h6><?= $this->transEsc('Item_ID') ?>:</h6> <span><?= $uniqueID ?> </span>
+            </div>
+        <? endif; ?>
 
-	</td>
+    </td>
 
     <!-- Column 5 & 6 : libraries, links, info -->
-	<td class="col-5 small right nodivider colholdingscounter">
-		<?=$this->render('search/results/available.phtml')?>
-	</td>
-	<td class="col-6 right">
-		<?=$this->render('search/results/libraries.phtml')?>
-		<? if ($this->isFavoriteInstitution($record->getInstitutions())): ?>
-			<img src="<?= $this->basePath('themes/swissbib/images/icon_favorit_library.gif') ?>" alt="Favourite library icon (heart)" class="favourite-library">
-		<? endif; ?>
-	</td>
+    <td class="col-5 small right nodivider colholdingscounter">
+        <?= $this->render('search/results/available.phtml') ?>
+    </td>
+    <td class="col-6 right">
+        <?= $this->render('search/results/libraries.phtml') ?>
+        <? if ($this->isFavoriteInstitution($record->getInstitutions())): ?>
+            <img src="<?= $this->basePath('themes/swissbib/images/icon_favorit_library.gif') ?>"
+                 alt="Favourite library icon (heart)" class="favourite-library">
+        <? endif; ?>
+    </td>
 </tr>

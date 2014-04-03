@@ -8,10 +8,11 @@
 .comment .popover {display:block;margin-top:6px;max-width:none;position:relative}
 form.comment .span3 {padding-top:60px}
 .front { position:absolute;top:0;left:0;width:100%;padding-top:20%;z-index:5 }
-.highlight { font-weight:bold }
-li a.hidden {display:none}
 * html .centered-pills ul.nav-pills { display:inline } /* IE6 */
 *+html .centered-pills ul.nav-pills { display:inline } /* IE7 */
+.inlineblock {display:inline-block}
+li a.hidden {display:none}
+.modal .lightbox-header {display:none}
 .modal-body { max-height:600px }
 .nav-list i[class^="icon-"] { margin:0;padding:0;text-align:center;width:16px }
 .pad { padding:12px }
@@ -22,7 +23,8 @@ li a.hidden {display:none}
 .sidebar .checkbox { margin-left:10px }
 .sidebar .nav-list li:not(.divider) { min-height:26px }
 .sidebar .nav-list li span.main { display:inline-block;padding:3px 0 }
-.sidebar .nav-list li input[type="checkbox"] { float:left;margin:4px 3px 0 0}
+.sidebar .nav-list li input[type="checkbox"] { float:left;margin:4px 3px 0 0 }
+.sidebar .nav-list li.applied input[type="checkbox"] { margin-top:7px }
 .sidebar .nav-list li .icon-ok { margin-top:3px }
 .sidebar .nav-list li .icon-remove { margin-left:3px }
 .sidebar .small { color:#333;margin-top:9px;line-height:85% }
@@ -36,8 +38,8 @@ div.xml.collapsed > div { display:none;margin-left:2px }
 .xmlt:before { content:'- ' }
 .collapsed .xmlt:before { content:'+ ' }
 /* --- Collapsing Facets ---*/
-.sidebar .nav-header {cursor:pointer}
-.sidebar .nav-header:before {
+.sidebar .collapsed .nav-header {cursor:pointer}
+.sidebar .collapsed .nav-header:before {
     content:'\25BC';
     display:block;
     float:right;
@@ -46,6 +48,6 @@ div.xml.collapsed > div { display:none;margin-left:2px }
     text-align:center;
     font-size:8pt;
 }
-.sidebar .nav-list li:not(.nav-header) {display:none}
-.sidebar .nav-list.open .nav-header:before {content:'\25B2'}
-.sidebar .nav-list.open li:not(.hidden) {display:inherit}
+.sidebar .collapsed li:not(.nav-header) {display:none}
+.sidebar .collapsed.open .nav-header:before {content:'\25B2'}
+.sidebar .collapsed.open li:not(.hidden) {display:block}

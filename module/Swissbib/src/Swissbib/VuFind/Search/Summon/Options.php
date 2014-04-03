@@ -30,7 +30,7 @@ class Options extends VFSummonOptions
     /**
      * Set default limit
      *
-     * @param	Integer		$limit
+     * @param    Integer        $limit
      */
     public function setDefaultLimit($limit)
     {

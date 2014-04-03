@@ -10,107 +10,123 @@
         $user_id = $this->user ? $this->user->id : null;
     }
 
-	$listThumb		= $this->record($this->driver)->getThumbnail();
-	$thumbSrc		= $listThumb ? $this->escapeHtml($listThumb) : $this->url('cover-unavailable');
-	$thumbAlt		= $listThumb ? 'Cover Image' : 'No Cover Image';
-$title = $this->driver->getTitle();
-$listTitle		= empty($title) ? $this->transEsc('Title not available') : $title;
-	$description	= $this->driver->getSummary();
-	$isEditAllowed	= (isset($list) && $list->editAllowed($this->user)) || (!isset($list) && $this->user);
-	$publicationDate   = $this->publicationDateMarc($this->driver->getPublicationDates());
+    $record               = $this->driver;
+    $viewRecord           = $this->record($record);
+    $thumbnail            = $viewRecord->getThumbnail('small');
+    $thumbnailSrc         = $thumbnail ? $thumbnail : $this->url('cover-unavailable');
+    $titleStatement       = $record->getTitleStatement(true);
+    $shortTitle           = $record->getShortTitle();
+    $subtitle             = $viewRecord->getSubtitle($titleStatement);
+    $responsible          = $viewRecord->getResponsible($titleStatement, $record);
+    $publishers           = $record->getPublishers(true);
+    $publicationDate      = $this->publicationDateMarc($record->getPublicationDates());
+    $hostitems            = $record->getHostItemEntry();
+	$isEditAllowed	      = (isset($list) && $list->editAllowed($this->user)) || (!isset($list) && $this->user);
 
+    // get user generated content (tags and notes)
+    $listTags = $this->driver->getTags($list_id, $user_id, 'tag');
+    $tagLinks = array();
+    $listNotes= $this->driver->getListNotes($list_id, $user_id);
+    $listLinks= array();
+
+    foreach ($listTags as $tag) {
+        $tagLinks[] = '<a href="' . $this->url('tag-home') . '?lookfor=' . urlencode($tag->tag) . '">' . $this->escapeHtml($tag->tag) . '</a>';
+    }
+    if (isset($this->lists) && is_array($this->lists)) {
+        foreach ($this->lists as $current) {
+            $listLinks[] = '<a href="' . $this->url('userList', array('id' => $current->id)) . '">' . $this->escapeHtml($current->title) . '</a>';
+        }
+    }
 ?>
 <tr>
+    <!-- Column 1: Index -->
     <td class="col-1 small center nodivider">
-    <?=$this->driver->position?>
+        <?=$this->driver->position?>
 	</td>
+    <!-- Colum 2: Checkbox -->
     <td class="col-2 nodivider">
-    <div>
+        <div>
 			<?= $this->record($driver)->getCheckbox() ?>
 		</div>
-
 	</td>
+    <!-- Column 3: Teaser-image / Thumbnail -->
     <td class="col-3 nodivider right">
         <div class="ie8buster">
-        <a class="preview" href="<?= $this->recordLink()->getUrl($this->driver) ?>"
-           title="<?= $this->escapeHtml($title) ?>">
-        <img src="<?=$thumbSrc?>" alt="<?=$thumbAlt?>" class="dropshadow"/>
+        <a class="preview" href="<?= $this->recordLink()->getUrl($record) ?>"
+           title="<?= $this->escapeHtml($shortTitle) ?>">
+        <img src="<?=$thumbnailSrc?>" class="dropshadow"/>
 		</a>
         </div>
     </td>
+    <!-- Column 4: bibliographic information -->
     <td class="col-4">
-    <h3>
-			<a href="<?=$this->recordLink()->getUrl($this->driver)?>" title="<?=$this->escapeHtml($listTitle)?>" class="color">
-				<?=$this->escapeHtml($this->truncate($listTitle, 180))?>
+        <!-- Title and author details => links to full-view -->
+        <h3>
+			<a href="<?=$this->recordLink()->getUrl($record)?>" title="<?=$this->escapeHtml($shortTitle)?>" class="color">
+				<?=$this->escapeHtml($this->truncate($shortTitle, 180))?>
 			</a>
 		</h3>
-		<?php if(sizeof($description)): ?>
-			<p><?=$description[0]?></p>
-		<?php endif; ?>
-		<!-- meta -->
-		<div class="meta">
-			
-			<?php
-			$listTags = $this->driver->getTags($list_id, $user_id, 'tag');
-			$tagLinks = array();
-			$listNotes= $this->driver->getListNotes($list_id, $user_id);
-			$listLinks= array();
-
-			foreach ($listTags as $tag) {
-				$tagLinks[] = '<a href="' . $this->url('tag-home') . '?lookfor=' . urlencode($tag->tag) . '">' . $this->escapeHtml($tag->tag) . '</a>';
-			}
-			if (isset($this->lists) && is_array($this->lists)) {
-				foreach ($this->lists as $current) {
-					$listLinks[] = '<a href="' . $this->url('userList', array('id' => $current->id)) . '">' . $this->escapeHtml($current->title) . '</a>';
-				}
-			}
-			?>
-			<?php if (count($tagLinks)): ?>
-				<h6><?= $this->transEsc('Your Tags') ?>:</h6>
-				<span>
-					<?=implode(', ', $tagLinks)?>
-				</span>
-				<br/>
-			<?php endif; ?>
-
-			<?php if (count($listNotes)): ?>
-				<h6><?= $this->transEsc('Notes') ?>:</h6>
-				<span>
-					<?=implode('<br /> ', $listNotes)?>
-				</span>
-				<br/>
-			<?php endif; ?>
-
-			<?php if (count($listLinks)): ?>
-				<h6><?= $this->transEsc('Saved in') ?>:</h6>
-				<span>
-					<?=implode(', ', $listLinks)?>
-				</span>
-				<br/>
-			<?php endif; ?>
-
-			<h6><?= $this->transEsc('Author') ?></h6>
-			<span><?=$this->driver->getTitleStatement()?></span>
-		</div>
-
-		<? if (!empty($publicationDate)): ?>
-			<div class="print">
-				<h6><?=$this->transEsc('Year')?>:</h6>
-				<span><?=$this->escapeHtml($publicationDate)?></span>
-			</div>
-		<? endif; ?>
-
+        <!-- Untertitel und Verfasserangabe -->
+        <div class="meta">
+            <? if (isset($subtitle)): ?>
+                <p>
+                    <?= $this->escapeHtml($subtitle) ?>
+                </p>
+            <? endif; ?>
+            <? if ($responsible): ?>
+                <h6><?= $this->transEsc('Author') ?>: </h6>
+                <span>
+                    <?= $this->escapeHtml($responsible) ?>
+                </span>
+            <? endif; ?>
+        </div>
+        <!-- Host Item & Jahr -->
+        <div class="meta">
+            <? if ($hostitems): ?>
+                <? foreach ($hostitems as $hostitem): ?>
+                    <h6><?= $this->transEsc('note_773') ?>: </h6>
+                    <? $text = array_key_exists('related', $hostitem) ? $hostitem['title'] . ', ' . $hostitem['related'] : $hostitem['title'] ?>
+                    <span><?= $this->escapeHtml($text) ?></span><br/>
+                <? endforeach; ?>
+            <? endif; ?>
+            <h6><?= $this->transEsc('Year') ?>:</h6>
+            <span><?= $this->escapeHtml($publicationDate) ?></span>
+            <? if ($edition): ?>
+                <h6><?= $this->transEsc('Edition') ?>:</h6>
+                <span><?= $this->escapeHtml($edition) ?></span>
+            <? endif; ?>
+        </div>
 		<!-- format -->
 		<div class="format">
-			<h6 class="icon_format_book">Buch</h6>
+            <p><?=$viewRecord->getFormatList()?></p>
 		</div>
-
+        <!-- user content (tags, notes -->
+        <div class="meta">
+            <?php if (count($tagLinks)): ?>
+                <h6><?= $this->transEsc('Your Tags') ?>:</h6>
+                <span><?=implode(', ', $tagLinks)?></span>
+                <br/>
+            <?php endif; ?>
+            <?php if (count($listNotes)): ?>
+                <h6><?= $this->transEsc('Notes') ?>:</h6>
+                <span><?=implode('<br /> ', $listNotes)?></span>
+                <br/>
+            <?php endif; ?>
+            <?php if (count($listLinks)): ?>
+                <h6><?= $this->transEsc('Saved in') ?>:</h6>
+                <span><?=implode(', ', $listLinks)?></span>
+                <br/>
+            <?php endif; ?>
+        </div>
+        <!-- COINS -->
+        <span class="Z3988" title="<?= $this->escapeHtml($this->driver->getOpenURL()) ?>"></span>
 		<? if (!empty($id)): ?>
 			<div class="print">
 				<h6><?=$this->transEsc('Item_ID')?>:</h6> <span><?=$id ?> </span>
 			</div>
 		<? endif; ?>
 	</td>
+    <!-- Column 5: edit and delete actions -->
 	<td class="col-5 right">
 		<?php if ($isEditAllowed): ?>
 			<?php

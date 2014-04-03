@@ -15,15 +15,15 @@ use Swissbib\VuFind\Search\Helper\ExtendedSolrFactoryHelper;
 class PluginFactory extends VuFindOptionsPluginFactory
 {
 
-	/**
-	 * @inheritDoc
-	 */
-	public function canCreateServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
-	{
-		/** @var ExtendedSolrFactoryHelper $extendedTargetHelper */
-		$extendedTargetHelper	= $serviceLocator->getServiceLocator()->get('Swissbib\ExtendedSolrFactoryHelper');
-		$this->defaultNamespace	= $extendedTargetHelper->getNamespace($name, $requestedName);
+    /**
+     * @inheritDoc
+     */
+    public function canCreateServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
+    {
+        /** @var ExtendedSolrFactoryHelper $extendedTargetHelper */
+        $extendedTargetHelper    = $serviceLocator->getServiceLocator()->get('Swissbib\ExtendedSolrFactoryHelper');
+        $this->defaultNamespace    = $extendedTargetHelper->getNamespace($name, $requestedName);
 
-		return parent::canCreateServiceWithName($serviceLocator, $name, $requestedName);
-	}
+        return parent::canCreateServiceWithName($serviceLocator, $name, $requestedName);
+    }
 }

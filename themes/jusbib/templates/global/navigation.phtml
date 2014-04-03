@@ -1,0 +1,41 @@
+<?php
+
+$isLoggedIn = !!$this->auth()->isLoggedIn();
+
+?>
+
+<div id="navigation">
+    <h3 class="hidden">Hauptnavigation</h3>
+    <ul>
+        <li class="nav_home">
+            <a href="<?= $this->url('search-home'); ?>">Home</a>
+        </li>
+        <li>
+            <a href="<?= $this->url('myresearch-home'); ?>"><?= $this->transEsc('menu.swissbib') ?></a>
+            <ul class="subnavigation">
+                <li>
+                    <a href="<?= $this->url('myresearch-favorite-institutions') ?>"><?= $this->transEsc('menu.mylibraries') ?></a>
+                </li>
+                <li>
+                    <a href="<?= $this->url('search-history') ?>"><?= $this->transEsc('history_saved_searches') ?></a>
+                </li>
+                <li>
+                    <a href="<?= $this->url('myresearch-favorites'); ?>"><?= $this->transEsc('memorizelist') ?></a>
+                </li>
+                <li>
+                    <a href="<?= $this->url('myresearch-settings'); ?>"><?= $this->transEsc('My_Search_Settings') ?></a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="<?= $this->url('help-page', array('topic' => 'jusbib')); ?>"><?= $this->transEsc('menu.service.information.jus') ?></a>
+        </li>
+        <li>
+            <a title="<?= $this->transEsc('menu.feedback') ?>" href=""
+               id="feedback"><?= $this->transEsc('menu.feedback') ?></a>
+        </li>
+        <li class="nav_help">
+            <a href="<?= $this->url('help-page', array('topic' => 'chb_3steps')); ?>"><?= $this->transEsc('helppage') ?></a>
+        </li>
+    </ul>
+</div>

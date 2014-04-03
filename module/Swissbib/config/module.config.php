@@ -33,6 +33,8 @@ use Swissbib\Log\Logger as SwissbibLogger;
 use Swissbib\View\Helper\DomainURL;
 use Swissbib\View\Helper\InstitutionDefinedAsFavorite as DefinedFavoriteInstitutions;
 use Swissbib\RecordDriver\SolrDefaultAdapter;
+use Swissbib\View\Helper\RedirectProtocolWrapper as ViewHelperRedirectProtocolWrapper;
+use Swissbib\Services\RedirectProtocolWrapper as ServiceRedirectProtocolWrapper;
 
 return array(
     'router' => array(
@@ -169,6 +171,15 @@ return array(
                         )
                     )
                 ),
+                'libadmin-sync-mapportal' => array(
+                    'options' => array(
+                        'route'    => 'libadmin syncMapPortal [--verbose|-v] [--result|-r] [<path>] ',
+                        'defaults' => array(
+                            'controller' => 'libadminsync',
+                            'action'     => 'syncMapPortal'
+                        )
+                    )
+                ),
                 'tab40-import' => array( // Importer for aleph tab40 files
                     'options' => array(
                         'route'    => 'tab40import <network> <locale> <source>',
@@ -219,7 +230,10 @@ return array(
         'invokables' => array(
             'VuFindTheme\ResourceContainer'       => 'Swissbib\VuFind\ResourceContainer',
             'Swissbib\RecordDriverHoldingsHelper' => 'Swissbib\RecordDriver\Helper\Holdings',
-            'Swissbib\QRCode'                     => 'Swissbib\CRCode\QrCodeService'
+            'Swissbib\QRCode'                     => 'Swissbib\CRCode\QrCodeService',
+            'MarcFormatter'                     => 'Swissbib\XSLT\MARCFormatter'
+
+
         ),
         'factories' => array(
             'Swissbib\HoldingsHelper'                  => function ($sm) {
@@ -246,6 +260,13 @@ return array(
                         $logger
                     );
                 },
+
+            'Swissbib\Services\RedirectProtocolWrapper' => function ($sm) {
+                    $config = $sm->get('VuFind\Config')->get('config');
+
+                    return new ServiceRedirectProtocolWrapper($config);
+                },
+
             'Swissbib\TargetsProxy\TargetsProxy'       => function ($sm) {
                     $config = $sm->get('VuFind\Config')->get('TargetsProxy');
 
@@ -415,7 +436,15 @@ return array(
                     $locator = $sm->getServiceLocator();
 
                     return new DomainURL($locator->get('Request'));
+                },
+            'redirectProtocolWrapper'                              => function ($sm) {
+                    $locator = $sm->getServiceLocator();
+                    return new  ViewHelperRedirectProtocolWrapper($locator->get("Swissbib\Services\RedirectProtocolWrapper"));
+
+
                 }
+
+
 
 
         )
@@ -469,7 +498,7 @@ return array(
                                 $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
                                 null,
                                 $sm->getServiceLocator()->get('VuFind\Config')->get('searches'),
-                                $sm->getServiceLocator()
+                                $sm->getServiceLocator()->get("Swissbib\Services\RedirectProtocolWrapper")
                             );
                             $driver->attachILS(
                                 $sm->getServiceLocator()->get('VuFind\ILSConnection'),
@@ -547,10 +576,10 @@ return array(
         )
     ),
     //'swissbib' => array(
-    //	'ignore_assets' => array(
-    //		'blueprint/screen.css',
-    //		'jquery-ui.css'
-    //	),
+    //    'ignore_assets' => array(
+    //        'blueprint/screen.css',
+    //        'jquery-ui.css'
+    //    ),
 
     'swissbib' => array(
         // The ignore patterns have to be valid regex!

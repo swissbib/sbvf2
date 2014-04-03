@@ -17,12 +17,12 @@
 <? $extraFilters = isset($this->extraSideFacetFilters) ? $this->extraSideFacetFilters : array(); ?>
 <? $collapsedFacets = $this->recommend->getCollapsedFacets() ?>
 <? $filterList = array_merge($results->getParams()->getFilterList(true), $extraFilters); if (!empty($filterList)): ?>
-  <ul class="nav nav-list open">
+  <ul class="nav nav-list">
     <li class="nav-header"><?=$this->transEsc('Remove Filters')?></li>
     <? foreach ($filterList as $field => $filters): ?>
       <? foreach ($filters as $i => $filter): ?>
         <? 
-          $index = array_search($filter['field'], $collapsedFacets);
+          $index = isset($filter['field']) ? array_search($filter['field'], $collapsedFacets) : false;
           if ($index !== false) {
               unset($collapsedFacets[$index]); // Open if we have a match
           }
@@ -47,12 +47,12 @@
 <? if (!empty($sideFacetSet) && $results->getResultTotal() > 0): ?>
   <? foreach ($sideFacetSet as $title => $cluster): ?>
     <? $allowExclude = $this->recommend->excludeAllowed($title); ?>
-    <ul class="nav nav-list<? if(!in_array($title, $collapsedFacets)): ?> open<? endif ?>">
+    <ul class="nav nav-list collapsed <? if(!in_array($title, $collapsedFacets)): ?> open<? endif ?>">
       <? if (isset($dateFacets[$title])): ?>
         <li class="nav-header"><?=$this->transEsc($cluster['label'])?></li>
         <li>
           <form class="form-inline text-center" action="" name="<?=$this->escapeHtml($title)?>Filter" id="<?=$this->escapeHtml($title)?>Filter">
-            <?=$results->getUrlQuery()->asHiddenFields(array('filter' => "/^{$title}:.*/"))?>
+            <?=$results->getUrlQuery()->asHiddenFields(array('page' => "/./", 'filter' => "/^{$title}:.*/"))?>
             <input type="hidden" name="daterange[]" value="<?=$this->escapeHtml($title)?>"/>
             <div class="row-fluid">
               <label class="span6" for="<?=$this->escapeHtml($title)?>from">
@@ -109,7 +109,11 @@ JS;
         <? endif; ?>
         <? if ($thisFacet['isApplied']): ?>
           <li class="<? if ($i>5): ?><?=$moreClass ?><?endif ?><? if ($thisFacet['operator'] == 'OR'): ?> facetOR applied" href="<?=$this->currentPath().$results->getUrlQuery()->removeFacet($title, $thisFacet['value'], true, $thisFacet['operator']) ?><? endif ?>">
-            <i class="icon-ok pull-right"></i>
+            <? if($thisFacet['operator'] == 'OR'): ?>
+              <i class="icon-check"></i>
+            <? else: ?>
+              <i class="icon-ok pull-right"></i>
+            <? endif; ?>
             <span class="main"><?=$this->escapeHtml($thisFacet['displayText'])?></span>
           </li>
         <? else: ?>
@@ -122,6 +126,9 @@ JS;
               <? endif; ?>
             </span>
             <a class="main" href="<?=$this->currentPath().$results->getUrlQuery()->addFacet($title, $thisFacet['value'], $thisFacet['operator'])?>">
+              <? if($thisFacet['operator'] == 'OR'): ?>
+                <i class="icon-check-empty"></i>
+              <? endif; ?>
               <?=$this->escapeHtml($thisFacet['displayText'])?>
             </a>
           </li>

@@ -149,7 +149,8 @@ $highlightedFulltext = $record->getHighlightedFulltext();
             <? foreach ($urls as $current): ?>
             <h4><?= $this->transEsc('Online Access') ?>: </h4>
                 <p>
-                    <a href="<?= $this->escapeHtml($this->proxyUrl($current['url'])) ?>"
+                    <?php  $wrappedURL = $this->redirectProtocolWrapper()->getWrappedURL($current['url']) ?>
+                    <a href="<?= $this->escapeHtml($this->proxyUrl($wrappedURL)) ?>"
                        target="_blank"><?= $this->escapeHtml($current['desc']) ?></a><br/>
                 </p>
             <? endforeach; ?>

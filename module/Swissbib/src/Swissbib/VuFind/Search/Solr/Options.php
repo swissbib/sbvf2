@@ -9,13 +9,13 @@ use VuFind\Search\Solr\Options as VuFindSolrOptions;
 class Options extends VuFindSolrOptions
 {
 
-	/**
-	 * Set default limit
-	 *
-	 * @param	Integer		$limit
-	 */
-	public function setDefaultLimit($limit)
-	{
-		$this->defaultLimit = intval($limit);
-	}
+    /**
+     * Set default limit
+     *
+     * @param    Integer        $limit
+     */
+    public function setDefaultLimit($limit)
+    {
+        $this->defaultLimit = intval($limit);
+    }
 }

@@ -66,6 +66,11 @@ class Holdings
         'z' => 'public_note',
     );
 
+    /** @var Array      Map fieldId => delimiter, fields listed here get concatenated using the delimiter */
+    protected $concatenationMapping = array(
+        'z' => ' '
+    );
+
     /**
      * @var    Array[]|Boolean
      */
@@ -564,9 +569,9 @@ class Holdings
 
         // Add backlink for not restful networks
         // @note Disabled check until the
-//		if (!$this->isRestfulNetwork($holding['network'])) {
+//        if (!$this->isRestfulNetwork($holding['network'])) {
         $holding['backlink'] = $this->getBackLink($holding['network'], strtoupper($holding['institution']), $holding);
-//		}
+//        }
 
         $bibInfoLink = $this->getBibInfoLink($holding['institution']);
         $holding['institutionUrl'] = $bibInfoLink['url'];
@@ -624,6 +629,20 @@ class Holdings
         return $this->ebooksOnDemand ? $this->ebooksOnDemand->getEbooksOnDemandLink($item, $recordDriver, $this) : false;
     }
 
+    /**
+     * Get back link for IDSSG (self-developed-non-aleph-request)
+     * Currently only a wrapper for Aleph
+     *
+     * @param    String $networkCode
+     * @param    String $institutionCode
+     * @param    Array $item
+     * @param    Array $data
+     * @return    String
+     */
+    protected function getBackLinkIDSSG($networkCode, $institutionCode, array $item, array $data)
+    {
+        return $this->getBackLinkAleph($networkCode, $institutionCode, $item, $data);
+    }
 
     /**
      * Build location map link
@@ -962,22 +981,6 @@ class Holdings
     }
 
     /**
-     * Get back link for IDSSG (self-developed-non-aleph-request)
-     * Currently only a wrapper for virtua
-     *
-     * @param    String $networkCode
-     * @param    String $institutionCode
-     * @param    Array $item
-     * @param    Array $data
-     * @return    String
-     */
-    protected function getBackLinkIDSSG($networkCode, $institutionCode, array $item, array $data)
-    {
-        return $this->getBackLinkAleph($networkCode, $institutionCode, $item, $data);
-    }
-
-
-    /**
      * Compile string. Replace {varName} pattern with names and data from array
      *
      * @param    String $string
@@ -1275,7 +1278,11 @@ class Holdings
 
         // Fetch data
         foreach ($subFields as $code => $subdata) {
-            $rawData[$code] = $subdata->getData();
+            if ($this->useConcatenation($code, $rawData)) {
+                $rawData[$code] .= $this->concatenationMapping[$code] . $subdata->getData();
+            } else {
+                $rawData[$code] = $subdata->getData();
+            }
         }
 
         foreach ($fieldMapping as $code => $name) {
@@ -1284,4 +1291,19 @@ class Holdings
 
         return $data;
     }
+
+
+
+    /**
+     * @param String    $code
+     * @param Array     $rawData
+     *
+     * @return bool
+     */
+    protected function useConcatenation($code, array $rawData)
+    {
+        return array_key_exists($code, $rawData) && array_key_exists($code, $this->concatenationMapping);
+    }
+
+
 }

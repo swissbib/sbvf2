@@ -2,7 +2,14 @@
 <div class="box">
 <?
     $spellingSuggestions = $this->results->getSpellingSuggestions();
-    $queryString         = $this->results->getParams()->getQuery()->getString();
+    // get all unsuccessfull search terms depending on search type, empty string as fallback
+    if ($this->results->getParams()->getSearchType() == 'advanced') {
+        $queryString = $this->results->getParams()->getQuery()->getAllTerms();
+    }
+    elseif ($this->results->getParams()->getSearchType() == 'basic') {
+        $queryString = $this->results->getParams()->getQuery()->getString();
+    }
+    else $queryString = '';
 
     if (sizeof($spellingSuggestions) > 0) {
 ?>

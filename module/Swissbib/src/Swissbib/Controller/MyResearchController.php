@@ -12,155 +12,155 @@ use Zend\Uri\UriFactory;
 class MyResearchController extends VuFindMyResearchController
 {
 
-	/**
-	 * Show photo copy requests
-	 *
-	 * @return    ViewModel
-	 */
-	public function photocopiesAction()
-	{
-		// Stop now if the user does not have valid catalog credentials available:
-		if (!is_array($patron = $this->catalogLogin())) {
-			return $patron;
-		}
+    /**
+     * Show photo copy requests
+     *
+     * @return    ViewModel
+     */
+    public function photocopiesAction()
+    {
+        // Stop now if the user does not have valid catalog credentials available:
+        if (!is_array($patron = $this->catalogLogin())) {
+            return $patron;
+        }
 
-		/** @var Aleph $catalog */
-		$catalog = $this->getILS();
+        /** @var Aleph $catalog */
+        $catalog = $this->getILS();
 
-		// Get photo copies details:
-		$photoCopies = $catalog->getPhotocopies($patron['id']);
+        // Get photo copies details:
+        $photoCopies = $catalog->getPhotocopies($patron['id']);
 
-		return $this->createViewModel(array('photoCopies' => $photoCopies));
-	}
-
-
-
-	/**
-	 * Get bookings
-	 *
-	 * @return    ViewModel
-	 */
-	public function bookingsAction()
-	{
-		// Stop now if the user does not have valid catalog credentials available:
-		if (!is_array($patron = $this->catalogLogin())) {
-			return $patron;
-		}
-
-		/** @var Aleph $catalog */
-		$catalog = $this->getILS();
-
-		// Get photo copies details:
-		$bookings = $catalog->getBookings($patron['id']);
-
-		return $this->createViewModel(array('bookings' => $bookings));
-	}
+        return $this->createViewModel(array('photoCopies' => $photoCopies));
+    }
 
 
 
-	/**
-	 * Get location parameter from route
-	 *
-	 * @return    String|Boolean
-	 */
-	protected function getLocationFromRoute()
-	{
-		return $this->params()->fromRoute('location', false);
-	}
+    /**
+     * Get bookings
+     *
+     * @return    ViewModel
+     */
+    public function bookingsAction()
+    {
+        // Stop now if the user does not have valid catalog credentials available:
+        if (!is_array($patron = $this->catalogLogin())) {
+            return $patron;
+        }
+
+        /** @var Aleph $catalog */
+        $catalog = $this->getILS();
+
+        // Get photo copies details:
+        $bookings = $catalog->getBookings($patron['id']);
+
+        return $this->createViewModel(array('bookings' => $bookings));
+    }
 
 
 
-	/**
-	 * Inject location from route
-	 *
-	 * @inheritDoc
-	 */
-	protected function createViewModel($params = null)
-	{
-		$viewModel           = parent::createViewModel($params);
-		$viewModel->location = $this->getLocationFromRoute() ? : 'baselbern';
-
-		return $viewModel;
-	}
+    /**
+     * Get location parameter from route
+     *
+     * @return    String|Boolean
+     */
+    protected function getLocationFromRoute()
+    {
+        return $this->params()->fromRoute('location', false);
+    }
 
 
 
-	/**
-	 * (local) Search User Settings
-	 *
-	 * @return mixed
-	 */
-	public function settingsAction()
-	{
-		$account = $this->getAuthManager();
-		if ($account->isLoggedIn() == false) {
-			return $this->forceLogin();
-		}
+    /**
+     * Inject location from route
+     *
+     * @inheritDoc
+     */
+    protected function createViewModel($params = null)
+    {
+        $viewModel           = parent::createViewModel($params);
+        $viewModel->location = $this->getLocationFromRoute() ? : 'baselbern';
 
-		/** @var User $user */
-		$user = $this->getUser();
-
-		if ($this->getRequest()->isPost()) {
-			$language	= $this->params()->fromPost('language');
-			$maxHits	= $this->params()->fromPost('max_hits');
-
-			$user->language = trim($language);
-			$user->max_hits = intval($maxHits);
-
-			$user->save();
-
-			$this->flashMessenger()->setNamespace('info')->addMessage('save_settings_success');
-
-			setcookie('language', $language, time()*3600*24*100, '/');
-
-			return $this->redirect()->toRoute('myresearch-settings');
-		}
-
-		$language	= $user->language;
-		$maxHits	= $user->max_hits;
-
-		return new ViewModel(array(
-								 'max_hits'		=> $maxHits,
-								 'language'		=> $language,
-								 'optsLanguage'	=> array(
-									'de' => 'Deutsch',
-									'en' => 'English',
-									'fr' => 'Francais',
-									'it' => 'Italiano'
-								),
-								 'optsMaxHits'	=> array(
-									 10, 20, 40, 60, 80, 100
-								 )
-							));
-	}
+        return $viewModel;
+    }
 
 
 
-	/**
-	 * Wrapper for parent
-	 *
-	 * @return mixed|HttpResponse|ViewModel
-	 */
-	public function confirmAction()
-	{
-		$viewModel = parent::confirmAction();
+    /**
+     * (local) Search User Settings
+     *
+     * @return mixed
+     */
+    public function settingsAction()
+    {
+        $account = $this->getAuthManager();
+        if ($account->isLoggedIn() == false) {
+            return $this->forceLogin();
+        }
 
-		return $this->wrapWithContentLayout($viewModel, 'myresearch/confirm');
-	}
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if ($this->getRequest()->isPost()) {
+            $language    = $this->params()->fromPost('language');
+            $maxHits    = $this->params()->fromPost('max_hits');
+
+            $user->language = trim($language);
+            $user->max_hits = intval($maxHits);
+
+            $user->save();
+
+            $this->flashMessenger()->setNamespace('info')->addMessage('save_settings_success');
+
+            setcookie('language', $language, time()*3600*24*100, '/');
+
+            return $this->redirect()->toRoute('myresearch-settings');
+        }
+
+        $language    = $user->language;
+        $maxHits    = $user->max_hits;
+
+        return new ViewModel(array(
+                                 'max_hits'        => $maxHits,
+                                 'language'        => $language,
+                                 'optsLanguage'    => array(
+                                    'de' => 'Deutsch',
+                                    'en' => 'English',
+                                    'fr' => 'Francais',
+                                    'it' => 'Italiano'
+                                ),
+                                 'optsMaxHits'    => array(
+                                     10, 20, 40, 60, 80, 100
+                                 )
+                            ));
+    }
 
 
 
-	/**
-	 * Wrapper for parent
-	 *
-	 * @return mixed|HttpResponse|ViewModel
-	 */
-	public function editAction()
-	{
-		$viewModel = parent::editAction();
+    /**
+     * Wrapper for parent
+     *
+     * @return mixed|HttpResponse|ViewModel
+     */
+    public function confirmAction()
+    {
+        $viewModel = parent::confirmAction();
 
-		return $this->wrapWithContentLayout($viewModel, 'myresearch/edit');
-	}
+        return $this->wrapWithContentLayout($viewModel, 'myresearch/confirm');
+    }
+
+
+
+    /**
+     * Wrapper for parent
+     *
+     * @return mixed|HttpResponse|ViewModel
+     */
+    public function editAction()
+    {
+        $viewModel = parent::editAction();
+
+        return $this->wrapWithContentLayout($viewModel, 'myresearch/edit');
+    }
 
 
     /**
@@ -179,75 +179,75 @@ class MyResearchController extends VuFindMyResearchController
 
 
 
-	/**
-	 * Wrapper for parent
-	 *
-	 * @return mixed|HttpResponse|ViewModel
-	 */
-	public function editlistAction()
-	{
-		$viewModel = parent::editlistAction();
+    /**
+     * Wrapper for parent
+     *
+     * @return mixed|HttpResponse|ViewModel
+     */
+    public function editlistAction()
+    {
+        $viewModel = parent::editlistAction();
 
-		return $this->wrapWithContentLayout($viewModel, 'myresearch/editlist');
-	}
+        return $this->wrapWithContentLayout($viewModel, 'myresearch/editlist');
+    }
 
 
 
-	/**
-	 * Catch error for not allowed list view
-	 * Redirect list own lists with message
-	 *
-	 * @return	HttpResponse
-	 */
-	public function mylistAction()
-	{
-		try {
-			$viewModel = parent::mylistAction();
+    /**
+     * Catch error for not allowed list view
+     * Redirect list own lists with message
+     *
+     * @return    HttpResponse
+     */
+    public function mylistAction()
+    {
+        try {
+            $viewModel = parent::mylistAction();
             //GH fromRoute only for base URL -> do we need more?
             //$currentURL = $this->url()->fromRoute();
             //aim: accomplish navigation between 'merkliste' and full view
             $currentURL = $this->getRequest()->getRequestUri();
             $this->getSearchMemory()->rememberSearch($currentURL);
             return $viewModel;
-		} catch (\Exception $e) {
-			$this->flashMessenger()->setNamespace('error')->addMessage($e->getMessage());
+        } catch (\Exception $e) {
+            $this->flashMessenger()->setNamespace('error')->addMessage($e->getMessage());
 
-			$target = $this->url()->fromRoute('userList');
+            $target = $this->url()->fromRoute('userList');
 
-			return $this->redirect()->toUrl($target);
-		}
-	}
+            return $this->redirect()->toUrl($target);
+        }
+    }
 
 
 
-	/**
-	 * Wrap view in basic content template
-	 *
-	 * @todo	Improve/generalize
-	 * @param ViewModel $viewModel
-	 * @param bool      $template
-	 * @return ViewModel|HttpResponse;
-	 */
-	protected function wrapWithContentLayout($viewModel, $template = false)
-	{
-		if ($viewModel instanceof HttpResponse) {
-			return $viewModel;
-		}
-		if ($viewModel->getTemplate() === 'myresearch/login') {
-			return $viewModel;
-		}
+    /**
+     * Wrap view in basic content template
+     *
+     * @todo    Improve/generalize
+     * @param ViewModel $viewModel
+     * @param bool      $template
+     * @return ViewModel|HttpResponse;
+     */
+    protected function wrapWithContentLayout($viewModel, $template = false)
+    {
+        if ($viewModel instanceof HttpResponse) {
+            return $viewModel;
+        }
+        if ($viewModel->getTemplate() === 'myresearch/login') {
+            return $viewModel;
+        }
 
-		$layout	= $this->createViewModel();
+        $layout    = $this->createViewModel();
 
-		if ($template) {
-			$viewModel->setTemplate($template);
-		}
+        if ($template) {
+            $viewModel->setTemplate($template);
+        }
 
-		$layout->setTemplate('layout/content');
-		$layout->addChild($viewModel, 'content');
+        $layout->setTemplate('layout/content');
+        $layout->addChild($viewModel, 'content');
 
-		return $layout;
-	}
+        return $layout;
+    }
 
 
 

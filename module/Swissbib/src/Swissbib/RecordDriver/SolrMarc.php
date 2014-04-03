@@ -87,6 +87,8 @@ class SolrMarc extends VuFindSolrMarc
         '9' => 'unknownNumber'
     );
 
+    protected $protocolWrapper = null;
+
     /**
      * @var    Array    List of all Elements of the description, to figure out whether to show tab or not
      */
@@ -97,6 +99,19 @@ class SolrMarc extends VuFindSolrMarc
         'ProductionCredits', 'OriginalTitle', 'PerformerNote', 'Awards', 'CitationNotes',
         'OriginalVersionNotes', 'CopyNotes', 'SystemDetails'
     );
+
+
+    public function __construct($mainConfig = null, $recordConfig = null,
+                                $searchSettings = null, $protocolWrapper
+    ) {
+
+        parent::__construct($mainConfig,$recordConfig, $searchSettings);
+
+        $this->protocolWrapper = $protocolWrapper;
+
+
+    }
+
 
     /**
      * Wrapper for getOpenURL()
@@ -165,7 +180,13 @@ class SolrMarc extends VuFindSolrMarc
                 }
                 $publishers = $this->getPublishers();
                 if (count($publishers) > 0) {
-                    $params['rft.pub'] = $publishers[0];
+                    if (preg_match('/ : /', $publishers[0])) {
+                        $params['rft.place'] = preg_replace('/ : .*$/', '', $publishers[0]);
+                        $params['rft.pub'] = preg_replace('/^.* : /', '', $publishers[0]);
+                    }
+                    else {
+                        $params['rft.place'] = $publishers[0];
+                    }
                 }
                 $params['rft.edition'] = $this->getEdition();
                 $params['rft.isbn'] = $this->getCleanISBN();
@@ -245,7 +266,13 @@ class SolrMarc extends VuFindSolrMarc
                     }
                 }                $publishers = $this->getPublishers();
                 if (count($publishers) > 0) {
-                    $params['rft.pub'] = $publishers[0];
+                    if (preg_match('/ : /', $publishers[0])) {
+                        $params['rft.place'] = preg_replace('/ : .*$/', '', $publishers[0]);
+                        $params['rft.pub'] = preg_replace('/^.* : /', '', $publishers[0]);
+                    }
+                    else {
+                        $params['rft.place'] = $publishers[0];
+                    }
                 }
                 $params['rft.format'] = $format;
                 $langs = $this->getLanguages();
@@ -310,7 +337,7 @@ class SolrMarc extends VuFindSolrMarc
 
         // Which fields/subfields should we check for URLs?
         $fieldsToCheck = array(
-            '856' => array('u', '3'), // Standard URL
+            '856' => array('u', 'z'), // Standard URL
             '956' => array('u', 'y'), // Standard URL
             //'555' => array('a')         // Cumulative index/finding aids
         );
@@ -580,38 +607,38 @@ class SolrMarc extends VuFindSolrMarc
         foreach ($fields as $field) {
             if ($field['union'] === 'IDSBB' || $field['union'] === 'IDSLU') {
                 if (preg_match('/Vorschau zum Bild|Porträt|Bild$/', $field['description'])) {
-                    $thumbnailURL = 'http://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
+                    $thumbnailURL = 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
                     . $field['URL']
-                    . '&scale=0.75&reqServicename=ImageTransformer';
-            }
+                        . '&scale=1&reqServicename=ImageTransformer';
+                }
         } elseif ($field['union'] === 'SGBN' && $field['type'] === 'jpg') {
                 $dirpath = preg_replace('/^.*sgb50/', '', $field['directory']);
             $dirpath = empty($dirpath) ? $dirpath : substr($dirpath, 1) . '/';
-            $thumbnailURL = 'http://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://aleph.sg.ch/adam/'
+            $thumbnailURL = 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://aleph.sg.ch/adam/'
                 . $dirpath
                 . $field['filename']
-                . '&scale=0.75';
-        } elseif ($field['union'] === 'BGR' && $field['type'] === 'jpg') {
+                . '&scale=1';
+            } elseif ($field['union'] === 'BGR' && $field['type'] === 'jpg') {
                 $dirpath = substr($field['directory'], 29);
-            $thumbnailURL = 'http://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://aleph.gr.ch/adam/'
+            $thumbnailURL = 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://aleph.gr.ch/adam/'
                 . $dirpath . '/'
                 . $field['filename']
-                . '&scale=0.75';
-        }
+                . '&scale=1';
+            }
             elseif ($field['ADM'] === 'ZAD50') {
                 if (preg_match('/^.*thumbnail/', $field['directory'])) {
                     $dirpath = preg_replace('/^.*thumbnail/', '', $field['directory']);
                     $dirpath = empty($dirpath) ? $dirpath : substr($dirpath, 1) . '/';
-                    $thumbnailURL = 'http://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://opac.nebis.ch/thumb_zb/'
+                    $thumbnailURL = 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath=http://opac.nebis.ch/thumb_zb/'
                     . $dirpath
                     . $field['filename']
-                    . '&scale=0.75';
+                        . '&scale=1';
                 }
             }
             elseif ($field['institution'] === 'E45' && $field['usage'] === 'VIEW') {
-                $thumbnailURL = 'http://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
+                $thumbnailURL = 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
                 . $field['URL']
-                . '&scale=0.75&reqServicename=ImageTransformer';
+                    . '&scale=1&reqServicename=ImageTransformer';
             }
         }
         return $thumbnailURL;
@@ -628,15 +655,22 @@ class SolrMarc extends VuFindSolrMarc
         $field = $this->get950();
         if ($field['union'] === 'RERO' && $field['tag'] === '856') {
             if (preg_match('/^.*v_bcu\/media\/images/', $field['sf_u'])) {
-                return $field['sf_u'];
+                return 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
+                . $field['sf_u']
+                . '&scale=1';
             }
         } elseif ($field['union'] === 'CCSA' && $field['tag'] === '856') {
             $URL_thumb = preg_replace('/hi-res.cgi/', 'get_thumb.cgi', $field['sf_u']);
-            return $URL_thumb;
+            return 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
+            . $URL_thumb
+            . '&scale=1';
         } elseif ($field['union'] === 'CHARCH' && $field['tag'] === '856') {
-            $URL_thumb = preg_replace('/SIZE=10/', 'SIZE=30', $field['sf_u']);
-            $thumb_URL = preg_replace('/http/', 'https', $URL_thumb);
-            return $thumb_URL;
+            $thumb_URL = preg_replace('/SIZE=10/', 'SIZE=30', $field['sf_u']);
+            $URL_thumb = preg_replace('/http/', 'https', $thumb_URL);
+            return $URL_thumb;
+            //return 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
+            //. $URL_thumb
+            //. '&scale=1';
         }
     }
 
@@ -650,9 +684,12 @@ class SolrMarc extends VuFindSolrMarc
     {
         $field = $this->getDOIs();
         if (preg_match('/^.*e-rara/', $field['0'])) {
-            return 'http://www.e-rara.ch/titlepage/doi/'
-            . $field['0']
-            . '/128';
+            $URL_thumb = 'http://www.e-rara.ch/titlepage/doi/'
+                . $field['0']
+                . '/128';
+            return 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
+            . $URL_thumb
+            . '&scale=1';
         }
     }
 
@@ -1193,7 +1230,7 @@ class SolrMarc extends VuFindSolrMarc
     /*
     * Library / Institution Codes
      *
-    * @return	String[]
+    * @return    String[]
     */
     public function getInstitutions()
     {
@@ -1407,10 +1444,10 @@ class SolrMarc extends VuFindSolrMarc
                 $string = '';
 
                 if (isset($publication['place'])) {
-                    $string = $publication['place'] . ' : ';
+                    $string = $publication['place'];
                 }
                 if (isset($publication['name'])) {
-                    $string .= $publication['name'];
+                    $string .= ' : ' . $publication['name'];
                 }
 
                 $strings[] = trim($string);
@@ -2056,6 +2093,32 @@ class SolrMarc extends VuFindSolrMarc
         }
 
         return parent::getHierarchyPositionsInParents();
+    }
+
+    /**
+     * Get the titles of this item within parent collections. Returns an array
+     * of parent ID => sequence number.
+     *
+     * @return Array
+     */
+    public function getTitlesInHierarchy()
+    {
+        if (!isset($this->fields['title_in_hierarchy'])) {
+            return false;
+        }
+        else {
+            $titles = $this->fields['title_in_hierarchy'];
+            $parentIDs = $this->fields['hierarchy_parent_id'];
+
+            if (count($titles) === count($parentIDs)) {
+                $retVal = array();
+                foreach ($parentIDs as $key => $val) {
+                    $retVal[$val] = $titles[$key];
+                }
+                return $retVal;
+            }
+            else return false;
+        }
     }
 
 

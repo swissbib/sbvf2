@@ -11,16 +11,16 @@ use Zend\Session\Container as SessionContainer;
 class LastTabbedSearchUri extends AbstractHelper
 {
 
-	/**
-	 * Get last search URI of given tab
-	 *
-	 * @param   String  $idTab
-	 * @return  String
-	 */
-	public function __invoke($idTab = 'swissbib')
-	{
-		$session = new SessionContainer('SbTabbedSearch_' . $idTab);
+    /**
+     * Get last search URI of given tab
+     *
+     * @param   String  $idTab
+     * @return  String
+     */
+    public function __invoke($idTab = 'swissbib')
+    {
+        $session = new SessionContainer('SbTabbedSearch_' . $idTab);
 
-		return isset($session->last) ? $session->last : '';
-	}
+        return isset($session->last) ? $session->last : '';
+    }
 }

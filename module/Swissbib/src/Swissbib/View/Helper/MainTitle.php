@@ -16,14 +16,14 @@ use Zend\View\Helper\AbstractHelper;
 class MainTitle extends AbstractHelper
 {
 
-	public function __invoke($title, $resultItem = null)
-	{
-		if ($title != '@') {
-			return $title;
-		} elseif (!isset($title)) {
-			return '[ohne Titel]';
-		} elseif ($title == '@') {
-			// 'hier müsste 490 av rein';
-		}
-	}
+    public function __invoke($title, $resultItem = null)
+    {
+        if ($title != '@') {
+            return $title;
+        } elseif (!isset($title)) {
+            return '[ohne Titel]';
+        } elseif ($title == '@') {
+            // 'hier müsste 490 av rein';
+        }
+    }
 }

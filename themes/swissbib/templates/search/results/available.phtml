@@ -5,27 +5,40 @@ $institutions    = $driver->getInstitutions();
 $institutions    = $this->filterUntranslatedInstitutions($institutions);
 $amountHoldings  = sizeof($institutions);
 $urldisplay      = $this->urlDisplay($driver);
+$digibernURL     = preg_grep('/digibern/', $urldisplay['urls'][0]);
+$retrosURL       = preg_grep('/seals/', $urldisplay['urls'][0]);
 
 ?>
 
 <? if ($amountHoldings === 1): ?>
     <p>1 <?= $this->transEsc('result.library') ?></p>
     <? if (in_array('RETROS', $urldisplay['unions'])): ?>
-        <a class="linkbutton primary icon_link_primary" href="<?= $urldisplay['urls'][1]['url'] ?>" target="_blank"><span>retro.seals</span></a>
+        <a class="linkbutton primary icon_link_primary" href="<?= $this->redirectProtocolWrapper()->getWrappedURL($urldisplay['urls'][1]['url']) ?>" target="_blank"><span>retro.seals</span></a>
+    <? elseif($retrosURL): ?>
+        <a class="linkbutton primary icon_link_primary" href="<?= $this->redirectProtocolWrapper()->getWrappedURL($retrosURL['url']) ?>" target="_blank"><span>retro.seals</span></a>
+    <? elseif($digibernURL): ?>
+        <a class="linkbutton primary icon_link_primary" href="<?= $this->redirectProtocolWrapper()->getWrappedURL($digibernURL['url']) ?>" target="_blank"><span>digibern</span></a>
     <? endif; ?>
+
 
 <? elseif ($amountHoldings > 1): ?>
     <p><?= $amountHoldings ?> <?= $this->transEsc('result.libraries') ?></p>
     <? if (in_array('RETROS', $urldisplay['unions'])): ?>
-        <a class="linkbutton primary icon_link_primary" href="<?= $urldisplay['urls'][1]['url'] ?>" target="_blank"><span>retro.seals</span></a>
+        <a class="linkbutton primary icon_link_primary" href="<?= $this->redirectProtocolWrapper()->getWrappedURL($urldisplay['urls'][1]['url']) ?>" target="_blank"><span>retro.seals</span></a>
+    <? elseif($retrosURL): ?>
+        <a class="linkbutton primary icon_link_primary" href="<?= $this->redirectProtocolWrapper()->getWrappedURL($retrosURL['url']) ?>" target="_blank"><span>retro.seals</span></a>
+    <? elseif($digibernURL): ?>
+        <a class="linkbutton primary icon_link_primary" href="<?= $this->redirectProtocolWrapper()->getWrappedURL($digibernURL['url']) ?>" target="_blank"><span>digibern</span></a>
     <? endif; ?>
 
 <? else: ?>
     <? if (in_array('RETROS', $urldisplay['unions'])): ?>
-        <a class="linkbutton primary icon_link_primary" href="<?= $urldisplay['urls'][1]['url'] ?>" target="_blank"><span>retro.seals</span></a>
-    <? elseif ($urldisplay['online']): ?>
-        <a class="linkbutton primary icon_link_primary" href="<?= $urldisplay['urls'][1]['url'] ?>" target="_blank"><span>retro.seals</span></a>
+        <a class="linkbutton primary icon_link_primary" href="<?= $this->redirectProtocolWrapper()->getWrappedURL($urldisplay['urls'][1]['url']) ?>" target="_blank"><span>retro.seals</span></a>
+    <? elseif($retrosURL): ?>
+        <a class="linkbutton primary icon_link_primary" href="<?= $this->redirectProtocolWrapper()->getWrappedURL($retrosURL['url']) ?>" target="_blank"><span>retro.seals</span></a>
+    <? elseif($digibernURL): ?>
+        <a class="linkbutton primary icon_link_primary" href="<?= $this->redirectProtocolWrapper()->getWrappedURL($digibernURL['url']) ?>" target="_blank"><span>digibern</span></a>
     <? else: ?>
-    <p>There are no holdings available in the system</p>
+        <p>There are no holdings available in the system</p>
     <? endif; ?>
 <? endif; ?>

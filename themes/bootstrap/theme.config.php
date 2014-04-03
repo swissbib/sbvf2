@@ -8,8 +8,7 @@ return array(
         'font-awesome-ie7.min.css',
         'slider.css',
         'screen.css',
-        'print.css:print',
-        'style.css'
+        'print.css:print'
     ),
     'js' => array(
         'core/jquery.min.js',
@@ -34,6 +33,7 @@ return array(
             },
         ),
         'invokables' => array(
+            'highlight' => 'VuFind\View\Helper\Bootstrap\Highlight',
             'search' => 'VuFind\View\Helper\Bootstrap\Search',
             'vudl' => 'VuDL\View\Helper\Bootstrap\VuDL',
         )

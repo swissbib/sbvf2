@@ -507,7 +507,7 @@ class Aleph extends AbstractBase implements \Zend\Log\LoggerAwareInterface,
      * @param string $method        HTTP method
      * @param string $body          HTTP body
      *
-     * @return \SimpleXMLElement
+     * @return SimpleXMLElement
      */
     protected function doRestDLFRequest($path_elements, $params = null,
         $method='GET', $body = null
@@ -1204,14 +1204,14 @@ class Aleph extends AbstractBase implements \Zend\Log\LoggerAwareInterface,
             $balance = 0;
 
             $finesListSort["$cashref"]  = array(
-                    "title"   => $title,
-                    "barcode" => $barcode,
-                    "amount" => $amount,
-                    "transactiondate" => $transactiondate,
-                    "transactiontype" => $transactiontype,
-                    "checkout" => $this->parseDate($checkout),
-                    "balance"  => $balance,
-                    "id"  => $id
+                "title"   => $title,
+                "barcode" => $barcode,
+                "amount" => $amount,
+                "transactiondate" => $transactiondate,
+                "transactiontype" => $transactiontype,
+                "checkout" => $this->parseDate($checkout),
+                "balance"  => $balance,
+                "id"  => $id
             );
         }
         ksort($finesListSort);
@@ -1498,8 +1498,7 @@ class Aleph extends AbstractBase implements \Zend\Log\LoggerAwareInterface,
         $comment = $details['comment'];
         if (strlen($comment) <= 50) {
             $comment1 = $comment;
-        }
-        else {
+        } else {
             $comment1 = substr($comment, 0, 50);
             $comment2 = substr($comment, 50, 50);
         }
@@ -1520,7 +1519,9 @@ class Aleph extends AbstractBase implements \Zend\Log\LoggerAwareInterface,
         $body->addChild('pickup-location', $pickupLocation);
         $body->addChild('last-interest-date', $requiredBy);
         $body->addChild('note-1', $comment1);
-        $body->addChild('note-2', $comment2);
+        if (isset($comment2)) {
+            $body->addChild('note-2', $comment2);
+        }
         $body = 'post_xml=' . $body->asXML();
         try {
             $result = $this->doRestDLFRequest(
@@ -1614,7 +1615,11 @@ class Aleph extends AbstractBase implements \Zend\Log\LoggerAwareInterface,
     public function getConfig($func)
     {
         if ($func == "Holds") {
-            return $this->config['Holds'];
+            return array(
+                "HMACKeys" => "id:item_id",
+                "extraHoldFields" => "comments:requiredByDate:pickUpLocation",
+                "defaultRequiredDate" => "0:1:0"
+            );
         } else {
             return array();
         }

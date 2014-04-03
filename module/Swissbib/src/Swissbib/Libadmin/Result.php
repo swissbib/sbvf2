@@ -8,159 +8,159 @@ namespace Swissbib\Libadmin;
 class Result
 {
 
-	/**
-	 * Result types
-	 */
-	const SUCCESS = 1;
+    /**
+     * Result types
+     */
+    const SUCCESS = 1;
 
-	const INFO = 2;
+    const INFO = 2;
 
-	const ERROR = 3;
+    const ERROR = 3;
 
-	/**
-	 * @var    Array    Type labels
-	 */
-	protected $labels = array(
-		1 => 'Success',
-		2 => 'Info',
-		3 => 'Error'
-	);
+    /**
+     * @var    Array    Type labels
+     */
+    protected $labels = array(
+        1 => 'Success',
+        2 => 'Info',
+        3 => 'Error'
+    );
 
-	/**
-	 * @var    Bool    Was sync successful?
-	 */
-	protected $success = true;
+    /**
+     * @var    Bool    Was sync successful?
+     */
+    protected $success = true;
 
-	/**
-	 * @var    Array    Messages
-	 */
-	protected $messages = array();
-
-
-
-	/**
-	 * Reset result
-	 */
-	public function reset()
-	{
-		$this->messages = array();
-		$this->success  = true;
-	}
+    /**
+     * @var    Array    Messages
+     */
+    protected $messages = array();
 
 
 
-	/**
-	 * Add a new message
-	 *
-	 * @param    Integer        $type
-	 * @param    String         $message
-	 */
-	public function addMessage($type, $message)
-	{
-		$this->messages[] = array(
-			'type'    => (int)$type,
-			'message' => $message
-		);
-	}
+    /**
+     * Reset result
+     */
+    public function reset()
+    {
+        $this->messages = array();
+        $this->success  = true;
+    }
 
 
 
-	/**
-	 * Add an error
-	 *
-	 * @param    String        $message
-	 * @return    Result        $this
-	 */
-	public function addError($message)
-	{
-		$this->addMessage(self::ERROR, $message);
-
-		$this->success = false;
-
-		return $this;
-	}
-
-
-
-	/**
-	 * Add an info
-	 *
-	 * @param    String        $message
-	 * @return    Result        $this
-	 */
-	public function addInfo($message)
-	{
-		$this->addMessage(self::INFO, $message);
-
-		return $this;
-	}
+    /**
+     * Add a new message
+     *
+     * @param    Integer        $type
+     * @param    String         $message
+     */
+    public function addMessage($type, $message)
+    {
+        $this->messages[] = array(
+            'type'    => (int)$type,
+            'message' => $message
+        );
+    }
 
 
 
-	/**
-	 * Add a success
-	 *
-	 * @param    String        $message
-	 * @return    Result        $this
-	 */
-	public function addSuccess($message)
-	{
-		$this->addMessage(self::SUCCESS, $message);
+    /**
+     * Add an error
+     *
+     * @param    String        $message
+     * @return    Result        $this
+     */
+    public function addError($message)
+    {
+        $this->addMessage(self::ERROR, $message);
 
-		return $this;
-	}
+        $this->success = false;
 
-
-
-	/**
-	 * Check whether import was successful
-	 *
-	 * @return    Boolean
-	 */
-	public function isSuccess()
-	{
-		return $this->success;
-	}
+        return $this;
+    }
 
 
 
-	/**
-	 * Check whether import had errors
-	 *
-	 * @return	Boolean
-	 */
-	public function hasErrors()
-	{
-		return !$this->success;
-	}
+    /**
+     * Add an info
+     *
+     * @param    String        $message
+     * @return    Result        $this
+     */
+    public function addInfo($message)
+    {
+        $this->addMessage(self::INFO, $message);
+
+        return $this;
+    }
 
 
 
-	/**
-	 * Get all plain messages
-	 *
-	 * @return    Array
-	 */
-	public function getMessages()
-	{
-		return $this->messages;
-	}
+    /**
+     * Add a success
+     *
+     * @param    String        $message
+     * @return    Result        $this
+     */
+    public function addSuccess($message)
+    {
+        $this->addMessage(self::SUCCESS, $message);
+
+        return $this;
+    }
 
 
 
-	/**
-	 * Get list of formatted (prefixed with status) messages
-	 *
-	 * @return    String[]
-	 */
-	public function getFormattedMessages()
-	{
-		$messages = array();
+    /**
+     * Check whether import was successful
+     *
+     * @return    Boolean
+     */
+    public function isSuccess()
+    {
+        return $this->success;
+    }
 
-		foreach ($this->messages as $message) {
-			$messages[] = $this->labels[$message['type']] . ': ' . $message['message'];
-		}
 
-		return $messages;
-	}
+
+    /**
+     * Check whether import had errors
+     *
+     * @return    Boolean
+     */
+    public function hasErrors()
+    {
+        return !$this->success;
+    }
+
+
+
+    /**
+     * Get all plain messages
+     *
+     * @return    Array
+     */
+    public function getMessages()
+    {
+        return $this->messages;
+    }
+
+
+
+    /**
+     * Get list of formatted (prefixed with status) messages
+     *
+     * @return    String[]
+     */
+    public function getFormattedMessages()
+    {
+        $messages = array();
+
+        foreach ($this->messages as $message) {
+            $messages[] = $this->labels[$message['type']] . ': ' . $message['message'];
+        }
+
+        return $messages;
+    }
 }

@@ -11,17 +11,17 @@ use Zend\Config\Config;
 class QrCodeService extends QRCode
 {
 
-	/**
-	 * Set data
-	 *
-	 * @param	String		$data
-	 * @param	Boolean		$encode		Encode text as url
-	 * @return	$this
-	 */
-	public function setData($data, $encode = true)
-	{
-		$this->properties['chl'] = $encode ? urlencode($data) : $data;
+    /**
+     * Set data
+     *
+     * @param    String        $data
+     * @param    Boolean        $encode        Encode text as url
+     * @return    $this
+     */
+    public function setData($data, $encode = true)
+    {
+        $this->properties['chl'] = $encode ? urlencode($data) : $data;
 
-		return $this;
-	}
+        return $this;
+    }
 }

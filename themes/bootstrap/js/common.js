@@ -1,4 +1,4 @@
-/*global path, vufindString */
+/*global Lightbox, path, vufindString */
 
 /* --- GLOBAL FUNCTIONS --- */
 function htmlEncode(value){
@@ -27,11 +27,12 @@ function deparam(url) {
   for (var i = 0; i < pairs.length; i++) {
     var pair = pairs[i].split('=');
     var name = decodeURIComponent(pair[0]);
-    if(pair[0].substring(pair[0].length-2) == '[]') {
+    if(name.substring(name.length-2) == '[]') {
+      name = name.substring(0,name.length-2);
       if(!request[name]) {
         request[name] = [];
       }
-      request[name][request[name].length] = pair[1];
+      request[name].push(decodeURIComponent(pair[1]));
     } else {
       request[name] = decodeURIComponent(pair[1]);
     }
@@ -56,15 +57,8 @@ function updateOrFacets(url, op) {
   list.html(header[0].outerHTML+'<div class="alert alert-info">'+vufindString.loading+'...</div>');
 }
 function setupOrFacets() {
-  var facets = $('.facetOR');
-  for(var i=0;i<facets.length;i++) {
-    var $facet = $(facets[i]);
-    if($facet.hasClass('applied')) {
-      $facet.find('span:not(.pull-right)').prepend('<input type="checkbox" checked onChange="updateOrFacets($(this).parent().parent().attr(\'href\'), this)"/>');
-    } else {
-      $facet.find('a.main').prepend('<input type="checkbox" onChange="updateOrFacets($(this).parent().attr(\'href\'), this)"/> ');
-    }
-  }
+  $('.facetOR').find('.icon-check').replaceWith('<input type="checkbox" checked onChange="updateOrFacets($(this).parent().parent().attr(\'href\'), this)"/>');
+  $('.facetOR').find('.icon-check-empty').replaceWith('<input type="checkbox" onChange="updateOrFacets($(this).parent().attr(\'href\'), this)"/> ');
 }
 
 $(document).ready(function() {
@@ -130,6 +124,11 @@ $(document).ready(function() {
   $('.checkbox-select-all').change(function() {
     $(this).closest('form').find('.checkbox-select-item').attr('checked', this.checked);
   });
+  $('#modal').find('.checkbox-select-item').change(function() {
+    if(!this.checked) {
+      $(this).closest('form').find('.checkbox-select-all').attr('checked', false);
+    }
+  });
   
   // handle QR code links
   $('a.qrcodeLink').click(function() {
@@ -150,8 +149,40 @@ $(document).ready(function() {
   }
     
   // Collapsing facets
-  $('.sidebar .nav-header').click(function(){$(this).parent().toggleClass('open');});
+  $('.sidebar .collapsed .nav-header').click(function(){$(this).parent().toggleClass('open');});
   
   // Advanced facets
   setupOrFacets();
+  
+  /**************************
+   * LIGHTBOX OPENING LINKS *
+   **************************/
+  
+  // Help links
+  $('.help-link').click(function() {
+    var split = this.href.split('=');
+    return Lightbox.get('Help','Home',{topic:split[1]});
+  });
+  // Hierarchy links
+  $('.hierarchyTreeLink a').click(function() {
+    var id = $(this).parent().parent().parent().find(".hiddenId")[0].value;
+    var hierarchyID = $(this).parent().find(".hiddenHierarchyId")[0].value;
+    return Lightbox.get('Record','AjaxTab',{id:id},{hierarchy:hierarchyID,tab:'HierarchyTree'});
+  });
+  // Login link
+  $('#loginOptions a').click(function() {
+    return Lightbox.get('MyResearch','Login',{},{'loggingin':true});
+  });
+  // Email search link
+  $('.mailSearch').click(function() {
+    return Lightbox.get('Search','Email',{url:document.URL});
+  });
+  // Save record links
+  $('.save-record').click(function() {
+    var parts = this.href.split('/');
+    return Lightbox.get(parts[parts.length-3],'Save',{id:$(this).attr('id')});
+  });
+  Lightbox.addFormCallback('emailSearch', function(x) {
+    Lightbox.confirm(vufindString['bulk_email_success']);
+  });
 });

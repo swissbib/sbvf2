@@ -1,9 +1,0 @@
-User-agent: *
-
-Disallow: /Search/*
-Disallow: /MyResearch/*
-Disallow: /Record/*
-Disallow: /vufind/*
-Disallow: /vufindsingle/*
-Disallow: /Cover/*
-Disallow: /Hierarchy/*

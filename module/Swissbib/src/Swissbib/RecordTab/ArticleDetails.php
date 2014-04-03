@@ -9,13 +9,13 @@ use \VuFind\RecordTab\AbstractBase;
 
 class ArticleDetails extends AbstractBase
 {
-	/**
-	 * Get the on-screen description for this tab.
-	 *
-	 * @return string
-	 */
-	public function getDescription()
-	{
-		return 'Description';
-	}
+    /**
+     * Get the on-screen description for this tab.
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return 'Description';
+    }
 }

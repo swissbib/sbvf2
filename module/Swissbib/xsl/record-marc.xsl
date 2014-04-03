@@ -2,8 +2,8 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                               xmlns:marc="http://www.loc.gov/MARC21/slim"
                               xmlns:php="http://php.net/xsl"
-                              exclude-result-prefixes="marc">
-  <xsl:output method="html" indent="yes"/>
+                              exclude-result-prefixes="marc php">
+  <xsl:output method="html" indent="yes"  />
 
   <xsl:template match="/">
     <xsl:apply-templates/>

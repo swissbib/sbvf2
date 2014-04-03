@@ -10,57 +10,57 @@ use Zend\Config\Config as ZendConfig;
 class Config extends AbstractHelper implements ServiceLocatorAwareInterface
 {
 
-	/**
-	 * @var    ServiceLocatorInterface
-	 */
-	protected $serviceLocator;
+    /**
+     * @var    ServiceLocatorInterface
+     */
+    protected $serviceLocator;
 
-	/**
-	 * @var    ZendConfig
-	 */
-	protected $config;
-
-
-
-	/**
-	 * Inject service locator
-	 *
-	 * @param    ServiceLocatorInterface $serviceLocator
-	 */
-	public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-	{
-		$this->serviceLocator = $serviceLocator;
-//		$this->config			= new ZendConfig($serviceLocator->get('Config'));
-	}
+    /**
+     * @var    ZendConfig
+     */
+    protected $config;
 
 
 
-	/**
-	 * Get service locator
-	 *
-	 * @return    ServiceLocatorInterface
-	 */
-	public function getServiceLocator()
-	{
-		return $this->serviceLocator;
-	}
+    /**
+     * Inject service locator
+     *
+     * @param    ServiceLocatorInterface $serviceLocator
+     */
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->serviceLocator = $serviceLocator;
+//        $this->config            = new ZendConfig($serviceLocator->get('Config'));
+    }
 
 
 
-	protected function getConfig()
-	{
-		if (!$this->config) {
-			$this->config = $this->serviceLocator->getServiceLocator()->get('VuFind\Config')->get('config');
-		}
+    /**
+     * Get service locator
+     *
+     * @return    ServiceLocatorInterface
+     */
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
+    }
 
-		return $this->config;
-	}
+
+
+    protected function getConfig()
+    {
+        if (!$this->config) {
+            $this->config = $this->serviceLocator->getServiceLocator()->get('VuFind\Config')->get('config');
+        }
+
+        return $this->config;
+    }
 
 
 
-	public function __invoke()
-	{
-		return $this->getConfig();
-//		return $this->config;
-	}
+    public function __invoke()
+    {
+        return $this->getConfig();
+//        return $this->config;
+    }
 }
