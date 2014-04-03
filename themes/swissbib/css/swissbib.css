@@ -666,13 +666,13 @@ Bibliotheksinfo-Link mit Fragezeichen - TVI: 20130920
 .bibinfo {
     position: relative;
     display: block;
-    width: 16px;
-    height: 16px;
+    width: 45px;
+    height: 12px;
     font-size: 0;
     line-height: 0;
     text-indent: -10000px;
-    margin: 0 1px 0 1px;
-    background-image: url(../images/icon_info.gif);
+    margin: 2px 1px 0 1px;
+    background-image: url(../images/icon_link-external.gif);
     background-position: 0 0;
     background-repeat: no-repeat;
     text-decoration: none;
