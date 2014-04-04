@@ -11,17 +11,44 @@
     }
 
     $record               = $this->driver;
-    $viewRecord           = $this->record($record);
-    $thumbnail            = $viewRecord->getThumbnail('small');
-    $thumbnailSrc         = $thumbnail ? $thumbnail : $this->url('cover-unavailable');
-    $titleStatement       = $record->getTitleStatement(true);
-    $shortTitle           = $record->getShortTitle();
-    $subtitle             = $viewRecord->getSubtitle($titleStatement);
-    $responsible          = $viewRecord->getResponsible($titleStatement, $record);
-    $publishers           = $record->getPublishers(true);
-    $publicationDate      = $this->publicationDateMarc($record->getPublicationDates());
-    $hostitems            = $record->getHostItemEntry();
-	$isEditAllowed	      = (isset($list) && $list->editAllowed($this->user)) || (!isset($list) && $this->user);
+    if ($record instanceof \Swissbib\RecordDriver\Missing) {
+        $thumbnailSrc         = $this->url('cover-unavailable');
+        $shortTitle           = '[Titel fehlt]';
+        $subtitle             = '[Aufnahme im Index gelöscht]';
+        $publicationDate      = '0000';
+    }
+    elseif ($record instanceof \Swissbib\RecordDriver\SolrMarc) {
+        $viewRecord           = $this->record($record);
+        $thumbnail            = $viewRecord->getThumbnail('small');
+        $thumbnailSrc         = $thumbnail ? $thumbnail : $this->url('cover-unavailable');
+        $titleStatement       = $record->getTitleStatement(true);
+        $shortTitle           = $record->getShortTitle();
+        $subtitle             = $viewRecord->getSubtitle($titleStatement);
+        $responsible          = $viewRecord->getResponsible($titleStatement, $record);
+        $publishers           = $record->getPublishers(true);
+        $publicationDate      = $this->publicationDateMarc($record->getPublicationDates());
+        $hostitems            = $record->getHostItemEntry();
+        $format               = $viewRecord->getFormatList();
+        $isEditAllowed	      = (isset($list) && $list->editAllowed($this->user)) || (!isset($list) && $this->user);
+    }
+    elseif ($record instanceof \VuFind\RecordDriver\Summon) {
+        $viewRecord           = $this->record($record);
+        $thumbnail            = $viewRecord->getThumbnail('small');
+        $thumbnailSrc         = $thumbnail ? $thumbnail : $this->url('cover-unavailable');
+        $titleStatement       = $record->getTitleStatement(true);
+        $shortTitle           = $record->getShortTitle();
+        $subtitle             = $viewRecord->getSubtitle($titleStatement);
+        $responsible          = $viewRecord->getResponsible($titleStatement, $record);
+        $publishers           = $record->getPublishers(true);
+        $publicationDate      = $this->publicationDateSummon($record->getPublicationDates());
+        $hostitem             = $record->getContainerTitle();
+        if ($hostitem) {
+            $hostitem = '. - ' .$record->getContainerReference();
+        }
+        $format               = $viewRecord->getFormatList();
+        $isEditAllowed	      = (isset($list) && $list->editAllowed($this->user)) || (!isset($list) && $this->user);
+
+    }
 
     // get user generated content (tags and notes)
     $listTags = $this->driver->getTags($list_id, $user_id, 'tag');
@@ -98,7 +125,7 @@
         </div>
 		<!-- format -->
 		<div class="format">
-            <p><?=$viewRecord->getFormatList()?></p>
+            <p><?= $format ?></p>
 		</div>
         <!-- user content (tags, notes -->
         <div class="meta">
