@@ -5,11 +5,11 @@
 <table>
 	<thead>
 		<tr>
-			<th colspan="2">&nbsp;</th>
+			<th colspan="1">&nbsp;</th>
             <th><?=$this->transEsc('Title')?></th>
 			<th><?=$this->transEsc('Checked Out')?></th>
 			<th><?=$this->transEsc('Due')?></th>
-			<th><?=$this->transEsc('Renewals')?></th>
+			<!--th><?=$this->transEsc('Renewals')?></th -->
 			<th><?=$this->transEsc('Library')?></th>
 			<th><?=$this->transEsc('Call Number')?></th>
 		</tr>
@@ -20,7 +20,7 @@
 				/** @var Array $ilsDetails */
 				$ilsDetails 		= $transaction->getExtraDetail('ils_details');
 				$isRenewable		= $ilsDetails['renewable'];
-				$safeId 			= preg_replace('/[^a-zA-Z0-9]/', '', $transaction->getUniqueId());
+				//$safeId 			= preg_replace('/[^a-zA-Z0-9]/', '', $transaction->getUniqueId());
 				$infoMessages		= array();
 
             if ( $isRenewable )
@@ -68,11 +68,11 @@
 			?>
 			<tr>
 				<td><?=$index+1?></td>
-                <td>
-					<?php if ($isRenewable): ?>
-						<input type="checkbox" name="renewSelectedIDS[]" value="<?=$this->escapeHtml($ilsDetails['renew_details'])?>" class="checkbox" style="margin-left: 0" id="checkbox_<?=$safeId?>" />
-					<?php endif; ?>
-				</td>
+                <!--td>
+					<!?php if ($isRenewable): ?>
+						<input type="checkbox" name="renewSelectedIDS[]" value="<!?=$this->escapeHtml($ilsDetails['renew_details'])?>" class="checkbox" style="margin-left: 0" id="checkbox_<!?=$safeId?>" />
+					<!?php endif; ?>
+				</td -->
                 <td><?=$this->escapeHtml($ilsDetails['title'])?></td>
 				<td><?=$this->escapeHtml($ilsDetails['loandate'])?></td>
 				<td>
@@ -87,7 +87,7 @@
 						<?=$this->escapeHtml($ilsDetails['duedate'])?> (<?=$this->escapeHtml($this->transEsc($ilsDetails['status']))?>)
                     <? endif; ?>
                 </td>
-				<td><?=$this->escapeHtml($Renewals)?></td>
+				<!-- td><!?=$this->escapeHtml($Renewals)?></td -->
 				<td><?=$this->escapeHtml($ilsDetails['library'])?></td>
 				<td><?=$this->escapeHtml($ilsDetails['callnum'])?></td>
 			</tr>

@@ -761,6 +761,14 @@ class Holdings
             'adm_library' => $item['adm_code'],
             'adm_doc_number' => $item['localid'],
             'adm_item_sequence' => $item['sequencenumber'],
+            'exact_item' => 'Y',
+            'year' => '',
+            'volume' => '',
+            'sub_library' => '',
+            'type' => '',
+            'no_loaned' => 'N',
+            'start_rec_key' => '',
+            'end_rec_key' => '',
         );
 
         return 'http://' . $host . '/F/?' . http_build_query($queryParams);
