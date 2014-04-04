@@ -1,4 +1,5 @@
 <? if(method_exists($this->driver,'setUseMostSpecificFormat')) $this->driver->setUseMostSpecificFormat(true); ?>
 <? foreach ($this->driver->getFormats() as $format): ?>
-    <h6 class="iconlabel <?=$this->record($this->driver)->getFormatClass($format)?>"><?=$this->transEsc($format)?></h6>
+    <span
+        class="iconlabel <?= $this->record($this->driver)->getFormatClass($format) ?>"><?= $this->transEsc($format) ?></span>
 <? endforeach; ?>
