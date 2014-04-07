@@ -100,7 +100,11 @@ class LocationMap extends LocationMapBase
     protected function buildLocationMapLinkB500(array $item, HoldingsHelper $holdingsHelper)
     {
         $mapLinkPattern  = $this->config->get('B500');
-        $b500_param = $item['location_expanded'] . '_' . $item['signature'];
+        if (preg_match('/Spiele|Klassensatz|Permanentapparat/', $item['location_expanded'])) {
+           $b500_param = $item['location_expanded'] . '_' . $item['signature'];
+           }
+        else $b500_param = $item['signature'];
+
 
         return $this->buildSimpleLocationMapLink($mapLinkPattern, $b500_param);
     }
