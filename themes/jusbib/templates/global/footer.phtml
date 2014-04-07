@@ -1,0 +1,63 @@
+<div class="footer buildnum">
+    <?= $this->getVersion() . "&nbsp; &nbsp;" . $_SERVER['SERVER_ADDR'] ?>
+
+</div>
+
+<!-- Alle verfügbaren colorbox-Definitionen inkl. derjenigen der Hilfeseiten -->
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("a.magnify").colorbox({rel: "nofollow", photo: "true", opacity: "0.50", maxHeight: "90%", scalePhotos: "true"});
+        $("a.magnify_basel").colorbox({
+            onLoad: function () {
+                alert("Testtext");
+            },
+            rel: "nofollow", photo: "true", opacity: "0.50", maxHeight: "90%", scalePhotos: "true"});
+        $("a.modal").colorbox({rel: "nofollow", innerWidth: "520px", opacity: "0.50"});
+        $("a.inline").colorbox({inline: true, innerWidth: "390px", opacity: "0.50"});
+        $("a.help").colorbox({rel: "nofollow", opacity: "0.50", maxHeight: "90%", scalePhotos: "true"});
+        $("a[rel='help-1']").colorbox({opacity: "0.50", transition: "fade", speed: "500", maxHeight: "90%", scalePhotos: "true"});
+        $("a[rel='help-2']").colorbox({opacity: "0.50", transition: "fade", speed: "500", maxHeight: "90%", scalePhotos: "true"});
+        $("a[rel='help-3']").colorbox({opacity: "0.50", transition: "fade", speed: "500", maxHeight: "90%", scalePhotos: "true"});
+    });
+</script>
+<!-- end:colorbox-Def.-->
+
+<!-- UserVoice JavaScript SDK (only needed once on a page) (v. 20140224)
+<script type="text/javascript">
+    UserVoice = window.UserVoice || [];
+    (function () {
+        var uv = document.createElement('script');
+        uv.type = 'text/javascript';
+        uv.async = true;
+        uv.src = '//widget.uservoice.com/JtF9LB73G7r3zwkipwE1LA.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(uv, s)
+    })();
+    UserVoice.push(['set', {
+        accent_color: '#6aba2e',
+        trigger_color: 'white',
+        trigger_background_color: 'rgba(46, 49, 51, 0.6)'
+    }]);
+    UserVoice.push(['addTrigger', '#feedback', {
+        mode: 'contact'
+    }]);
+    UserVoice.push(['autoprompt', {}]);
+</script> -->
+
+<!-- begin swissmetrix for swissbib
+<script type="text/javascript">
+    var _paq = _paq || [];
+    _paq.push(["trackPageView"]);
+    _paq.push(["enableLinkTracking"]);
+
+    (function() {
+        var u=(("https:" == document.location.protocol) ? "https" : "http") + "://www.swissmetrix.ch/analytics/";
+        _paq.push(["setTrackerUrl", u+"smx.php"]);
+        _paq.push(["setSiteId", "14"]);
+        var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0]; g.type="text/javascript";
+        g.defer=true; g.async=true; g.src=u+"smx.js"; s.parentNode.insertBefore(g,s);
+    })();
+</script>
+
+end swissmetrix for swissbib -->
+
