@@ -215,6 +215,8 @@ return array(
             'cart'                 => 'Swissbib\Controller\CartController',
             'shibtest'             => 'Swissbib\Controller\ShibtestController',
             'ajax'                 => 'Swissbib\Controller\AjaxController',
+            'tag'                  => 'Swissbib\Controller\TagController',
+
 
 
         ),
@@ -542,6 +544,16 @@ return array(
                             );
                         }
                 )
+            ),
+            'recommend' => array(
+                'factories' => array(
+                    'favoritefacets' => function ($sm) {
+                            return new \Swissbib\VuFind\Recommend\FavoriteFacets(
+                                $sm->getServiceLocator()->get('VuFind\Config')
+                            );
+                    }
+                )
+
             ),
             'hierarchy_driver'         => array(
                 'factories' => array(

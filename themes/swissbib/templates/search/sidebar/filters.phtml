@@ -6,7 +6,14 @@ $results        = $this->results;
 /** @var    VuFind\Search\UrlQueryHelper $urlQuery */
 $urlQuery       = $results->getUrlQuery();
 $tabName        = $this->transEsc('tab.' . $activeTabKey);
-$typeLabel      = $this->params->getTypeLabel();
+
+if ($this->params instanceof \VuFind\Search\Tags\Params) {
+    //@Oliver: faellt Dir ein besseres statisches label ein, was dann auch uebersetzt werden kann??
+    $typeLabel = "";
+} else {
+    $typeLabel      = $this->params->getTypeLabel();
+}
+
 
 ?>
 

@@ -7,6 +7,10 @@ use Zend\View\Model\ViewModel,
     VuFind\Db\Row\User,
     Swissbib\VuFind\ILS\Driver\Aleph,
     Zend\Session\Container as SessionContainer;
+
+use VuFind\Exception\ListPermission as ListPermissionException,
+    Zend\Stdlib\Parameters;
+
 use Zend\Uri\UriFactory;
 
 class MyResearchController extends VuFindMyResearchController
@@ -201,14 +205,66 @@ class MyResearchController extends VuFindMyResearchController
      */
     public function mylistAction()
     {
+
+        // Check for "delete item" request; parameter may be in GET or POST depending
+        // on calling context.
+        $deleteId = $this->params()->fromPost(
+            'delete', $this->params()->fromQuery('delete')
+        );
+        if ($deleteId) {
+            $deleteSource = $this->params()->fromPost(
+                'source', $this->params()->fromQuery('source', 'VuFind')
+            );
+            // If the user already confirmed the operation, perform the delete now;
+            // otherwise prompt for confirmation:
+            $confirm = $this->params()->fromPost(
+                'confirm', $this->params()->fromQuery('confirm')
+            );
+            if ($confirm) {
+                $success = $this->performDeleteFavorite($deleteId, $deleteSource);
+                if ($success !== true) {
+                    return $success;
+                }
+            } else {
+                return $this->confirmDeleteFavorite($deleteId, $deleteSource);
+            }
+        }
+
+        // If we got this far, we just need to display the favorites:
         try {
-            $viewModel = parent::mylistAction();
-            //GH fromRoute only for base URL -> do we need more?
-            //$currentURL = $this->url()->fromRoute();
-            //aim: accomplish navigation between 'merkliste' and full view
+            //GH
+            //the controller has to be extended only because of this customized PluginManager
+            //request to VuFind to make this more configurable necessary!
+            $results = $this->getServiceLocator()
+                ->get('Swissbib\SearchResultsPluginManager')->get('Favorites');
+            $params = $results->getParams();
+            $params->setAuthManager($this->getAuthManager());
+
+            // We want to merge together GET, POST and route parameters to
+            // initialize our search object:
+            $params->initFromRequest(
+                new Parameters(
+                    $this->getRequest()->getQuery()->toArray()
+                    + $this->getRequest()->getPost()->toArray()
+                    + array('id' => $this->params()->fromRoute('id'))
+                )
+            );
+
+            $results->performAndProcessSearch();
+
+            //GH: ermoegliche die Navigation zwischen Merkliste und Fullview
             $currentURL = $this->getRequest()->getRequestUri();
             $this->getSearchMemory()->rememberSearch($currentURL);
-            return $viewModel;
+
+
+            return $this->createViewModel(
+                array('params' => $params, 'results' => $results)
+            );
+        } catch (ListPermissionException $e) {
+            if (!$this->getUser()) {
+                return $this->forceLogin();
+            }
+            throw $e;
         } catch (\Exception $e) {
             $this->flashMessenger()->setNamespace('error')->addMessage($e->getMessage());
 
@@ -216,6 +272,8 @@ class MyResearchController extends VuFindMyResearchController
 
             return $this->redirect()->toUrl($target);
         }
+
+
     }
 
 
