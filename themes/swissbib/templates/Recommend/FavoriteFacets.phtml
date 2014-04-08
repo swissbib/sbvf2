@@ -39,8 +39,7 @@ $sideFacetSet = $this->recommend->getFacetSet();
 				<?php foreach ($tagFilterList as $filter): ?>
 					<?php $removeLink = $this->currentPath() . $results->getUrlQuery()->removeFacet($filter['field'], $filter['value']); ?>
 					<li>
-                        <a href="<?= $removeLink ?>"
-                           class="filter_remove"><?= $this->escapeHtml($filter['displayText']) ?></a>
+                        <a href="<?= $removeLink ?>" class="filter_remove"><?= $this->escapeHtml($filter['displayText']) ?></a>
                     </li>
 				<?php endforeach; ?>
 			</ul>
