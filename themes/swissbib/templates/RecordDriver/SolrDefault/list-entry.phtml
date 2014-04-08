@@ -52,12 +52,12 @@
 
     // get user generated content (tags and notes)
     $listTags = $this->driver->getTags($list_id, $user_id, 'tag');
-    $tagLinks = array();
+    $tags     = array();
     $listNotes= $this->driver->getListNotes($list_id, $user_id);
     $listLinks= array();
 
     foreach ($listTags as $tag) {
-        $tagLinks[] = '<a href="' . $this->url('tag-home') . '?lookfor=' . urlencode($tag->tag) . '">' . $this->escapeHtml($tag->tag) . '</a>';
+        $tags[] = $this->escapeHtml($tag->tag);
     }
     if (isset($this->lists) && is_array($this->lists)) {
         foreach ($this->lists as $current) {
@@ -129,9 +129,9 @@
 		</div>
         <!-- user content (tags, notes -->
         <div class="meta">
-            <?php if (count($tagLinks)): ?>
+            <?php if (count($tags)): ?>
                 <h6><?= $this->transEsc('Your Tags') ?>:</h6>
-                <span><?=implode(', ', $tagLinks)?></span>
+                <span><?=implode(', ', $tags)?></span>
                 <br/>
             <?php endif; ?>
             <?php if (count($listNotes)): ?>
