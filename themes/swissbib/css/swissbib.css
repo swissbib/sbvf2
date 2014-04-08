@@ -424,6 +424,19 @@ form[name="bulkActionForm"] .mail {
     display: inline-block;
 }
 
+#sidebar .subnavigation .filters li a.filter_remove {
+    display: block;
+    font-size: 11px;
+    line-height: 13px;
+    color: #FFFFFF;
+    text-decoration: none;
+    padding: 1px 20px 1px 2px;
+    margin-right: 5px;
+    background-image: url('../images/icon_remove.gif');
+    background-position: right 1px;
+    background-repeat: no-repeat;
+}
+
 #popupDetails .info {
     height: auto;
     margin-top: 40px;
