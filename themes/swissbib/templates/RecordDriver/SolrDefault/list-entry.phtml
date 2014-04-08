@@ -164,10 +164,12 @@
 				<li>
 					<a href="<?=$editLink?>" class="edit tool"><?=$this->transEsc('Edit')?></a>
 				</li>
-				<li>
-					<a href="<?=$deleteLink?>" title="<?=$this->transEsc('confirm_delete_brief')?>" class="delete tool source<?=$this->escapeHtml($source)?>"><?=$this->transEsc('Delete')?></a>
+                <?php if (!is_null($list_id)): ?>
+                    <li>
+                    <a href="<?=$deleteLink?>" title="<?=$this->transEsc('confirm_delete_brief')?>" class="delete tool source<?=$this->escapeHtml($source)?>"><?=$this->transEsc('Delete')?></a>
 				</li>
-			</ul>
+                <?php endif; ?>
+            </ul>
 		<?php endif; ?>
 	</td>
 </tr>
