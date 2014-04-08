@@ -27,7 +27,16 @@ if (isset($this->dateRangeLimit)) {
 <div class="searchoption_toggler_refine">
     <?php foreach ($facetGroups as $facetGroup): ?>
         <?php foreach ($facetGroup as $facet): ?>
-            <?php if ($facet['field'] === 'navDrsys_Gen') continue; ?>
+            <?php
+            // GH: Why do we skip userInstitutions?
+            // processing of userInstitutions (also called Favorites) is only consistent if the specialized Manger for this purposes
+            //(Swissbibib\Favorites\Manager) is used.(see also Swissbib\Controller\FavoritesController - which is used for the route MyResearch/Favorites -
+            //for further examples)
+            //at initialization of the FavoritesManager (e.g.: conditions if the institutions are already loaded) is partly implemented in the Controller
+            //This should be moved behind a Service Facade. The ServiceFacade could then be used by the advanced advanced search functionality
+            ?>
+            // of ZF2 instead of the translation mechanism of VuFind.
+            <?php if ($facet['field'] === 'navDrsys_Gen' || $facet['field'] === 'userInstitutions') continue; ?>
             <div class="fieldbox">
                 <?php $fieldKey = str_replace(' ', '', $facet['field']); ?>
 
