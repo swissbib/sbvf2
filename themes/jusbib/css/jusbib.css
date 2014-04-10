@@ -69,3 +69,10 @@ Tabbed
 #tabbed {
     display: block;
 }
+
+/*
+Remove Favorite-Tag
+*/
+#sidebar .subnavigation .filters li a.filter_remove {
+    background-image: url('../images/icon_remove.gif');
+}
