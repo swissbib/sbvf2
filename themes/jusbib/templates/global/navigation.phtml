@@ -31,11 +31,11 @@ $isLoggedIn = !!$this->auth()->isLoggedIn();
             <a href="<?= $this->url('help-page', array('topic' => 'jusbib')); ?>"><?= $this->transEsc('menu.service.information.jus') ?></a>
         </li>
         <li>
-            <a title="<?= $this->transEsc('menu.feedback') ?>" href=""
+            <a title="<?= $this->transEsc('menu.feedback') ?>" href="mailto:jusbib-feedback@lawlibraries.ch"
                id="feedback"><?= $this->transEsc('menu.feedback') ?></a>
         </li>
         <li class="nav_help">
-            <a href="<?= $this->url('help-page', array('topic' => 'chb_3steps')); ?>"><?= $this->transEsc('helppage') ?></a>
+            <a href="<?= $this->url('help-page', array('topic' => 'jus_3steps')); ?>"><?= $this->transEsc('helppage') ?></a>
         </li>
     </ul>
 </div>
