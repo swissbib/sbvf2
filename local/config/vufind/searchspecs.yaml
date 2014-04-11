@@ -154,7 +154,7 @@ WLC:
 
 WNEL:
   QueryFields:
-     itemnote_txt_mv:
+     itemnote_isn_mv:
         - [or, ~]
 
 WFC:
