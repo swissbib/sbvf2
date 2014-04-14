@@ -151,8 +151,13 @@ FRBR:
 WLC:
   DismaxFields:
     - localcode_txt_mv
+  QueryFields:
+    localcode_txt_mv:
+      - [onephrase, ~]
 
 WNEL:
+  DismaxFields:
+    - itemnote_isn_mv
   QueryFields:
      itemnote_isn_mv:
         - [or, ~]
@@ -160,6 +165,9 @@ WNEL:
 WFC:
   DismaxFields:
     - classif_912
+  QueryFields:
+    classif_912:
+      - [onephrase, ~]
 
 Title:
   DismaxHandler: edismax
