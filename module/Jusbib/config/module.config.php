@@ -26,15 +26,9 @@ return array(
     ),
     'service_manager' => array(
         'factories' => array(
-            'Jusbib\Theme\Theme' => function () {
-                return new Theme();
-            },
-            'Jusbib\ExtendedSolrFactoryHelper' => function ($sm) {
-                $config = $sm->get('Vufind\Config')->get('config')->SwissbibSearchExtensions;
-                $extendedTargets = explode(',', $config->extendedTargets);
+            'Jusbib\Theme\Theme'                => 'Jusbib\Theme\Factory::getJusbibTheme',
+            'Jusbib\ExtendedSolrFactoryHelper'  => 'Jusbib\VuFind\Search::getJusbibSOLRFactoryHelper',
 
-                return new ExtendedSolrFactoryHelper($extendedTargets);
-            },
         )
     ),
     'swissbib' => array(
