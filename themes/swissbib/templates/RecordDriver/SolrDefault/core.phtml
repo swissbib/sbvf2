@@ -6,6 +6,7 @@
 $record = $this->driver;
 $viewRecord = $this->record($record);
 $theme = $this->configAccess()->Site->theme;
+$showFRBR = $this->configAccess()->Site->displayFrbr;
 
 //$authors	= $this->Authors($resultItem->getDeduplicatedAuthors());
 
@@ -154,6 +155,17 @@ $highlightedFulltext = $record->getHighlightedFulltext();
                        target="_blank"><?= $this->escapeHtml($current['desc']) ?></a><br/>
                 </p>
             <? endforeach; ?>
+        <?php endif; ?>
+
+        <?php if (!empty($showFRBR) && $showFRBR && !empty($groupID)) : ?>
+            <div class="no-print">
+                <a href="<?=
+                $this->url('search-results') . '?lookfor=' . $groupID . "&type=FRBR"
+                . "&sort=publishDateSort+desc" ?>"
+                   class="linkbutton icon_show" title="<?= $this->transEsc('FRBR_Button') ?>">
+                    <span><?= $this->transEsc('FRBR_Button') ?></span>
+                </a>
+            </div>
         <?php endif; ?>
 
         <?php if ($highlightedFulltext): ?>
