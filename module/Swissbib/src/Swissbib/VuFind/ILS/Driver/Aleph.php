@@ -793,34 +793,4 @@ class Aleph extends VuFindDriver
             // Return list without sort keys
         return array_values($fines);
     }
-
-
-    /**
-     * Parse a date.
-     *
-     * @param string $date Date to parse
-     *
-     * @return string
-
-    public function parseDate($date)
-    {
-        if ($date == null || $date == "") {
-            return "";
-        } else if (preg_match("/^[0-9]{8}$/", $date) === 1) { // 20120725
-            //return $this->dateConverter->convertToDisplayDate('Ynd', $date);
-            return $this->dateConverter->convertToDisplayDate('yymd', $date);
-        } else if (preg_match("/^[0-9]+\/[A-Za-z]{3}\/[0-9]{4}$/", $date) === 1) {
-            // 13/jan/2012
-            return $this->dateConverter->convertToDisplayDate('d/M/Y', $date);
-        } else if (preg_match("/^[0-9]+\/[0-9]+\/[0-9]{4}$/", $date) === 1) {
-            // 13/7/2012
-            //return $this->dateConverter->convertToDisplayDate('d/M/Y', $date);
-            //e.g. an expiration date delivered by Aleph-BB is 31/12/2019
-            //the format has to be d/m/yy compare with http://www.php.net/manual/en/datetime.createfromformat.php
-            return $this->dateConverter->convertToDisplayDate('d/m/yy', $date);
-        } else {
-            throw new \Exception("Invalid date: $date");
-        }
-    }
-*/
 }
