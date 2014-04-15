@@ -11,7 +11,7 @@ use VuFind\Config\PluginManager as ConfigManager;
 
 use Swissbib\VuFind\ILS\Driver\Aleph;
 use Swissbib\RecordDriver\SolrMarc;
-use Swissbib\Helper\BibCode;
+use Swissbib\RecordDriver\Helper\BibCode;
 use Swissbib\Log\Logger;
 
 /**

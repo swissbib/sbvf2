@@ -5,7 +5,7 @@ use Zend\Config\Config;
 use Zend\Http\Client as HttpClient;
 use Zend\Http\Response as HttpResponse;
 
-use Swissbib\Helper\BibCode;
+use Swissbib\RecordDriver\Helper\BibCode as BibCodeHelper;
 
 /**
  * Get availability for items
@@ -27,7 +27,7 @@ class Availability
      * @param    BibCode        $bibCodeHelper
      * @param    Config        $config
      */
-    public function __construct(BibCode $bibCodeHelper, Config $config)
+    public function __construct(BibCodeHelper $bibCodeHelper, Config $config)
     {
         $this->config        = $config;
         $this->bibCodeHelper = $bibCodeHelper;

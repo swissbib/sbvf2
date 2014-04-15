@@ -66,33 +66,11 @@ return array(
 
     'helpers' => array(
         'factories' => array(
-            'record'                    => function ($sm) {
-                    return new \Swissbib\View\Helper\Record(
-                        $sm->getServiceLocator()->get('VuFind\Config')->get('config')
-                    );
-                },
-            'flashmessages'             => function ($sm) {
-                    $messenger = $sm->getServiceLocator()->get('ControllerPluginManager')
-                        ->get('FlashMessenger');
-
-                    return new \Swissbib\VuFind\View\Helper\Root\Flashmessages($messenger);
-                },
-            'citation' => function ($sm) {
-                    return new \Swissbib\VuFind\View\Helper\Root\Citation(
-                        $sm->getServiceLocator()->get('VuFind\DateConverter')
-                    );
-                },
-            'recordlink'                => function ($sm) {
-                    return new \Swissbib\View\Helper\RecordLink(
-                        $sm->getServiceLocator()->get('VuFind\RecordRouter')
-                    );
-                },
-            'getextendedlastsearchlink' => function ($sm) {
-                    return new \Swissbib\View\Helper\GetExtendedLastSearchLink(
-                        $sm->getServiceLocator()->get('VuFind\Search\Memory')
-                    );
-                },
-
+            'record'                        => 'Swissbib\View\Helper\Swissbib\Factory::getRecordHelper',
+            'flashmessages'                 => 'Swissbib\View\Helper\Swissbib\Factory::getFlashMessages',
+            'citation'                      => 'Swissbib\View\Helper\Swissbib\Factory::getCitation',
+            'recordlink'                    => 'Swissbib\View\Helper\Swissbib\Factory::getRecordLink',
+            'getextendedlastsearchlink'     => 'Swissbib\View\Helper\Swissbib\Factory::getExtendedLastSearchLink'
         )
     )
 );
