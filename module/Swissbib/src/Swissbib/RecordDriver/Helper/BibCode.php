@@ -1,5 +1,5 @@
 <?php
-namespace Swissbib\Helper;
+namespace Swissbib\RecordDriver\Helper;
 
 use Zend\Config\Config;
 

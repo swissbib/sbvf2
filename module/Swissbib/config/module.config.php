@@ -1,40 +1,6 @@
 <?php
+
 namespace Swissbib\Module\Config;
-
-use Zend\Config\Config;
-use Zend\I18n\Translator\Translator;
-
-use Swissbib\TargetsProxy\TargetsProxy;
-use Swissbib\TargetsProxy\IpMatcher;
-use Swissbib\TargetsProxy\UrlMatcher;
-use Swissbib\Theme\Theme;
-use Swissbib\Libadmin\Importer as LibadminImporter;
-use Swissbib\RecordDriver\Helper\Holdings as HoldingsHelper;
-use Swissbib\View\Helper\InstitutionSorter;
-use Swissbib\Tab40Import\Importer as Tab40Importer;
-use Swissbib\RecordDriver\Helper\LocationMap;
-use Swissbib\RecordDriver\Missing as RecordDriverMissing;
-use Swissbib\RecordDriver\Summon;
-use Swissbib\RecordDriver\WorldCat;
-use Swissbib\RecordDriver\Helper\EbooksOnDemand;
-use Swissbib\RecordDriver\Helper\Availability;
-use Swissbib\Helper\BibCode;
-use Swissbib\Favorites\DataSource as FavoritesDataSource;
-use Swissbib\Favorites\Manager as FavoritesManager;
-use Swissbib\Favorites\Manager;
-use Swissbib\View\Helper\ExtractFavoriteInstitutionsForHoldings;
-use Swissbib\View\Helper\IsFavoriteInstitution;
-use Swissbib\VuFind\Search\Helper\ExtendedSolrFactoryHelper;
-use Swissbib\VuFind\Search\Helper\TypeLabelMappingHelper;
-use Swissbib\View\Helper\QrCode as QrCodeViewHelper;
-use Swissbib\Highlight\SolrConfigurator as HighlightSolrConfigurator;
-use Swissbib\VuFind\Hierarchy\TreeDataSource\Solr as TreeDataSourceSolr;
-use Swissbib\Log\Logger as SwissbibLogger;
-use Swissbib\View\Helper\DomainURL;
-use Swissbib\View\Helper\InstitutionDefinedAsFavorite as DefinedFavoriteInstitutions;
-use Swissbib\RecordDriver\SolrDefaultAdapter;
-use Swissbib\View\Helper\RedirectProtocolWrapper as ViewHelperRedirectProtocolWrapper;
-use Swissbib\Services\RedirectProtocolWrapper as ServiceRedirectProtocolWrapper;
 
 return array(
     'router' => array(
@@ -127,36 +93,6 @@ return array(
                     )
                 )
             ),
-
-            //I had a problem on the developemnt branch -> a trailing backslash was genereated
-            //this doesn't happen so far in feature/shibboleth
-            //'/MyResearch/Home/' => array(
-            //    'type'    => 'Zend\Mvc\Router\Http\Literal',
-            //    'options' => array(
-            //        'route'    => '/' . 'MyResearch/Home/',
-            //        'constraints' => array(
-            //            'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-            //            'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-            //        ),
-            //        'defaults' => array(
-            //            'controller' => 'MyResearch',
-            //            'action'     => 'Home',
-            //        )
-            //    )
-            //),
-
-
-            'shibboleth-test' => array( // make first shibboleth test
-                'type'    => 'literal',
-                'options' => array(
-                    'route'    => '/Shibboleth.sso/SAML2/POST',
-                    'defaults' => array(
-                        'controller' => 'shibtest',
-                        'action'     => 'shib'
-                    )
-                )
-            )
-
         )
     ),
     'console' => array(
@@ -215,152 +151,46 @@ return array(
             'cart'                 => 'Swissbib\Controller\CartController',
             'shibtest'             => 'Swissbib\Controller\ShibtestController',
             'ajax'                 => 'Swissbib\Controller\AjaxController',
-            'tag'                  => 'Swissbib\Controller\TagController',
-
 
 
         ),
         'factories' => array(
-            'record' => function ($sm) {
-                    return new \Swissbib\Controller\RecordController(
-                        $sm->getServiceLocator()->get('VuFind\Config')->get('config')
-                    );
-                }
+            'record' => 'Swissbib\Controller\Factory::getRecordController',
+
         )
     ),
     'service_manager' => array(
         'invokables' => array(
             'VuFindTheme\ResourceContainer'       => 'Swissbib\VuFind\ResourceContainer',
-            'Swissbib\RecordDriverHoldingsHelper' => 'Swissbib\RecordDriver\Helper\Holdings',
+            //'Swissbib\RecordDriverHoldingsHelper' => 'Swissbib\RecordDriver\Helper\Holdings',
             'Swissbib\QRCode'                     => 'Swissbib\CRCode\QrCodeService',
             'MarcFormatter'                     => 'Swissbib\XSLT\MARCFormatter'
 
 
         ),
         'factories' => array(
-            'Swissbib\HoldingsHelper'                  => function ($sm) {
-                    $ilsConnection = $sm->get('VuFind\ILSConnection');
-                    $hmac = $sm->get('VuFind\HMAC');
-                    $authManager = $sm->get('VuFind\AuthManager');
-                    $config = $sm->get('VuFind\Config');
-                    $translator = $sm->get('VuFind\Translator');
-                    $locationMap = $sm->get('Swissbib\LocationMap');
-                    $eBooksOnDemand = $sm->get('Swissbib\EbooksOnDemand');
-                    $availability = $sm->get('Swissbib\Availability');
-                    $bibCodeHelper = $sm->get('Swissbib\BibCodeHelper');
-                    $logger = $sm->get('Swissbib\Logger');
+            'Swissbib\HoldingsHelper'                       =>  'Swissbib\RecordDriver\Helper\Factory::getHoldingsHelper',
+            'Swissbib\Services\RedirectProtocolWrapper'     =>  'Swissbib\Services\Factory::getProtocolWrapper',
+            'Swissbib\TargetsProxy\TargetsProxy'            =>  'Swissbib\TargetsProxy\Factory::getTargetsProxy',
+            'Swissbib\TargetsProxy\IpMatcher'               =>  'Swissbib\TargetsProxy\Factory::getIpMatcher',
+            'Swissbib\TargetsProxy\UrlMatcher'              =>  'Swissbib\TargetsProxy\Factory::getURLMatcher',
 
-                    return new HoldingsHelper($ilsConnection,
-                        $hmac,
-                        $authManager,
-                        $config,
-                        $translator,
-                        $locationMap,
-                        $eBooksOnDemand,
-                        $availability,
-                        $bibCodeHelper,
-                        $logger
-                    );
-                },
+            'Swissbib\Theme\Theme'                          =>  'Swissbib\Services\Factory::getThemeConfigs',
+            'Swissbib\Libadmin\Importer'                    =>  'Swissbib\Libadmin\Factory::getLibadminImporter',
+            'Swissbib\Tab40Importer'                        =>  'Swissbib\Tab40Import\Factory::getTab40Importer',
+            'Swissbib\LocationMap'                          =>  'Swissbib\RecordDriver\Helper\Factory::getLocationMap',
+            'Swissbib\EbooksOnDemand'                       =>  'Swissbib\RecordDriver\Helper\Factory::getEbooksOnDemand',
+            'Swissbib\Availability'                         =>  'Swissbib\RecordDriver\Helper\Factory::getAvailabiltyHelper',
+            'Swissbib\BibCodeHelper'                        =>  'Swissbib\RecordDriver\Helper\Factory::getBibCodeHelper',
 
-            'Swissbib\Services\RedirectProtocolWrapper' => function ($sm) {
-                    $config = $sm->get('VuFind\Config')->get('config');
+            'Swissbib\FavoriteInstitutions\DataSource'      =>  'Swissbib\Favorites\Factory::getFavoritesDataSource',
+            'Swissbib\FavoriteInstitutions\Manager'         =>   'Swissbib\Favorites\Factory::getFavoritesManager',
+            'Swissbib\ExtendedSolrFactoryHelper'            =>  'Swissbib\VuFind\Search\Helper\Factory::getExtendedSolrFactoryHelper',
+            'Swissbib\TypeLabelMappingHelper'               =>  'Swissbib\VuFind\Search\Helper\Factory::getTypeLabelMappingHelper',
 
-                    return new ServiceRedirectProtocolWrapper($config);
-                },
-
-            'Swissbib\TargetsProxy\TargetsProxy'       => function ($sm) {
-                    $config = $sm->get('VuFind\Config')->get('TargetsProxy');
-
-                    return new TargetsProxy($config, $sm->get('Swissbib\Logger'), $sm->get('Request'));
-                },
-            'Swissbib\TargetsProxy\IpMatcher'          => function ($sm) {
-                    return new IpMatcher();
-                },
-            'Swissbib\TargetsProxy\UrlMatcher'         => function ($sm) {
-                    return new UrlMatcher();
-                },
-            'Swissbib\Theme\Theme'                     => function () {
-                    return new Theme();
-                },
-            'Swissbib\Libadmin\Importer'               => function ($sm) {
-                    $config = $sm->get('VuFind\Config')->get('config')->Libadmin;
-                    $languageCache = $sm->get('VuFind\CacheManager')->getCache('language');
-
-                    return new LibadminImporter($config, $languageCache);
-                },
-            'Swissbib\Tab40Importer'                   => function ($sm) {
-                    $config = $sm->get('VuFind\Config')->get('config')->tab40import;
-
-                    return new Tab40Importer($config);
-                },
-            'Swissbib\LocationMap'                     => function ($sm) {
-                    $locationMapConfig = $sm->get('VuFind\Config')->get('config')->locationMap;
-
-                    return new LocationMap($locationMapConfig);
-                },
-            'Swissbib\EbooksOnDemand'                  => function ($sm) {
-                    $eBooksOnDemandConfig = $sm->get('VuFind\Config')->get('config')->eBooksOnDemand;
-                    $translator = $sm->get('VuFind\Translator');
-
-                    return new EbooksOnDemand($eBooksOnDemandConfig, $translator);
-                },
-            'Swissbib\Availability'                    => function ($sm) {
-                    $bibCodeHelper = $sm->get('Swissbib\BibCodeHelper');
-                    $availabilityConfig = $sm->get('VuFind\Config')->get('config')->Availability;
-
-                    return new Availability($bibCodeHelper, $availabilityConfig);
-                },
-            'Swissbib\BibCodeHelper'                   => function ($sm) {
-                    $alephNetworkConfig = $sm->get('VuFind\Config')->get('Holdings')->AlephNetworks;
-
-                    return new BibCode($alephNetworkConfig);
-                },
-            'Swissbib\FavoriteInstitutions\DataSource' => function ($sm) {
-                    $objectCache = $sm->get('VuFind\CacheManager')->getCache('object');
-                    $configManager = $sm->get('VuFind\Config');
-
-                    return new FavoritesDataSource($objectCache, $configManager);
-                },
-            'Swissbib\FavoriteInstitutions\Manager'    => function ($sm) {
-                    $sessionStorage = $sm->get('VuFind\SessionManager')->getStorage();
-                    $groupMapping = $sm->get('VuFind\Config')->get('libadmin-groups')->institutions;
-                    $authManager = $sm->get('VuFind\AuthManager');
-
-                    return new FavoritesManager($sessionStorage, $groupMapping, $authManager);
-                },
-            'Swissbib\ExtendedSolrFactoryHelper'       => function ($sm) {
-                    $config = $sm->get('Vufind\Config')->get('config')->SwissbibSearchExtensions;
-                    $extendedTargets = explode(',', $config->extendedTargets);
-
-                    return new ExtendedSolrFactoryHelper($extendedTargets);
-                },
-            'Swissbib\TypeLabelMappingHelper'       => function () {
-                    return new TypeLabelMappingHelper();
-                },
-            'Swissbib\Highlight\SolrConfigurator'      => function ($sm) {
-                    $config = $sm->get('Vufind\Config')->get('config')->Highlight;
-                    $eventsManager = $sm->get('SharedEventManager');
-                    $memory = $sm->get('VuFind\Search\Memory');
-
-                    return new HighlightSolrConfigurator($eventsManager, $config, $memory);
-                },
-            'Swissbib\Logger'                          => function ($sm) {
-                    $logger = new SwissbibLogger();
-
-                    $logger->addWriter(
-                        'stream', 1, array(
-                                          'stream' => 'log/swissbib.log'
-                                     )
-                    );
-
-                    return $logger;
-                },
-            'Swissbib\RecordDriver\SolrDefaultAdapter' => function ($sm) {
-                    $config = $sm->get('Vufind\Config')->get('Config');
-
-                    return new SolrDefaultAdapter($config);
-                },
+            'Swissbib\Highlight\SolrConfigurator'           =>  'Swissbib\Services\Factory::getSOLRHighlightingConfigurator',
+            'Swissbib\Logger'                               =>  'Swissbib\Services\Factory::getSwissbibLogger',
+            'Swissbib\RecordDriver\SolrDefaultAdapter'      =>  'Swissbib\RecordDriver\Factory::getSolrDefaultAdapter',
         )
     ),
     'view_helpers'    => array(
@@ -395,60 +225,13 @@ return array(
 
         ),
         'factories'  => array(
-            'institutionSorter'                      => function ($sm) {
-                    /** @var Config $relationConfig */
-                    $relationConfig = $sm->getServiceLocator()->get('VuFind\Config')->get('libadmin-groups');
-                    $institutionList = array();
-
-                    if ($relationConfig->count() !== null) {
-                        $institutionList = array_keys($relationConfig->institutions->toArray());
-                    }
-
-                    return new InstitutionSorter($institutionList);
-                },
-            'extractFavoriteInstitutionsForHoldings' => function ($sm) {
-                    /** @var Manager $favoriteManager */
-                    $favoriteManager = $sm->getServiceLocator()->get('Swissbib\FavoriteInstitutions\Manager');
-                    $userInstitutionCodes = $favoriteManager->getUserInstitutions();
-
-                    return new ExtractFavoriteInstitutionsForHoldings($userInstitutionCodes);
-                },
-
-            'institutionDefinedAsFavorite'           => function ($sm) {
-                    $dataSource = $sm->getServiceLocator()->get('Swissbib\FavoriteInstitutions\DataSource');
-
-                    $tInstitutions = $dataSource->getFavoriteInstitutions();
-
-                    return new DefinedFavoriteInstitutions($tInstitutions);
-                },
-
-            'qrCode'                                 => function ($sm) {
-                    $qrCodeService = $sm->getServiceLocator()->get('Swissbib\QRCode');
-
-                    return new QrCodeViewHelper($qrCodeService);
-                },
-            'isFavoriteInstitution'                  => function ($sm) {
-                    /** @var Manager $favoriteManager */
-                    $favoriteManager = $sm->getServiceLocator()->get('Swissbib\FavoriteInstitutions\Manager');
-                    $userInstitutionCodes = $favoriteManager->getUserInstitutions();
-
-                    return new IsFavoriteInstitution($userInstitutionCodes);
-                },
-            'domainURL'                              => function ($sm) {
-                    $locator = $sm->getServiceLocator();
-
-                    return new DomainURL($locator->get('Request'));
-                },
-            'redirectProtocolWrapper'                              => function ($sm) {
-                    $locator = $sm->getServiceLocator();
-                    return new  ViewHelperRedirectProtocolWrapper($locator->get("Swissbib\Services\RedirectProtocolWrapper"));
-
-
-                }
-
-
-
-
+            'institutionSorter'                         =>  'Swissbib\View\Helper\Factory::getInstitutionSorter',
+            'extractFavoriteInstitutionsForHoldings'    =>  'Swissbib\View\Helper\Factory::getFavoriteInstitutionsExtractor',
+            'institutionDefinedAsFavorite'              =>  'Swissbib\View\Helper\Factory::getInstitutionsAsDefinedFavorites',
+            'qrCode'                                    =>  'Swissbib\View\Helper\Factory::getQRCodeHelper',
+            'isFavoriteInstitution'                     =>  'Swissbib\View\Helper\Factory::isFavoriteInstitutionHelper',
+            'domainURL'                                 =>  'Swissbib\View\Helper\Factory::getDomainURLHelper',
+            'redirectProtocolWrapper'                   =>  'Swissbib\View\Helper\Factory::getRedirectProtocolWrapperHelper'
         )
     ),
     'vufind' => array(
@@ -479,87 +262,32 @@ return array(
 
             'auth'                     => array(
                 'invokables' => array(
-                    'shibboleth' => 'Swissbib\VuFind\Auth\Shibboleth',
+                    'shibboleth'    => 'Swissbib\VuFind\Auth\Shibboleth',
                 ),
             ),
             'autocomplete' => array(
                 'factories' => array(
-                    'solr' => function ($sm) {
-                            return new \Swissbib\VuFind\Autocomplete\Solr (
-                                $sm->getServiceLocator()->get('VuFind\SearchResultsPluginManager')
-                            );
-                        }
-                )
+                    'solr'          =>  'Swissbib\VuFind\Autocomplete\Factory::getSolr',
+                ),
             ),
 
 
             'recorddriver'             => array(
                 'factories' => array(
-                    'solrmarc' => function ($sm) {
-                            $driver = new \Swissbib\RecordDriver\SolrMarc(
-                                $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
-                                null,
-                                $sm->getServiceLocator()->get('VuFind\Config')->get('searches'),
-                                $sm->getServiceLocator()->get("Swissbib\Services\RedirectProtocolWrapper")
-                            );
-                            $driver->attachILS(
-                                $sm->getServiceLocator()->get('VuFind\ILSConnection'),
-                                $sm->getServiceLocator()->get('VuFind\ILSHoldLogic'),
-                                $sm->getServiceLocator()->get('VuFind\ILSTitleHoldLogic')
-                            );
-
-                            return $driver;
-                        },
-                    'summon'   => function ($sm) {
-                            $baseConfig = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
-                            $summonConfig = $sm->getServiceLocator()->get('VuFind\Config')->get('Summon');
-
-                            return new Summon(
-                                $baseConfig, // main config
-                                $summonConfig // record config
-                            );
-                        },
-                    'worldcat' => function ($sm) {
-                            $baseConfig = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
-                            $worldcatConfig = $sm->getServiceLocator()->get('VuFind\Config')->get('WorldCat');
-
-                            return new WorldCat(
-                                $baseConfig, // main config
-                                $worldcatConfig // record config
-                            );
-                        },
-                    'missing'  => function ($sm) {
-                            $baseConfig = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
-
-                            return new RecordDriverMissing($baseConfig);
-                        }
+                    'solrmarc' => 'Swissbib\RecordDriver\Factory::getSolrMarcRecordDriver',
+                    'summon'   => 'Swissbib\RecordDriver\Factory::getSummonRecordDriver',
+                    'worldcat' => 'Swissbib\RecordDriver\Factory::getWorldCatRecordDriver',
+                    'missing'  => 'Swissbib\RecordDriver\Factory::getRecordDriverMissing',
                 )
             ),
             'ils_driver'               => array(
                 'factories' => array(
-                    'aleph' => function ($sm) {
-                            return new \Swissbib\VuFind\ILS\Driver\Aleph(
-                                new \Swissbib\VuFind\Date\Converter(),
-                                $sm->getServiceLocator()->get('VuFind\CacheManager')
-                            );
-                        }
+                    'aleph' => 'Swissbib\VuFind\ILS\Driver\Factory::getAlephDriver'
                 )
-            ),
-            'recommend' => array(
-                'factories' => array(
-                    'favoritefacets' => function ($sm) {
-                            return new \Swissbib\VuFind\Recommend\FavoriteFacets(
-                                $sm->getServiceLocator()->get('VuFind\Config')
-                            );
-                    }
-                )
-
             ),
             'hierarchy_driver'         => array(
                 'factories' => array(
-                    'series' => function ($sm) {
-                            return \VuFind\Hierarchy\Driver\Factory::get($sm->getServiceLocator(), 'HierarchySeries');
-                        },
+                    'series' => 'Swissbib\VuFind\Hierarchy\Factory::getHierarchyDriverSeries',
                 )
             ),
             'hierarchy_treerenderer'   => array(
@@ -567,16 +295,9 @@ return array(
                     'jstree' => 'Swissbib\VuFind\Hierarchy\TreeRenderer\JSTree'
                 )
             ),
-            'hierarchy_treedatasource' => array(
+            'hierarchy_treedatasource' =>  array(
                 'factories' => array(
-                    'solr' => function ($sm) {
-                            $cacheDir = $sm->getServiceLocator()->get('VuFind\CacheManager')->getCacheDir(false);
-
-                            return new TreeDataSourceSolr(
-                                $sm->getServiceLocator()->get('VuFind\Search'),
-                                rtrim($cacheDir, '/') . '/hierarchy'
-                            );
-                        }
+                    'solr' => 'Swissbib\VuFind\Hierarchy\Factory::getSolrTreeDataSource',
                 )
             ),
             'recordtab'                => array(

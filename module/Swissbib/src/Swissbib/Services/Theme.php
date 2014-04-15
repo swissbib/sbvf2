@@ -1,13 +1,13 @@
 <?php
 
-namespace Swissbib\Theme;
+namespace Swissbib\Services;
 
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Class Theme
- * @package    Swissbib\Theme
+ * @package    Swissbib\Services
  */
 class Theme implements ServiceLocatorAwareInterface
 {
