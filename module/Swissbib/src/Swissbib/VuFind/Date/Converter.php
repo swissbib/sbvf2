@@ -18,7 +18,7 @@ class Converter extends VFConverter{
 
 
     /**
-     * Protected method for conversion of a time / date string
+     * Generic method for conversion of a time / date string
      *
      * @param string $inputFormat  The format of the time string to be changed
      * @param string $outputFormat The desired output format
@@ -27,7 +27,7 @@ class Converter extends VFConverter{
      * @throws DateException
      * @return string               A re-formated time string
      */
-    protected function process($inputFormat, $outputFormat, $dateString)
+    public  function convert($inputFormat, $outputFormat, $dateString)
     {
         $errors = "Date/time problem: Details: ";
 
