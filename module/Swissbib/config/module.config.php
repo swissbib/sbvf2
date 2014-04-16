@@ -191,6 +191,8 @@ return array(
             'Swissbib\Highlight\SolrConfigurator'           =>  'Swissbib\Services\Factory::getSOLRHighlightingConfigurator',
             'Swissbib\Logger'                               =>  'Swissbib\Services\Factory::getSwissbibLogger',
             'Swissbib\RecordDriver\SolrDefaultAdapter'      =>  'Swissbib\RecordDriver\Factory::getSolrDefaultAdapter',
+            'VuFind\Translator'                             =>  'Swissbib\Services\Factory::getTranslator',
+
         )
     ),
     'view_helpers'    => array(

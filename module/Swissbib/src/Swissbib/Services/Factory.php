@@ -106,5 +106,46 @@ class Factory
         return $logger;
     }
 
+    public static function getTranslator(ServiceManager $sm)
+    {
+        $factory = new \Zend\I18n\Translator\TranslatorServiceFactory();
+        $translator = $factory->createService($sm);
+
+        // Set up the ExtendedIni plugin:
+        $config = $sm->get('VuFind\Config')->get('config');
+        $pathStack = array(
+            APPLICATION_PATH  . '/languages',
+            LOCAL_OVERRIDE_DIR . '/languages',
+            LOCAL_OVERRIDE_DIR . '/languages/bibinfo',
+            LOCAL_OVERRIDE_DIR . '/languages/group',
+            LOCAL_OVERRIDE_DIR . '/languages/institution',
+            LOCAL_OVERRIDE_DIR . '/languages/location',
+            LOCAL_OVERRIDE_DIR . '/languages/union',
+
+        );
+        $translator->getPluginManager()->setService(
+            'extendedini',
+            new \VuFind\I18n\Translator\Loader\ExtendedIni(
+                $pathStack, $config->Site->language
+            )
+        );
+
+        // Set up language caching for better performance:
+        try {
+            $translator->setCache(
+                $sm->get('VuFind\CacheManager')->getCache('language')
+            );
+        } catch (\Exception $e) {
+            // Don't let a cache failure kill the whole application, but make
+            // note of it:
+            $logger = $sm->get('VuFind\Logger');
+            $logger->debug(
+                'Problem loading cache: ' . get_class($e) . ' exception: '
+                . $e->getMessage()
+            );
+        }
+
+        return $translator;
+    }
 
 }
