@@ -742,7 +742,8 @@ class Holdings
             'bib_library' => $item['bib_library'],
         );
 
-        return 'http://' . $host . '/F/?' . http_build_query($queryParams);
+        //return 'http://' . $host . '/F/?' . http_build_query($queryParams);
+        return 'http://' . $host . '/cgi-bin/create_photocopy_request.pl?' . http_build_query($queryParams);
     }
 
     /**

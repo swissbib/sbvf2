@@ -233,4 +233,106 @@ class RecordController extends VuFindRecordController
     }
 
 
+    /**
+     * Action for dealing with photocopies.
+     *
+     * This is now just a copy of function holdAction for testing
+     *
+     * @return mixed
+     */
+    public function photocopyAction()
+    {
+        // If we're not supposed to be here, give up now!
+        $catalog = $this->getILS();
+        $checkHolds = $catalog->checkFunction("Holds");
+        if (!$checkHolds) {
+            return $this->forwardTo('Record', 'Home');
+        }
+
+        // Stop now if the user does not have valid catalog credentials available:
+        if (!is_array($patron = $this->catalogLogin())) {
+            return $patron;
+        }
+
+        // Do we have valid information?
+        // Sets $this->logonURL and $this->gatheredDetails
+        $gatheredDetails = $this->holds()->validateRequest($checkHolds['HMACKeys']);
+        if (!$gatheredDetails) {
+            return $this->redirectToRecord();
+        }
+
+        // Block invalid requests:
+        $driver = $this->loadRecord();
+        if (!$catalog->checkRequestIsValid(
+            $driver->getUniqueID(), $gatheredDetails, $patron
+        )) {
+            return $this->blockedholdAction();
+        }
+
+        // Send various values to the view so we can build the form:
+        $pickup = $catalog->getPickUpLocations($patron, $gatheredDetails);
+        $extraHoldFields = isset($checkHolds['extraHoldFields'])
+            ? explode(":", $checkHolds['extraHoldFields']) : array();
+
+        // Process form submissions if necessary:
+        if (!is_null($this->params()->fromPost('placeHold'))) {
+            // If the form contained a pickup location, make sure that
+            // the value has not been tampered with:
+            if (!$this->holds()->validatePickUpInput(
+                $gatheredDetails['pickUpLocation'], $extraHoldFields, $pickup
+            )) {
+                $this->flashMessenger()->setNamespace('error')
+                    ->addMessage('error_inconsistent_parameters');
+            } else {
+                // If we made it this far, we're ready to place the hold;
+                // if successful, we will redirect and can stop here.
+
+                // Add Patron Data to Submitted Data
+                $holdDetails = $gatheredDetails + array('patron' => $patron);
+
+                // Attempt to place the hold:
+                $function = (string)$checkHolds['function'];
+                $results = $catalog->$function($holdDetails);
+
+                // Success: Go to Display Holds
+                if (isset($results['success']) && $results['success'] == true) {
+                    $this->flashMessenger()->setNamespace('info')
+                        ->addMessage('hold_place_success');
+                    return $this->redirect()->toRoute('myresearch-holds');
+                } else {
+                    // Failure: use flash messenger to display messages, stay on
+                    // the current form.
+                    if (isset($results['status'])) {
+                        $this->flashMessenger()->setNamespace('error')
+                            ->addMessage($results['status']);
+                    }
+                    if (isset($results['sysMessage'])) {
+                        $this->flashMessenger()->setNamespace('error')
+                            ->addMessage($results['sysMessage']);
+                    }
+                }
+            }
+        }
+
+        // Find and format the default required date:
+        $defaultRequired = $this->holds()->getDefaultRequiredDate($checkHolds);
+        $defaultRequired = $this->getServiceLocator()->get('VuFind\DateConverter')
+            ->convertToDisplayDate("U", $defaultRequired);
+
+        return $this->createViewModel(
+            array(
+                'gatheredDetails' => $gatheredDetails,
+                'pickup' => $pickup,
+                'defaultPickup' => $catalog->getDefaultPickUpLocation(
+                        $patron, $gatheredDetails
+                    ),
+                'homeLibrary' => $this->getUser()->home_library,
+                'extraHoldFields' => $extraHoldFields,
+                'defaultRequiredDate' => $defaultRequired
+            )
+        );
+    }
+
+
+
 }
