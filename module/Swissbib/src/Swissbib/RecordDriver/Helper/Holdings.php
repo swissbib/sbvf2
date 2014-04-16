@@ -713,7 +713,8 @@ class Holdings
         $host = $ilsDriver->host; // @todo make dev port dynamic
 
         if ($allowedActions['photocopyRequest']) {
-            $allowedActions['photocopyRequestLink'] = $this->getPhotoCopyRequestLink($host, $item);
+            //$allowedActions['photocopyRequestLink'] = $this->getPhotoCopyRequestLink($host, $item);
+            $allowedActions['photocopyRequestLink'] = $this->getPhotoCopyRequestLink($host, $item, $patron);
         }
 
         if ($allowedActions['bookingRequest']) {
@@ -724,26 +725,29 @@ class Holdings
     }
 
 
+
     /**
-     * Get link for external photocopy request
+     * @param $host
+     * @param array $itemkey
+     * @param array $patron
+     * @return string
      *
-     * @param    String $host
-     * @param    Array $item
-     * @return    String
+     * Copy of above, to test create_photocopy_request-Script
      */
-    protected function getPhotoCopyRequestLink($host, array $item)
+    protected function getPhotoCopyRequestLink($host, array $item, array $patron)
     {
         $queryParams = array(
-            'func' => 'item-photo-request',
-            'doc_library' => $item['adm_code'],
-            'adm_doc_number' => $item['localid'],
-            'item_sequence' => $item['sequencenumber'],
-            'bib_doc_num' => $item['bibsysnumber'],
-            'bib_library' => $item['bib_library'],
+            'itemkey'        => $item['adm_code'] . $item['localid'] . $item['sequencenumber'],
+            'userid'         => $patron['id'],
+            'type'           => 'HOME',
+            'pages'          => 'all',
         );
 
-        //return 'http://' . $host . '/F/?' . http_build_query($queryParams);
+        //Beipiel:
+        //http://alephtest.unibas.ch/cgi-bin/create_photocopy_request.pl?itemkey=DSV51005630100000010&userid=B219684&type=HOME&pages=all
+        //von meinem lokalen client aus habe ich ekine Berechtigung
         return 'http://' . $host . '/cgi-bin/create_photocopy_request.pl?' . http_build_query($queryParams);
+        //return 'http://localhost/Record/Photocopy';
     }
 
     /**
