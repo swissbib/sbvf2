@@ -2,7 +2,7 @@
 
 namespace Swissbib\Module\Config;
 
-return array(
+$config = array(
     'router' => array(
         'routes' => array(
             // ILS location, e.g. baselbern
@@ -370,3 +370,52 @@ return array(
         )
     )
 );
+
+// Define record view routes -- route name => controller
+$recordRoutes = array(
+    'record' => 'Record',
+);
+
+$nonTabRecordActions = array(
+    'Photocopy'
+);
+
+
+foreach ($recordRoutes as $routeBase => $controller) {
+    // catch-all "tab" route:
+    $config['router']['routes'][$routeBase] = array(
+        'type'    => 'Zend\Mvc\Router\Http\Segment',
+        'options' => array(
+            'route'    => '/' . $controller . '/[:id[/:tab]]',
+            'constraints' => array(
+                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+            ),
+            'defaults' => array(
+                'controller' => $controller,
+                'action'     => 'Home',
+            )
+        )
+    );
+    // special non-tab actions that each need their own route:
+    foreach ($nonTabRecordActions as $action) {
+        $config['router']['routes'][$routeBase . '-' . strtolower($action)] = array(
+            'type'    => 'Zend\Mvc\Router\Http\Segment',
+            'options' => array(
+                'route'    => '/' . $controller . '/[:id]/' . $action,
+                'constraints' => array(
+                    'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                    'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                ),
+                'defaults' => array(
+                    'controller' => $controller,
+                    'action'     => $action,
+                )
+            )
+        );
+    }
+}
+
+return $config;
+
+

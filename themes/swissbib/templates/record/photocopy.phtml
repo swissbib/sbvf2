@@ -1,0 +1,91 @@
+<?
+// Set page title
+$this->headTitle($this->translate('request_place_text') . ': ' . $this->driver->getBreadcrumb());
+$record	= $this->driver;
+//$institutionCode = 'A100'; @todo how to get the institutin code here?
+//$holdings	= $record->getInstitutionHoldings($institutionCode);
+
+// Set up breadcrumbs
+//  $this->layout()->breadcrumbs = $this->getLastSearchLink($this->transEsc('Search'), '', '<span>&gt;</span>') .
+//  $this->recordLink()->getBreadcrumb($this->driver) . '<span>&gt;</span><em>' . $this->transEsc('request_place_text') . '</em>';
+
+?>
+
+
+<!-- begin: col1 (sidebar)  -->
+<div id="col1" class="sidebar">
+	<div id="col1_content" class="clearfix">
+		<!-- begin: sidebar -->
+		<!-- end: sidebar -->
+	</div>
+</div>
+<!-- end: col1 (sidebar) -->
+
+<!-- begin: col3 (content) -->
+<div id="col3" class="content">
+	<div id="col3_content" class="clearfix">
+		<!-- begin: content -->
+		<div id="content">
+
+			<h1><?=$this->transEsc('request_place_text')?></h1>
+            <p><?=$this->escapeHtml($record->getTitle())?></p>
+			
+			<?=$this->flashmessages()?>
+
+			<div class="hold-form">
+            <h1> hello Bernd - still something to do... !!</h1>
+                <form class="form" action="" method="post">
+
+                    <div style="margin-left: 40px; width: 200px; height: 60px" class="hidden placeMaskIcon">
+
+
+
+                    </div>
+
+                    <fieldset>
+                            <div class="fieldbox">
+                                    <label class="label" for="giveItName">Versandart:</label>
+                                    <select class="select large" name="giveItName">
+                                        <option value="">wähle etwas aus!</option>
+                                        <option value="postversand">Postversand</option>
+                                        <option value="perEMail">perEmail</option>
+                                    </select>
+                            </div>
+                            <div class="fieldbox">
+                                <label class="label" for="autorindesartikels">Autorin des Artikels:</label>
+                                <textarea class="textarea large" maxlength="100"
+                                          name="autorindesartikels"></textarea>
+                            </div>
+                        <div class="fieldbox">
+                            <label class="label" for="titeldesartikels">Titel des des Artikels:</label>
+                            <textarea class="textarea large" maxlength="100"
+                                      name="titeldesartikels"></textarea>
+                        </div>
+
+                    </fieldset>
+                    <fieldset class="actions">
+                        <div class="fieldbox">
+                            <input class="submit primary showMaskIcon" style="margin-left: 170px" type="submit" name="placeHold" value="<?=$this->transEsc('request_submit_text')?>"/>
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <div class="fieldbox">
+                            <label class="label"><?=$this->transEsc('hold_text1')?>:</label>
+                            <div style="margin-left: 170px">
+                                <ul class="list">
+                                    <li><?=$this->transEsc('hold_text2') ?></li>
+                                    <li><?=$this->transEsc('hold_text3') ?></li>
+                                    <li><?=$this->transEsc('hold_text4') ?> <a href="http://www.ub.unibas.ch/ids-basel-bern/kosten-lieferfristen" target="_blank" ><?=$this->transEsc('hold_text5')?></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </fieldset>
+		</div>
+		<!-- end: content -->
+	</div>
+	<div id="ie_clearing">
+		&nbsp;
+	</div>
+</div>
+<!-- end: col3 (content) -->

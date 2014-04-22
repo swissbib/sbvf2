@@ -736,6 +736,7 @@ class Holdings
      */
     protected function getPhotoCopyRequestLink($host, array $item, array $patron)
     {
+        //datastructure for Query-Params
         $queryParams = array(
             'itemkey'        => $item['adm_code'] . $item['localid'] . $item['sequencenumber'],
             'userid'         => $patron['id'],
@@ -743,10 +744,26 @@ class Holdings
             'pages'          => 'all',
         );
 
+        //datastructure for HashValue
+        $hashValues = array (
+            'itemkey' => $queryParams['itemkey'],
+            'userid' => $queryParams['userid']
+        );
+
+        //complete structure used by URL Helper to build the Query
+        return array(
+            'action' => 'Photocopy',
+            'record' => $this->idItem, //'id',
+            'query' => http_build_query($queryParams + array(
+                    'hashKey' => $this->hmac->generate($this->hmacKeys, $hashValues)
+                )),
+        );
+
+
         //Beipiel:
         //http://alephtest.unibas.ch/cgi-bin/create_photocopy_request.pl?itemkey=DSV51005630100000010&userid=B219684&type=HOME&pages=all
         //von meinem lokalen client aus habe ich ekine Berechtigung
-        return 'http://' . $host . '/cgi-bin/create_photocopy_request.pl?' . http_build_query($queryParams);
+        //return 'http://' . $host . '/cgi-bin/create_photocopy_request.pl?' . http_build_query($queryParams);
         //return 'http://localhost/Record/Photocopy';
     }
 
