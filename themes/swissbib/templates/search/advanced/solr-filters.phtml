@@ -18,7 +18,7 @@ foreach ($this->facetList as $field => $list) {
     );
 }
 
-if (isset($this->dateRangeLimit)) {
+if (isset($this->ranges)) {
     $this->headScript()->appendFile('pubdate_slider.js');
 }
 
@@ -116,11 +116,11 @@ if (isset($this->dateRangeLimit)) {
     <?= $this->render('search/advanced/limit'); ?>
 
     <?php
-    if (isset($this->dateRangeLimit)) {
+    if (isset($this->ranges)) {
         echo $this->render(
             'search/advanced/daterange', array(
                                               'name'           => $dateRangeName,
-                                              'dateRangeLimit' => $this->dateRangeLimit,
+                                              'dateRangeLimit' => $this->ranges,
                                               'params'         => $params
                                          )
         );

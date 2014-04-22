@@ -169,6 +169,30 @@ WFC:
     classif_912:
       - [onephrase, ~]
 
+FormerOwner:
+  DismaxFields:
+    - author_fmo_txt_mv
+  QueryFields:
+    author_fmo_txt_mv:
+      - [and, ~]
+
+Annotator:
+  DismaxFields:
+    - author_ann_txt_mv
+  QueryFields:
+    author_ann_txt_mv:
+      - [and, ~]
+
+RaraPerson:
+  DismaxFields:
+    - author_fmo_txt_mv
+    - author_ann_txt_mv
+  QueryFields:
+    author_ann_txt_mv:
+      - [and, ~]
+    author_fmo_txt_mv:
+      - [and, ~]
+
 Title:
   DismaxHandler: edismax
   DismaxFields:
