@@ -27,7 +27,7 @@ return array(
     'service_manager' => array(
         'factories' => array(
             'Jusbib\Theme\Theme'                => 'Jusbib\Theme\Factory::getJusbibTheme',
-            'Jusbib\ExtendedSolrFactoryHelper'  => 'Jusbib\VuFind\Search::getJusbibSOLRFactoryHelper',
+            'Jusbib\ExtendedSolrFactoryHelper'  => 'Jusbib\VuFind\Search\Factory::getJusbibSOLRFactoryHelper',
 
         )
     ),

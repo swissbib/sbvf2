@@ -27,7 +27,7 @@ swissbib.AdvancedSearch = {
      * @return void
      */
     initJsTree: function () {
-        jQuery("#classification-tree").jstree({
+        jQuery(".classification-tree").jstree({
             "plugins": [ "themes", "html_data", "ui" ],
             "themes": {
                 "url": path + '/themes/blueprint/js/jsTree/themes/vufind/style.css',

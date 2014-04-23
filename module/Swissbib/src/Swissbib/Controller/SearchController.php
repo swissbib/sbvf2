@@ -118,8 +118,8 @@ class SearchController extends VuFindSearchController
         $isCatTreeElementConfigured = !empty($isCatTreeElementConfigured) && ($isCatTreeElementConfigured == "true" || $isCatTreeElementConfigured == "1") ? "1" : 0;
 
         if ($isCatTreeElementConfigured) {
-            $treeGenerator                  = new SimpleTreeGenerator($viewModel->facetList['navDrsys']['list']);
-            $viewModel->classificationTree  = $treeGenerator->getTree();
+            $treeGenerator                   = $this->serviceLocator->get('Swissbib\Hierarchy\SimpleTreeGenerator');
+            $viewModel->classificationTree   = $treeGenerator->getTree($viewModel->facetList['navDrsys_Gen']['list'], 'navDrsys_Gen');
         }
 
         return $viewModel;

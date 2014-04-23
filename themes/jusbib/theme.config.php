@@ -6,7 +6,7 @@ return array(
     ),
     'helpers' => array(
         'factories' => array(
-            'searchoptions' => 'Jusbib\VuFind\Search::getJusbibSearchOptionsForHelperOptions'
+            'searchoptions' => 'Jusbib\VuFind\Search\Factory::getJusbibSearchOptionsForHelperOptions'
         )
     )
 );

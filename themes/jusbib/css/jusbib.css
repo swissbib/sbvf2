@@ -35,10 +35,14 @@
 }
 
 /** adv. search: classification tree */
-#classification-tree.jstree-default li.selected > a,
-#classification-tree.jstree-default li a:hover {
+.classification-tree.jstree-default li.selected > a,
+.classification-tree.jstree-default li a:hover {
     background: #0279AA;
     border-color: #0279AA;
+}
+
+#tabbed-tree .ui-widget-content {
+    background: #fff;
 }
 
 /** Slider blue */

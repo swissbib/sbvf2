@@ -1,35 +1,34 @@
 <?php
 
-
 namespace Swissbib\Hierarchy;
 
+use Zend\Cache\Storage\Adapter\Filesystem as ObjectCache;
 
 class SimpleTreeGenerator {
 
+    /**
+     * @var ObjectCache
+     */
+    private $objectCache;
+
+
 
     /**
-     * @var mixed
+     * @param ObjectCache $objectCache
      */
-    private $facets;
-
-
-
-    /**
-     * @param $facets
-     */
-    public function __construct($facets) {
-        $this->facets = $facets;
+    public function __construct(ObjectCache $objectCache) {
+        $this->objectCache = $objectCache;
     }
 
 
 
     /**
-     * @param        $datas
-     * @param string $currentNode
+     * @param array     $datas
+     * @param string    $currentNode
      *
      * @return string
      */
-    private function generatePageTree(&$datas, $currentNode = ""){
+    private function generatePageTree(array &$datas, $currentNode = ""){
         $tree = array();
 
         $currentNodeHead = explode(".", $currentNode);
@@ -64,7 +63,7 @@ class SimpleTreeGenerator {
      *
      * @return array
      */
-    private function orderAndFilter($arrayList) {
+    private function orderAndFilter(array $arrayList = array()) {
         $sorted = array();
 
         foreach ($arrayList as $classification) {
@@ -89,10 +88,22 @@ class SimpleTreeGenerator {
 
 
     /**
-     * @return array
+     * @param   array $facets
+     * @param   string $treeKey
+     *
+     * @return  array
      */
-    public function getTree() {
-        return $this->generatePageTree($this->orderAndFilter($this->facets));
+    public function getTree(array $facets = array(), $treeKey = '') {
+        $cacheTreeId    = 'simpleTree-' . $treeKey;
+        $cachedTree     = $this->objectCache->getItem($cacheTreeId);
+
+        if (is_array($cachedTree))  return $cachedTree;
+        if ($treeKey === '')        return $this->generatePageTree($this->orderAndFilter($facets));
+
+        $tree = $this->generatePageTree($this->orderAndFilter($facets));
+        $this->objectCache->setItem($cacheTreeId, $tree);
+
+        return $tree;
     }
 
 } 
