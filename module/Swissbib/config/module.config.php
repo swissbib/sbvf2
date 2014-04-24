@@ -352,7 +352,11 @@ return array(
                 ),
                 'swissbibsingle' => array(
                     'swissbib'
+                ),
+                'bootstrap' => array(
+                    'swissbib'
                 )
+
             ),
             // Configuration of tabs
             'tabs'   => array(
