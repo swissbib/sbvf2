@@ -35,8 +35,8 @@ if (isset($this->ranges)) {
             //at initialization of the FavoritesManager (e.g.: conditions if the institutions are already loaded) is partly implemented in the Controller
             //This should be moved behind a Service Facade. The ServiceFacade could then be used by the advanced advanced search functionality
             ?>
-       
-            <?php if ($facet['field'] === 'navDrsys_Gen' || $facet['field'] === 'userInstitutions') continue; ?>
+
+            <?php if ($facet['field'] === 'navDrsys_Gen' || $facet['field'] === 'navDrsys_D' || $facet['field'] === 'userInstitutions') continue; ?>
             <div class="fieldbox">
                 <?php $fieldKey = str_replace(' ', '', $facet['field']); ?>
 

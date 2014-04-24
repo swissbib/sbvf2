@@ -23,6 +23,7 @@ return array(
   'Swissbib\Filter\TemplateFilenameFilter'                      => __DIR__ . '/Swissbib/Filter/TemplateFilenameFilter.php',
   'Swissbib\Helper\BibCode'                                     => __DIR__ . '/Swissbib/Helper/BibCode.php',
   'Swissbib\Hierarchy\SimpleTreeGenerator'                      => __DIR__ . '/Swissbib/Hierarchy/SimpleTreeGenerator.php',
+  'Swissbib\Hierarchy\MultiTreeGenerator'                       => __DIR__ . '/Swissbib/Hierarchy/MultiTreeGenerator.php',
   'Swissbib\Highlight\SolrConfigurator'                         => __DIR__ . '/Swissbib/Highlight/SolrConfigurator.php',
   'Swissbib\Libadmin\Exception\Data'                            => __DIR__ . '/Swissbib/Libadmin/Exception/Data.php',
   'Swissbib\Libadmin\Exception\Exception'                       => __DIR__ . '/Swissbib/Libadmin/Exception/Exception.php',
