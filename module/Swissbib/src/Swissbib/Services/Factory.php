@@ -31,6 +31,7 @@
 
 namespace Swissbib\Services;
 use Zend\ServiceManager\ServiceManager;
+use Swissbib\VuFind\Recommend\FavoriteFacets;
 
 
 
@@ -123,12 +124,23 @@ class Factory
             LOCAL_OVERRIDE_DIR . '/languages/union',
 
         );
+        //$translator->getPluginManager()->setService(
+        //    'extendedini',
+        //    new \VuFind\I18n\Translator\Loader\ExtendedIni(
+        //        $pathStack, $config->Site->language
+        //    )
+        //);
+
+        //Todo: discuss this issue with VuFind List
+
         $translator->getPluginManager()->setService(
             'extendedini',
-            new \VuFind\I18n\Translator\Loader\ExtendedIni(
+            new \Swissbib\VuFind\l18n\Translator\Loader\ExtendedIni(
                 $pathStack, $config->Site->language
             )
         );
+
+
 
         // Set up language caching for better performance:
         try {
@@ -147,5 +159,30 @@ class Factory
 
         return $translator;
     }
+
+    /**
+     * Factory for FavoriteFacets module.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return FavoriteFacets
+     */
+    public static function getFavoriteFacets(ServiceManager $sm)
+    {
+        /*
+        the VuFind mechanism isn't flexible enough. They changed the mechanism displaying "Merklisten" (favorite lists in VF terminology)
+        because they should be present on all the pages after users have logged in. This is not compatible with our current UI.
+        VF core is using only tags as mainfacets
+        $this->mainFacets = ($tagSetting && $tagSetting !== 'disabled')
+            ? array('tags' => 'Your Tags') : array();
+        we need tags and lists for our current UI ....
+        solve this in RD design project
+        */
+
+        return new FavoriteFacets(
+            $sm->getServiceLocator()->get('VuFind\Config')
+        );
+    }
+
 
 }
