@@ -268,6 +268,11 @@ return array(
                     'solr'          =>  'Swissbib\VuFind\Autocomplete\Factory::getSolr',
                 ),
             ),
+            'recommend' => array(
+                'factories' => array(
+                    'favoritefacets' => 'Swissbib\Services\Factory::getFavoriteFacets',
+                ),
+            ),
 
 
             'recorddriver'             => array(
