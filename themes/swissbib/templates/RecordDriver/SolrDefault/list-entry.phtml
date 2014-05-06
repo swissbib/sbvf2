@@ -35,10 +35,8 @@
         $viewRecord           = $this->record($record);
         $thumbnail            = $viewRecord->getThumbnail('small');
         $thumbnailSrc         = $thumbnail ? $thumbnail : $this->url('cover-unavailable');
-        $titleStatement       = $record->getTitleStatement(true);
         $shortTitle           = $record->getShortTitle();
-        $subtitle             = $viewRecord->getSubtitle($titleStatement);
-        $responsible          = $viewRecord->getResponsible($titleStatement, $record);
+        $responsible          = $record->getAuthor();
         $publishers           = $record->getPublishers(true);
         $publicationDate      = $this->publicationDateSummon($record->getPublicationDates());
         $hostitem             = $record->getContainerTitle();
