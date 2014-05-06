@@ -1,7 +1,7 @@
 /*
  swissbib-fnel.js
  JavaScript fuer Neuerwerbungslistenabfrage aus einer Webseite auf swissbib Basel Bern
- 05.05.2014 / andres.bigger@unibas.ch
+ 05.05.2014 / andreas.bigger@unibas.ch
 
  Die Funktion fnel erwartet mindestens einen Bibliothekscode (vierstellig)
  und keinen oder beliebig viele Fachcodes (zweistellig)
