@@ -138,7 +138,7 @@ class Params extends VuFindSolrParams
         /** @var String[] $favoriteInstitutions */
         $favoriteInstitutions = $favoritesManger->getUserInstitutions();
 
-        if (sizeof($favoriteInstitutions > 0)) {
+        if (sizeof($favoriteInstitutions) >  0) {
             //facet parameter has to be true in case it's false
             $backendParams->set("facet", "true");
 
