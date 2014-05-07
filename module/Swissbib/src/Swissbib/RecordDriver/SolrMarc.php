@@ -1518,8 +1518,8 @@ class SolrMarc extends VuFindSolrMarc
 
     public function getOnlineStatus()
     {
-        $filter = $this->fields['filter_str_mv'];
-        return in_array('ONL', $filter) ? true : false;
+        $filter = array_key_exists('filter_str_mv',$this->fields) ? $this->fields['filter_str_mv'] : array();
+        return in_array('ONL', $filter)  ? true : false;
     }
 
 
