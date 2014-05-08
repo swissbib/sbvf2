@@ -119,17 +119,16 @@ class AvailabilityInfo extends AbstractHelper
                     $info = $escapedTranslation($statusfield);
                     break;
                 case self::UNAVAILABLE:
-
-                    $infotext = $escapedTranslation($statusfield);
-                    $info = "<div class='availability_notok'>" . "$infotext" . "</div>";
-                    break;
                 case self::SUBSTITUTE:
 
-                    $infotext = $escapedTranslation($statusfield);
+                $infotext = $escapedTranslation($statusfield);
                     $info = "<div class='availability_notok'>" . "$infotext" . "</div>";
+                    break;
                 default:
-                    //any other value defined in the availabiluty service
-                    //should be translated in the language file on vufind site
+                    /**
+                     * Any other value defined in the availability service
+                     * should be translated in the language files of VuFind (local/languages/)
+                     */
                     $info = $escapedTranslation($statusfield);
             }
 
