@@ -17,6 +17,7 @@ class AvailabilityInfo extends AbstractHelper
     const INPROCESS = "inProcess";
     const ONLINE_AVAILABLE = "onlineAvailable"; // by now only for ETH, could be enhanced for other library systems (labels for LoanStatus needed!)
     const UNAVAILABLE = "unavailable"; // vermisst, in Reparatur, abbestellt: Exemplar für Benutzer verloren
+    const SUBSTITUTE = "substitute";
 
     /**
      * Convert availability info into html string
@@ -122,6 +123,10 @@ class AvailabilityInfo extends AbstractHelper
                     $infotext = $escapedTranslation($statusfield);
                     $info = "<div class='availability_notok'>" . "$infotext" . "</div>";
                     break;
+                case self::SUBSTITUTE:
+
+                    $infotext = $escapedTranslation($statusfield);
+                    $info = "<div class='availability_notok'>" . "$infotext" . "</div>";
                 default:
                     //any other value defined in the availabiluty service
                     //should be translated in the language file on vufind site
