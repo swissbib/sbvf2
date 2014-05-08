@@ -144,7 +144,7 @@
             <?php endif; ?>
         </div>
         <!-- COINS -->
-        <span class="Z3988" title="<?= $this->escapeHtml($this->driver->getOpenURL()) ?>"></span>
+        <span class="Z3988" title="<?= $this->escapeHtml($this->driver->getOpenURL($this)) ?>"></span>
 		<? if (!empty($id)): ?>
 			<div class="print">
 				<h6><?=$this->transEsc('Item_ID')?>:</h6> <span><?=$id ?> </span>

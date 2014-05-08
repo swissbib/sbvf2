@@ -120,7 +120,7 @@ class SolrMarc extends VuFindSolrMarc
      * @see        getFormats()
      * @return    String
      */
-    public function getOpenURL()
+    public function getOpenURL($view)
     {
         // get the coinsID from config.ini or default to swissbib.ch
         $coinsID = $this->mainConfig->OpenURL->rfr_id;
@@ -128,10 +128,8 @@ class SolrMarc extends VuFindSolrMarc
             $coinsID = 'swissbib.ch';
         }
 
-        // Get a representative publication date:
-        $pubDate = $this->getPublicationDates();
-
-        $pubDate = empty($pubDate) ? '' : $pubDate[1];
+        // Get a representative publication date, using the view helper:
+        $pubDate = $view->publicationDateMarc($this->getPublicationDates());
 
         // Start an array of OpenURL parameters:
         $params = array(
