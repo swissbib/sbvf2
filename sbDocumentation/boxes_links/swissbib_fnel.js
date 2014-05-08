@@ -1,5 +1,5 @@
 /*
- swissbib-fnel.js
+ swissbib_fnel.js
  JavaScript fuer Neuerwerbungslistenabfrage aus einer Webseite auf swissbib Basel Bern
  05.05.2014 / andreas.bigger@unibas.ch
 
