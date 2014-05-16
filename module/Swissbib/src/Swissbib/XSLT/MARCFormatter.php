@@ -86,8 +86,11 @@ class MARCFormatter implements ServiceManagerAwareInterface
     protected static function getInstitutionFromNodeText($nodeText)
     {
         preg_match('/\(([a-zA-Z0-9]+)\)/', $nodeText, $matches);
-        $match = $matches[1];
 
+        if (count($matches) == 0) {
+            return '';
+        }
+        $match = $matches[1];
         if (!empty($match)) {
             foreach (self::$institutionURLs as $key => $value) {
                 if ($match === $key) {

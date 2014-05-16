@@ -35,6 +35,7 @@
 
 namespace Swissbib\VuFind\Search\Factory;
 
+use Swissbib\VuFind\Search\Backend\Solr\LuceneSyntaxHelper;
 use Swissbib\VuFind\Search\Solr\InjectSwissbibSpellingListener;
 use VuFind\Search\Factory\SolrDefaultBackendFactory as VuFindSolrDefaultBackendFactory;
 use VuFind\Search\Solr\V4\ErrorListener;
@@ -151,24 +152,31 @@ class SolrDefaultBackendFactory extends VuFindSolrDefaultBackendFactory
      *
      * @return QueryBuilder
      */
-/*    protected function createQueryBuilder()
+    protected function createQueryBuilder()
     {
         $specs   = $this->loadSpecs();
-        $builder = new QueryBuilder($specs);
+        $config = $this->config->get('config');
+        $defaultDismax = isset($config->Index->default_dismax_handler)
+            ? $config->Index->default_dismax_handler : 'dismax';
+        $builder = new QueryBuilder($specs, $defaultDismax);
 
         // Configure builder:
         $search = $this->config->get($this->searchConfig);
-        $builder->caseSensitiveRanges
-            = isset($search->General->case_sensitive_ranges)
-            ? $search->General->case_sensitive_ranges : true;
-        $builder->caseSensitiveBooleans
+        $caseSensitiveBooleans
             = isset($search->General->case_sensitive_bools)
             ? $search->General->case_sensitive_bools : true;
+        $caseSensitiveRanges
+            = isset($search->General->case_sensitive_ranges)
+            ? $search->General->case_sensitive_ranges : true;
+        $helper = new LuceneSyntaxHelper (
+            $caseSensitiveBooleans, $caseSensitiveRanges
+        );
+        $builder->setLuceneHelper($helper);
 
         return $builder;
     }
 
-*/
+
 
 
 }

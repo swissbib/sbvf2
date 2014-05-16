@@ -150,9 +150,9 @@ FRBR:
 
 WLC:
   DismaxFields:
-    - localcode_txt_mv
+    - localcode_isn_mv
   QueryFields:
-    localcode_txt_mv:
+    localcode_isn_mv:
       - [onephrase, ~]
 
 WNEL:

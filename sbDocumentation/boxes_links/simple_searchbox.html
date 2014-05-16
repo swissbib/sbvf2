@@ -1,0 +1,30 @@
+<!DOCTYPE html
+PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <title>Simple Searchbox</title>
+</head>
+<body>
+<div style="padding:10px;width:880px; height:25px;background-color:#FF9900">
+      <form method="get" action="http://devbabe.swissbib.ch/Search/Results" name="searchForm" id="searchForm">
+      <label for="searchForm_lookfor"><strong>devbabe</strong></label>
+      <input style="padding:1px 1px 1px 17px; background-color:#FFFFFF" id="searchForm_lookfor" type="text" name="lookfor" size="50" value="" class="autocomplete searcher:Solr typeSelector:searchForm_type"/>
+      <label for="searchForm_type"><strong>Kategorie</strong></label>
+      <select id="searchForm_type" name="type">
+        <option value="AllFields">Alle Felder</option>
+        <option value="Title">Titel</option>
+        <option value="Author">Autor</option>
+        <option value="Subject">Thema</option>
+        <option value="FormerOwner">Vorbesitzer</option>
+        <option value="Annotator">Annotator</option>
+        <option value="RaraPerson">Rara Person</option>
+      </select>
+      <input type="submit" name="submit" value="Find" formtarget="_blank" />
+      </form>
+</div>
+</body>
+</html>

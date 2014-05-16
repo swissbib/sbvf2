@@ -5,8 +5,8 @@ $institutions    = $driver->getInstitutions();
 $institutions    = $this->filterUntranslatedInstitutions($institutions);
 $amountHoldings  = sizeof($institutions);
 $urldisplay      = $this->urlDisplay($driver);
-$digibernURL     = preg_grep('/digibern/', $urldisplay['urls'][0]);
-$retrosURL       = preg_grep('/seals/', $urldisplay['urls'][0]);
+$digibernURL     =  (is_array($urldisplay['urls']) && count($urldisplay['urls']) > 0) ?  preg_grep('/digibern/', $urldisplay['urls'][0]) : false;
+$retrosURL       = (is_array($urldisplay['urls']) && count($urldisplay['urls']) > 0) ? preg_grep('/seals/', $urldisplay['urls'][0]) : false;
 
 ?>
 

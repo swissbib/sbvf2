@@ -88,7 +88,7 @@ $memorizeLink = $this->recordLink()->getActionUrl($this->driver, 'Save');
                 </a>
             <? endif; ?>
         </div>
-        <span class="Z3988" title="<?= $this->escapeHtml($this->driver->getOpenURL()) ?>"></span>
+        <span class="Z3988" title="<?= $this->escapeHtml($this->driver->getOpenURL($this)) ?>"></span>
 
         <? if (!empty($uniqueID)): ?>
             <div class="print">
