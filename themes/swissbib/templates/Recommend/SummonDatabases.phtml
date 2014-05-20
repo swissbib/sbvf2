@@ -1,7 +1,14 @@
 <!-- Summons Database Recommendations -->
 <?	/** @var	\VuFind\Search\Summon\Results	$results */
 $summonDatabases = $results->getDatabaseRecommendations();
-if (!empty($summonDatabases)): ?>
+?>
+<? if ($external === true): ?>
+    <div>
+        <h2>Sie sind ausserhalb der IP-Range der Unis Basel oder Bern</h2>
+    </div>
+<? endif; ?>
+
+<? if (!empty($summonDatabases)): ?>
 	<?php if(count($summonDatabases)>0): ?>
 		<div class="authorbox summondbrecommendations">
 		  <h2><?=$this->transEsc('summon_database_recommendations')?></h2>

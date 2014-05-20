@@ -71,6 +71,11 @@ class SearchController extends VuFindSearchController
             $this->rememberSearch = false;
         }
 
+        // check if client is inside Basel / Berne universities
+        $targetsProxy = $this->serviceLocator->get('Swissbib\TargetsProxy\TargetsProxy');
+        $targetsProxy->setSearchClass('Summon');
+        $external = $targetsProxy->detectTarget() === false ? true : false;
+
         $resultViewModel = parent::resultsAction();
 
         if ($resultViewModel instanceof Response) {
@@ -84,6 +89,8 @@ class SearchController extends VuFindSearchController
 
         $resultViewModel->setVariable('allTabsConfig', $allTabsConfig);
         $resultViewModel->setVariable('activeTabKey', $activeTabKey);
+        // add IP-range-information to view model
+        $resultViewModel->setVariable('external', $external);
         $resultViewModel->setVariable('activeTabConfig', $activeTabConfig);
         $resultViewModel->setVariable('facetsConfig', $resultsFacetConfig);
 
