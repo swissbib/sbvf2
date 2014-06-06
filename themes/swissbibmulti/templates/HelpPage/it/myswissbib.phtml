@@ -36,15 +36,18 @@
 <h3>Preferite</h3>
 <p>Se vuoi aggiungere una biblioteca alle <i>Preferite</i> puoi farlo attraverso <i>Il mio swissbib - Preferite</i>
     oppure cliccando sull'icona del <img
-        src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_favorit.gif') ?>"
-        alt="Aggiungi alle mie preferite"> nel catalogo. Nella tua lista di risultati queste biblioteche sono marcate
-    con un <img src="<?= $this->basePath('themes/swissbib/images/icon_favorit_library.gif') ?>"
-                alt=" "> e possono essere usate come filtro.</p>
+        src="<?= $this->basePath('themes/swissbib/images/icon_favorit_library.gif') ?>"
+        alt="<?= $this->transEsc('mylibraries.add')?>"
+        title="<?= $this->transEsc('mylibraries.add')?>"> nel catalogo. Nella tua lista di risultati queste biblioteche sono marcate con un <img
+        src="<?= $this->basePath('/themes/swissbib/images/icon_favorit_library.gif') ?>"
+        alt="Favorit"> e possono essere usate come filtro.</p>
 
 <h3>Liste</h3>
 <ul class="list">
-    <li><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_notepad_add.gif') ?>"
-             alt="Aggiungi a una lista"> Dopo il login puoi salvare dei titoli nelle tue liste.
+    <li>Dopo il login puoi salvare dei titoli nelle tue liste: <br />
+        <img src="<?= $this->basePath('themes/swissbibmulti/css/img/icon_notepad_add.gif') ?>"
+             alt="<?= $this->transEsc('memorizelistadd')?>"
+             title="<?= $this->transEsc('memorizelistadd')?>">
     </li>
     <li>Se crei una nuova lista mentre stai salvando un titolo dovrai cliccare due volte su <i>Salva</i>.</li>
     <li>Pubblico = Lista visibile per tutti che conoscono l'URL</li>
