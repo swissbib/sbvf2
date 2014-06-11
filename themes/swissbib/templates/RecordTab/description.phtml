@@ -169,6 +169,7 @@ $contDates  = $resultItem->getContResourceDates();
 $diss       = $resultItem->getDissertationNotes();
 $bib        = $resultItem->getBibliographyNotes();
 $access     = $resultItem->getAccessRestrictions();
+$related    = $resultItem->getRelationshipNotes();
 $credits    = $resultItem->getProductionCredits();
 $origtitle  = $resultItem->getOriginalTitle();
 $perfomer   = $resultItem->getPerformerNote();
@@ -179,8 +180,8 @@ $copynotes  = $resultItem->getCopyNotes();
 $system     = $resultItem->getSystemDetails();
 ?>
 <? if (!empty($notes) or !empty($freq) or !empty($contDates) or !empty($diss) or
-    !empty($bib) or !empty($access) or !empty($credits) or !empty($awards) or
-    !empty($citenotes) or !empty($orignotes) or !empty($copynotes) or
+    !empty($bib) or !empty($access) or !empty($related) or !empty($credits) or
+    !empty($awards) or !empty($citenotes) or !empty($orignotes) or !empty($copynotes) or
     !empty($origtitle) or !empty($perfomer) or !empty($system)
 ): ?>
     <? $contentDisplayed = true; ?>
@@ -238,6 +239,15 @@ $system     = $resultItem->getSystemDetails();
             <h4><?= $this->transEsc('Access') ?>: </h4>
             <p>
                 <? foreach ($access as $field): ?>
+                    <?= $this->escapeHtml($field) ?><br/>
+                <? endforeach; ?>
+            </p>
+        <? endif; ?>
+        <? /* Display linking entry notes (field 580) */ ?>
+        <? if (!empty($related)): ?>
+            <h4><?= $this->transEsc('Related Items') ?>: </h4>
+            <p>
+                <? foreach ($related as $field): ?>
                     <?= $this->escapeHtml($field) ?><br/>
                 <? endforeach; ?>
             </p>

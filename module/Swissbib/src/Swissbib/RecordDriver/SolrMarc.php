@@ -2025,6 +2025,81 @@ class SolrMarc extends VuFindSolrMarc
         return isset($this->fields['time_indexed']) ? $this->fields['time_indexed'] : '';
     }
 
+    /**
+     * Get all record links related to the current record. Each link is returned as
+     * array.
+     * Format:
+     * array(
+     *        array(
+     *               'title' => label_for_title
+     *               'value' => link_name
+     *               'link'  => link_URI
+     *        ),
+     *        ...
+     * )
+     *
+     * @todo osc: remove this method as soon as the pull request https://github.com/vufind-org/vufind/pull/165 is accepted
+     *
+     * @return null|array
+     */
+    public function getAllRecordLinks()
+    {
+        // Load configurations:
+        $fieldsNames = isset($this->mainConfig->Record->marc_links)
+            ? explode(',', $this->mainConfig->Record->marc_links) : array();
+        $useVisibilityIndicator
+            = isset($this->mainConfig->Record->marc_links_use_visibility_indicator)
+            ? $this->mainConfig->Record->marc_links_use_visibility_indicator : true;
+
+        $retVal = array();
+        foreach ($fieldsNames as $value) {
+            $value = trim($value);
+            $fields = $this->marcRecord->getFields($value);
+            if (!empty($fields)) {
+                foreach ($fields as $field) {
+                    // Check to see if we should display at all
+                    if ($useVisibilityIndicator) {
+                        $visibilityIndicator = $field->getIndicator('1');
+                        if ($visibilityIndicator == '1') {
+                            continue;
+                        }
+                    }
+
+                    // Normalize blank relationship indicator to 0:
+                    $relationshipIndicator = $field->getIndicator('2');
+                    if ($relationshipIndicator == ' ') {
+                        $relationshipIndicator = '0';
+                    }
+
+                    // Assign notes based on the relationship type
+                    switch ($value) {
+                        case '780':
+                            if (in_array($relationshipIndicator, range('0', '7'))) {
+                                $value .= '_' . $relationshipIndicator;
+                            }
+                            break;
+                        case '785':
+                            if (in_array($relationshipIndicator, range('0', '8'))) {
+                                $value .= '_' . $relationshipIndicator;
+                            }
+                            break;
+                    }
+
+                    // Get data for field
+                    $tmp = $this->getFieldData($field, $value);
+                    if (is_array($tmp)) {
+                        $retVal[] = $tmp;
+                    }
+                }
+            }
+        }
+        if (empty($retVal)) {
+            $retVal = null;
+        }
+        return $retVal;
+    }
+
+
 
     /**
      *
