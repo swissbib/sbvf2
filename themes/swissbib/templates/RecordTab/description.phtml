@@ -18,6 +18,7 @@ $viewRecord = $this->record($resultItem);
 
 
 $subjectVocabularies = $resultItem->getAllSubjectVocabularies(true);
+$placeNames = $resultItem->getHierarchicalPlaceNames();
 
 /* Display Standard-IDs */
 $isbns  = $this->driver->getISBNs();
@@ -327,6 +328,20 @@ $system     = $resultItem->getSystemDetails();
     </div>
 <? endif; ?>
 
+<?
+/** == Rara-Elements (place name, special entries == */
+?>
+
+<? if (sizeof($placeNames)): ?>
+    <div class="details">
+        <h4><?= $this->transEsc('PublicationPlace') ?>: </h4>
+        <p>
+            <? foreach ($placeNames as $field): ?>
+                <?= $this->escapeHtml($field) ?><br />
+            <? endforeach; ?>
+        </p>
+    </div>
+<? endif; ?>
 
 <?
 /** ==Subject Headings== */

@@ -1404,6 +1404,32 @@ class SolrMarc extends VuFindSolrMarc
 
 
     /**
+     * Get hierarchical place names
+     *
+     * @return Array
+     */
+
+    public function getHierarchicalPlaceNames()
+    {
+        $fields = $this->marcRecord->getFields(752);
+        if (!$fields) {
+            return array();
+        }
+
+        $placeNames = array();
+        foreach ($fields as $field) {
+            $subfields = $field->getSubfields();
+            foreach ($subfields as $subfield) {
+                if (!is_numeric($subfield->getCode())) {
+                    $current[] = $subfield->getData();
+                }
+            }
+            $placeNames[] = implode(' -- ', $current);
+        }
+        return $placeNames;
+    }
+
+    /**
      * Get host item entry
      *
      * @return    Array
