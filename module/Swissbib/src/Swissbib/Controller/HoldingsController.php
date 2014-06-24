@@ -82,7 +82,7 @@ class HoldingsController extends BaseController
         $bib = $dummyHoldingItem['bib_library'];
         $resourceFilters = $aleph->getResourceFilters($resourceId);
         $extendingOptions = array(
-            'availability' => true
+            'availability' => false
         );
 
         // Add missing data to holding items
