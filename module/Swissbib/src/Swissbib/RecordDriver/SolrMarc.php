@@ -1335,7 +1335,7 @@ class SolrMarc extends VuFindSolrMarc
         );
         $fieldMapping = array(
             'a' => 'a',
-            'b' => 'b',
+            '_b' => 'b',
             'c' => 'c',
             'd' => 'd',
             'e' => 'e',
@@ -1343,10 +1343,10 @@ class SolrMarc extends VuFindSolrMarc
             'g' => 'g',
             'h' => 'h',
             't' => 't',
-            'v' => 'v',
-            'x' => 'x',
-            'y' => 'y',
-            'z' => 'z'
+            '_v' => 'v',
+            '_x' => 'x',
+            '_y' => 'y',
+            '_z' => 'z'
         );
 
         // Add control fields to mapping list
@@ -1724,10 +1724,11 @@ class SolrMarc extends VuFindSolrMarc
                 $subFields = $field->getSubfields((string)$code);
 
                 if (sizeof($subFields)) {
-                    $subFieldValues[$name] = array();
-
+                    //$subFieldValues[$name] = array();
+                    $i = 1;
                     foreach ($subFields as $subField) {
-                        $subFieldValues[$name][] = $subField->getData();
+                        $subFieldValues[$i . $name] = $subField->getData();
+                        $i++;
                     }
                 }
             } else { // Normal single field

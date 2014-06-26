@@ -354,12 +354,6 @@ $system     = $resultItem->getSystemDetails();
             <ul class="vocabularyList vocabulary<?= ucfirst($vocabulary) ?>">
                 <? foreach ($fieldsData as $fieldIndex => $fieldData): ?>
                     <? foreach ($fieldData as $fieldValues): ?>
-<?
-//								// Optional: Filter out numeric fields directly here in template
-//							$fieldValues = array_filter($fieldValues, function($value) {
-//																			return !is_numeric($value);
-//																		});
-                        ?>
                         <li class="type<?= $fieldIndex ?>"><?= $this->escapeHtml(implode(' > ', $fieldValues)) ?></li>
                     <? endforeach; ?>
                 <? endforeach; ?>
