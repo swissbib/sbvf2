@@ -1424,6 +1424,7 @@ class SolrMarc extends VuFindSolrMarc
         $placeNames = array();
         foreach ($fields as $field) {
             $subfields = $field->getSubfields();
+            $current = array();
             foreach ($subfields as $subfield) {
                 if (!is_numeric($subfield->getCode())) {
                     $current[] = $subfield->getData();
