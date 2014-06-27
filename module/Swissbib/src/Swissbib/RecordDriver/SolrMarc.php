@@ -1416,21 +1416,18 @@ class SolrMarc extends VuFindSolrMarc
 
     public function getHierarchicalPlaceNames()
     {
-        $fields = $this->marcRecord->getFields(752);
-        if (!$fields) {
-            return array();
-        }
-
         $placeNames = array();
-        foreach ($fields as $field) {
-            $subfields = $field->getSubfields();
-            $current = array();
-            foreach ($subfields as $subfield) {
-                if (!is_numeric($subfield->getCode())) {
-                    $current[] = $subfield->getData();
+        if ($fields = $this->marcRecord->getFields('752')) {
+            foreach ($fields as $field) {
+                $subfields = $field->getSubfields();
+                $current = array();
+                foreach ($subfields as $subfield) {
+                    if (!is_numeric($subfield->getCode())) {
+                        $current[] = $subfield->getData();
+                    }
                 }
+                $placeNames[] = implode(' -- ', $current);
             }
-            $placeNames[] = implode(' -- ', $current);
         }
         return $placeNames;
     }
