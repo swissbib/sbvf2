@@ -1496,7 +1496,7 @@ class SolrMarc extends VuFindSolrMarc
     public function getPhysicalDescriptions($asStrings = true)
     {
         $descriptions = $this->getMarcSubFieldMaps(300, array(
-            '_a' => 'extent',
+            'a' => 'extent', // Aufgrund von Meldung von Chantal, habe ich als Quick-Fix das Unterfeld "a" von repeatable auf non-repeatable gestellt. Die Anpassung steht in Zusammenhang mit Olivers Anpassung an "getMappedFieldData"
             'b' => 'details',
             '_c' => 'dimensions',
             'd' => 'material_single',
