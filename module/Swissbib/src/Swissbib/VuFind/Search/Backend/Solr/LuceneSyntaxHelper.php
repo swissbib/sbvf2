@@ -25,7 +25,7 @@ class LuceneSyntaxHelper extends VFCoreLuceneSyntaxHelper {
         //in case you want more patterns to remove
         //$patterns = array("/\xE2\x80\x93/", "/Das/");
 
-        $input=  preg_replace($patterns,'',$input);
+        $input=  preg_replace($patterns,' ',$input);
 
         return $input;
 
