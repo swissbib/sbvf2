@@ -261,6 +261,7 @@ return array(
             'auth'                     => array(
                 'invokables' => array(
                     'shibboleth'    => 'Swissbib\VuFind\Auth\Shibboleth',
+                    'shibfake'    => 'Swissbib\VuFind\Auth\ShibFake',
                 ),
             ),
             'autocomplete' => array(
