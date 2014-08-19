@@ -28,6 +28,7 @@ AllFields:
     - isbn
     - issn
     - localcode_isn_mv                     # local codes (field 909)
+    - idscode_txt_mv                       # IDS codes (field 908, IDS MARC 906/907)
     - id
   DismaxParams:
     - [pf, 'title_short^1000']
@@ -80,6 +81,8 @@ AllFields:
     fulltext:
       - [or, ~]
     localcode_isn_mv:
+      - [and, ~]
+    idscode_txt_mv:
       - [and, ~]
 
 Author:
