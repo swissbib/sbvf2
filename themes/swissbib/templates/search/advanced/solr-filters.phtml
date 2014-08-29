@@ -78,18 +78,18 @@ if (isset($this->ranges)) {
                         <?php if (strtolower($facet['field']) === "format") : ?>
 
                         <option value='format:"*K01*"' title="article"><?= $this->transEsc('*K01*') ?></option>
-                        <option value='format:"BK02*"' title="book"><?= $this->transEsc('BK02*') ?></option>
+                        <option value='format:"*K02*"' title="book"><?= $this->transEsc('BK02*') ?></option>
                         <option value='format:"*R0*"' title="continuing"><?= $this->transEsc('*R0*') ?></option>
-                        <option value='format:"CL0*"' title="collection"><?= $this->transEsc('CL0*') ?></option>
-                        <option value='format:"MU01*"' title="sheet_music"><?= $this->transEsc('MU01*') ?></option>
-                        <option value='format:"MU03*"' title="sound"><?= $this->transEsc('MU03*') ?></option>
-                        <option value='format:"MU04*"' title="music"><?= $this->transEsc('MU04*') ?></option>
-                        <option value='format:"MP0*"' title="map"><?= $this->transEsc('MP0*') ?></option>
-                        <option value='format:"VM01*"' title="film"><?= $this->transEsc('VM01*') ?></option>
-                        <option value='format:"VM02*"' title="picture"><?= $this->transEsc('VM02*') ?></option>
-                        <option value='format:"VM03*"' title="mx_game"><?= $this->transEsc('VM03*') ?></option>
-                        <option value='format:"VM04*"' title="object"><?= $this->transEsc('VM04*') ?></option>
-                        <option value='format:"CF0*"' title="software"><?= $this->transEsc('CF0*') ?></option>
+                        <option value='format:"*L0*"' title="collection"><?= $this->transEsc('CL0*') ?></option>
+                        <option value='format:"*U01*"' title="sheet_music"><?= $this->transEsc('MU01*') ?></option>
+                        <option value='format:"*U03*"' title="sound"><?= $this->transEsc('MU03*') ?></option>
+                        <option value='format:"*U04*"' title="music"><?= $this->transEsc('MU04*') ?></option>
+                        <option value='format:"*P0*"' title="map"><?= $this->transEsc('MP0*') ?></option>
+                        <option value='format:"*M01*"' title="film"><?= $this->transEsc('VM01*') ?></option>
+                        <option value='format:"*M02*"' title="picture"><?= $this->transEsc('VM02*') ?></option>
+                        <option value='format:"*M03*"' title="mx_game"><?= $this->transEsc('VM03*') ?></option>
+                        <option value='format:"*M04*"' title="object"><?= $this->transEsc('VM04*') ?></option>
+                        <option value='format:"*F0*"' title="software"><?= $this->transEsc('CF0*') ?></option>
 
                         <optgroup label="<?= $this->transEsc('all_formats') ?>">
                             <?php endif; ?>
