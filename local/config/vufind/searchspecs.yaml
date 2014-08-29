@@ -7,12 +7,12 @@
 AllFields:
   DismaxHandler: edismax
   DismaxFields:
-    - title_short^1000                    # main title, i.e. 245 $a
+    - title_short^5000                    # main title, i.e. 245 $a
     - title_alt^200
     - title_sub^200
     - title_old^200
     - title_new^200
-    - author^750                          # all entries main name forms
+    - author^1000                         # all entries main name forms
     - author_additional^100               # all entries additional fields
     - author_additional_dsv11_txt_mv^100  # variants from dsv11
     - title_additional_dsv11_txt_mv^100
@@ -28,6 +28,7 @@ AllFields:
     - isbn
     - issn
     - localcode_isn_mv                     # local codes (field 909)
+    - idscode_txt_mv                       # IDS codes (field 908, IDS MARC 906/907)
     - id
   DismaxParams:
     - [pf, 'title_short^1000']
@@ -80,6 +81,8 @@ AllFields:
     fulltext:
       - [or, ~]
     localcode_isn_mv:
+      - [and, ~]
+    idscode_txt_mv:
       - [and, ~]
 
 Author:

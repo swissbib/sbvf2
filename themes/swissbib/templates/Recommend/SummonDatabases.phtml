@@ -1,7 +1,17 @@
 <!-- Summons Database Recommendations -->
 <?	/** @var	\VuFind\Search\Summon\Results	$results */
 $summonDatabases = $results->getDatabaseRecommendations();
-if (!empty($summonDatabases)): ?>
+?>
+<? if ($external === true): ?>
+    <div class="authorbox summondbrecommendations">
+        <h2><?=$this->transEsc('Access')?></h2>
+        <p>
+            <?=$this->transEsc('external_access_info')?> (<a target="_blank" class="color singleLink" href="http://mobile.unibas.ch/home.html" title="Uni Basel">Uni Basel</a> / <a target="_blank" class="color singleLink" href="http://www.vpn.unibe.ch/" title="Uni Basel">Uni Bern</a>).
+        </p>
+    </div>
+<? endif; ?>
+
+<? if (!empty($summonDatabases)): ?>
 	<?php if(count($summonDatabases)>0): ?>
 		<div class="authorbox summondbrecommendations">
 		  <h2><?=$this->transEsc('summon_database_recommendations')?></h2>

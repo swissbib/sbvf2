@@ -588,6 +588,7 @@ class Aleph extends VuFindDriver
             'return'        => 'z36-returned-date',
             'renewals'        => 'z36-no-renewal',
             'library'        => 'z30-sub-library',
+            'librarycode'    => 'z36-sub-library-code',
             'callnum'        => 'z30-call-no',
             'renew_info'    => 'renew-info'
         );
