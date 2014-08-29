@@ -27,7 +27,7 @@ AllFields:
     - publishDate
     - isbn
     - issn
-    - localcode_isn_mv                     # local codes (field 909)
+    - localcode                            # local codes (field 909)
     - idscode_txt_mv                       # IDS codes (field 908, IDS MARC 906/907)
     - id
   DismaxParams:
@@ -170,9 +170,9 @@ FRBR:
 
 WLC:
   DismaxFields:
-    - localcode_isn_mv
+    - localcode
   QueryFields:
-    localcode_isn_mv:
+    localcode:
       - [onephrase, ~]
 
 WNEL:
