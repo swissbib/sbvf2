@@ -233,21 +233,23 @@ class SolrMarc extends VuFindSolrMarc
                 $params['rft.au'] = $this->getPrimaryAuthor();
                 break;
                  */
+                $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:journal';
+                $params['rft.genre'] = 'journal';
                 $params['rft.issn'] = $this->getCleanISSN();
 
                 // Including a date in a title-level Journal OpenURL may be too
                 // limiting -- in some link resolvers, it may cause the exclusion
                 // of databases if they do not cover the exact date provided!
-                unset($params['rft.date']);
+                //unset($params['rft.date']);
 
                 // If we're working with the SFX resolver, we should add a
                 // special parameter to ensure that electronic holdings links
                 // are shown even though no specific date or issue is specified:
-                if (isset($this->mainConfig->OpenURL->resolver)
-                    && strtolower($this->mainConfig->OpenURL->resolver) == 'sfx'
-                ) {
-                    $params['sfx.ignore_date_threshold'] = 1;
-                }
+                //if (isset($this->mainConfig->OpenURL->resolver)
+                //    && strtolower($this->mainConfig->OpenURL->resolver) == 'sfx'
+                //) {
+                //    $params['sfx.ignore_date_threshold'] = 1;
+                //};
             default:
                 $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:dc';
 
@@ -801,20 +803,9 @@ class SolrMarc extends VuFindSolrMarc
         $formats = $this->getFormatsRaw();
         $found = false;
         $mapping = array(
-            'BK010000' => 'Article',
-            'BK010300' => 'Article',
-            'BK010800' => 'Article',
-            'CR030000' => 'Journal',
-            'CR030300' => 'Journal',
-            'CR030322' => 'Journal',
-            'CR030353' => 'Journal',
-            'CR030500' => 'Journal',
-            'CR030553' => 'Journal',
-            'CR030600' => 'Journal',
-            'CR030619' => 'Journal',
-            'CR030653' => 'Journal',
-            'CR030700' => 'Journal',
-            'CR030753' => 'Journal',
+            'XK01' => 'Article',
+            'XK02' => 'Book',
+            'XR0300' => 'Journal',
         );
 
         // Check each format for all patterns
