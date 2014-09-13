@@ -75,7 +75,7 @@ if (isset($this->ranges)) {
                 <?php endforeach; ?>
                     <optgroup label="<?= $this->transEsc('all_languages') ?>">
                         <?php endif; ?>
-                        <?php if (strtolower($facet['field']) === "format") : ?>
+                        <?php if (strtolower($facet['field']) === "format_str_mv") : ?>
 
                         <option value='format:"*K01*"' title="article"><?= $this->transEsc('*K01*') ?></option>
                         <option value='format:"*K02*"' title="book"><?= $this->transEsc('BK02*') ?></option>
