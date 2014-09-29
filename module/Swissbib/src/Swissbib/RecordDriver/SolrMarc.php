@@ -639,6 +639,10 @@ class SolrMarc extends VuFindSolrMarc
                 $thumbnailURL = 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
                 . $field['URL']
                     . '&scale=1&reqServicename=ImageTransformer';
+            } elseif ($field['institution'] === 'ECOD' && $field['usage'] === 'THUMBNAIL') {
+                $thumbnailURL = 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
+                    . $field['URL']
+                    . '&scale=1&reqServicename=ImageTransformer';
             }
         }
         return $thumbnailURL;
