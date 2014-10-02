@@ -3,32 +3,51 @@
 <table>
 	<tbody>
 	<tr>
-		<td><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_notepad_add.gif') ?>" alt="add to list"></td>
+        <td><img src="<?= $this->basePath('themes/swissbibmulti/css/img/icon_notepad_add.gif') ?>"
+                 alt="<?= $this->transEsc('memorizelistadd')?>"
+                 title="<?= $this->transEsc('memorizelistadd')?>">
+        </td>
 		<td>Aggiungi i risultati a una delle tue <strong>liste</strong></td>
 	</tr>
 	<tr>
-		<td><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_pagefunctions_rss.gif') ?>"
-				 alt="get feed of new items matching this search"></td>
+        <td>
+            <img src="<?= $this->basePath('themes/swissbibmulti/css/img/icon_pagefunctions_rss.gif') ?>"
+                 alt="<?= $this->transEsc('Get RSS Feed')?>"
+                 title="<?= $this->transEsc('Get RSS Feed')?>">
+        </td>
 		<td>Richiedi di essere notificato via <strong>Feed</strong> quando nuovi documenti corrispondono alla tua ricerca</td>
 	</tr>
     <tr>
-        <td><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_pagefunctions_perma.gif') ?>" alt="Citazione"></td>
+        <td>
+            <img src="<?= $this->basePath('themes/swissbibmulti/css/img/icon_pagefunctions_perma.gif') ?>"
+                 alt="<?= $this->transEsc('Cite this')?>"
+                 title="<?= $this->transEsc('Cite this')?>">
+        </td>
         <td><strong>Citare</strong> i risultati</td>
     </tr>
 
     <tr>
-		<td><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_pagefunctions_print.gif') ?>"
-				 alt="Print"></td>
+        <td>
+            <img src="<?= $this->basePath('themes/swissbibmulti/css/img/icon_pagefunctions_print.gif') ?>"
+                 alt="<?= $this->transEsc('Print')?>"
+                 title="<?= $this->transEsc('Print')?>"">
+        </td>
 		<td><strong>Stampa</strong> i risultati</td>
 	</tr>
 	<tr>
-		<td><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_pagefunctions_send.gif') ?>"
-				 alt="Email this"></td>
+        <td>
+            <img src="<?= $this->basePath('themes/swissbibmulti/css/img/icon_pagefunctions_send.gif') ?>"
+                 alt="<?= $this->transEsc('Email this')?>"
+                 title="<?= $this->transEsc('Email this')?>">
+        </td>
 		<td>Invia i risultati per <strong>email</strong></td>
 		</tr>
 	<tr>
-		<td><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_pagefunctions_save.gif') ?>"
-				 alt="Export to ..."></td>
+        <td>
+            <img src="<?= $this->basePath('themes/swissbibmulti/css/img/icon_pagefunctions_save.gif') ?>"
+                 alt="<?= $this->transEsc('Export Items')?>"
+                 title="<?= $this->transEsc('Export Items')?>">
+        </td>
 		<td><strong>Salva</strong> i risultati in vari formati</td>
 	</tr>
 	</tbody>

@@ -34,15 +34,18 @@
 
 <h3>Favorites</h3>
 <p>To mark a library as favorite, either use <i>My swissbib - Favorites</i> or click on the <img
-        src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_favorit.gif') ?>"
-        alt="Add to my favourites"> in the catalog. In your search results, these libraries are marked with a <img
         src="<?= $this->basePath('themes/swissbib/images/icon_favorit_library.gif') ?>"
-        alt=" "> and can be used as filters.</p>
+        alt="<?= $this->transEsc('mylibraries.add')?>"
+        title="<?= $this->transEsc('mylibraries.add')?>"> in the catalog. In your search results, these libraries are marked with a <img
+        src="<?= $this->basePath('/themes/swissbib/images/icon_favorit_library.gif') ?>"
+        alt="Favorit"> and can be used as filters.</p>
 
 <h3>Lists</h3>
 <ul class="list">
-    <li><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_notepad_add.gif') ?>"
-             alt="Add to list"> When you are logged in you can save titles on lists.
+    <li>When you are logged in you can save titles on lists by clicking on this sign: <br />
+        <img src="<?= $this->basePath('themes/swissbibmulti/css/img/icon_notepad_add.gif') ?>"
+             alt="<?= $this->transEsc('memorizelistadd')?>"
+             title="<?= $this->transEsc('memorizelistadd')?>">
     </li>
     <li>If you make a new list while saving a title you have to click <i>Save</i> twice.</li>
     <li>Public = List visible for everybody who knows the URL</li>

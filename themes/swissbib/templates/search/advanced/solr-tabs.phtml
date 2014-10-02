@@ -17,7 +17,13 @@
             <? if (!empty($classificationTree)) : ?>
             <div id="tab-2" class="tab">
                 <div class="fieldbox">
-                    <?= $this->render('search/advanced/classificationTree') ?>
+                    <?= $this->render(
+                        'search/advanced/classificationTree',
+                        array(
+                            'classificationTree' => $classificationTree,
+                            'facetKey' => 'navDrsys_Gen'
+                        ));
+                    ?>
                 </div>
             </div>
             <? endif; ?>

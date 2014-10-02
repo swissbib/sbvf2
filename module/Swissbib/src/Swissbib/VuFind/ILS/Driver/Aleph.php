@@ -559,36 +559,37 @@ class Aleph extends VuFindDriver
     }
 
 
-	/**
-	 * Get Patron Transactions
-	 *
-	 * This is responsible for retrieving all transactions (i.e. checked out items)
-	 * by a specific patron.
-	 *
-	 * @param array $user    The patron array from patronLogin
-	 * @param bool  $history Include history of transactions (true) or just get
-	 *                       current ones (false).
-	 *
-	 * @throws \VuFind\Exception\Date
-	 * @throws ILSException
-	 * @return array        Array of the patron's transactions on success.
-	 */
-	public function getMyTransactions($user, $history = false)
-	{
-		$transactionsResponseItems	= $this->getMyTransactionsResponse($user, $history);
-		$dataMap         = array(
-			'barcode'		=> 'z30-barcode',
-			'title'			=> 'z13-title',
-			'doc-number'	=> 'z36-doc-number',
-			'item-sequence'	=> 'z36-item-sequence',
-			'sequence'		=> 'z36-sequence',
-			'loaned'		=> 'z36-loan-date',
-			'due'			=> 'z36-due-date',
-			'status'		=> 'z36-status',
-			'return'		=> 'z36-returned-date',
-			'renewals'		=> 'z36-no-renewal',
-			'library'		=> 'z30-sub-library',
-			'callnum'		=> 'z30-call-no',
+    /**
+     * Get Patron Transactions
+     *
+     * This is responsible for retrieving all transactions (i.e. checked out items)
+     * by a specific patron.
+     *
+     * @param array $user    The patron array from patronLogin
+     * @param bool  $history Include history of transactions (true) or just get
+     *                       current ones (false).
+     *
+     * @throws \VuFind\Exception\Date
+     * @throws ILSException
+     * @return array        Array of the patron's transactions on success.
+     */
+    public function getMyTransactions($user, $history = false)
+    {
+        $transactionsResponseItems    = $this->getMyTransactionsResponse($user, $history);
+        $dataMap         = array(
+            'barcode'        => 'z30-barcode',
+            'title'            => 'z13-title',
+            'doc-number'    => 'z36-doc-number',
+            'item-sequence'    => 'z36-item-sequence',
+            'sequence'        => 'z36-sequence',
+            'loaned'        => 'z36-loan-date',
+            'due'            => 'z36-due-date',
+            'status'        => 'z36-status',
+            'return'        => 'z36-returned-date',
+            'renewals'        => 'z36-no-renewal',
+            'library'        => 'z30-sub-library',
+            'librarycode'    => 'z36-sub-library-code',
+            'callnum'        => 'z30-call-no',
             'renew_info'    => 'renew-info'
 		);
 		$transactionsData	= array();
@@ -790,37 +791,7 @@ class Aleph extends VuFindDriver
 			$fines[$index]['balance'] = $balance;
 		}
 
-			// Return list without sort keys
-		return array_values($fines);
-	}
-
-
-    /**
-     * Parse a date.
-     *
-     * @param string $date Date to parse
-     *
-     * @return string
-
-    public function parseDate($date)
-    {
-        if ($date == null || $date == "") {
-            return "";
-        } else if (preg_match("/^[0-9]{8}$/", $date) === 1) { // 20120725
-            //return $this->dateConverter->convertToDisplayDate('Ynd', $date);
-            return $this->dateConverter->convertToDisplayDate('yymd', $date);
-        } else if (preg_match("/^[0-9]+\/[A-Za-z]{3}\/[0-9]{4}$/", $date) === 1) {
-            // 13/jan/2012
-            return $this->dateConverter->convertToDisplayDate('d/M/Y', $date);
-        } else if (preg_match("/^[0-9]+\/[0-9]+\/[0-9]{4}$/", $date) === 1) {
-            // 13/7/2012
-            //return $this->dateConverter->convertToDisplayDate('d/M/Y', $date);
-            //e.g. an expiration date delivered by Aleph-BB is 31/12/2019
-            //the format has to be d/m/yy compare with http://www.php.net/manual/en/datetime.createfromformat.php
-            return $this->dateConverter->convertToDisplayDate('d/m/yy', $date);
-        } else {
-            throw new \Exception("Invalid date: $date");
-        }
+            // Return list without sort keys
+        return array_values($fines);
     }
-*/
 }

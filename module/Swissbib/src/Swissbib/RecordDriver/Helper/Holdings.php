@@ -11,7 +11,7 @@ use VuFind\Config\PluginManager as ConfigManager;
 
 use Swissbib\VuFind\ILS\Driver\Aleph;
 use Swissbib\RecordDriver\SolrMarc;
-use Swissbib\Helper\BibCode;
+use Swissbib\RecordDriver\Helper\BibCode;
 use Swissbib\Log\Logger;
 
 /**
@@ -1171,7 +1171,8 @@ class Holdings
         $fields = $this->holdings ? $this->holdings->getFields($fieldName) : false;
         $mapping = array(
             'B' => 'network',
-            'F' => 'institution_chb'
+            'F' => 'institution_chb',
+            'j' => 'callnumber',
         );
 
         if (is_array($fields)) {
@@ -1179,6 +1180,7 @@ class Holdings
                 $item = $this->extractFieldData($field, $mapping);
                 $networkCode = $item['network'];
                 $institution = $item['institution_chb'];
+                $callnumber  = $item['callnumber'];
                 $groupCode = $this->getGroup($institution);
 
                 // Prevent display of untranslated and ungrouped institutions
@@ -1203,7 +1205,8 @@ class Holdings
                 if (!isset($data[$groupCode]['institutions'][$institution])) {
                     $data[$groupCode]['institutions'][$institution] = array(
                         'label' => $institution,
-                        'bibinfolink' => $this->getBibInfoLink($institution)
+                        'bibinfolink' => $this->getBibInfoLink($institution),
+                        'callnumber' => $callnumber,
                     );
                 }
             }

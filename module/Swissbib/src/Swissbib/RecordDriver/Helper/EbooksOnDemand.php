@@ -106,7 +106,7 @@ class EbooksOnDemand extends EbooksOnDemandBase
 
 
     /**
-     * Build EOD link for B400 item
+     * Build EOD link for Z01 item
      *
      * @param    Array        $item
      * @param    SolrMarc    $recordDriver
@@ -125,6 +125,39 @@ class EbooksOnDemand extends EbooksOnDemandBase
         return $this->templateString($linkPattern, $data);
     }
 
+    /**
+     * Check whether Z01 item is valid for EOD link
+     *
+     * @param    Array $item
+     * @param    SolrMarc $recordDriver
+     * @param    Holdings $holdingsHelper
+     * @return    Boolean
+     */
+
+    protected function isValidForLinkZ07(array $item, SolrMarc $recordDriver, Holdings $holdingsHelper)
+    {
+        return $this->isValidForLinkA100($item, $recordDriver, $holdingsHelper);
+    }
+
+    /**
+     * Build EOD link for Z07 item
+     *
+     * @param    Array $item
+     * @param    SolrMarc $recordDriver
+     * @param    Holdings $holdingsHelper
+     * @return    String
+     */
+
+    protected function buildLinkZ07(array $item, SolrMarc $recordDriver, Holdings $holdingsHelper)
+    {
+        $linkPattern = $this->getLinkPattern($item['institution_chb']);
+        $data = array(
+            'SYSID' => $item['bibsysnumber'],
+            'CALLNUM' => urlencode($item['signature'])
+        );
+
+        return $this->templateString($linkPattern, $data);
+    }
 
     /**
      * Check whether AX005 item is valid for EOD link

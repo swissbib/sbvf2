@@ -1,20 +1,10 @@
 <h1>Anmelden</h1>
 <p>Melden Sie sich mit der Benutzernummer und dem Passwort an, das Sie bereits bisher für Ausleihen im Verbund IDS Basel
     Bern benutzt haben.</p>
-<!--
-<p>Wenn Sie im Besitz eines in folgenden Verbünden gültigen Benutzerausweises sind, melden Sie sich mit Ihrem üblichen
-    Login an:</p>
-<ul class="list">
-    <li>IDS Basel Bern</li>
- <li>IDS Luzern</li>
-    <li>IDS St. Gallen</li>
-    <li>NEBIS</li>
-    <li>St. Galler Bibliotheksnetz</li>
-    </ul>
- -->
 
 <h3>Noch kein Konto?</h3>
-<p><a href="http://aleph.unibas.ch/F/?func=bor-new-0" target="_blank"><?= $this->transEsc('Create New Account') ?></a>
+<p>
+    <a href="http://aleph.unibas.ch/F/?func=bor-new-0" target="_blank"><?= $this->transEsc('Create New Account') ?></a>
 </p>
 
 <h3>Wozu anmelden?</h3>
@@ -40,16 +30,19 @@
 <h3>Favoriten</h3>
 <p>Um eine Bibliothek als Favorit zu markieren, benutzen Sie entweder <i>My swissbib - Favoriten</i> oder Sie klicken
     auf das <img
-        src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_favorit.gif') ?>"
-        alt="in meinen Favoriten anzeigen"> im Katalog. In der Trefferliste sind diese Bibliotheken mit einem <img
-        src="<?= $this->basePath('themes/swissbib/images/icon_favorit_library.gif') ?>" alt=" "> markiert und können als
-    Filter gewählt werden.
+        src="<?= $this->basePath('themes/swissbib/images/icon_favorit_library.gif') ?>"
+        alt="<?= $this->transEsc('mylibraries.add')?>"
+        title="<?= $this->transEsc('mylibraries.add')?>"> im Katalog. In der Trefferliste sind diese Bibliotheken mit einem <img
+        src="<?= $this->basePath('/themes/swissbib/images/icon_favorit_library.gif') ?>"
+        alt="Favorit"> markiert und können als Filter gewählt werden.
 </p>
 
 <h3>Merklisten</h3>
 <ul class="list">
-    <li><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_notepad_add.gif') ?>"
-             alt="Auf Merkliste speichern"> Wenn Sie sich anmelden, können Sie Titel auf Merklisten speichern.
+    <li>Wenn Sie sich anmelden, können Sie Titel auf Merklisten speichern, indem Sie auf dieses Symbol klicken: <br />
+        <img src="<?= $this->basePath('themes/swissbibmulti/css/img/icon_notepad_add.gif') ?>"
+             alt="<?= $this->transEsc('memorizelistadd')?>"
+             title="<?= $this->transEsc('memorizelistadd')?>">
     </li>
     <li>Wenn Sie einen Titel speichern und gleichzeitig eine neue Merkliste anlegen, müssen Sie zwei Mal
         <i>Speichern</i> klicken.

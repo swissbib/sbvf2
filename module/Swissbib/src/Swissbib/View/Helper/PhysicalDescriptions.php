@@ -20,9 +20,10 @@ class PhysicalDescriptions extends AbstractHelper
     public function __invoke(array $physicalDescriptions)
     {
         $infos = array();
-        $types = array('extent', 'details', 'dimensions', 'company', 'material_multiple');
 
         foreach ($physicalDescriptions as $physicalDescription) {
+            unset($physicalDescription['@ind1'], $physicalDescription['@ind2']);
+            $types = array_keys($physicalDescription);
             foreach ($types as $type) {
                 if (isset($physicalDescription[$type])) {
                     if (is_array($physicalDescription[$type])) {

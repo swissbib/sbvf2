@@ -67,7 +67,10 @@ class MyResearchController extends AbstractBase
 
     /**
      * Store a referer (if appropriate) to keep post-login redirect pointing
-     * to an appropriate location.
+     * to an appropriate location. This is used when the user clicks the
+     * log in link from an arbitrary page or when a password is mistyped;
+     * separate logic is used for storing followup information when VuFind
+     * forces the user to log in from another context.
      *
      * @return void
      */
@@ -78,16 +81,12 @@ class MyResearchController extends AbstractBase
         if (empty($referer)) {
             return;
         }
-
-        // Normalize the referer URL so that inconsistencies in protocol
-        // and trailing slashes do not break comparisons; this same normalization
-        // is applied to all URLs examined below.
-        $refererNorm = trim(end(explode('://', $referer, 2)), '/');
+        $refererNorm = $this->normalizeUrlForComparison($referer);
 
         // If the referer lives outside of VuFind, don't store it! We only
         // want internal post-login redirects.
-        $baseUrl = $this->url()->fromRoute('home');
-        $baseUrlNorm = trim(end(explode('://', $baseUrl, 2)), '/');
+        $baseUrl = $this->getServerUrl('home');
+        $baseUrlNorm = $this->normalizeUrlForComparison($baseUrl);
         if (0 !== strpos($refererNorm, $baseUrlNorm)) {
             return;
         }
@@ -95,14 +94,28 @@ class MyResearchController extends AbstractBase
         // If the referer is the MyResearch/Home action, it probably means
         // that the user is repeatedly mistyping their password. We should
         // ignore this and instead rely on any previously stored referer.
-        $myResearchHomeUrl = $this->url()->fromRoute('myresearch-home');
-        $mrhuNorm = trim(end(explode('://', $myResearchHomeUrl, 2)), '/');
+        $myResearchHomeUrl = $this->getServerUrl('myresearch-home');
+        $mrhuNorm = $this->normalizeUrlForComparison($myResearchHomeUrl);
         if ($mrhuNorm === $refererNorm) {
             return;
         }
 
         // If we got this far, we want to store the referer:
         $this->followup()->store(array(), $referer);
+    }
+
+    /**
+     * Normalize the referer URL so that inconsistencies in protocol and trailing
+     * slashes do not break comparisons.
+     *
+     * @param string $url URL to normalize
+     *
+     * @return string
+     */
+    protected function normalizeUrlForComparison($url)
+    {
+        $parts = explode('://', $url, 2);
+        return trim(end($parts), '/');
     }
 
     /**
@@ -138,10 +151,10 @@ class MyResearchController extends AbstractBase
             return $this->forwardTo('MyResearch', 'Login');
         }
 
-        // Logged in?  Forward user to followup action (if set) or default action
-        // (if no followup provided):
+        // Logged in?  Forward user to followup action (if set and not in lightbox)
+        // or default action (if no followup provided):
         $followup = $this->followup()->retrieve();
-        if (isset($followup->url)) {
+        if (isset($followup->url) && !$this->inLightbox()) {
             $url = $followup->url;
             unset($followup->url);
             return $this->redirect()->toUrl($url);
@@ -150,6 +163,11 @@ class MyResearchController extends AbstractBase
         $config = $this->getConfig();
         $page = isset($config->Site->defaultAccountPage)
             ? $config->Site->defaultAccountPage : 'Favorites';
+
+        // Default to search history if favorites are disabled:
+        if ($page == 'Favorites' && !$this->listsEnabled()) {
+            return $this->forwardTo('Search', 'History');
+        }
         return $this->forwardTo('MyResearch', $page);
     }
 
@@ -504,7 +522,7 @@ class MyResearchController extends AbstractBase
         $source = $this->params()->fromPost(
             'source', $this->params()->fromQuery('source', 'VuFind')
         );
-        $driver = $this->getRecordLoader()->load($id, $source);
+        $driver = $this->getRecordLoader()->load($id, $source, true);
         $listID = $this->params()->fromPost(
             'list_id', $this->params()->fromQuery('list_id', null)
         );
@@ -584,6 +602,11 @@ class MyResearchController extends AbstractBase
      */
     public function mylistAction()
     {
+        // Fail if lists are disabled:
+        if (!$this->listsEnabled()) {
+            throw new \Exception('Lists disabled');
+        }
+
         // Check for "delete item" request; parameter may be in GET or POST depending
         // on calling context.
         $deleteId = $this->params()->fromPost(
@@ -705,6 +728,11 @@ class MyResearchController extends AbstractBase
      */
     public function editlistAction()
     {
+        // Fail if lists are disabled:
+        if (!$this->listsEnabled()) {
+            throw new \Exception('Lists disabled');
+        }
+
         // User must be logged in to edit list:
         $user = $this->getUser();
         if ($user == false) {
@@ -736,6 +764,11 @@ class MyResearchController extends AbstractBase
      */
     public function deletelistAction()
     {
+        // Fail if lists are disabled:
+        if (!$this->listsEnabled()) {
+            throw new \Exception('Lists disabled');
+        }
+
         // Get requested list ID:
         $listID = $this->params()
             ->fromPost('listID', $this->params()->fromQuery('listID'));
@@ -789,21 +822,9 @@ class MyResearchController extends AbstractBase
      */
     protected function getDriverForILSRecord($current)
     {
-        try {
-            if (!isset($current['id'])) {
-                throw new RecordMissingException();
-            }
-            $record = $this->getServiceLocator()->get('VuFind\RecordLoader')
-                ->load($current['id']);
-        } catch (RecordMissingException $e) {
-            $factory = $this->getServiceLocator()
-                ->get('VuFind\RecordDriverPluginManager');
-            $record = $factory->get('Missing');
-            $record->setRawData(
-                array('id' => isset($current['id']) ? $current['id'] : null)
-            );
-            $record->setSourceIdentifier('Solr');
-        }
+        $id = isset($current['id']) ? $current['id'] : null;
+        $record = $this->getServiceLocator()->get('VuFind\RecordLoader')
+            ->load($id, 'VuFind', true);
         $record->setExtraDetail('ils_details', $current);
         return $record;
     }
@@ -863,6 +884,125 @@ class MyResearchController extends AbstractBase
             // Do nothing; if we're unable to load information about pickup
             // locations, they are not supported and we should ignore them.
         }
+        $view->recordList = $recordList;
+        return $view;
+    }
+
+    /**
+     * Send list of storage retrieval requests to view
+     *
+     * @return mixed
+     */
+    public function storageRetrievalRequestsAction()
+    {
+        // Stop now if the user does not have valid catalog credentials available:
+        if (!is_array($patron = $this->catalogLogin())) {
+            return $patron;
+        }
+
+        // Connect to the ILS:
+        $catalog = $this->getILS();
+
+        // Process cancel requests if necessary:
+        $cancelSRR = $catalog->checkFunction('cancelStorageRetrievalRequests');
+        $view = $this->createViewModel();
+        $view->cancelResults = $cancelSRR
+            ? $this->storageRetrievalRequests()->cancelStorageRetrievalRequests(
+                $catalog, $patron
+            )
+            : array();
+        // If we need to confirm
+        if (!is_array($view->cancelResults)) {
+            return $view->cancelResults;
+        }
+
+        // By default, assume we will not need to display a cancel form:
+        $view->cancelForm = false;
+
+        // Get request details:
+        $result = $catalog->getMyStorageRetrievalRequests($patron);
+        $recordList = array();
+        $this->storageRetrievalRequests()->resetValidation();
+        foreach ($result as $current) {
+            // Add cancel details if appropriate:
+            $current = $this->storageRetrievalRequests()->addCancelDetails(
+                $catalog, $current, $cancelSRR, $patron
+            );
+            if ($cancelSRR
+                && $cancelSRR['function'] != "getCancelStorageRetrievalRequestLink"
+                && isset($current['cancel_details'])
+            ) {
+                // Enable cancel form if necessary:
+                $view->cancelForm = true;
+            }
+
+            // Build record driver:
+            $recordList[] = $this->getDriverForILSRecord($current);
+        }
+
+        // Get List of PickUp Libraries based on patron's home library
+        try {
+            $view->pickup = $catalog->getPickUpLocations($patron);
+        } catch (\Exception $e) {
+            // Do nothing; if we're unable to load information about pickup
+            // locations, they are not supported and we should ignore them.
+        }
+        $view->recordList = $recordList;
+        return $view;
+    }
+
+    /**
+     * Send list of ill requests to view
+     *
+     * @return mixed
+     */
+    public function illRequestsAction()
+    {
+        // Stop now if the user does not have valid catalog credentials available:
+        if (!is_array($patron = $this->catalogLogin())) {
+            return $patron;
+        }
+
+        // Connect to the ILS:
+        $catalog = $this->getILS();
+
+        // Process cancel requests if necessary:
+        $cancelStatus = $catalog->checkFunction('cancelILLRequests');
+        $view = $this->createViewModel();
+        $view->cancelResults = $cancelStatus
+            ? $this->ILLRequests()->cancelILLRequests(
+                $catalog, $patron
+            )
+            : array();
+        // If we need to confirm
+        if (!is_array($view->cancelResults)) {
+            return $view->cancelResults;
+        }
+
+        // By default, assume we will not need to display a cancel form:
+        $view->cancelForm = false;
+
+        // Get request details:
+        $result = $catalog->getMyILLRequests($patron);
+        $recordList = array();
+        $this->ILLRequests()->resetValidation();
+        foreach ($result as $current) {
+            // Add cancel details if appropriate:
+            $current = $this->ILLRequests()->addCancelDetails(
+                $catalog, $current, $cancelStatus, $patron
+            );
+            if ($cancelStatus 
+                && $cancelStatus['function'] != "getCancelILLRequestLink"
+                && isset($current['cancel_details'])
+            ) {
+                // Enable cancel form if necessary:
+                $view->cancelForm = true;
+            }
+
+            // Build record driver:
+            $recordList[] = $this->getDriverForILSRecord($current);
+        }
+
         $view->recordList = $recordList;
         return $view;
     }

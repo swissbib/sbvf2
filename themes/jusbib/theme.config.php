@@ -6,11 +6,7 @@ return array(
     ),
     'helpers' => array(
         'factories' => array(
-            'searchoptions' => function ($sm) {
-                return new VuFind\View\Helper\Root\SearchOptions(
-                    $sm->getServiceLocator()->get('Jusbib\SearchOptionsPluginManager')
-                );
-            }
+            'searchoptions' => 'Jusbib\VuFind\Search\Factory::getJusbibSearchOptionsForHelperOptions'
         )
     )
 );

@@ -1,0 +1,97 @@
+<h2>Jusbib en trois étapes</h2>
+<p>Jusbib offre un accès rapide, simple et complet à l'information scientifique en Suisse, autant sous forme de
+    livres, revues, journaux, musique, images et cartes que sous forme électronique. Jusbib vous permet d'effectuer
+    une recherche simultanée dans les bibliothèques des universités et hautes écoles de Suisse, ainsi qu'à la
+    Bibliothèque nationale.</p>
+
+<p>Nous vous assistons dans votre recherche d'information et facilitons votre accès aux documents dont vous avez
+    besoin.</p>
+
+<ol class="list">
+    <li><a href="#search">Chercher</a></li>
+    <li><a href="#refine">Trouver</a></li>
+    <li><a href="#locate">Choisir et accéder</a></li>
+</ol>
+<h2><a name="search"></a>Chercher</h2>
+<div class="floatbox">
+    <img class="small nb" src="<?= $this->basePath('themes/jusbib/images/Help/de/3_steps/suche_klein.png') ?>"
+         alt="Suchen"/>
+
+    <p>Saisissez un ou plusieurs mots dans le masque de recherche.</p>
+
+    <p><em>À l'aide d'un astérisque
+            <strong>*</strong>, vous pouvez tronquer ou remplacer <strong>un nombre illimité</strong> de caractères, par
+            exemple pour rechercher des termes dont la terminaison varie (oper* pour 'Oper', 'Opern', 'opéra', 'opéras',
+            'opera', 'opere' etc.).</em></p>
+
+    <p><em>Le point d'interrogation <strong>?</strong> remplace <strong>un seul</strong> caractère et vous permet de
+            rechercher des termes dont l'orthographe varie (par ex. wom?n pour 'woman' et 'women').</em></p>
+
+    <p><em>En plaçant vos termes entre guillemets <strong>“...“</strong>, vous avez la possibilité de les rechercher
+            dans <strong>l'ordre exact</strong> dans lequel vous les avez saisis (par ex. “Don Giovanni“).</em></p>
+</div>
+
+<h2><a name="refine"></a>Trouver</h2>
+<div class="floatbox">
+    <img class="small nb"
+         src="<?= $this->basePath('themes/jusbib/images/Help/de/3_steps/anpassung_klein.png') ?>"
+         alt="Suche anpassen"/>
+
+    <h3>Filtres</h3>
+
+    <p>Affinez votre recherche à l'aide des filtres situés à gauche de la liste des résultats.</p>
+
+    <p>Recherchez-vous <strong>un auteur en particulier</strong> ? <br/>La recherche d'un nom de personne vous conduira
+        à des documents écrits par mais aussi traitant de cette personne. Afin d'obtenir uniquement des documents écrits
+        par celle-ci, sélectionnez son nom dans la liste du filtre <strong>Auteur</strong> afin de réduire le nombre de
+        résultats affichés.</p>
+
+    <p>Effectuez-vous une recherche sur <strong>un sujet</strong> particulier ?<br/>Sélectionnez un terme <strong>décrivant
+            votre sujet</strong> dans le filtre <strong>Sujet</strong> afin d'affiner votre recherche thématique.
+</div>
+
+<h3>Trier vos résultats</h3>
+<p>Le tri par <strong>date (plus récente)</strong> ne livre pas ce que vous cherchez ? Modifiez l'ordre d'apparition des
+    résultats de votre recherche en haut de la liste - par exemple &laquo; pertinence &raquo;.</p>
+
+<h3>Où se trouve le document ?</h3>
+<p>Le point d'interrogation <img src="<?= $this->basePath('themes/jusbib/images/icon_info.gif') ?>" alt="Info"/> à
+    droite de chaque titre vous permet de voir quelle bibliothèque possède un exemplaire. En cliquant sur le nom d'une
+    bibliothèque, vous accédez directement à celle-ci dans l'affichage complet de la notice bibliographique.</p>
+
+
+<h2><a name="locate"></a>Choisir et accéder</h2>
+<div class="floatbox">
+    <img class="small nb"
+         src="<?= $this->basePath('themes/jusbib/images/Help/de/3_steps/bestellen_klein.png') ?>"
+         alt="Hilfe zum Bestellen">
+
+    <p>En cliquant sur le titre souhaité, vous obtenez l'affichage complet de toutes les données bibliographiques. Au
+        bas de la notice se trouve la liste des bibliothèques rendant possible l'accès au document. Par un simple clic
+        sur le symbole du coeur <img
+            src="<?= $this->basePath('themes/jusbib/images/Help/icn/icon_miniaction_favorite_add.gif') ?>"
+            alt="add favourite"/>
+        , vous avez en outre la possibilité de définir certaines bibliothèques comme <strong>favorites</strong> afin
+        qu'elles apparaissent toujours en tête de liste lors de vos prochaines recherches.</p>
+
+    <p>Un click sur le nom de bibliothèque vous permet d'afficher l'emplacement et la cote du document. Dans le cas de
+        nombreuses bibliothèques, il est également possible de savoir si celui-ci est disponible <img
+            src="<?= $this->basePath('themes/jusbib/images/Help/icn/icon_lending_online.gif') ?>"
+            alt="Available"/> ou s'il est déjà emprunté <img
+            src="<?= $this->basePath('themes/jusbib/images/Help/icn/icon_lending_notavailable.gif') ?>"
+            alt="Not Available"/>.</p>
+
+    <h3>Commander</h3>
+    <ul class="list">
+        <!-- <li>Dokumente des IDS Basel/Bern können Sie <strong>direkt in jusbib</strong> bestellen oder reservieren.</li>
+        <li>Die Dokumente  aller anderen Bibliotheken müssen Sie <strong>direkt über die jeweilige
+                Bibliothek
+                beziehen</strong>. Für den Zugriff bzw. die Bestellung/Reservation klicken Sie auf den Link <strong>zum
+                Bestand</strong> und wechseln zur besitzenden Bibliothek und melden sich erneut an.
+        </li> -->
+        <li>
+            Pour accéder à un document ou le commander/réserver, utilisez le lien Vers la bibliothèque et
+            identifiez-vous auprès de la bibliothèque par l'intermédiaire du catalogue local.
+        </li>
+    </ul>
+</div>

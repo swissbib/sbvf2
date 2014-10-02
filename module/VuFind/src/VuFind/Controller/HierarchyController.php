@@ -136,6 +136,8 @@ class HierarchyController extends AbstractBase
                 }
             }
         } catch (\Exception $e) {
+
+            $test = "";
             // Let exceptions fall through to error condition below:
         }
 

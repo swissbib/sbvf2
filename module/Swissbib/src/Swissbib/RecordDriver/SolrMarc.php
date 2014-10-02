@@ -120,7 +120,7 @@ class SolrMarc extends VuFindSolrMarc
      * @see        getFormats()
      * @return    String
      */
-    public function getOpenURL()
+    public function getOpenURL($view)
     {
         // get the coinsID from config.ini or default to swissbib.ch
         $coinsID = $this->mainConfig->OpenURL->rfr_id;
@@ -128,10 +128,8 @@ class SolrMarc extends VuFindSolrMarc
             $coinsID = 'swissbib.ch';
         }
 
-        // Get a representative publication date:
-        $pubDate = $this->getPublicationDates();
-
-        $pubDate = empty($pubDate) ? '' : $pubDate[1];
+        // Get a representative publication date, using the view helper:
+        $pubDate = $view->publicationDateMarc($this->getPublicationDates());
 
         // Start an array of OpenURL parameters:
         $params = array(
@@ -235,21 +233,23 @@ class SolrMarc extends VuFindSolrMarc
                 $params['rft.au'] = $this->getPrimaryAuthor();
                 break;
                  */
+                $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:journal';
+                $params['rft.genre'] = 'journal';
                 $params['rft.issn'] = $this->getCleanISSN();
 
                 // Including a date in a title-level Journal OpenURL may be too
                 // limiting -- in some link resolvers, it may cause the exclusion
                 // of databases if they do not cover the exact date provided!
-                unset($params['rft.date']);
+                //unset($params['rft.date']);
 
                 // If we're working with the SFX resolver, we should add a
                 // special parameter to ensure that electronic holdings links
                 // are shown even though no specific date or issue is specified:
-                if (isset($this->mainConfig->OpenURL->resolver)
-                    && strtolower($this->mainConfig->OpenURL->resolver) == 'sfx'
-                ) {
-                    $params['sfx.ignore_date_threshold'] = 1;
-                }
+                //if (isset($this->mainConfig->OpenURL->resolver)
+                //    && strtolower($this->mainConfig->OpenURL->resolver) == 'sfx'
+                //) {
+                //    $params['sfx.ignore_date_threshold'] = 1;
+                //};
             default:
                 $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:dc';
 
@@ -639,6 +639,10 @@ class SolrMarc extends VuFindSolrMarc
                 $thumbnailURL = 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
                 . $field['URL']
                     . '&scale=1&reqServicename=ImageTransformer';
+            } elseif ($field['institution'] === 'ECOD' && $field['usage'] === 'THUMBNAIL') {
+                $thumbnailURL = 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
+                    . $field['URL']
+                    . '&scale=1&reqServicename=ImageTransformer';
             }
         }
         return $thumbnailURL;
@@ -656,6 +660,11 @@ class SolrMarc extends VuFindSolrMarc
         if ($field['union'] === 'RERO' && $field['tag'] === '856') {
             if (preg_match('/^.*v_bcu\/media\/images/', $field['sf_u'])) {
                 return 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
+                . $field['sf_u']
+                . '&scale=1';
+            } elseif (preg_match('/^.*bibliotheques\/iconographie/', $field['sf_u'])) {
+                return 'https://externalservices.swissbib.ch/services/ImageTransformer?imagePath='
+                /*return 'https://externalservices.swissbib.ch/services/ProtocolWrapper?targetURL='*/
                 . $field['sf_u']
                 . '&scale=1';
             }
@@ -798,20 +807,9 @@ class SolrMarc extends VuFindSolrMarc
         $formats = $this->getFormatsRaw();
         $found = false;
         $mapping = array(
-            'BK010000' => 'Article',
-            'BK010300' => 'Article',
-            'BK010800' => 'Article',
-            'CR030000' => 'Journal',
-            'CR030300' => 'Journal',
-            'CR030322' => 'Journal',
-            'CR030353' => 'Journal',
-            'CR030500' => 'Journal',
-            'CR030553' => 'Journal',
-            'CR030600' => 'Journal',
-            'CR030619' => 'Journal',
-            'CR030653' => 'Journal',
-            'CR030700' => 'Journal',
-            'CR030753' => 'Journal',
+            'XK01' => 'Article',
+            'XK02' => 'Book',
+            'XR0300' => 'Journal',
         );
 
         // Check each format for all patterns
@@ -1332,7 +1330,7 @@ class SolrMarc extends VuFindSolrMarc
         );
         $fieldMapping = array(
             'a' => 'a',
-            'b' => 'b',
+            '_b' => 'b',
             'c' => 'c',
             'd' => 'd',
             'e' => 'e',
@@ -1340,10 +1338,10 @@ class SolrMarc extends VuFindSolrMarc
             'g' => 'g',
             'h' => 'h',
             't' => 't',
-            'v' => 'v',
-            'x' => 'x',
-            'y' => 'y',
-            'z' => 'z'
+            '_v' => 'v',
+            '_x' => 'x',
+            '_y' => 'y',
+            '_z' => 'z'
         );
 
         // Add control fields to mapping list
@@ -1404,6 +1402,30 @@ class SolrMarc extends VuFindSolrMarc
         return $subjectVocabularies;
     }
 
+
+    /**
+     * Get hierarchical place names
+     *
+     * @return Array
+     */
+
+    public function getHierarchicalPlaceNames()
+    {
+        $placeNames = array();
+        if ($fields = $this->marcRecord->getFields('752')) {
+            foreach ($fields as $field) {
+                $subfields = $field->getSubfields();
+                $current = array();
+                foreach ($subfields as $subfield) {
+                    if (!is_numeric($subfield->getCode())) {
+                        $current[] = $subfield->getData();
+                    }
+                }
+                $placeNames[] = implode(' -- ', $current);
+            }
+        }
+        return $placeNames;
+    }
 
     /**
      * Get host item entry
@@ -1469,7 +1491,7 @@ class SolrMarc extends VuFindSolrMarc
     public function getPhysicalDescriptions($asStrings = true)
     {
         $descriptions = $this->getMarcSubFieldMaps(300, array(
-            '_a' => 'extent',
+            '_a' => 'extent', // Aufgrund von Meldung von Chantal, habe ich als Quick-Fix das Unterfeld "a" von repeatable auf non-repeatable gestellt. Die Anpassung steht in Zusammenhang mit Olivers Anpassung an "getMappedFieldData"
             'b' => 'details',
             '_c' => 'dimensions',
             'd' => 'material_single',
@@ -1518,8 +1540,8 @@ class SolrMarc extends VuFindSolrMarc
 
     public function getOnlineStatus()
     {
-        $filter = $this->fields['filter_str_mv'];
-        return in_array('ONL', $filter) ? true : false;
+        $filter = array_key_exists('filter_str_mv',$this->fields) ? $this->fields['filter_str_mv'] : array();
+        return in_array('ONL', $filter)  ? true : false;
     }
 
 
@@ -1695,10 +1717,11 @@ class SolrMarc extends VuFindSolrMarc
                 $subFields = $field->getSubfields((string)$code);
 
                 if (sizeof($subFields)) {
-                    $subFieldValues[$name] = array();
-
+                    //$subFieldValues[$name] = array();
+                    $i = 1;
                     foreach ($subFields as $subField) {
-                        $subFieldValues[$name][] = $subField->getData();
+                        $subFieldValues[$i . $name] = $subField->getData();
+                        $i++;
                     }
                 }
             } else { // Normal single field
@@ -2027,6 +2050,81 @@ class SolrMarc extends VuFindSolrMarc
         return isset($this->fields['time_indexed']) ? $this->fields['time_indexed'] : '';
     }
 
+    /**
+     * Get all record links related to the current record. Each link is returned as
+     * array.
+     * Format:
+     * array(
+     *        array(
+     *               'title' => label_for_title
+     *               'value' => link_name
+     *               'link'  => link_URI
+     *        ),
+     *        ...
+     * )
+     *
+     * @todo osc: remove this method as soon as the pull request https://github.com/vufind-org/vufind/pull/165 is accepted
+     *
+     * @return null|array
+     */
+    public function getAllRecordLinks()
+    {
+        // Load configurations:
+        $fieldsNames = isset($this->mainConfig->Record->marc_links)
+            ? explode(',', $this->mainConfig->Record->marc_links) : array();
+        $useVisibilityIndicator
+            = isset($this->mainConfig->Record->marc_links_use_visibility_indicator)
+            ? $this->mainConfig->Record->marc_links_use_visibility_indicator : true;
+
+        $retVal = array();
+        foreach ($fieldsNames as $value) {
+            $value = trim($value);
+            $fields = $this->marcRecord->getFields($value);
+            if (!empty($fields)) {
+                foreach ($fields as $field) {
+                    // Check to see if we should display at all
+                    if ($useVisibilityIndicator) {
+                        $visibilityIndicator = $field->getIndicator('1');
+                        if ($visibilityIndicator == '1') {
+                            continue;
+                        }
+                    }
+
+                    // Normalize blank relationship indicator to 0:
+                    $relationshipIndicator = $field->getIndicator('2');
+                    if ($relationshipIndicator == ' ') {
+                        $relationshipIndicator = '0';
+                    }
+
+                    // Assign notes based on the relationship type
+                    switch ($value) {
+                        case '780':
+                            if (in_array($relationshipIndicator, range('0', '7'))) {
+                                $value .= '_' . $relationshipIndicator;
+                            }
+                            break;
+                        case '785':
+                            if (in_array($relationshipIndicator, range('0', '8'))) {
+                                $value .= '_' . $relationshipIndicator;
+                            }
+                            break;
+                    }
+
+                    // Get data for field
+                    $tmp = $this->getFieldData($field, $value);
+                    if (is_array($tmp)) {
+                        $retVal[] = $tmp;
+                    }
+                }
+            }
+        }
+        if (empty($retVal)) {
+            $retVal = null;
+        }
+        return $retVal;
+    }
+
+
 
     /**
      *
@@ -2095,33 +2193,7 @@ class SolrMarc extends VuFindSolrMarc
         return parent::getHierarchyPositionsInParents();
     }
 
-    /**
-     * Get the titles of this item within parent collections. Returns an array
-     * of parent ID => sequence number.
-     *
-     * @return Array
-     */
-    public function getTitlesInHierarchy()
-    {
-        if (!isset($this->fields['title_in_hierarchy'])) {
-            return false;
-        }
-        else {
-            $titles = $this->fields['title_in_hierarchy'];
-            $parentIDs = $this->fields['hierarchy_parent_id'];
-
-            if (count($titles) === count($parentIDs)) {
-                $retVal = array();
-                foreach ($parentIDs as $key => $val) {
-                    $retVal[$val] = $titles[$key];
-                }
-                return $retVal;
-            }
-            else return false;
-        }
-    }
-
-
+    
     /**
      * @return bool
      */

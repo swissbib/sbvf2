@@ -39,17 +39,19 @@
 
 <h3>Favoris</h3>
 <p>Afin de sauvegarder une bibliothèque dans les favoris, utilisez <i>Mon swissbib - Favoris</i> ou cliquez sur le <img
-        src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_favorit.gif') ?>"
-        alt="Sauvegarder comme favori"> dans le catalogue. Ces bibliothèques sont mises en évidence par un <img
-        src="<?= $this->basePath('themes/swissbib/images/icon_favorit_library.gif') ?>" alt=" "> dans la liste de
-    résultats et peuvent être choisies comme filtre.
+        src="<?= $this->basePath('themes/swissbib/images/icon_favorit_library.gif') ?>"
+        alt="<?= $this->transEsc('mylibraries.add')?>"
+        title="<?= $this->transEsc('mylibraries.add')?>"> dans le catalogue. Ces bibliothèques sont mises en évidence par un <img
+        src="<?= $this->basePath('/themes/swissbib/images/icon_favorit_library.gif') ?>"
+        alt="Favorit"> dans la liste de résultats et peuvent être choisies comme filtre.
 </p>
 
 <h3>Listes de sélection</h3>
 <ul class="list">
-    <li><img src="<?= $this->basePath('themes/swissbib/css/themes/orange/img/icon_notepad_add.gif') ?>"
-             alt="Ajouter à une liste"> Lorsque vous vous connectez, vous pouvez sauvegarder des titres sur des listes
-        de sélection.
+    <li>Lorsque vous vous connectez, vous pouvez sauvegarder des titres sur des listes de sélection par ce symbole: <br />
+        <img src="<?= $this->basePath('themes/swissbibmulti/css/img/icon_notepad_add.gif') ?>"
+             alt="<?= $this->transEsc('memorizelistadd')?>"
+             title="<?= $this->transEsc('memorizelistadd')?>">
     </li>
     <li>Lorsque vous sauvegardez un titre et que vous créez en même temps une nouvelle liste de sélection, vous devez
         cliquer deux fois sur <i>Sauvegarder</i>.

@@ -84,6 +84,8 @@ class SearchController extends VuFindSearchController
 
         $resultViewModel->setVariable('allTabsConfig', $allTabsConfig);
         $resultViewModel->setVariable('activeTabKey', $activeTabKey);
+        // add IP-range-information to view model
+        $resultViewModel->setVariable('external', $external = $this->isRestrictedTarget($activeTabConfig));
         $resultViewModel->setVariable('activeTabConfig', $activeTabConfig);
         $resultViewModel->setVariable('facetsConfig', $resultsFacetConfig);
 
@@ -118,8 +120,8 @@ class SearchController extends VuFindSearchController
         $isCatTreeElementConfigured = !empty($isCatTreeElementConfigured) && ($isCatTreeElementConfigured == "true" || $isCatTreeElementConfigured == "1") ? "1" : 0;
 
         if ($isCatTreeElementConfigured) {
-            $treeGenerator                  = new SimpleTreeGenerator($viewModel->facetList['navDrsys']['list']);
-            $viewModel->classificationTree  = $treeGenerator->getTree();
+            $treeGenerator                   = $this->serviceLocator->get('Swissbib\Hierarchy\SimpleTreeGenerator');
+            $viewModel->classificationTree   = $treeGenerator->getTree($viewModel->facetList['navDrsys_Gen']['list'], 'navDrsys_Gen');
         }
 
         return $viewModel;
@@ -243,5 +245,26 @@ class SearchController extends VuFindSearchController
         }
 
         return parent::getResultsManager();
+    }
+
+    protected function isRestrictedTarget($activeTabConfig = array()) {
+
+        // check if client is inside Basel / Berne universities
+        $external = false;
+        //GH: the strcmp operation against summon could be done in a more flexible way once we have more then one licenced target
+        //(perhaps configuration but PHP scripting is more or less comparable with config files....)
+        if (is_array($activeTabConfig) && array_key_exists("searchClassId",$activeTabConfig)
+            && strcasecmp("summon",$activeTabConfig["searchClassId"]) == 0) {
+
+            $targetsProxy = $this->serviceLocator->get('Swissbib\TargetsProxy\TargetsProxy');
+            $targetsProxy->setSearchClass($activeTabConfig["searchClassId"]);
+            $external = $targetsProxy->detectTarget() === false ? true : false;
+
+
+        }
+
+        return $external;
+
+
     }
 }

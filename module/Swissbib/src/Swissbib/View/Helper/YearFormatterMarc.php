@@ -34,6 +34,7 @@ class YearFormatterMarc extends AbstractHelper
 
         switch ($dateType) {
             case 's':
+            case 't':
             case 'n':
             case 'e':
                 $retVal = $year1;

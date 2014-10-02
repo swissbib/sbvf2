@@ -1,0 +1,25 @@
+<div id="tabbed-tree" class="tabs">
+    <ul>
+    <? foreach ($classificationTrees as $facetKey => $tree): ?>
+        <li><a href="#tab-tree-<?= $facetKey ?>"><?= $this->translate($facetKey) ?></a></li>
+    <? endforeach ?>
+    </ul>
+    <? foreach ($classificationTrees as $facetKey => $tree): ?>
+    <div id="tab-tree-<?= $facetKey ?>">
+        <? echo $this->render(
+            'search/advanced/classificationTree',
+            array(
+                'classificationTree' => $tree,
+                'facetKey' => $facetKey
+            ));
+        ?>
+        <div class="clearfix"></div>
+    </div>
+    <? endforeach ?>
+</div>
+
+<script>
+    jQuery(function() {
+        jQuery('#tabbed-tree').tabs();
+    });
+</script>

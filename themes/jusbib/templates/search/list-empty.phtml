@@ -1,0 +1,53 @@
+<h1><?= $this->transEsc('nohit_heading') ?></h1>
+<div class="box">
+    <?
+    $spellingSuggestions = $this->results->getSpellingSuggestions();
+    // get all unsuccessfull search terms depending on search type, empty string as fallback
+    if ($this->results->getParams()->getSearchType() == 'advanced') {
+        $queryString = $this->results->getParams()->getQuery()->getAllTerms();
+    } elseif ($this->results->getParams()->getSearchType() == 'basic') {
+        $queryString = $this->results->getParams()->getQuery()->getString();
+    } else $queryString = '';
+
+    if (sizeof($spellingSuggestions) > 0) {
+        ?>
+        <h4><?= $this->translate('nohit_spelling') ?></h4>
+        <ul class="list">
+            <?
+            foreach ($spellingSuggestions as $oldTerm => $details) {
+                foreach ($details['suggestions'] as $newWord => $data) {
+                    $newUrl = $results->getUrlQuery()->replaceTerm($oldTerm, $data['new_term']);
+                    ?>
+                    <li><a href="<?= $newUrl ?>"><?= $this->escapeHtml($newWord) ?></a></li>
+                <?
+                }
+            }
+            ?>
+        </ul>
+    <?
+    }
+    ?>
+
+    <h4><?= $this->transEsc('nohit_suggest') ?></h4>
+    <ul class="list">
+        <li><?= $this->transEsc('nohit_text1') ?></li>
+        <li><?= $this->transEsc('nohit_text2') ?></li>
+        <li><?= $this->transEsc('nohit_text3') ?><a
+                href="https://www.swissbib.ch/Search/Results?lookfor=<?= $queryString ?>"
+                target="_blank"><?= $this->transEsc('swissbib') ?></a></li>
+        <li><?= $this->transEsc('nohit_text3') ?><a
+                href="http://www.worldcat.org/search?qt=worldcat_org_all&q=<?= $queryString ?>"
+                target="_blank"><?= $this->transEsc('worldcat') ?></a></li>
+    </ul>
+    <h4><?= $this->transEsc('nohit_tip') ?></h4>
+    <ul class="list">
+        <li>
+            <a href="<?= $this->url('help-page') ?>"><?= $this->transEsc('helppage') ?></a> <?= $this->transEsc('nohit_text4') ?>
+        </li>
+        <li>
+            <a href="<?= $this->url('search-advanced') ?>"><?= $this->transEsc('Advanced Search') ?></a> <?= $this->transEsc('nohit_text5') ?>
+        </li>
+    </ul>
+</div>
+
+
