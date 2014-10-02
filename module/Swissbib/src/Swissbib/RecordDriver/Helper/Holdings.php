@@ -438,7 +438,7 @@ class Holdings
     public function extendItem(array $item, SolrMarc $recordDriver, array $extendingOptions = array())
     {
         $item = $this->extendItemBasic($item, $recordDriver, $extendingOptions);
-        $item = $this->extendItemIlsActions($item, $recordDriver, $extendingOptions);
+        //$item = $this->extendItemIlsActions($item, $recordDriver, $extendingOptions);
 
         return $item;
     }
@@ -545,7 +545,7 @@ class Holdings
     protected function extendHolding(array $holding, SolrMarc $recordDriver = null)
     {
         $holding = $this->extendHoldingBasic($holding, $recordDriver);
-        $holding = $this->extendHoldingIlsActions($holding, $recordDriver);
+        //$holding = $this->extendHoldingIlsActions($holding, $recordDriver);
 
         return $holding;
     }

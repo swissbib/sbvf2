@@ -23,7 +23,7 @@ if( $isLoggedIn ) {
             </li>
         <?php else: ?>
             <li class="nav_login">
-                <a href="<?=$this->url('myresearch-home');?>" title="<?=$this->transEsc('Login')?>"><?=$this->transEsc('Login')?></a>
+                <a href="#" title="<?=$this->transEsc('login_disabled')?>"><?=$this->transEsc('login_disabled')?></a>
             </li>
         <?php endif; ?>
 	</ul>
