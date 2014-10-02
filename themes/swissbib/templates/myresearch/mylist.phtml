@@ -82,9 +82,6 @@ $this->render('myresearch/sidebar/wrap.phtml', array(
                                 <strong><?= $this->escapeHtml($this->results->getEndRecord()) ?></strong>
                                 <?= $this->transEsc('of') ?> <strong><?= $this->escapeHtml($recordTotal) ?></strong></p>
                         </div>
-                        <div class="floatright">
-                            <?= $this->render('search/controls/sort.phtml') ?>
-                        </div>
                         <div class="clear"></div>
                     </div>
 

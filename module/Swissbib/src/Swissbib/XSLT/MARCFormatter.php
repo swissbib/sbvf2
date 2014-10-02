@@ -29,6 +29,7 @@ class MARCFormatter implements ServiceManagerAwareInterface
         "BGR" => "http://aleph.gr.ch/F/?local_base=BGR01&con_lng=GER&func=find-b&find_code=SYS&request=%s",
         "ABN" => "http://aleph.ag.ch/F/?local_base=ABN01&con_lng=GER&func=find-b&find_code=SYS&request=%s",
         "SGBN" => "http://aleph.sg.ch/F/?local_base=SGB01&con_lng=GER&func=find-b&find_code=SYS&request=%s",
+        "LIBIB" => "http://aleph.lbfl.li/F/?local_base=LLB01&con_lng=GER&func=find-b&find_code=SYS&request=%s",
         "ALEX" => "http://opac.admin.ch/cgi-bin/gwalex/chameleon?lng=de&inst=consortium&skin=portal&search=KEYWORD&function=CARDSCR&t1=%s&u1=12101",
         "DDB" => "http://d-nb.info/%s",
         "RETROS" => "http://retro.seals.ch/oai/dataprovider?verb=GetRecord&metadataPrefix=oai_dc&identifier=%s",

@@ -34,6 +34,9 @@
     <ul class="list">
         <li><?=$this->transEsc('nohit_text1') ?></li>
         <li><?=$this->transEsc('nohit_text2') ?></li>
+        <? if($activeTabKey !== 'summon'): ?>
+        <li><?=$this->transEsc('nohit_text3') ?><a href="<?=$this->url('summon-search')?>?lookfor=<?=$queryString ?>" target="_self"><?=$this->transEsc('tab.summon') ?></a> </li>
+        <? endif; ?>
         <li><?=$this->transEsc('nohit_text3') ?><a href="https://www.swissbib.ch/Search/Results?lookfor=<?=$queryString ?>" target="_blank"><?=$this->transEsc('swissbib') ?></a></li>
         <li><?=$this->transEsc('nohit_text3') ?><a href="http://www.worldcat.org/search?qt=worldcat_org_all&q=<?=$queryString ?>" target="_blank"><?=$this->transEsc('worldcat') ?></a></li>
     </ul>
