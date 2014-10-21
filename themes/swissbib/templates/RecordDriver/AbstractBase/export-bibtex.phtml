@@ -121,8 +121,10 @@ if (is_array($notes)) {
     }
 }
 
-foreach ($this->record($this->driver)->getUrlList() as $url) {
-    echo 'url = ' . '{' . $url . '}' . ",\n";
+$urls = $this->record($this->driver)->getUrlList();
+if (is_array($urls)) {
+    $urlvalue = implode(' and ', $urls);
+    echo 'url = ' . '{' . $urlvalue . '}' . ",\n";
 }
 
 echo 'crossref = ' . '{' . $this->serverUrl($this->recordLink()->getUrl($this->driver)) . '}' . "\n";
