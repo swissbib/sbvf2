@@ -126,7 +126,7 @@ class Aleph extends VuFindDriver
         $functions = array(
             'hold'             => 'HoldRequest',
             'shortLoan'        => 'ShortLoan',
-            'photocopyRequest' => 'PhotocopyRequest',
+            'photocopyRequest' => 'PhotoRequest',
             'bookingRequest'   => 'BookingRequest'
         );
 
