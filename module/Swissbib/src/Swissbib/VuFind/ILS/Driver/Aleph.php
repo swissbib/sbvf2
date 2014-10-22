@@ -122,13 +122,13 @@ class Aleph extends VuFindDriver
 			array('patron', $patronId, 'record', $resource, 'items', $group)
 		);
 
-		$result    = array();
-		$functions = array(
-			'hold'             => 'HoldRequest',
-			'shortLoan'        => 'ShortLoan',
-			'photocopyRequest' => 'PhotocopyRequest',
-			'bookingRequest'   => 'BookingRequest'
-		);
+        $result    = array();
+        $functions = array(
+            'hold'             => 'HoldRequest',
+            'shortLoan'        => 'ShortLoan',
+            'photocopyRequest' => 'PhotoRequest',
+            'bookingRequest'   => 'BookingRequest'
+        );
 
 		// Check flags for each info node
 		foreach ($functions as $key => $type) {
