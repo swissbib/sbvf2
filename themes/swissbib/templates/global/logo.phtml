@@ -10,7 +10,7 @@
         $query = $zendUriHTTP->getQuery();
         $betaUri = $server . $zendUriHTTP->getPath()  .   (strlen($query) > 0 ?    '?' . $zendUriHTTP->getQuery() : '');
         $routeMatch = $this->domainURL()->getMatchedRouteName();
-        $className = $routeMatch === 'search-home' ? 'betaURLHome' : 'betaURL'
+        $className = $routeMatch === 'search-home' || $routeMatch === 'home' ? 'betaURLHome' : 'betaURL'
     ?>
     <div id="<?= $className ?>" class="rdBetaTest right"><a  target="_blank"  href="<?= $betaUri ?>"  ><?= $this->transEsc('test.beta.responsive') ?></a></div>
 
