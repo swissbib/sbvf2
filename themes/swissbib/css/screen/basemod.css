@@ -148,7 +148,7 @@ div#main {
 	background-position:15px 15px;
 	background-repeat:no-repeat;
 }*/
-#logo a {
+#logo  h1 > a {
 	display:block;
 	/* beta logo */
 	height:60px;
@@ -247,7 +247,7 @@ div#main {
 	background-image:url(../../images/logo_swissbib-home.gif);
 	background-position:30px 75px;
 } */
-.template_home #logo a {
+.template_home #logo > h1 a {
 	display:block;
 	/* beta logo */
 	height:135px;

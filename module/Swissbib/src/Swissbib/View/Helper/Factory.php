@@ -125,7 +125,7 @@ class Factory
     public static function getDomainURLHelper(ServiceManager $sm)
     {
         $locator = $sm->getServiceLocator();
-        return new DomainURL($locator->get('Request'));
+        return new DomainURL($locator->get('Request'), $locator->get('router'));
 
     }
 
