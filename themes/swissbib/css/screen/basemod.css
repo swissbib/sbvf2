@@ -156,7 +156,7 @@ div#main {
 	padding:15px 835px 8px 15px;
 	background-color:#32CD0F;
 	background-color:transparent;
-	background-image:url(../../images/logo_swissbib_beta.gif);
+	background-image:url(../../images/logo_swissbib.gif);
 	background-position:15px 15px;
 	background-repeat:no-repeat;
 }
@@ -253,7 +253,7 @@ div#main {
 	height:135px;
 	width:300px;
 	padding:75px 660px 13px 30px;
-	background-image:url(../../images/logo_swissbib_beta-home.gif);
+	background-image:url(../../images/logo_swissbib-home.gif);
 	background-position:30px 75px;
 }
 .template_home #main {
