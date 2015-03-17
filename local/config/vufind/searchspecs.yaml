@@ -26,6 +26,7 @@ AllFields:
     - ctrlnum^1000
     - publishDate
     - isbn
+    - variant_isbn_isn_mv
     - issn
     - localcode                            # local codes (field 909)
     - idscode_txt_mv                       # IDS codes (field 908, IDS MARC 906/907)
@@ -108,6 +109,7 @@ Author:
 ISN:
   DismaxFields:
     - isbn
+    - variant_isbn_isn_mv
     - issn
     - ismn_isn_mv
     - doi_isn_mv
@@ -117,6 +119,9 @@ ISN:
       - [and, 100]
       - [or, ~]
     isbn:
+      - [and, 100]
+      - [or, ~]
+    variant_isbn_isn_mv:
       - [and, 100]
       - [or, ~]
     ismn_isn_mv:
