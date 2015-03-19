@@ -149,6 +149,25 @@ class Bootstrapper
         }
     }
 
+    /**
+     * set headers no cache because we have problems with CSS after changing to attract people for our new beta version
+     */
+    protected function initNoCache()
+    {
+        $callback = function ($event) {
+            $response = $event->getApplication()->getResponse();
+            //for expires use date in the past
+            $response->getHeaders()->addHeaders(array(
+                'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                'Pragma' => 'no-cache',
+                'Expires' => 'Thu, 1 Jan 2015 00:00:00 GMT'
+                ));
+
+
+        };
+
+        $this->events->attach('dispatch', $callback, -500);
+    }
 
 
     /*
