@@ -1221,7 +1221,7 @@ class SolrMarc extends VuFindSolrMarc
      */
     public function getGroup()
     {
-        return isset($this->fields['groupid_isn_mv']) ? $this->fields['groupid_isn_mv'][0] : '';
+        return isset($this->fields['groupid_isn_mv']) ? $this->fields['groupid_isn_mv'] : '';
     }
 
 

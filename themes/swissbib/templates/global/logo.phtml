@@ -1,4 +1,17 @@
+
 <div id="logo">
+
 	<h1><a href="<?=$this->url('search-home')?>" title="<?= $this->transEsc('start.service.title') ?>"><?= $this->transEsc('start.service.title') ?></a></h1>
-	<h2 class="hidden"><?= $this->transEsc('start.service.title') ?>: <?= $this->transEsc('start.service.info') ?></h2>
+
+    <?
+        $zendUriHTTP = $this->domainURL()->normalize();
+        $server = 'https://test.swissbib.ch';
+        $path = $zendUriHTTP->getPath();
+        $query = $zendUriHTTP->getQuery();
+        $betaUri = $server . $zendUriHTTP->getPath()  .   (strlen($query) > 0 ?    '?' . $zendUriHTTP->getQuery() : '');
+        $routeMatch = $this->domainURL()->getMatchedRouteName();
+        $className = $routeMatch === 'search-home' || $routeMatch === 'home' ? 'betaURLHome' : 'betaURL'
+    ?>
+    <div id="<?= $className ?>" class="rdBetaTest right"><a  target="_blank"  href="<?= $betaUri ?>"  ><?= $this->transEsc('test.beta.responsive') ?></a></div>
+
 </div>

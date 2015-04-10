@@ -1,26 +1,64 @@
 /** ------------ Logo HOME and OTHER - PNG-versions ------------  */
 
-/* home logo
+/*home logo */
+/*
 .template_home #logo a {
 	display:block;
 	height:100px;
 	width:300px;
 	padding:75px 660px 48px 30px;
-	background-image:url(../../images/logo_swissbib-home.png);
+	background-image:url(../images/logo_swissbib-home.png);
 	background-position:30px 75px;
-} */
-
-/* logo
+}
+*/
+/* logo */
+/*
 #logo a {
 	display:block;
 	height:50px;
 	width:140px;
 	padding:15px 835px 18px 15px;
 	background-color:#32CD0F;
-	background-image:url(../../images/logo_swissbib.png);
+	background-image:url(../images/logo_swissbib.png);
 	background-position:15px 15px;
 	background-repeat:no-repeat;
-}*/
+}
+*/
+
+
+#logo h1 {
+    display: inline-block;
+    width: 50%;
+    text-indent: 0;
+}
+
+
+#logo div#betaURLHome, #logo div#betaURL {
+    display: inline-block;
+    margin-right: 0;
+    position: absolute;
+    height: 2px;
+    right: 60px;
+    top: 100px;
+    width: 500px;
+    font-size: 1.8em;
+    color: #ffffff;
+
+}
+
+#logo div#betaURL {
+    top: 20px;
+    right: 180px;
+}
+
+
+#logo div#betaURLHome.right a, #logo div#betaURL.right a {
+    color: #ffffff;
+}
+
+
+
+
 
 /** ------------ Basic table design ------------  */
 
@@ -160,21 +198,21 @@
 }
 
 /** ------------ adv. search: classification tree ------------  */
-.classification-tree {
+#classification-tree {
     float: left;
     width: 540px;
     font-size: 1.2em;
     font-family: Arial, Helvetica, sans-serif;
 }
 
-.classification-tree.jstree-default .jstree-clicked {
+#classification-tree.jstree-default .jstree-clicked {
     background: none;
     border: 1px solid #FFF;
     padding: 0 2px 0 1px;
 }
 
-.classification-tree.jstree-default li.selected > a,
-.classification-tree.jstree-default li a:hover {
+#classification-tree.jstree-default li.selected > a,
+#classification-tree.jstree-default li a:hover {
     background: #188100;
     color: #FFF;
     border: 1px solid #188100;
@@ -424,19 +462,6 @@ form[name="bulkActionForm"] .mail {
     display: inline-block;
 }
 
-#sidebar .subnavigation .filters li a.filter_remove {
-    display: block;
-    font-size: 11px;
-    line-height: 13px;
-    color: #FFFFFF;
-    text-decoration: none;
-    padding: 1px 20px 1px 2px;
-    margin-right: 5px;
-    background-image: url('../images/icon_remove.gif');
-    background-position: right 1px;
-    background-repeat: no-repeat;
-}
-
 #popupDetails .info {
     height: auto;
     margin-top: 40px;
@@ -660,9 +685,9 @@ tr.infoMessagesRow td {
 }
 
 .keywordList li {
-    font-size: 1.3em;
+    font-size: 1.2em;
     list-style: square inside;
-    line-height: 1.1538em;
+    line-height: 1.2em;
 }
 
 #modalDialog .info {
@@ -679,13 +704,13 @@ Bibliotheksinfo-Link mit Fragezeichen - TVI: 20130920
 .bibinfo {
     position: relative;
     display: block;
-    width: 45px;
-    height: 12px;
+    width: 16px;
+    height: 16px;
     font-size: 0;
     line-height: 0;
     text-indent: -10000px;
-    margin: 2px 1px 0 1px;
-    background-image: url(../images/icon_link-external.gif);
+    margin: 0 1px 0 1px;
+    background-image: url(../images/icon_info.gif);
     background-position: 0 0;
     background-repeat: no-repeat;
     text-decoration: none;
